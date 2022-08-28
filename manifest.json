@@ -134,6 +134,20 @@
                 "enable" : true
             }
         },
-        "domain" : "http://00.00.00.00:7000"
+        "domain" : "http://00.00.00.00:7000",
+		"devServer" : {
+			"https" : false,
+			"proxy" : {
+				"/user" : {
+					"target" : "http://im.72sd.xyz/", //请求的目标域名
+					"changeOrigin" : true,
+					"secure" : false,
+					"pathRewrite" : {
+						"^/user" : "/"
+					}
+				}
+			},
+			"port" : 80
+		}
     }
 }

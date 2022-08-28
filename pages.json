@@ -55,6 +55,10 @@
             "path" : "pages/chat/user_detail",
             "style" : {}
         }
+		,{
+		    "path" : "pages/mine/greeting_set/index",
+		    "style" : {}
+		}
         ,{
             "path" : "pages/mine/user_info/index",
             "style" : {}

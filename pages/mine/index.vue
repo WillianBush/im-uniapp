@@ -74,6 +74,12 @@
 							<text class="text-black" style="margin-left: 10px;">设置</text>
 						</view>
 					</view>
+					<view @tap="goSetGreeting()" class="cu-item t1" style="border:0px;" :class="true?'arrow':''">
+						<view class="content">
+							<text style="color:#F5BC50;font-size:46upx" class="iconfont icon-xiaoxi2"></text>
+							<text class="text-black" style="margin-left: 10px;">设置问候语</text>
+						</view>s
+					</view>
 					<!--
 					<view class="cu-item">
 						<view class="content">
@@ -223,6 +229,11 @@
 			goUserInfo() {
 				uni.navigateTo({
 					url:"/pages/mine/user_info/index"
+				})
+			},
+			goSetGreeting() {
+				uni.navigateTo({
+					url:"/pages/mine/greeting_set/index"
 				})
 			},
 			logout() {

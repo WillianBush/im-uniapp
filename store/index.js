@@ -36,8 +36,8 @@ const state = {
 	hotItem_webView_show:false,//为了解决切换导航时web_view的隐藏问题
 	/**当flex: 0时是为了可以切换导航,flex: 1时显示web_view,因为此时web_view才有宽度和高度**/
 	// // hotItem_webViewStyle:"flex: 0",//为了解决切换导航时web_view的隐藏问题
-	req_url:"http://00.00.00.00:8080",//请求URL地址
-	img_url:"http://00.00.00.00:1010",//图片资源请求地址
+	req_url:"http://im.72sd.xyz",//请求URL地址
+	img_url:"http://im.72sd.xyz",//图片资源请求地址
 	//临时属性    
 	temp:{  
 		base64:"",//【作用于群二维码发给朋友临时存等等，因为直接使用带参数页面跳转会导致特殊符号过滤掉】
