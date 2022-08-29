@@ -76,7 +76,9 @@ export default {
 	setUnDoRoomAddCount(state,payload){
 		state.unDoRoomAddCount = payload;
 	},
-	
+	setIsEmployee(state,payload){
+		state.isEmployee = payload;
+	},
 	updateChatMessageMap(state,payload){
 		state.chatMessageMap.set(payload.key,payload.value);
 	},
@@ -108,5 +110,6 @@ export default {
 		state.cur_chat_entity = {}; 
 		state.cur_chat_msg_list = []; 
 		state.chat_my_loadding = false;
+		state.isEmployee = "";
 	}
 }

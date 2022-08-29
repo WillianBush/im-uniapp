@@ -1,6 +1,6 @@
 {
     "name" : "聊天APP",
-    "appid" : "__UNI__5FF3F16",
+    "appid" : "__UNI__3B15440",
     "description" : "聊天APP",
     "versionName" : "1.2.1",
     "versionCode" : 121,
@@ -135,19 +135,19 @@
             }
         },
         "domain" : "http://00.00.00.00:7000",
-		"devServer" : {
-			"https" : false,
-			"proxy" : {
-				"/user" : {
-					"target" : "http://im.72sd.xyz/", //请求的目标域名
-					"changeOrigin" : true,
-					"secure" : false,
-					"pathRewrite" : {
-						"^/user" : "/"
-					}
-				}
-			},
-			"port" : 80
-		}
+        "devServer" : {
+            "https" : false,
+            "proxy" : {
+                "/user" : {
+                    "target" : "http://im.72sd.xyz/", //请求的目标域名
+                    "changeOrigin" : true,
+                    "secure" : false,
+                    "pathRewrite" : {
+                        "^/user" : "/"
+                    }
+                }
+            },
+            "port" : 80
+        }
     }
 }

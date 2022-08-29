@@ -116,8 +116,6 @@
 		},
 		mounted() {
 			let _this = this;
-			let user = uni.getStorageSync("USER"); 
-			_this.getIsEmployee();
 			_this.getGreetingMsg();
 		},
 		onReady() {},
@@ -134,7 +132,6 @@
 					}
 				).then(res=>{
 					let res_data = eval(res.data);
-					console.log('----', res_data)
 					if(res_data.code==200) {  
 						const { msg_1, msg_2, msg_3, picture_1, picture_2, picture_3, picture_4, picture_5 } = res.data.body;
 						_this.txt_1 = msg_1;
@@ -145,31 +142,6 @@
 						_this.$store.state.user.greetingpic_3 = picture_3;
 						_this.$store.state.user.greetingpic_4 = picture_4;
 						_this.$store.state.user.greetingpic_5 = picture_5;
-					} else {
-						uni.showToast({
-						    icon: 'none',
-							position: 'bottom',
-						    title: res_data.msg
-						});
-					}
-				})
-			},
-			getIsEmployee() {
-				let _this = this;
-				let user = this.$store.state.user;
-				
-				_this.$http.post("/user/employeeDefaultMessage/json/isEmployee",
-					{
-						header:{
-							"x-access-uid":user.id,
-							"x-access-client":_this.$clientType
-						}
-					}
-				).then(res=>{
-					let res_data = eval(res.data);
-					console.log('----', res_data)
-					if(res_data.code==200) {  
-						console.log('isEmployee', res)
 					} else {
 						uni.showToast({
 						    icon: 'none',

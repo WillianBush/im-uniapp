@@ -74,7 +74,7 @@
 							<text class="text-black" style="margin-left: 10px;">设置</text>
 						</view>
 					</view>
-					<view @tap="goSetGreeting()" class="cu-item t1" style="border:0px;" :class="true?'arrow':''">
+					<view @tap="goSetGreeting()" v-show="$store.state.isEmployee" class="cu-item t1" style="border:0px;" :class="true?'arrow':''">
 						<view class="content">
 							<text style="color:#F5BC50;font-size:46upx" class="iconfont icon-xiaoxi2"></text>
 							<text class="text-black" style="margin-left: 10px;">设置问候语</text>
