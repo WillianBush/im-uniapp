@@ -126,7 +126,7 @@
     },
     "h5" : {
         "router" : {
-            "base" : "/h5/"
+            "base" : "/"
         },
         "title" : "聊天APP",
         "optimization" : {
@@ -134,7 +134,7 @@
                 "enable" : true
             }
         },
-        "domain" : "http://00.00.00.00:7000",
+        "domain" : "http://im.72sd.xyz/",
         "devServer" : {
             "https" : false,
             "proxy" : {
