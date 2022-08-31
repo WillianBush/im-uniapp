@@ -391,7 +391,28 @@
 			// 	}
 			// },200)
 			
-			
+			console.log('fuck-----', _this.$store.state.isEmployee)
+			if (!_this.$store.state.isEmployee) {
+				_this.$http.post("/user/employeeDefaultMessage/json/isEmployee",
+					{
+						header:{
+							"x-access-uid":_this.$store.state.user.id,
+							"x-access-client":_this.$clientType
+						}
+					}
+				).then(res=>{
+					let res_data = eval(res.data);
+					if(res.statusCode==200) {  
+						_this.$store.commit("setIsEmployee",res_data.msg === 'Yes');
+					} else {
+						uni.showToast({
+						    icon: 'none',
+							position: 'bottom',
+						    title: res_data.msg
+						});
+					}
+				})
+			}
 			_this.$http.post("/sysConfig/json/getFooterHotItem",
 				{
 					header:{

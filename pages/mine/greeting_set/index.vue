@@ -111,7 +111,8 @@
 			return {
 				txt_1: '',
 				text_2: '',
-				txt_3: ''
+				txt_3: '',
+				greetingId: ''
 			};
 		},
 		mounted() {
@@ -133,10 +134,11 @@
 				).then(res=>{
 					let res_data = eval(res.data);
 					if(res_data.code==200) {  
-						const { msg_1, msg_2, msg_3, picture_1, picture_2, picture_3, picture_4, picture_5 } = res.data.body;
+						const { msg_1, msg_2, msg_3, picture_1, picture_2, picture_3, picture_4, picture_5, id } = res.data.body;
 						_this.txt_1 = msg_1;
 						_this.txt_2 = msg_2;
 						_this.txt_3 = msg_3;
+						_this.greetingId = id;
 						_this.$store.state.user.greetingpic_1 = picture_1;
 						_this.$store.state.user.greetingpic_2 = picture_2;
 						_this.$store.state.user.greetingpic_3 = picture_3;
@@ -154,16 +156,23 @@
 			tijiao() {
 				let _this = this;
 				let user = this.$store.state.user;
-				
-				_this.$http.post("/user/json/updateNickName",
+				var url = _this.greetingId ? "/user/employeeDefaultMessage/json/update" : "/user/employeeDefaultMessage/json/add";
+				_this.$http.post(url,
 					{
-						nickName:this.txt,
-						u:user.id
+						msg_1: _this.txt_1,
+						msg_2: _this.txt_2,
+						msg_3: _this.txt_3,
+						picture_1: _this.$store.state.user.greetingpic_1,
+						picture_2: _this.$store.state.user.greetingpic_2,
+						picture_3: _this.$store.state.user.greetingpic_3,
+						picture_4: _this.$store.state.user.greetingpic_4,
+						picture_5: _this.$store.state.user.greetingpic_5
 					},
 					{
 						header:{
 							"x-access-uid":user.id,
-							"x-access-client":_this.$clientType
+							"x-access-client":_this.$clientType,
+							"Content-Type":  "application/json"
 						}
 					}
 				).then(res=>{
@@ -174,7 +183,7 @@
 							position: 'bottom',
 						    title: "修改成功"
 						});
-						_this.$store.state.user.nickName =  res_data.msg;
+						console.log('res', res_data);
 					} else {
 						uni.showToast({
 						    icon: 'none',

@@ -68,6 +68,10 @@
             "style" : {}
         }
 		,{
+		    "path" : "pages/mine/user_info/upd_phone",
+		    "style" : {}
+		}
+		,{
 		    "path" : "pages/mine/user_info/upd_sex",
 		    "style" : {}
 		},

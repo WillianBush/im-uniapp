@@ -27,7 +27,7 @@
 				<view style="border-top-left-radius: 20px;border-top-right-radius: 20px;margin-top:10px;background: #F1F1F1;" class="cu-list menu"
 				 :class="[true?'sm-border':'',false?'card-menu margin-top':'']">
 				 
-					<view @tap="goWallet()" class="cu-item" :class="true?'arrow':''">
+					<view v-show="false" @tap="goWallet()" class="cu-item" :class="true?'arrow':''">
 						<view class="content">
 							
 							<!--<view  style="float:left;width: 44upx;height: 44upx;background-image: url(../../static/tb/qianbao.png);background-size: 100% 100%;"></view>-->
@@ -46,7 +46,7 @@
 						</view>
 					</view> 
 				
-					<view  @tap="goBill()" class="cu-item" :class="true?'arrow':''">
+					<view  v-show="false" @tap="goBill()" class="cu-item" :class="true?'arrow':''">
 						<view class="content">
 							<!--
 							<view  style="float:left;width: 44upx;height: 44upx;background-image: url(../../static/tb/zijin.png);background-size: 100% 100%;"></view>
