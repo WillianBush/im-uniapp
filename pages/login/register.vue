@@ -358,9 +358,9 @@
 						// password:_this.passData,
 						// regCode:_this.regCode,
 						// code:_this.verCode,
+						// headpic:_this.headpic,
 						inviteCode:_this.inviteCode,
-						headpic:_this.headpic,
-						nickname:_this.nickname,
+						nickname:_this.nickname
 					},
 					{
 						header:{

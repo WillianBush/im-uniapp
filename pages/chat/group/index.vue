@@ -133,7 +133,7 @@
 							
 							<image @tap="clickVideo(item.bean.txt)" v-if="item.bean.psr=='video'" style="width:418upx;height:335upx;border-radius: 5px;" src="../../../static/images/video.png"></image>
 							
-							<view v-else @longpress="onLongPress($event,item.bean)" class="content bg-green shadow" style="background-color: #98E165;
+							<view v-else @longpress="onLongPress($event,item.bean)" class="content bg-green shadow" style="background-color: #fff;
 			color:#222;">
 								<u-parse v-if="item.bean.psr=='uparse'" :content="item.bean.txt" @preview="preview" @navigate="navigate" ></u-parse>
 								<view @tap="clickVoice(item.bean.txt,index)" v-else-if="item.bean.psr=='voice'">

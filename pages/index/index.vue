@@ -390,8 +390,28 @@
 			// 		}
 			// 	}
 			// },200)
+			if (!_this.$store.state.img_url) {
+				_this.$http.post("/user/file/getDomain",
+					{
+						header:{
+							"x-access-uid":_this.$store.state.user.id,
+							"x-access-client":_this.$clientType
+						}
+					}
+				).then(res=>{
+					let res_data = eval(res.data);
+					if(res_data.code==200) {  
+						_this.$store.commit("setImgDomain",res_data.msg);
+					} else {
+						uni.showToast({
+							icon: 'none',
+							position: 'bottom',
+							title: res_data.msg
+						});
+					}
+				})
+			}
 			
-			console.log('fuck-----', _this.$store.state.isEmployee)
 			if (!_this.$store.state.isEmployee) {
 				_this.$http.post("/user/employeeDefaultMessage/json/isEmployee",
 					{

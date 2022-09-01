@@ -79,6 +79,9 @@ export default {
 	setIsEmployee(state,payload){
 		state.isEmployee = payload;
 	},
+	setImgDomain(state,payload){
+		state.img_url = payload;
+	},
 	updateChatMessageMap(state,payload){
 		state.chatMessageMap.set(payload.key,payload.value);
 	},

@@ -7,7 +7,7 @@
 			<block  v-for="(item,index) in $store.state.cur_chat_msg_list">
 				<view  @longpress="onLongPress" :data-txt="item.bean.txt" v-if="item.bean.fromUid==$store.state.user.id" class="cu-item self" >
 					<view class="main">
-						<view class="content bg-green shadow" style="background-color: #98E165;
+						<view class="content bg-green shadow" style="background-color: #fff;
 		color:#222;height:80upx;">
 							<u-parse v-if="item.bean.psr=='uparse'" :content="item.bean.txt" @preview="preview" @navigate="navigate" ></u-parse>
 							<view @tap="clickVoice(item.bean.txt,index)" v-else-if="item.bean.psr=='voice'">
