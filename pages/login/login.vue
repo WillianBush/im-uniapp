@@ -151,7 +151,7 @@
 				// uni.showLoading({
 				// 	title: '登录中'
 				// });
-				this.$http.post("/user/json/login",
+				this.$http.post("/user/json/loginV2",
 					{
 						account:_this.phoneData,
 						password:_this.passData,

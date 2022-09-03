@@ -21,13 +21,6 @@
 					type="text"
 					maxlength="11"
 					placeholder="手机号"
-				></wInput>
-				<wInput
-					v-model="passData"
-					type="password"
-					maxlength="11"
-					placeholder="登录密码"
-					isShowPass
 				></wInput> -->
 				<wInput
 					v-if="cnf.useRegisterCode==1"
@@ -58,7 +51,13 @@
 					type="text"
 					placeholder="昵称"
 				></wInput>
-				
+				<wInput
+					v-model="passData"
+					type="password"
+					maxlength="11"
+					placeholder="登录密码"
+					isShowPass
+				></wInput>
 			</view>
 				
 			<wButton 
@@ -288,14 +287,14 @@
 				//     });
 				//     return false;
 				// }
-		  //       if (this.passData.length < 6) {
-		  //           uni.showToast({
-		  //               icon: 'none',
-				// 		position: 'bottom',
-		  //               title: '密码不正确'
-		  //           });
-		  //           return false;
-		  //       }
+		        if (this.passData.length < 6) {
+		            uni.showToast({
+		                icon: 'none',
+						position: 'bottom',
+		                title: '密码不正确'
+		            });
+		            return false;
+		        }
 				
 				// if(this.cnf.reg_sms==1) {
 				// 	if(this.verCode.trim()=="") {
@@ -352,15 +351,15 @@
 				**/
 				_this.isRotate=true
 				
-				_this.$http.post("/user/json/register",
+				_this.$http.post("/user/json/registerV2",
 					{
 						// tel:_this.phoneData,
-						// password:_this.passData,
 						// regCode:_this.regCode,
 						// code:_this.verCode,
 						// headpic:_this.headpic,
 						inviteCode:_this.inviteCode,
-						nickname:_this.nickname
+						nickname:_this.nickname,
+						password:_this.passData
 					},
 					{
 						header:{
