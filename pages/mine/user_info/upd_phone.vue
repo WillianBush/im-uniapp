@@ -42,8 +42,8 @@
 				    return false;
 				}
 
-				_this.$http.post("/user/json/updateNickName", {
-					nickName: this.txt,
+				_this.$http.post("/user/json/updateTel", {
+					newTel: this.txt,
 					u: user.id
 				}, {
 					header: {
@@ -58,7 +58,7 @@
 							position: 'bottom',
 							title: "修改成功"
 						});
-						_this.$store.state.user.nickName = res_data.msg;
+						_this.$store.state.user.telphone = res_data.msg;
 					} else {
 						uni.showToast({
 							icon: 'none',

@@ -134,12 +134,12 @@
                 "enable" : true
             }
         },
-        "domain" : "http://13.212.249.32:8080/",
+        "domain" : "http://im.72sd.xyz/",
         "devServer" : {
             "https" : false,
             "proxy" : {
                 "/user" : {
-                    "target" : "http://13.212.249.32:8080/", //请求的目标域名
+                    "target" : "http://im.72sd.xyz/", //请求的目标域名
                     "changeOrigin" : true,
                     "secure" : false,
                     "pathRewrite" : {
