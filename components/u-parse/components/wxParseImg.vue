@@ -5,9 +5,9 @@
     :class="node.classStr"
     :style="newStyleStr || node.styleStr"
     :data-src="node.attr.src"
-    :src="node.attr.src"
-    @tap="wxParseImgTap"
+    :src="deal(node.attr.src)"
     @load="wxParseImgLoad"
+	@error="handleError"
     />
 </template>
 
@@ -29,6 +29,20 @@ export default {
     },
   },
   methods: {
+	deal(v) {
+		if (typeof v === 'string') {
+			return v;
+		} else {
+			var src;
+			v.map(o => {
+				if (o.indexOf('href') > -1) {
+					src = o.match(/>(\S*)</)[1];
+					return;
+				}
+			})	
+			return src;
+		}
+	},
     wxParseImgTap(e) {
       if (!this.preview) return;
       const { src } = e.currentTarget.dataset;
@@ -41,6 +55,8 @@ export default {
     },
     // 图片视觉宽高计算函数区
     wxParseImgLoad(e) {
+		console.log('e', e)
+		console.log('props', this.props)
       const { src } = e.currentTarget.dataset;
       if (!src) return;
       const { width, height } = e.mp.detail;
