@@ -792,14 +792,17 @@
 							<view @tap="goFavourite" style="flex:1;text-align: center;margin-top: 20upx;"><text style="font-size: 60upx;color:#23A2FB" class="iconfont icon-shoucang"></text><view style="font-size: 24upx;color: #8799a3;">收藏</view></view>
 						</view>
 						<view style="display: flex;margin-top: 40upx;">
-							<view  @tap="sendRed()" style="flex:1;text-align: center;margin-top: 20upx;"><text style="font-size: 60upx;color:#FF524C" class="iconfont icon-lingquhongbao"></text><view style="font-size: 24upx;color: #8799a3;">发红包</view></view>
+<!-- 							<view  @tap="sendRed()" style="flex:1;text-align: center;margin-top: 20upx;"><text style="font-size: 60upx;color:#FF524C" class="iconfont icon-lingquhongbao"></text><view style="font-size: 24upx;color: #8799a3;">发红包</view></view>
 							<view  @tap="myRedRecord()" style="flex:1;text-align: center;margin-top: 20upx;"><text style="font-size: 60upx;color:#FF524C" class="iconfont icon-hongbao1"></text><view style="font-size: 24upx;color: #8799a3;">我的红包</view></view>
-							<view @tap="goTransfer()" style="flex:1;text-align: center;margin-top: 20upx;"><text style="font-size: 60upx;color:#107FCB" class="iconfont icon-shenghuozhuanzhang"></text><view style="font-size: 24upx;color: #8799a3;">转账</view></view>
+							<view @tap="goTransfer()" style="flex:1;text-align: center;margin-top: 20upx;"><text style="font-size: 60upx;color:#107FCB" class="iconfont icon-shenghuozhuanzhang"></text><view style="font-size: 24upx;color: #8799a3;">转账</view></view> -->
 							<view @tap="sendCard()" style="flex:1;text-align: center;margin-top: 20upx;"><text style="font-size: 60upx;color:#FA9B4E" class="iconfont icon-mingpian2"></text><view style="font-size: 24upx;color: #8799a3;">名片</view></view>
+							<view @tap="voiceCall()" style="flex:1;text-align: center;margin-top: 20upx;"><text style="font-size: 60upx;color:#FA9B4E" class="iconfont icon-yuyin"></text><view style="font-size: 24upx;color: #8799a3;">语音</view></view>
+							<view style="flex:1;text-align: center;margin-top: 20upx;"><text style="font-size: 60upx;color:#FA9B4E" ></text><view style="font-size: 24upx;color: #8799a3;"></view></view>
+							<view style="flex:1;text-align: center;margin-top: 20upx;"><text style="font-size: 60upx;color:#FA9B4E" ></text><view style="font-size: 24upx;color: #8799a3;"></view></view>
 						</view>
 					</view>
 				</scroll-view>
-		</view>		
+		</view>
 		
 	
 		<view @longpress="hidePop" class="shade" v-show="showShade" @tap="hidePop">
@@ -941,7 +944,6 @@
 			this.$store.commit("setCur_chat_msg_list",[]);
 			this.$store.commit("setChat_my_loadding",false); 
 			
-			
 			// #ifndef H5
 			//录音开始事件
 			this.RECORDER.onStart((e)=>{
@@ -963,6 +965,7 @@
 				let msg_list = this.$store.state.chatMessageMap.get(user.id+"#"+this.toid);
 				if(msg_list&&msg_list.length>0) {
 					this.$store.commit("setCur_chat_msg_list",msg_list); 
+					console.log('88888888', msg_list)
 				}
 			} else {
 				let str = uni.getStorageSync(user.id+"#"+this.toid+'_CHAT_MESSAGE');
@@ -977,6 +980,7 @@
 					 	value:jsonObj
 					 });
 					  this.$store.commit("setCur_chat_msg_list",jsonObj);
+					  console.log('jsonObj', jsonObj)
 				} else {
 					//如果什么都没记录的话，则从云端加载
 					//this.tongbuMsg_1stInNoData();
@@ -1401,6 +1405,13 @@
 				uni.navigateTo({
 					url:"/pages/chat/red/redRecord"
 				})
+			},
+			voiceCall() {
+				uni.showToast({
+					icon: 'none',
+					position: 'bottom',
+					title: '敬请期待'
+				});
 			},
 			sendRed(){
 				this.showPop = false;

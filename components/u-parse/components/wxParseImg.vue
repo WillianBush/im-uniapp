@@ -30,6 +30,7 @@ export default {
   },
   methods: {
 	deal(v) {
+		console.log('hhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhh-----------', v)
 		if (typeof v === 'string') {
 			return v;
 		} else {
