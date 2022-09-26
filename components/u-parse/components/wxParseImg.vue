@@ -6,6 +6,7 @@
     :style="newStyleStr || node.styleStr"
     :data-src="node.attr.src"
     :src="deal(node.attr.src)"
+	@click="imgPreview(node.attr.src)"
     @load="wxParseImgLoad"
 	@error="handleError"
     />
@@ -41,8 +42,16 @@ export default {
 					return;
 				}
 			})	
+			console.log('src', src)
 			return src;
 		}
+	},
+	imgPreview(src) {
+      var newSrc = this.deal(src);
+	  wx.previewImage({
+	    urls: [newSrc],
+	    current: newSrc
+	  });
 	},
     wxParseImgTap(e) {
       if (!this.preview) return;
