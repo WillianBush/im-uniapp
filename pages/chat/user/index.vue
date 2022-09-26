@@ -789,18 +789,22 @@
 							<!--
 							<view @tap="showLocation()" style="flex:1;text-align: center;margin-top: 20upx;"><text style="font-size: 60upx;color:#75BB6D" class="iconfont icon-weizhi-tianchong"></text><view style="font-size: 24upx;color: #8799a3;">位置</view></view>
 							-->
-							<view @tap="tongbuMsg()" style="flex:1;text-align: center;margin-top: 20upx;"><text style="font-size: 60upx;color:#75BB6D" class="iconfont icon-yuntongbu"></text><view style="font-size: 24upx;color: #8799a3;">消息同步</view></view>
-							<view @tap="goFavourite" style="flex:1;text-align: center;margin-top: 20upx;"><text style="font-size: 60upx;color:#23A2FB" class="iconfont icon-shoucang"></text><view style="font-size: 24upx;color: #8799a3;">收藏</view></view>
-						</view>
-						<view style="display: flex;margin-top: 40upx;">
-<!-- 							<view  @tap="sendRed()" style="flex:1;text-align: center;margin-top: 20upx;"><text style="font-size: 60upx;color:#FF524C" class="iconfont icon-lingquhongbao"></text><view style="font-size: 24upx;color: #8799a3;">发红包</view></view>
-							<view  @tap="myRedRecord()" style="flex:1;text-align: center;margin-top: 20upx;"><text style="font-size: 60upx;color:#FF524C" class="iconfont icon-hongbao1"></text><view style="font-size: 24upx;color: #8799a3;">我的红包</view></view>
-							<view @tap="goTransfer()" style="flex:1;text-align: center;margin-top: 20upx;"><text style="font-size: 60upx;color:#107FCB" class="iconfont icon-shenghuozhuanzhang"></text><view style="font-size: 24upx;color: #8799a3;">转账</view></view> -->
+							<!--							<view @tap="tongbuMsg()" style="flex:1;text-align: center;margin-top: 20upx;"><text style="font-size: 60upx;color:#75BB6D" class="iconfont icon-yuntongbu"></text><view style="font-size: 24upx;color: #8799a3;">消息同步</view></view>-->
+							<!--							<view @tap="goFavourite" style="flex:1;text-align: center;margin-top: 20upx;"><text style="font-size: 60upx;color:#23A2FB" class="iconfont icon-shoucang"></text><view style="font-size: 24upx;color: #8799a3;">收藏</view></view>-->
+
+
 							<view @tap="sendCard()" style="flex:1;text-align: center;margin-top: 20upx;"><text style="font-size: 60upx;color:#FA9B4E" class="iconfont icon-mingpian2"></text><view style="font-size: 24upx;color: #8799a3;">名片</view></view>
 							<view @tap="voiceCall()" style="flex:1;text-align: center;margin-top: 20upx;"><text style="font-size: 60upx;color:#FA9B4E" class="iconfont icon-yuyin"></text><view style="font-size: 24upx;color: #8799a3;">语音</view></view>
-							<view style="flex:1;text-align: center;margin-top: 20upx;"><text style="font-size: 60upx;color:#FA9B4E" ></text><view style="font-size: 24upx;color: #8799a3;"></view></view>
-							<view style="flex:1;text-align: center;margin-top: 20upx;"><text style="font-size: 60upx;color:#FA9B4E" ></text><view style="font-size: 24upx;color: #8799a3;"></view></view>
 						</view>
+						<!--						<view style="display: flex;margin-top: 40upx;">-->
+						<!--&lt;!&ndash; 							<view  @tap="sendRed()" style="flex:1;text-align: center;margin-top: 20upx;"><text style="font-size: 60upx;color:#FF524C" class="iconfont icon-lingquhongbao"></text><view style="font-size: 24upx;color: #8799a3;">发红包</view></view>-->
+						<!--							<view  @tap="myRedRecord()" style="flex:1;text-align: center;margin-top: 20upx;"><text style="font-size: 60upx;color:#FF524C" class="iconfont icon-hongbao1"></text><view style="font-size: 24upx;color: #8799a3;">我的红包</view></view>-->
+						<!--							<view @tap="goTransfer()" style="flex:1;text-align: center;margin-top: 20upx;"><text style="font-size: 60upx;color:#107FCB" class="iconfont icon-shenghuozhuanzhang"></text><view style="font-size: 24upx;color: #8799a3;">转账</view></view> &ndash;&gt;-->
+						<!--							<view @tap="sendCard()" style="flex:1;text-align: center;margin-top: 20upx;"><text style="font-size: 60upx;color:#FA9B4E" class="iconfont icon-mingpian2"></text><view style="font-size: 24upx;color: #8799a3;">名片</view></view>-->
+						<!--							<view @tap="voiceCall()" style="flex:1;text-align: center;margin-top: 20upx;"><text style="font-size: 60upx;color:#FA9B4E" class="iconfont icon-yuyin"></text><view style="font-size: 24upx;color: #8799a3;">语音</view></view>-->
+						<!--							<view style="flex:1;text-align: center;margin-top: 20upx;"><text style="font-size: 60upx;color:#FA9B4E" ></text><view style="font-size: 24upx;color: #8799a3;"></view></view>-->
+						<!--							<view style="flex:1;text-align: center;margin-top: 20upx;"><text style="font-size: 60upx;color:#FA9B4E" ></text><view style="font-size: 24upx;color: #8799a3;"></view></view>-->
+						<!--						</view>-->
 					</view>
 				</scroll-view>
 		</view>
@@ -1743,7 +1747,7 @@
 				}
 				if(i==1) {
 					this.c_type = 1;
-					this.txt = "";
+					// this.txt = "";
 					this.showjia = true;
 				}
 				this.showItem = i;
