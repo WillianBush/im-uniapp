@@ -9,8 +9,9 @@
 			<block  v-for="(item,index) in list">
 				
 				<block v-if="item.opt&&item.opt=='undo'">
-					<view v-if="item.opt_uid==$store.state.user.id"  class="cu-info round">撤回一条消息</view>
-					<view v-else  class="cu-info round">{{item.name}} 撤回一条消息</view>
+					<!-- <view v-if="item.opt_uid==$store.state.user.id"  class="cu-info round">撤回一条消息</view>
+					<view v-else  class="cu-info round">{{item.name}} 撤回一条消息</view> -->
+					<view style="display: none"></view>
 				</block>
 				<block v-else-if="item.type=='SYS_TXT'">
 					<view   class="cu-info round">
