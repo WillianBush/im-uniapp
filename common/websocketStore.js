@@ -1,7 +1,7 @@
 import Vue from 'vue'
 import Vuex from 'vuex'
 import store from "../store"//使用vuex对状态进行管理
-const ws_url = "ws://ws.72sd.xyz/chat/socket";//webscoke URL地址
+import { ws_url } from "@/domain_config.js";
 Vue.use(Vuex);
 let wsOpenDo = true;
 let heartCheck;

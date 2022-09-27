@@ -4,6 +4,7 @@ import mutations from "./mutations.js"
 import actions from "./actions.js"
 import getter from "./getter.js"
 import module from "./module.js"
+import { baseUrl } from "@/domain_config.js";
 
 //使用vuex插件前先执行use一下
 Vue.use(Vuex)
@@ -37,7 +38,7 @@ const state = {
 	hotItem_webView_show:false,//为了解决切换导航时web_view的隐藏问题
 	/**当flex: 0时是为了可以切换导航,flex: 1时显示web_view,因为此时web_view才有宽度和高度**/
 	// // hotItem_webViewStyle:"flex: 0",//为了解决切换导航时web_view的隐藏问题
-	req_url:"http://im.72sd.xyz",//请求URL地址
+	req_url:baseUrl,//请求URL地址
 	img_url:"",//图片资源请求地址
 	//临时属性    
 	temp:{  
