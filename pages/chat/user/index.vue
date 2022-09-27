@@ -1072,18 +1072,18 @@
 					// _this.$store.commit("setAr_list",list); 
 					
 				} else {
-					uni.showModal({
-					    title: '信息提示',
-					    content: res_data.msg,
-						showCancel:false,
-					    success: function (res) {
-					        if (res.confirm) {
-					            uni.navigateBack({
-					            	delta:1
-					            })
-					        }
-					    }
-					});
+					// uni.showModal({
+					//     title: '信息提示',
+					//     content: res_data.msg,
+					// 	showCancel:false,
+					//     success: function (res) {
+					//         if (res.confirm) {
+					//             uni.navigateBack({
+					//             	delta:1
+					//             })
+					//         }
+					//     }
+					// });
 					
 					
 					// uni.showToast({
@@ -1918,7 +1918,7 @@
 				let _this = this;
 				setTimeout(()=>{
 					if(this.isAltOrShiftEnter) return;
-					this.input_is_focus = true;
+					this.input_is_focus = false;
 					let v = {
 						txt:this.txt.replace(/\n/g,"<br/>"),
 						toUid:this.toid, 
@@ -1928,10 +1928,10 @@
 					if(this.txt.trim()=="") {
 						return;
 					}
+					this.txt = "";
 					this.$websocket.dispatch("WEBSOCKET_SEND", "{body:'"+JSON.stringify(v)+"',CMD:'USER_CHAT_SEND_TXT'}");
 					this.$store.commit("setChat_my_loadding",true); 
 					this.sendBaseDo(v);
-					this.txt = "";
 					this.showjia = true;
 					this.sendCount = this.sendCount +1;
 					//this.clickChat();
