@@ -2267,7 +2267,11 @@
 										uuid:_this.GenerateUUID(),
 									}
 									_this.$websocket.dispatch("WEBSOCKET_SEND", "{body:'"+JSON.stringify(v)+"',CMD:'GROUP_CHAT_SEND_TXT'}");
-									
+									let videoSrc = _this.$store.state.img_url+json.msg;
+									_this.temp_txt = _this.temp_txt + ("<video  style='max-width: 150px;max-height:150px;' class='face' src='"+videoSrc+"'>");
+									v.psr = "video";  
+									v.simple_content = "[视频]";
+									_this.sendBaseDo(v);
 									setTimeout(function(){
 										_this.scrollToBottom();
 									},100)
