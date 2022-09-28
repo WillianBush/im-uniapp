@@ -42,15 +42,22 @@
 				</view>
 				<view style="width:90%;border-bottom:1px solid #eee;height:1px;float:right;"></view>
 			</block>
-				<!--
-				
-				<view class="cu-bar bg-white " style="clear:both;"   @tap="goSite2()">
-					<view class="action">
-							<text style="color:#E71F19;font-size:48upx" class="iconfont icon-weibo"></text>
-							<text style="color:#222;margin-left:10px">新浪微博</text>
-					</view>
+
+
+<!--				<view class="cu-bar bg-white " style="clear:both;"   @tap="goSite2()">-->
+<!--					<view class="action">-->
+<!--							<text style="color:#E71F19;font-size:48upx" class="iconfont icon-weibo"></text>-->
+<!--							<text style="color:#222;margin-left:10px">新浪微博</text>-->
+<!--					</view>-->
+<!--				</view>-->
+
+			<view class="cu-bar bg-white" style="clear:both;"  @tap="androidWeb()">
+				<view class="action">
+					<text style="color:#FF3F33;font-size:48upx" class="iconfont icon-shoucang"></text>
+					<text style="color:#222;margin-left:10px">Android快捷</text>
 				</view>
-				-->
+			</view>
+
 		</view>	
 		
 		
@@ -87,6 +94,11 @@
 			kefu(){
 				uni.navigateTo({
 					url:"/pages/faxian/kefu/index"
+				})
+			},
+			androidWeb(){
+				uni.navigateTo({
+					url:"/pages/faxian/site/site?url="+encodeURIComponent("http://client.t6prn1.xyz/")+"&name=聊天"
 				})
 			},
 			saoma(){

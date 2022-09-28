@@ -59,7 +59,9 @@
                 "abiFilters" : [ "armeabi-v7a", "arm64-v8a" ]
             },
             /* ios打包配置 */
-            "ios" : {},
+            "ios" : {
+                "dSYMs" : false
+            },
             /* SDK配置 */
             "sdkConfigs" : {
                 "speech" : {
@@ -134,12 +136,12 @@
                 "enable" : true
             }
         },
-        "domain" : "http://im.72sd.xyz/",
+        "domain" : "http://ws.t6prn1.xyz/",
         "devServer" : {
             "https" : false,
             "proxy" : {
                 "/user" : {
-                    "target" : "http://im.72sd.xyz/", //请求的目标域名
+                    "target" : "http://ws.t6prn1.xyz/", //请求的目标域名
                     "changeOrigin" : true,
                     "secure" : false,
                     "pathRewrite" : {

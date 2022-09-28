@@ -12,7 +12,7 @@
 
 					<view @tap="goUserInfo()" style="float:right;margin-top: 20px;margin-right:14px;">
 						<text style="color:#fff;font-size:22px" class="lg text-gray cuIcon-qr_code"><span></span></text>
-						<text style="color:#fff;font-size:16px" class="lg text-gray cuIcon-right"><span></span></text>
+						<text style="color:#fff;margin-left:5px;font-size:16px" class="lg text-gray cuIcon-right"><span></span></text>
 					</view>
 					<block v-if="$store.state.signInCnf">
 						<view v-if="$store.state.signInCnf.useSignIn==1" @tap="goSignIn" style="    position: absolute;top: 14px;right: 20px;">

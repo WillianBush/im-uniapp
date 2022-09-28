@@ -32,7 +32,7 @@
 			<view @tap="updPhone" class="cu-item arrow" >
 				<view class="content"> 
 					<text style="float:left;margin-left: 10px;color: #8799a3;">手机号</text>
-					<text class="text-grey text-sm" style="float:right;color:#aaa;margin-right:60upx;font-size: 26upx;">{{$store.state.user.telphone}}</text>
+					<text class="text-grey text-sm" style="float:right;color:#aaa;font-size: 26upx;">{{$store.state.user.telphone}}</text>
 				</view> 
 			</view> 
 			
