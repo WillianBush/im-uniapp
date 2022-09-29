@@ -65,20 +65,24 @@
 					</view> 
 
 					
-					<view @tap="goUserInfo()" class="cu-item t1" style="border:0px;" :class="true?'arrow':''">
+					<!-- <view @tap="goUserInfo()" class="cu-item t1" style="border:0px;" :class="true?'arrow':''">
 						<view class="content">
-							<!--
-							<view  style="float:left;width: 44upx;height: 44upx;background-image: url(../../static/tb/set.png);background-size: 100% 100%;"></view>
-							-->
 							<text style="color:#F5BC50;font-size:46upx" class="iconfont icon-shezhi"></text>
 							<text class="text-black" style="margin-left: 10px;">设置</text>
+						</view>
+					</view> -->
+					<view @tap="goQrcode"  class="cu-item arrow" >
+						<view class="content"> 
+						<text style="color:#F5BC50;font-size:46upx;float: left; position: relative; left: -6px;" class="lg  cuIcon-qr_code"><span></span></text>
+							<text class="text-black" style="margin-left: -6px;" >二维码</text>
+							
 						</view>
 					</view>
 					<view @tap="goSetGreeting()" v-show="$store.state.isEmployee" class="cu-item t1" style="border:0px;" :class="true?'arrow':''">
 						<view class="content">
 							<text style="color:#F5BC50;font-size:46upx" class="iconfont icon-xiaoxi2"></text>
 							<text class="text-black" style="margin-left: 10px;">设置问候语</text>
-						</view>s
+						</view>
 					</view>
 					<!--
 					<view class="cu-item">
@@ -215,6 +219,11 @@
 				uni.navigateTo({
 					url:"/pages/mine/wallet/bill"
 				}) 
+			},
+			goQrcode() {
+				uni.navigateTo({
+					url:"/pages/mine/user_info/qrCode"
+				})
 			},
 			goWallet(){
 				uni.navigateTo({
