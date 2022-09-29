@@ -2012,6 +2012,14 @@
 				uni.chooseVideo({
 					sourceType: ['camera'], 
 					success: (res) => {
+						//大于15M。则报
+						if(res.tempFile.size>1024*1024*15) {
+							uni.showToast({
+							   icon: 'none',
+							   title: "视频大小不能高于15M"
+							});
+							return;
+						}
 						_this.$store.commit("setChat_my_loadding",true); 
 						setTimeout(()=>{
 							_this.scrollTop = 9999999+Math.random();
@@ -2061,7 +2069,7 @@
 					sizeType: ['compressed'], //可以指定是原图还是压缩图，默认二者都有
 					sourceType: ['album','camera'], //从相册选择
 					success: (res) => {
-						
+						console.log('res', res)
 						//大于2M。则报
 						if(res.tempFiles[0].size>1024*2048) {
 							uni.showToast({

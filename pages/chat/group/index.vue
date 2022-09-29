@@ -2243,6 +2243,14 @@
 				uni.chooseVideo({
 					sourceType: ['camera'], 
 					success: (res) => {
+						//大于15M。则报
+						if(res.tempFile.size>1024*1024*15) {
+							uni.showToast({
+							   icon: 'none',
+							   title: "视频大小不能高于15M"
+							});
+							return;
+						}
 						_this.$store.commit("setChat_my_loadding",true);
 						 setTimeout(()=>{
 						 	_this.scrollTop = 99999999+Math.random();
