@@ -133,6 +133,14 @@
 				    });
 				    return;
 				}
+				if (this.phoneData.length >= 35) {
+				     uni.showToast({
+				        icon: 'none',
+						position: 'bottom',
+				        title: '用户名不能超过35个字'
+				    });
+				    return;
+				}
 		        if (this.passData.length < 5) {
 		            uni.showToast({
 		                icon: 'none',

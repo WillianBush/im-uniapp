@@ -2264,7 +2264,10 @@
 				}
 			},
 			clickVideo(_vpath) {
-				this.videoSrc = _vpath;
+				console.log('00000000000', this.$store.state.cur_chat_msg_list)
+				let v = _vpath.split('.com')[1];
+				var s = v.split("'")[0];
+				this.videoSrc = s;
 				this.showVideo = true;
 				 // 获取 video 上下文 videoContext 对象
                 this.videoContext = uni.createVideoContext('video_play');

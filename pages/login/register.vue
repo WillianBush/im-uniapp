@@ -338,6 +338,14 @@
 				    });
 				    return false;
 				}
+				if (this.nickname.trim().length >=35) {
+				    uni.showToast({
+				        icon: 'none',
+						position: 'bottom',
+				        title: '昵称最长不超过35个字'
+				    });
+				    return false;
+				}
 				
 				/***
 				if (this.verCode.length != 4) {
