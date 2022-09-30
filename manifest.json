@@ -1,7 +1,7 @@
 {
-    "name" : "聊天APP",
-    "appid" : "__UNI__3B15440",
-    "description" : "聊天APP",
+    "name" : "约伴",
+    "appid" : "__UNI__9BE814C",
+    "description" : "约伴",
     "versionName" : "1.2.1",
     "versionCode" : 121,
     "transformPx" : false,
@@ -130,7 +130,7 @@
         "router" : {
             "base" : "/"
         },
-        "title" : "聊天APP",
+        "title" : "约伴APP",
         "optimization" : {
             "treeShaking" : {
                 "enable" : true

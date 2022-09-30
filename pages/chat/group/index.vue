@@ -796,22 +796,53 @@
 		<view v-show="showItem==2" class="cu-bar foot " style="box-shadow: none;-webkit-box-shadow: none;display: block;background: #fff;height:410upx;">
 				<scroll-view scroll-y class="indexes" style="height:410upx;padding-bottom:20upx;padding-top: 10upx;"
 				 :scroll-with-animation="true" :enable-back-to-top="true">
+<!--					<view>-->
+<!--						<view style="display: flex;">-->
+<!--							<view @tap="ChooseImage()" style="flex:1;text-align: center;margin-top: 20upx;"><text style="font-size: 60upx;color:#3F92F8" class="iconfont icon-zhaopian-cuxiantiao-fill"></text><view style="font-size: 24upx;color: #8799a3;">照片</view></view>-->
+<!--							<view @tap="ChooseVideo()" style="flex:1;text-align: center;margin-top: 20upx;"><text style="font-size: 60upx;color:#F39F90" class="iconfont icon-paishe"></text><view style="font-size: 24upx;color: #8799a3;">拍摄</view></view>-->
+<!--							&lt;!&ndash; <view @tap="showLocation()" style="flex:1;text-align: center;margin-top: 20upx;"><text style="font-size: 60upx;color:#75BB6D" class="iconfont icon-weizhi-tianchong"></text><view style="font-size: 24upx;color: #8799a3;">位置</view></view> &ndash;&gt;-->
+<!--&lt;!&ndash;							<view @tap="tongbuMsg()" style="flex:1;text-align: center;margin-top: 20upx;"><text style="font-size: 60upx;color:#75BB6D" class="iconfont icon-yuntongbu"></text><view style="font-size: 24upx;color: #8799a3;">消息同步</view></view>&ndash;&gt;-->
+<!--&lt;!&ndash;							<view @tap="goFavourite" style="flex:1;text-align: center;margin-top: 20upx;"><text style="font-size: 60upx;color:#23A2FB" class="iconfont icon-shoucang"></text><view style="font-size: 24upx;color: #8799a3;">收藏</view></view>&ndash;&gt;-->
+
+<!--							<view @tap="sendCard()" style="flex:1;text-align: center;margin-top: 20upx;"><text style="font-size: 60upx;color:#FA9B4E" class="iconfont icon-mingpian2"></text><view style="font-size: 24upx;color: #8799a3;">名片</view></view>-->
+<!--							<view @tap="voiceCall()" style="flex:1;text-align: center;margin-top: 20upx;"><text style="font-size: 60upx;color:#FA9B4E" class="iconfont icon-yuyin"></text><view style="font-size: 24upx;color: #8799a3;">语音</view></view>-->
+<!--							<view style="flex:1;text-align: center;margin-top: 20upx;"></view>-->
+<!--							<view style="flex:1;text-align: center;margin-top: 20upx;"></view>-->
+<!--						</view>-->
+<!--						<view style="display: flex;margin-top: 40upx;">-->
+<!--							&lt;!&ndash; <view @tap="sendRed()" style="flex:1;text-align: center;margin-top: 20upx;"><text style="font-size: 60upx;color:#FF524C" class="iconfont icon-lingquhongbao"></text><view style="font-size: 24upx;color: #8799a3;">发红包</view></view>-->
+<!--							<view  @tap="myRedRecord()" style="flex:1;text-align: center;margin-top: 20upx;"><text style="font-size: 60upx;color:#FF524C" class="iconfont icon-hongbao1"></text><view style="font-size: 24upx;color: #8799a3;">我的红包</view></view> &ndash;&gt;-->
+<!--&lt;!&ndash;							<view @tap="sendCard()" style="flex:1;text-align: center;margin-top: 20upx;"><text style="font-size: 60upx;color:#FA9B4E" class="iconfont icon-mingpian2"></text><view style="font-size: 24upx;color: #8799a3;">名片</view></view>&ndash;&gt;-->
+<!--&lt;!&ndash;							<view @tap="voiceCall()" style="flex:1;text-align: center;margin-top: 20upx;"><text style="font-size: 60upx;color:#FA9B4E" class="iconfont icon-yuyin"></text><view style="font-size: 24upx;color: #8799a3;">语音</view></view>&ndash;&gt;-->
+<!--&lt;!&ndash;							<view style="flex:1;text-align: center;margin-top: 20upx;"></view>&ndash;&gt;-->
+<!--&lt;!&ndash;							<view style="flex:1;text-align: center;margin-top: 20upx;"></view>&ndash;&gt;-->
+<!--						</view>-->
+<!--					</view>-->
+
+
 					<view>
 						<view style="display: flex;">
 							<view @tap="ChooseImage()" style="flex:1;text-align: center;margin-top: 20upx;"><text style="font-size: 60upx;color:#3F92F8" class="iconfont icon-zhaopian-cuxiantiao-fill"></text><view style="font-size: 24upx;color: #8799a3;">照片</view></view>
 							<view @tap="ChooseVideo()" style="flex:1;text-align: center;margin-top: 20upx;"><text style="font-size: 60upx;color:#F39F90" class="iconfont icon-paishe"></text><view style="font-size: 24upx;color: #8799a3;">拍摄</view></view>
-							<!-- <view @tap="showLocation()" style="flex:1;text-align: center;margin-top: 20upx;"><text style="font-size: 60upx;color:#75BB6D" class="iconfont icon-weizhi-tianchong"></text><view style="font-size: 24upx;color: #8799a3;">位置</view></view> -->
-							<view @tap="tongbuMsg()" style="flex:1;text-align: center;margin-top: 20upx;"><text style="font-size: 60upx;color:#75BB6D" class="iconfont icon-yuntongbu"></text><view style="font-size: 24upx;color: #8799a3;">消息同步</view></view>
-							<view @tap="goFavourite" style="flex:1;text-align: center;margin-top: 20upx;"><text style="font-size: 60upx;color:#23A2FB" class="iconfont icon-shoucang"></text><view style="font-size: 24upx;color: #8799a3;">收藏</view></view>
-						</view>
-						<view style="display: flex;margin-top: 40upx;">
-							<!-- <view @tap="sendRed()" style="flex:1;text-align: center;margin-top: 20upx;"><text style="font-size: 60upx;color:#FF524C" class="iconfont icon-lingquhongbao"></text><view style="font-size: 24upx;color: #8799a3;">发红包</view></view>
-							<view  @tap="myRedRecord()" style="flex:1;text-align: center;margin-top: 20upx;"><text style="font-size: 60upx;color:#FF524C" class="iconfont icon-hongbao1"></text><view style="font-size: 24upx;color: #8799a3;">我的红包</view></view> -->
+							<!--
+							<view @tap="showLocation()" style="flex:1;text-align: center;margin-top: 20upx;"><text style="font-size: 60upx;color:#75BB6D" class="iconfont icon-weizhi-tianchong"></text><view style="font-size: 24upx;color: #8799a3;">位置</view></view>
+							-->
+							<!--							<view @tap="tongbuMsg()" style="flex:1;text-align: center;margin-top: 20upx;"><text style="font-size: 60upx;color:#75BB6D" class="iconfont icon-yuntongbu"></text><view style="font-size: 24upx;color: #8799a3;">消息同步</view></view>-->
+							<!--							<view @tap="goFavourite" style="flex:1;text-align: center;margin-top: 20upx;"><text style="font-size: 60upx;color:#23A2FB" class="iconfont icon-shoucang"></text><view style="font-size: 24upx;color: #8799a3;">收藏</view></view>-->
+
+
 							<view @tap="sendCard()" style="flex:1;text-align: center;margin-top: 20upx;"><text style="font-size: 60upx;color:#FA9B4E" class="iconfont icon-mingpian2"></text><view style="font-size: 24upx;color: #8799a3;">名片</view></view>
 							<view @tap="voiceCall()" style="flex:1;text-align: center;margin-top: 20upx;"><text style="font-size: 60upx;color:#FA9B4E" class="iconfont icon-yuyin"></text><view style="font-size: 24upx;color: #8799a3;">语音</view></view>
-							<view style="flex:1;text-align: center;margin-top: 20upx;"></view>
-							<view style="flex:1;text-align: center;margin-top: 20upx;"></view>
 						</view>
+						<!--						<view style="display: flex;margin-top: 40upx;">-->
+						<!--&lt;!&ndash; 							<view  @tap="sendRed()" style="flex:1;text-align: center;margin-top: 20upx;"><text style="font-size: 60upx;color:#FF524C" class="iconfont icon-lingquhongbao"></text><view style="font-size: 24upx;color: #8799a3;">发红包</view></view>-->
+						<!--							<view  @tap="myRedRecord()" style="flex:1;text-align: center;margin-top: 20upx;"><text style="font-size: 60upx;color:#FF524C" class="iconfont icon-hongbao1"></text><view style="font-size: 24upx;color: #8799a3;">我的红包</view></view>-->
+						<!--							<view @tap="goTransfer()" style="flex:1;text-align: center;margin-top: 20upx;"><text style="font-size: 60upx;color:#107FCB" class="iconfont icon-shenghuozhuanzhang"></text><view style="font-size: 24upx;color: #8799a3;">转账</view></view> &ndash;&gt;-->
+						<!--							<view @tap="sendCard()" style="flex:1;text-align: center;margin-top: 20upx;"><text style="font-size: 60upx;color:#FA9B4E" class="iconfont icon-mingpian2"></text><view style="font-size: 24upx;color: #8799a3;">名片</view></view>-->
+						<!--							<view @tap="voiceCall()" style="flex:1;text-align: center;margin-top: 20upx;"><text style="font-size: 60upx;color:#FA9B4E" class="iconfont icon-yuyin"></text><view style="font-size: 24upx;color: #8799a3;">语音</view></view>-->
+						<!--							<view style="flex:1;text-align: center;margin-top: 20upx;"><text style="font-size: 60upx;color:#FA9B4E" ></text><view style="font-size: 24upx;color: #8799a3;"></view></view>-->
+						<!--							<view style="flex:1;text-align: center;margin-top: 20upx;"><text style="font-size: 60upx;color:#FA9B4E" ></text><view style="font-size: 24upx;color: #8799a3;"></view></view>-->
+						<!--						</view>-->
 					</view>
 				</scroll-view>
 		</view>		

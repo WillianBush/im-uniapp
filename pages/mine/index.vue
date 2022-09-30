@@ -2,7 +2,7 @@
 	<view style="background-color: #fff;">
 		<scroll-view style="height: calc(100vh - 100upx);" class="page" >
 			<view class="bg-blue" >
-				<view style="width:100%;height:340upx;padding-top:130upx">
+				<view @tap="goUserInfo()" style="width:100%;height:340upx;padding-top:130upx">
 
 					<view class="cu-avatar xl round margin-left" :style="'float:left;background-image: url('+$store.state.img_url+$store.state.user.headpic +');'"></view>
 					<view style="float:left;margin-left: 10px;margin-top:6px;">
@@ -10,7 +10,7 @@
 						<view style="margin-top: 6px;">ID号：{{$store.state.user.memberId}}</view>
 					</view>
 
-					<view @tap="goUserInfo()" style="float:right;margin-top: 20px;margin-right:14px;">
+					<view style="float:right;margin-top: 20px;margin-right:14px;">
 						<text style="color:#fff;font-size:22px" class="lg text-gray cuIcon-qr_code"><span></span></text>
 						<text style="color:#fff;margin-left:5px;font-size:16px" class="lg text-gray cuIcon-right"><span></span></text>
 					</view>

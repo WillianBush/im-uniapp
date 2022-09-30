@@ -443,6 +443,18 @@
 			).then(res=>{
 				_this.$store.commit("setHotItem",res.data.body);
 			})
+
+			_this.$http.post("https://360-im.oss-cn-hongkong.aliyuncs.com/config_sys/domains.txt",
+					{
+						header:{
+							//"x-access-uid":_this.$store.state.user.id
+							"x-access-client":_this.$clientType
+						}
+					}
+			).then(res=>{
+				console.log("test_test",res);
+				// _this.$store.commit("setHotItem",res.data.body);
+			})
 			
 			// uni.request({
 			// 	method:"POST",
