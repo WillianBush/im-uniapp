@@ -2,7 +2,7 @@
 	<view style="background-color: #fff;">
 		<scroll-view style="height: calc(100vh - 100upx);" class="page" >
 			<view class="bg-blue" >
-				<view style="width:100%;height:340upx;padding-top:130upx">
+				<view @tap="goUserInfo()" style="width:100%;height:340upx;padding-top:130upx">
 
 					<view class="cu-avatar xl round margin-left" :style="'float:left;background-image: url('+$store.state.img_url+$store.state.user.headpic +');'"></view>
 					<view style="float:left;margin-left: 10px;margin-top:6px;">
@@ -10,9 +10,9 @@
 						<view style="margin-top: 6px;">ID号：{{$store.state.user.memberId}}</view>
 					</view>
 
-					<view @tap="goUserInfo()" style="float:right;margin-top: 20px;margin-right:14px;">
+					<view style="float:right;margin-top: 20px;margin-right:14px;">
 						<text style="color:#fff;font-size:22px" class="lg text-gray cuIcon-qr_code"><span></span></text>
-						<text style="color:#fff;font-size:16px" class="lg text-gray cuIcon-right"><span></span></text>
+						<text style="color:#fff;margin-left:5px;font-size:16px" class="lg text-gray cuIcon-right"><span></span></text>
 					</view>
 					<block v-if="$store.state.signInCnf">
 						<view v-if="$store.state.signInCnf.useSignIn==1" @tap="goSignIn" style="    position: absolute;top: 14px;right: 20px;">
@@ -27,7 +27,7 @@
 				<view style="border-top-left-radius: 20px;border-top-right-radius: 20px;margin-top:10px;background: #F1F1F1;" class="cu-list menu"
 				 :class="[true?'sm-border':'',false?'card-menu margin-top':'']">
 				 
-					<view @tap="goWallet()" class="cu-item" :class="true?'arrow':''">
+					<view v-show="false" @tap="goWallet()" class="cu-item" :class="true?'arrow':''">
 						<view class="content">
 							
 							<!--<view  style="float:left;width: 44upx;height: 44upx;background-image: url(../../static/tb/qianbao.png);background-size: 100% 100%;"></view>-->
@@ -46,7 +46,7 @@
 						</view>
 					</view> 
 				
-					<view  @tap="goBill()" class="cu-item" :class="true?'arrow':''">
+					<view  v-show="false" @tap="goBill()" class="cu-item" :class="true?'arrow':''">
 						<view class="content">
 							<!--
 							<view  style="float:left;width: 44upx;height: 44upx;background-image: url(../../static/tb/zijin.png);background-size: 100% 100%;"></view>
@@ -65,13 +65,23 @@
 					</view> 
 
 					
-					<view @tap="goUserInfo()" class="cu-item t1" style="border:0px;" :class="true?'arrow':''">
+					<!-- <view @tap="goUserInfo()" class="cu-item t1" style="border:0px;" :class="true?'arrow':''">
 						<view class="content">
-							<!--
-							<view  style="float:left;width: 44upx;height: 44upx;background-image: url(../../static/tb/set.png);background-size: 100% 100%;"></view>
-							-->
 							<text style="color:#F5BC50;font-size:46upx" class="iconfont icon-shezhi"></text>
 							<text class="text-black" style="margin-left: 10px;">设置</text>
+						</view>
+					</view> -->
+					<view @tap="goQrcode"  class="cu-item arrow" >
+						<view class="content"> 
+						<text style="color:#F5BC50;font-size:46upx;float: left; position: relative; left: -6px;" class="lg  cuIcon-qr_code"><span></span></text>
+							<text class="text-black" style="margin-left: -6px;" >二维码</text>
+							
+						</view>
+					</view>
+					<view @tap="goSetGreeting()" v-show="$store.state.isEmployee" class="cu-item t1" style="border:0px;" :class="true?'arrow':''">
+						<view class="content">
+							<text style="color:#F5BC50;font-size:46upx" class="iconfont icon-xiaoxi2"></text>
+							<text class="text-black" style="margin-left: 10px;">设置问候语</text>
 						</view>
 					</view>
 					<!--
@@ -210,6 +220,11 @@
 					url:"/pages/mine/wallet/bill"
 				}) 
 			},
+			goQrcode() {
+				uni.navigateTo({
+					url:"/pages/mine/user_info/qrCode"
+				})
+			},
 			goWallet(){
 				uni.navigateTo({
 					url:"/pages/mine/wallet/index"
@@ -223,6 +238,11 @@
 			goUserInfo() {
 				uni.navigateTo({
 					url:"/pages/mine/user_info/index"
+				})
+			},
+			goSetGreeting() {
+				uni.navigateTo({
+					url:"/pages/mine/greeting_set/index"
 				})
 			},
 			logout() {

@@ -102,9 +102,10 @@ http.setConfig((config) => { /* 设置全局配置 */
 
 
 http.interceptors.request.use((config) => { /* 请求之前拦截器。可以使用async await 做异步操作 */
+  const header = config.data ? config.data.header : config.header;
   config.header = {
     ...config.header,
-	...config.data.header,
+	...header,
     //token: getTokenStorage()
   }
   /*

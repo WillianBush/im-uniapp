@@ -7,7 +7,7 @@
 			<block  v-for="(item,index) in $store.state.cur_chat_msg_list">
 				<view  @longpress="onLongPress" :data-txt="item.bean.txt" v-if="item.bean.fromUid==$store.state.user.id" class="cu-item self" >
 					<view class="main">
-						<view class="content bg-green shadow" style="background-color: #98E165;
+						<view class="content bg-green shadow" style="background-color: #fff;
 		color:#222;height:80upx;">
 							<u-parse v-if="item.bean.psr=='uparse'" :content="item.bean.txt" @preview="preview" @navigate="navigate" ></u-parse>
 							<view @tap="clickVoice(item.bean.txt,index)" v-else-if="item.bean.psr=='voice'">
@@ -637,14 +637,18 @@
 						<view style="display: flex;">
 							<view @tap="ChooseImage()" style="flex:1;text-align: center;margin-top: 20upx;"><text style="font-size: 60upx;color:#3F92F8" class="iconfont icon-zhaopian-cuxiantiao-fill"></text><view style="font-size: 24upx;color: #8799a3;">照片</view></view>
 							<view @tap="ChooseVideo()" style="flex:1;text-align: center;margin-top: 20upx;"><text style="font-size: 60upx;color:#F39F90" class="iconfont icon-paishe"></text><view style="font-size: 24upx;color: #8799a3;">拍摄</view></view>
-							<view @tap="showLocation()" style="flex:1;text-align: center;margin-top: 20upx;"><text style="font-size: 60upx;color:#75BB6D" class="iconfont icon-weizhi-tianchong"></text><view style="font-size: 24upx;color: #8799a3;">位置</view></view>
-							<view @tap="goFavourite()" style="flex:1;text-align: center;margin-top: 20upx;"><text style="font-size: 60upx;color:#23A2FB" class="iconfont icon-shoucang"></text><view style="font-size: 24upx;color: #8799a3;">收藏</view></view>
-						</view>
-						<view style="display: flex;margin-top: 40upx;">
-							<view @tap="showMsg()" style="flex:1;text-align: center;margin-top: 20upx;"><text style="font-size: 60upx;color:#FF524C" class="iconfont icon-lingquhongbao"></text><view style="font-size: 24upx;color: #8799a3;">红包</view></view>
-							<view @tap="showMsg()" style="flex:1;text-align: center;margin-top: 20upx;"><text style="font-size: 60upx;color:#107FCB" class="iconfont icon-shenghuozhuanzhang"></text><view style="font-size: 24upx;color: #8799a3;">转账</view></view>
+<!--							<view @tap="showLocation()" style="flex:1;text-align: center;margin-top: 20upx;"><text style="font-size: 60upx;color:#75BB6D" class="iconfont icon-weizhi-tianchong"></text><view style="font-size: 24upx;color: #8799a3;">位置</view></view>-->
+<!--							<view @tap="goFavourite()" style="flex:1;text-align: center;margin-top: 20upx;"><text style="font-size: 60upx;color:#23A2FB" class="iconfont icon-shoucang"></text><view style="font-size: 24upx;color: #8799a3;">收藏</view></view>-->
 							<view @tap="showMsg()" style="flex:1;text-align: center;margin-top: 20upx;"><text style="font-size: 60upx;color:#FA9B4E" class="iconfont icon-mingpian2"></text><view style="font-size: 24upx;color: #8799a3;">名片</view></view>
 							<view @tap="showMsg()" style="flex:1;text-align: center;margin-top: 20upx;"></view>
+						</view>
+						<view style="display: flex;margin-top: 40upx;">
+<!--							<view @tap="showMsg()" style="flex:1;text-align: center;margin-top: 20upx;">-->
+<!--								<text style="font-size: 60upx;color:#FF524C" class="iconfont icon-lingquhongbao"></text>-->
+<!--								<view style="font-size: 24upx;color: #8799a3;">红包</view></view>-->
+<!--							<view @tap="showMsg()" style="flex:1;text-align: center;margin-top: 20upx;"><text style="font-size: 60upx;color:#107FCB" class="iconfont icon-shenghuozhuanzhang"></text><view style="font-size: 24upx;color: #8799a3;">转账</view></view>-->
+<!--							<view @tap="showMsg()" style="flex:1;text-align: center;margin-top: 20upx;"><text style="font-size: 60upx;color:#FA9B4E" class="iconfont icon-mingpian2"></text><view style="font-size: 24upx;color: #8799a3;">名片</view></view>-->
+<!--							<view @tap="showMsg()" style="flex:1;text-align: center;margin-top: 20upx;"></view>-->
 						</view>
 					</view>
 				</scroll-view>

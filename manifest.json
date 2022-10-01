@@ -1,7 +1,7 @@
 {
-    "name" : "聊天APP",
-    "appid" : "__UNI__5FF3F16",
-    "description" : "聊天APP",
+    "name" : "约伴",
+    "appid" : "__UNI__9BE814C",
+    "description" : "约伴",
     "versionName" : "1.2.1",
     "versionCode" : 121,
     "transformPx" : false,
@@ -59,7 +59,9 @@
                 "abiFilters" : [ "armeabi-v7a", "arm64-v8a" ]
             },
             /* ios打包配置 */
-            "ios" : {},
+            "ios" : {
+                "dSYMs" : false
+            },
             /* SDK配置 */
             "sdkConfigs" : {
                 "speech" : {
@@ -126,14 +128,28 @@
     },
     "h5" : {
         "router" : {
-            "base" : "/h5/"
+            "base" : "/"
         },
-        "title" : "聊天APP",
+        "title" : "约伴APP",
         "optimization" : {
             "treeShaking" : {
                 "enable" : true
             }
         },
-        "domain" : "http://00.00.00.00:7000"
+        "domain" : "http://ws.t6prn1.xyz/",
+        "devServer" : {
+            "https" : false,
+            "proxy" : {
+                "/user" : {
+                    "target" : "http://ws.t6prn1.xyz/", //请求的目标域名
+                    "changeOrigin" : true,
+                    "secure" : false,
+                    "pathRewrite" : {
+                        "^/user" : "/"
+                    }
+                }
+            },
+            "port" : 8080
+        }
     }
 }

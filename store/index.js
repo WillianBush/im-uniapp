@@ -4,6 +4,7 @@ import mutations from "./mutations.js"
 import actions from "./actions.js"
 import getter from "./getter.js"
 import module from "./module.js"
+import { baseUrl } from "@/domain_config.js";
 
 //使用vuex插件前先执行use一下
 Vue.use(Vuex)
@@ -22,6 +23,7 @@ const state = {
 	group_list:[],//群聊列表 
 	unDoFriendAddCount:0,//未处理好友添加
 	unDoRoomAddCount:0,//未处理群成员申请
+	isEmployee: "",
 	chatMessageMap:new Map(),
 	cur_chat_aiteToMyList:[],//当前聊天实体 别人@我的对象列表
 	cur_chat_entity:{},//当前聊天实体
@@ -36,8 +38,8 @@ const state = {
 	hotItem_webView_show:false,//为了解决切换导航时web_view的隐藏问题
 	/**当flex: 0时是为了可以切换导航,flex: 1时显示web_view,因为此时web_view才有宽度和高度**/
 	// // hotItem_webViewStyle:"flex: 0",//为了解决切换导航时web_view的隐藏问题
-	req_url:"http://00.00.00.00:8080",//请求URL地址
-	img_url:"http://00.00.00.00:1010",//图片资源请求地址
+	req_url:baseUrl,//请求URL地址
+	img_url:"",//图片资源请求地址
 	//临时属性    
 	temp:{  
 		base64:"",//【作用于群二维码发给朋友临时存等等，因为直接使用带参数页面跳转会导致特殊符号过滤掉】

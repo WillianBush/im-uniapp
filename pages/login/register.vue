@@ -9,25 +9,19 @@
 		<text style="font-size: 40upx;" class="lg text-gray cuIcon-back"></text>
 		</view>
 			<!-- 头部logo -->
-			<view class="header"  @tap="ChooseImage">
-				<image :src="$store.state.img_url+(headpic==''?'/img_sys/defaultHeadPic.jpg':headpic)"></image>
-				<view style="font-size: 24upx;color:#aaa;text-align: center;margin-top:10upx;">点击上传头像</view> 
+			<view class="header"  @tap="">
+				<!-- <image :src="$store.state.img_url+(headpic==''?'/img_sys/defaultHeadPic.jpg':headpic)"></image> -->
+				<image src="/static/logo12.png"></image>
+				<!-- <view style="font-size: 24upx;color:#aaa;text-align: center;margin-top:10upx;">点击上传头像</view> -->
 			</view> 
 			<!-- 主体 -->
 			<view class="main">
-				<wInput
+				<!-- <wInput
 					v-model="phoneData"
 					type="text"
 					maxlength="11"
 					placeholder="手机号"
-				></wInput>
-				<wInput
-					v-model="passData"
-					type="password"
-					maxlength="11"
-					placeholder="登录密码"
-					isShowPass
-				></wInput>
+				></wInput> -->
 				<wInput
 					v-if="cnf.useRegisterCode==1"
 					v-model="regCode" 
@@ -40,7 +34,7 @@
 					type="text"
 					placeholder="邀请码"
 				></wInput>
-				<wInput 
+				<!-- <wInput 
 					v-if="cnf.reg_sms==1"
 					v-model="verCode"
 					type="number"
@@ -50,14 +44,20 @@
 					isShowCode
 					ref="runCode"
 					@setCode="getVerCode()"
-				></wInput>
+				></wInput> -->
 				
 				<wInput
 					v-model="nickname"
 					type="text"
 					placeholder="昵称"
 				></wInput>
-				
+				<wInput
+					v-model="passData"
+					type="password"
+					maxlength="11"
+					placeholder="登录密码"
+					isShowPass
+				></wInput>
 			</view>
 				
 			<wButton 
@@ -279,14 +279,14 @@
 				    });
 				    return false;
 				}
-				if (this.phoneData.length !=11) {
-				    uni.showToast({
-				        icon: 'none',
-						position: 'bottom',
-				        title: '手机号不正确'
-				    });
-				    return false;
-				}
+				// if (this.phoneData.length !=11) {
+				//     uni.showToast({
+				//         icon: 'none',
+				// 		position: 'bottom',
+				//         title: '手机号不正确'
+				//     });
+				//     return false;
+				// }
 		        if (this.passData.length < 6) {
 		            uni.showToast({
 		                icon: 'none',
@@ -296,16 +296,16 @@
 		            return false;
 		        }
 				
-				if(this.cnf.reg_sms==1) {
-					if(this.verCode.trim()=="") {
-						uni.showToast({
-						    icon: 'none',
-							position: 'bottom',
-						    title: '请填写短信验证码'
-						});
-						return false;
-					}
-				}
+				// if(this.cnf.reg_sms==1) {
+				// 	if(this.verCode.trim()=="") {
+				// 		uni.showToast({
+				// 		    icon: 'none',
+				// 			position: 'bottom',
+				// 		    title: '请填写短信验证码'
+				// 		});
+				// 		return false;
+				// 	}
+				// }
 				
 				if(this.cnf.useRegisterCode==1) {
 					if(this.regCode.trim()=="") {
@@ -338,6 +338,14 @@
 				    });
 				    return false;
 				}
+				if (this.nickname.trim().length >=35) {
+				    uni.showToast({
+				        icon: 'none',
+						position: 'bottom',
+				        title: '昵称最长不超过35个字'
+				    });
+				    return false;
+				}
 				
 				/***
 				if (this.verCode.length != 4) {
@@ -351,8 +359,16 @@
 				**/
 				_this.isRotate=true
 				
-				_this.$http.post("/user/json/register",
-					{headpic:_this.headpic,nickname:_this.nickname,tel:_this.phoneData,password:_this.passData,regCode:_this.regCode,inviteCode:_this.inviteCode,code:_this.verCode},
+				_this.$http.post("/user/json/registerV2",
+					{
+						// tel:_this.phoneData,
+						// regCode:_this.regCode,
+						// code:_this.verCode,
+						// headpic:_this.headpic,
+						inviteCode:_this.inviteCode,
+						nickname:_this.nickname,
+						password:_this.passData
+					},
 					{
 						header:{
 							//"x-access-uid":user.id

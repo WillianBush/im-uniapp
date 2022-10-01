@@ -133,6 +133,14 @@
 				    });
 				    return;
 				}
+				if (this.phoneData.length >= 35) {
+				     uni.showToast({
+				        icon: 'none',
+						position: 'bottom',
+				        title: '用户名不能超过35个字'
+				    });
+				    return;
+				}
 		        if (this.passData.length < 5) {
 		            uni.showToast({
 		                icon: 'none',
@@ -151,7 +159,7 @@
 				// uni.showLoading({
 				// 	title: '登录中'
 				// });
-				this.$http.post("/user/json/login",
+				this.$http.post("/user/json/loginV2",
 					{
 						account:_this.phoneData,
 						password:_this.passData,
@@ -198,6 +206,25 @@
 						
 						
 						// if(this.$store.state.ar_list.length==0) {
+							_this.$http.post("/user/employeeDefaultMessage/json/isEmployee",
+								{
+									header:{
+										"x-access-uid":res_data.body.id,
+										"x-access-client":_this.$clientType
+									}
+								}
+							).then(res=>{
+								let res_data = eval(res.data);
+								if(res.statusCode==200) {  
+									_this.$store.commit("setIsEmployee",res_data.msg === 'Yes');
+								} else {
+									uni.showToast({
+									    icon: 'none',
+										position: 'bottom',
+									    title: res_data.msg
+									});
+								}
+							})
 							
 							this.$http.post("/user/accessRecord/json/list",
 								{

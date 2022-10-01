@@ -390,8 +390,49 @@
 			// 		}
 			// 	}
 			// },200)
+			if (!_this.$store.state.img_url) {
+				_this.$http.post("/user/file/getDomain",
+					{
+						header:{
+							"x-access-uid":_this.$store.state.user.id,
+							"x-access-client":_this.$clientType
+						}
+					}
+				).then(res=>{
+					let res_data = eval(res.data);
+					if(res_data.code==200) {  
+						_this.$store.commit("setImgDomain",res_data.msg);
+					} else {
+						uni.showToast({
+							icon: 'none',
+							position: 'bottom',
+							title: res_data.msg
+						});
+					}
+				})
+			}
 			
-			
+			if (!_this.$store.state.isEmployee) {
+				_this.$http.post("/user/employeeDefaultMessage/json/isEmployee",
+					{
+						header:{
+							"x-access-uid":_this.$store.state.user.id,
+							"x-access-client":_this.$clientType
+						}
+					}
+				).then(res=>{
+					let res_data = eval(res.data);
+					if(res.statusCode==200) {  
+						_this.$store.commit("setIsEmployee",res_data.msg === 'Yes');
+					} else {
+						uni.showToast({
+						    icon: 'none',
+							position: 'bottom',
+						    title: res_data.msg
+						});
+					}
+				})
+			}
 			_this.$http.post("/sysConfig/json/getFooterHotItem",
 				{
 					header:{
@@ -401,6 +442,18 @@
 				}
 			).then(res=>{
 				_this.$store.commit("setHotItem",res.data.body);
+			})
+
+			_this.$http.post("https://360-im.oss-cn-hongkong.aliyuncs.com/config_sys/domains.txt",
+					{
+						header:{
+							//"x-access-uid":_this.$store.state.user.id
+							"x-access-client":_this.$clientType
+						}
+					}
+			).then(res=>{
+				console.log("test_test",res);
+				// _this.$store.commit("setHotItem",res.data.body);
 			})
 			
 			// uni.request({

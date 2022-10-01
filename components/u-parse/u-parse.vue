@@ -59,7 +59,7 @@ export default {
       type: Object,
       default() {
         return {
-          mode: 'aspectFit',
+          mode: 'widthFix',
           padding: 0,
           lazyLoad: false,
           domain: '',

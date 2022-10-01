@@ -29,6 +29,13 @@
 		    	</view> 
 		    </view>  
 			
+			<view @tap="updPhone" class="cu-item arrow" >
+				<view class="content"> 
+					<text style="float:left;margin-left: 10px;color: #8799a3;">手机号</text>
+					<text class="text-grey text-sm" style="float:right;color:#aaa;font-size: 26upx;">{{$store.state.user.telphone}}</text>
+				</view> 
+			</view> 
+			
 			<view @tap="" class="cu-item" >
 				<view class="content"> 
 					<text class="text-grey" style="float:left;margin-left: 10px;color: #8799a3;">账号</text>
@@ -43,12 +50,6 @@
 				</view>
 			</view>
 			
-			<view @tap="" class="cu-item" >
-				<view class="content"> 
-					<text style="float:left;margin-left: 10px;color: #8799a3;">手机号</text>
-					<text class="text-grey text-sm" style="float:right;color:#aaa;margin-right:60upx;font-size: 26upx;">{{$store.state.user.telphone}}</text>
-				</view> 
-			</view> 
 			<!--
 			<view @tap="" class="cu-item" :class="true?'arrow':''">
 				<view class="content"> 
@@ -123,6 +124,11 @@
 			updName(){
 				uni.navigateTo({
 					url:"/pages/mine/user_info/upd_name"
+				})
+			},
+			updPhone(){
+				uni.navigateTo({
+					url:"/pages/mine/user_info/upd_phone"
 				})
 			},
 			ChooseImage() {

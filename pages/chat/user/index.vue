@@ -10,8 +10,9 @@
 		<scroll-view @scroll="scrollFn"  :scroll-top="scrollTop" scroll-y="true"    ref="chatVew" @tap="clickChat()"  class="cu-chat" :style="'height: calc(100vh - '+CustomBar+'px - '+(120+InputBottom)+'upx)'" >	
 			<block  v-for="(item,index) in $store.state.cur_chat_msg_list">
 				<block v-if="item.opt&&item.opt=='undo'">
-					<view v-if="item.opt_uid==$store.state.user.id"  class="cu-info round">撤回一条消息</view>
-					<view v-else  class="cu-info round">对方撤回一条消息</view>
+					<!-- <view v-if="item.opt_uid==$store.state.user.id"  class="cu-info round">撤回一条消息</view>
+					<view v-else  class="cu-info round">对方撤回一条消息</view> -->
+					<view style="display: none"></view>
 				</block>
 				<block v-else-if="item.type=='SYS_TXT'">
 					<view   class="cu-info round">
@@ -198,7 +199,7 @@
 							
 							<image @tap="clickVideo(item.bean.txt)" v-if="item.bean.psr=='video'" style="width:418upx;height:335upx;border-radius: 5px;" src="../../../static/images/video.png"></image>
 							
-							<view v-else @longpress="onLongPress($event,item.bean)" class="content bg-green shadow" style="background-color: #98E165;color:#222;">
+							<view v-else @longpress="onLongPress($event,item.bean)" :class="[item.bean.psr=='uparse'?'':'content bg-green shadow']" :style="{backgroundColor:item.bean.psr=='uparse'? 'none':'#fff'}" style="color:#222;">
 								<u-parse v-if="item.bean.psr=='uparse'" :content="item.bean.txt" @preview="preview" @navigate="navigate" ></u-parse>
 								<view @tap="clickVoice(item.bean.txt,index)" v-else-if="item.bean.psr=='voice'">
 									<text  v-show="selVoiceIndex != index"  style="float:left;width:100upx;font-size: 52upx;position: relative;top: 4upx;"  class="iconfont icon-yuyin1 text-xxl "></text>
@@ -219,8 +220,7 @@
 						<view class="main">
 							
 							<image  @tap="clickVideo(item.bean.txt)" v-if="item.bean.psr=='video'" style="width:418upx;height:335upx;border-radius: 5px;" src="../../../static/images/video.png"></image>
-							<view v-else @longpress="onLongPress($event,item.bean)"  class="content shadow" style="
-			color:#222;">
+							<view v-else @longpress="onLongPress($event,item.bean)"  :class="[item.bean.psr=='uparse'?'':'content shadow']" style="color:#222;">
 								<u-parse v-if="item.bean.psr=='uparse'" :content="item.bean.txt" @preview="preview" @navigate="navigate" ></u-parse>
 								<view @tap="clickVoice(item.bean.txt,index)" v-else-if="item.bean.psr=='voice'">
 									<text  v-show="selVoiceIndex != index"  style="text-align: right; float:right;width:100upx;font-size: 52upx;position: relative;top: 4upx;"  class="iconfont icon-yuyin1 text-xxl "></text>
@@ -788,18 +788,25 @@
 							<!--
 							<view @tap="showLocation()" style="flex:1;text-align: center;margin-top: 20upx;"><text style="font-size: 60upx;color:#75BB6D" class="iconfont icon-weizhi-tianchong"></text><view style="font-size: 24upx;color: #8799a3;">位置</view></view>
 							-->
-							<view @tap="tongbuMsg()" style="flex:1;text-align: center;margin-top: 20upx;"><text style="font-size: 60upx;color:#75BB6D" class="iconfont icon-yuntongbu"></text><view style="font-size: 24upx;color: #8799a3;">消息同步</view></view>
-							<view @tap="goFavourite" style="flex:1;text-align: center;margin-top: 20upx;"><text style="font-size: 60upx;color:#23A2FB" class="iconfont icon-shoucang"></text><view style="font-size: 24upx;color: #8799a3;">收藏</view></view>
-						</view>
-						<view style="display: flex;margin-top: 40upx;">
-							<view  @tap="sendRed()" style="flex:1;text-align: center;margin-top: 20upx;"><text style="font-size: 60upx;color:#FF524C" class="iconfont icon-lingquhongbao"></text><view style="font-size: 24upx;color: #8799a3;">发红包</view></view>
-							<view  @tap="myRedRecord()" style="flex:1;text-align: center;margin-top: 20upx;"><text style="font-size: 60upx;color:#FF524C" class="iconfont icon-hongbao1"></text><view style="font-size: 24upx;color: #8799a3;">我的红包</view></view>
-							<view @tap="goTransfer()" style="flex:1;text-align: center;margin-top: 20upx;"><text style="font-size: 60upx;color:#107FCB" class="iconfont icon-shenghuozhuanzhang"></text><view style="font-size: 24upx;color: #8799a3;">转账</view></view>
+							<!--							<view @tap="tongbuMsg()" style="flex:1;text-align: center;margin-top: 20upx;"><text style="font-size: 60upx;color:#75BB6D" class="iconfont icon-yuntongbu"></text><view style="font-size: 24upx;color: #8799a3;">消息同步</view></view>-->
+							<!--							<view @tap="goFavourite" style="flex:1;text-align: center;margin-top: 20upx;"><text style="font-size: 60upx;color:#23A2FB" class="iconfont icon-shoucang"></text><view style="font-size: 24upx;color: #8799a3;">收藏</view></view>-->
+
+
 							<view @tap="sendCard()" style="flex:1;text-align: center;margin-top: 20upx;"><text style="font-size: 60upx;color:#FA9B4E" class="iconfont icon-mingpian2"></text><view style="font-size: 24upx;color: #8799a3;">名片</view></view>
+							<view @tap="voiceCall()" style="flex:1;text-align: center;margin-top: 20upx;"><text style="font-size: 60upx;color:#FA9B4E" class="iconfont icon-yuyin"></text><view style="font-size: 24upx;color: #8799a3;">语音</view></view>
 						</view>
+						<!--						<view style="display: flex;margin-top: 40upx;">-->
+						<!--&lt;!&ndash; 							<view  @tap="sendRed()" style="flex:1;text-align: center;margin-top: 20upx;"><text style="font-size: 60upx;color:#FF524C" class="iconfont icon-lingquhongbao"></text><view style="font-size: 24upx;color: #8799a3;">发红包</view></view>-->
+						<!--							<view  @tap="myRedRecord()" style="flex:1;text-align: center;margin-top: 20upx;"><text style="font-size: 60upx;color:#FF524C" class="iconfont icon-hongbao1"></text><view style="font-size: 24upx;color: #8799a3;">我的红包</view></view>-->
+						<!--							<view @tap="goTransfer()" style="flex:1;text-align: center;margin-top: 20upx;"><text style="font-size: 60upx;color:#107FCB" class="iconfont icon-shenghuozhuanzhang"></text><view style="font-size: 24upx;color: #8799a3;">转账</view></view> &ndash;&gt;-->
+						<!--							<view @tap="sendCard()" style="flex:1;text-align: center;margin-top: 20upx;"><text style="font-size: 60upx;color:#FA9B4E" class="iconfont icon-mingpian2"></text><view style="font-size: 24upx;color: #8799a3;">名片</view></view>-->
+						<!--							<view @tap="voiceCall()" style="flex:1;text-align: center;margin-top: 20upx;"><text style="font-size: 60upx;color:#FA9B4E" class="iconfont icon-yuyin"></text><view style="font-size: 24upx;color: #8799a3;">语音</view></view>-->
+						<!--							<view style="flex:1;text-align: center;margin-top: 20upx;"><text style="font-size: 60upx;color:#FA9B4E" ></text><view style="font-size: 24upx;color: #8799a3;"></view></view>-->
+						<!--							<view style="flex:1;text-align: center;margin-top: 20upx;"><text style="font-size: 60upx;color:#FA9B4E" ></text><view style="font-size: 24upx;color: #8799a3;"></view></view>-->
+						<!--						</view>-->
 					</view>
 				</scroll-view>
-		</view>		
+		</view>
 		
 	
 		<view @longpress="hidePop" class="shade" v-show="showShade" @tap="hidePop">
@@ -941,7 +948,6 @@
 			this.$store.commit("setCur_chat_msg_list",[]);
 			this.$store.commit("setChat_my_loadding",false); 
 			
-			
 			// #ifndef H5
 			//录音开始事件
 			this.RECORDER.onStart((e)=>{
@@ -963,6 +969,7 @@
 				let msg_list = this.$store.state.chatMessageMap.get(user.id+"#"+this.toid);
 				if(msg_list&&msg_list.length>0) {
 					this.$store.commit("setCur_chat_msg_list",msg_list); 
+					console.log('88888888', msg_list)
 				}
 			} else {
 				let str = uni.getStorageSync(user.id+"#"+this.toid+'_CHAT_MESSAGE');
@@ -977,6 +984,7 @@
 					 	value:jsonObj
 					 });
 					  this.$store.commit("setCur_chat_msg_list",jsonObj);
+					  console.log('jsonObj', jsonObj)
 				} else {
 					//如果什么都没记录的话，则从云端加载
 					//this.tongbuMsg_1stInNoData();
@@ -1064,18 +1072,18 @@
 					// _this.$store.commit("setAr_list",list); 
 					
 				} else {
-					uni.showModal({
-					    title: '信息提示',
-					    content: res_data.msg,
-						showCancel:false,
-					    success: function (res) {
-					        if (res.confirm) {
-					            uni.navigateBack({
-					            	delta:1
-					            })
-					        }
-					    }
-					});
+					// uni.showModal({
+					//     title: '信息提示',
+					//     content: res_data.msg,
+					// 	showCancel:false,
+					//     success: function (res) {
+					//         if (res.confirm) {
+					//             uni.navigateBack({
+					//             	delta:1
+					//             })
+					//         }
+					//     }
+					// });
 					
 					
 					// uni.showToast({
@@ -1401,6 +1409,13 @@
 				uni.navigateTo({
 					url:"/pages/chat/red/redRecord"
 				})
+			},
+			voiceCall() {
+				uni.showToast({
+					icon: 'none',
+					position: 'bottom',
+					title: '敬请期待'
+				});
 			},
 			sendRed(){
 				this.showPop = false;
@@ -1731,7 +1746,7 @@
 				}
 				if(i==1) {
 					this.c_type = 1;
-					this.txt = "";
+					// this.txt = "";
 					this.showjia = true;
 				}
 				this.showItem = i;
@@ -1903,7 +1918,7 @@
 				let _this = this;
 				setTimeout(()=>{
 					if(this.isAltOrShiftEnter) return;
-					this.input_is_focus = true;
+					this.input_is_focus = false;
 					let v = {
 						txt:this.txt.replace(/\n/g,"<br/>"),
 						toUid:this.toid, 
@@ -1913,10 +1928,10 @@
 					if(this.txt.trim()=="") {
 						return;
 					}
+					this.txt = "";
 					this.$websocket.dispatch("WEBSOCKET_SEND", "{body:'"+JSON.stringify(v)+"',CMD:'USER_CHAT_SEND_TXT'}");
 					this.$store.commit("setChat_my_loadding",true); 
 					this.sendBaseDo(v);
-					this.txt = "";
 					this.showjia = true;
 					this.sendCount = this.sendCount +1;
 					//this.clickChat();
@@ -1997,6 +2012,14 @@
 				uni.chooseVideo({
 					sourceType: ['camera'], 
 					success: (res) => {
+						//大于15M。则报
+						if(res.tempFile.size>1024*1024*15) {
+							uni.showToast({
+							   icon: 'none',
+							   title: "视频大小不能高于15M"
+							});
+							return;
+						}
 						_this.$store.commit("setChat_my_loadding",true); 
 						setTimeout(()=>{
 							_this.scrollTop = 9999999+Math.random();
@@ -2021,7 +2044,11 @@
 										uuid:_this.GenerateUUID(),
 									}
 									_this.$websocket.dispatch("WEBSOCKET_SEND", "{body:'"+JSON.stringify(v)+"',CMD:'USER_CHAT_SEND_TXT'}");
-									
+									let videoSrc = _this.$store.state.img_url+json.msg;
+									_this.temp_txt = _this.temp_txt + ("<video  style='max-width: 150px;max-height:150px;' class='face' src='"+videoSrc+"'>");
+									v.psr = "video";  
+									v.simple_content = "[视频]";
+									_this.sendBaseDo(v);
 									setTimeout(function(){
 										_this.scrollToBottom();
 									},100)
@@ -2042,7 +2069,7 @@
 					sizeType: ['compressed'], //可以指定是原图还是压缩图，默认二者都有
 					sourceType: ['album','camera'], //从相册选择
 					success: (res) => {
-						
+						console.log('res', res)
 						//大于2M。则报
 						if(res.tempFiles[0].size>1024*2048) {
 							uni.showToast({
@@ -2237,7 +2264,10 @@
 				}
 			},
 			clickVideo(_vpath) {
-				this.videoSrc = _vpath;
+				console.log('00000000000', this.$store.state.cur_chat_msg_list)
+				let v = _vpath.split('.com')[1];
+				var s = v.split("'")[0];
+				this.videoSrc = s;
 				this.showVideo = true;
 				 // 获取 video 上下文 videoContext 对象
                 this.videoContext = uni.createVideoContext('video_play');

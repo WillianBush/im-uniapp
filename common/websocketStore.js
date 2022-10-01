@@ -1,7 +1,7 @@
 import Vue from 'vue'
 import Vuex from 'vuex'
 import store from "../store"//使用vuex对状态进行管理
-const ws_url = "ws://00.00.00.00:8080/chat/socket";//webscoke URL地址
+import { ws_url } from "@/domain_config.js";
 Vue.use(Vuex);
 let wsOpenDo = true;
 let heartCheck;
@@ -70,8 +70,8 @@ export default new Vuex.Store({
 									_this.dispatch('WEBSOCKET_INIT');
 								//}
 							}  
-						}, 5000)
-					},5000)  
+						}, 10000)
+					},10000)  
 				},  
 				reset:function() {
 					clearTimeout(this.st);
@@ -158,20 +158,20 @@ export default new Vuex.Store({
 			});
 			
 			state.socketTask.onClose((res) => {
-				// state.is_open_socket = false;
-				// state.continueCloseCount = state.continueCloseCount + 1;
-				// heartCheck.reset();
-				// console.log("WebSocket重新连接1！");
-				// _this.dispatch('WEBSOCKET_INIT');
+				state.is_open_socket = false;
+				state.continueCloseCount = state.continueCloseCount + 1;
+				heartCheck.reset();
+				console.log("WebSocket重新连接1！");
+				_this.dispatch('WEBSOCKET_INIT');
 			});
 			
-			// state.socketTask.onError((res) => {
-			// 	state.is_open_socket = false;
-			// 	state.continueCloseCount = state.continueCloseCount + 1;
-			// 	heartCheck.reset();
-			// 	console.log("WebSocket重新连接2！");
-			// 	_this.dispatch('WEBSOCKET_INIT');
-			// });
+			state.socketTask.onError((res) => {
+				state.is_open_socket = false;
+				state.continueCloseCount = state.continueCloseCount + 1;
+				heartCheck.reset();
+				console.log("WebSocket重新连接2！");
+				_this.dispatch('WEBSOCKET_INIT');
+			});
 			
 			
 			// state.socketTask.onError((res) => {
@@ -1456,8 +1456,8 @@ export default new Vuex.Store({
 					// 在使用WebSocket的时候，如果网络突然断开，WebSocketd是不会触发任何事件的，所以前端程序无法得知当前链接是否断开。
 					//但是这个时候使用WebSocket.send方法的时候，浏览器会发现消息发不出去，隔一段时间之后(貌似每个浏览器隔的时间不相同)，会触发onclose函数。
 					//利用这点，我们可以在send不出消息并触发onclose之后，进行重连
-					//state.socketTask.onClose(); //如果发送失败。则被认为连线中断了
-					//_this.dispatch('WEBSOCKET_INIT');
+					state.socketTask.onClose(); //如果发送失败。则被认为连线中断了
+					// _this.dispatch('WEBSOCKET_INIT');
 					
 				}
 			});
