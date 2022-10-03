@@ -1165,6 +1165,10 @@ export default new Vuex.Store({
 								Audio.src = mp3_src; //音频地址  
 								Audio.play(); //执行播放 
 								console.log("播放了3");
+								Audio.onSeeked(() => {
+									console.log('Audio 释放释放！');
+									Audio.destroy();
+								});
 								store.state.temp.msg_mp3_playtime = new Date().getTime();
 							}
 							
