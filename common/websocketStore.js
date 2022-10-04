@@ -1,7 +1,6 @@
 import Vue from 'vue'
 import Vuex from 'vuex'
 import store from "../store"//使用vuex对状态进行管理
-import { ws_url } from "@/domain_config.js";
 Vue.use(Vuex);
 let wsOpenDo = true;
 let heartCheck;
@@ -28,8 +27,9 @@ export default new Vuex.Store({
 				
 				state.socketTask.close();
 			}
+			var i = Math.floor((Math.random() * store.state.req_url.length));
 			state.socketTask = uni.connectSocket({
-				url: ws_url+"?app_uuid="+store.state.app_uuid,
+				url: store.state.socket_url[i]+"/chat/socket"+"?app_uuid="+store.state.app_uuid,
 				// 【非常重要】必须确保你的服务器是成功的,如果是手机测试千万别使用ws://127.0.0.1:9099【特别容易犯的错误】
 				success(data) {
 					state.lock = false;	

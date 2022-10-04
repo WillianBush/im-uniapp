@@ -25,11 +25,66 @@ Vue.component('number-jpan',number_jpan)
 import store from "./store"//使用vuex对状态进行管理
 Vue.prototype.$store = store;
 
+/*注意：这里websocket和http 都是动态从oss获取，所以是一个有延迟的网络请求过程，而main.js是启动入口，不能直接绑定，否则可能导致websocket、http
+* 没有初始化完成，就进行后续的操作，存在调用报错。这里等oss获取成功后，再进行绑定配置*/
 import websocket from './common/websocketStore.js'
-Vue.prototype.$websocket = websocket;
+export function bindWebSocket(){
+	Vue.prototype.$websocket = websocket;
+}
 
 import { http } from '@/common/netRequest.js'
-Vue.prototype.$http = http
+export function bindHttp(){
+	Vue.prototype.$http = http
+
+	//刷新user
+	let user = uni.getStorageSync("USER");
+	console.log("--------->"+user);
+	if(user) {
+		console.log(".......");
+		//更新一下user
+		http.post("/user/json/load/v1",
+			{
+				header:{
+					"x-access-uid":user.id
+				}
+			}
+		).then(res=>{
+			console.log(res.data);
+			let res_data = eval(res.data);
+			if(res_data.code==200) {
+				console.log("99999999999999");
+				console.log(res_data.body);
+				store.commit("setUser",res_data.body)
+				uni.setStorageSync("USER",res_data.body);
+				store.commit("setUnDoFriendAddCount",res_data.body.unDoFriendAddCount);
+				store.commit("setUnDoRoomAddCount",res_data.body.unDoRoomAddCount);
+				//websocket.dispatch("WEBSOCKET_SEND", "{body:'"+res_data.body.id+"',CMD:'PUTSESSION'}");
+			}
+		})
+		// uni.request({
+		// 	method:"POST",
+		// 	url: store.state.req_url + "/user/json/load/v1",
+		// 	header:{
+		// 		"Content-Type":"application/x-www-form-urlencoded",
+		// 		"x-access-uid":user.id
+		// 	},
+		// 	success(res) {
+		// 		let res_data = eval(res.data);
+		// 		if(res_data.code==200) {
+		// 			store.commit("setUser",res_data.body)
+		// 			uni.setStorageSync("USER",res_data.body);
+		// 			store.commit("setUnDoFriendAddCount",res_data.body.unDoFriendAddCount);
+		// 			store.commit("setUnDoRoomAddCount",res_data.body.unDoRoomAddCount);
+		// 			//websocket.dispatch("WEBSOCKET_SEND", "{body:'"+res_data.body.id+"',CMD:'PUTSESSION'}");
+		// 			uni.navigateTo({
+		// 				url:"/pages/index/index"
+		// 			})
+		// 		}
+		// 	}
+		// })
+
+	}
+}
 
 // #ifdef APP-PLUS
 //Vue.prototype.$clientType = "APP"
@@ -368,56 +423,4 @@ const app = new Vue({
 })
 app.$mount()
 
-
-
-let user = uni.getStorageSync("USER");
-console.log("--------->"+user);
-if(user) {
-	console.log(".......");
-	//更新一下user
-	http.post("/user/json/load/v1",
-		{
-			header:{
-				"x-access-uid":user.id
-			}
-		}
-	).then(res=>{
-		console.log(res.data);
-		let res_data = eval(res.data);
-		if(res_data.code==200) {  
-			console.log("99999999999999");
-			console.log(res_data.body);
-			store.commit("setUser",res_data.body)
-			uni.setStorageSync("USER",res_data.body);
-			store.commit("setUnDoFriendAddCount",res_data.body.unDoFriendAddCount);
-			store.commit("setUnDoRoomAddCount",res_data.body.unDoRoomAddCount);
-			//websocket.dispatch("WEBSOCKET_SEND", "{body:'"+res_data.body.id+"',CMD:'PUTSESSION'}");
-			uni.navigateTo({
-				url:"/pages/index/index"
-			})
-		}
-	})
-	// uni.request({
-	// 	method:"POST",
-	// 	url: store.state.req_url + "/user/json/load/v1",
-	// 	header:{
-	// 		"Content-Type":"application/x-www-form-urlencoded",
-	// 		"x-access-uid":user.id
-	// 	},
-	// 	success(res) {
-	// 		let res_data = eval(res.data);
-	// 		if(res_data.code==200) {  
-	// 			store.commit("setUser",res_data.body)
-	// 			uni.setStorageSync("USER",res_data.body);
-	// 			store.commit("setUnDoFriendAddCount",res_data.body.unDoFriendAddCount);
-	// 			store.commit("setUnDoRoomAddCount",res_data.body.unDoRoomAddCount);
-	// 			//websocket.dispatch("WEBSOCKET_SEND", "{body:'"+res_data.body.id+"',CMD:'PUTSESSION'}");
-	// 			uni.navigateTo({
-	// 				url:"/pages/index/index"
-	// 			})
-	// 		}
-	// 	}
-	// })
-	
-}
  

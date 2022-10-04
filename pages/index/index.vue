@@ -105,6 +105,7 @@
 	export default {
 		data() {
 		return {
+				backButtonPress: 0,              //2次退出应用计时
 				PageCur: 'home',
 				hot_wv : null,
 				showSignIn:false,
@@ -341,6 +342,7 @@
 			}
 		},
 		onShow() {
+			console.log('Inedx Show--')
 			let _this = this;
 			//清除当前窗口数据
 			this.$store.commit("setCur_chat_entity",null);
@@ -444,17 +446,6 @@
 				_this.$store.commit("setHotItem",res.data.body);
 			})
 
-			_this.$http.post("https://360-im.oss-cn-hongkong.aliyuncs.com/config_sys/domains.txt",
-					{
-						header:{
-							//"x-access-uid":_this.$store.state.user.id
-							"x-access-client":_this.$clientType
-						}
-					}
-			).then(res=>{
-				console.log("test_test",res);
-				// _this.$store.commit("setHotItem",res.data.body);
-			})
 			
 			// uni.request({
 			// 	method:"POST",
@@ -567,9 +558,17 @@
 		onBackPress() {
 			console.log("首页返回");
 			// #ifdef APP-PLUS
-				 plus.runtime.quit();//APP直接退出
+				this.backButtonPress++;
+				if (this.backButtonPress > 1) {
+					plus.runtime.quit();
+				} else {
+					plus.nativeUI.toast('再按一次退出应用');
+				}
+				setTimeout(function() {
+					this.backButtonPress = 0;
+				}, 1000);
 			// #endif
-			
+
 			//H5并不支持浏览器返回按钮
 			// #ifdef H5
 				uni.navigateBack();
@@ -583,5 +582,3 @@
 uni-web-view {
 		  z-index: 0!important; 
 	}
-		
-	

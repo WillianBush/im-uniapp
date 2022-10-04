@@ -58,9 +58,6 @@ export default {
 	updateUsername(state,payload){
 		state.user.nickName = payload;
 	},
-	updateUserHeadpic(state,payload){
-		state.user.headpic = payload;
-	},
 	setAr_list(state,payload){ 
 		if(state.ar_list_show.length==state.ar_list.length) {
 			state.ar_list_show = payload;
@@ -81,6 +78,12 @@ export default {
 	},
 	setImgDomain(state,payload){
 		state.img_url = payload;
+	},
+	setReqDomain(state,payload){
+		state.req_url = payload;
+	},
+	setSocketDomain(state,payload){
+		state.socket_url = payload;
 	},
 	updateChatMessageMap(state,payload){
 		state.chatMessageMap.set(payload.key,payload.value);

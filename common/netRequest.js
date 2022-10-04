@@ -10,128 +10,266 @@
 import Vue from 'vue'
 import store from "../store"//使用vuex对状态进行管理
 import Request from '@/js_sdk/luch-request/luch-request/index.js'
+import config from "../common/netConfig"
 
+var test;
+var http;
 
+//使用默认的，这个是配置死的
+// _initC(store.state.req_url);
 
-const getTokenStorage = () => {
-  let token = ''
-  try {
-    token = uni.getStorageSync('token')
-  } catch (e) {
-  }
-  return token
-}
+// //使用云端的，动态获取的
+// let remoteIP = config.requestRemoteIp(); // 动态设置接口请求域名
+// remoteIP.then((resolve, reject) => {
+//     console.log('res_base--'+resolve.httpDomains.url)
+//     _initC(resolve.httpDomains.url);
+// })
 
-const test = new Request()
-/**
- * 修改全局配置示例
- const test = new Request({
+//初始化request config
+export function _initC() {
+    const getTokenStorage = () => {
+        let token = ''
+        try {
+            token = uni.getStorageSync('token')
+        } catch (e) {
+        }
+        return token
+    }
+
+    test = new Request()
+    /**
+     * 修改全局配置示例
+     const test = new Request({
 	header: {a:1}, // 举例
 	baseURL: 'https://www.fastmock.site/mock/26243bdf9062eeae2848fc67603bda2d/luchrequest',
 	validateStatus: (statusCode) => { // statusCode 必存在。此处示例为全局默认配置
 		return statusCode >= 200 && statusCode < 300
 	}
 })
- test.config.baseURL = 'https://www.fastmock.site/mock/26243bdf9062eeae2848fc67603bda2d/luchrequest'
- **/
-test.setConfig((config) => { /* 设置全局配置 */
-  config.baseURL = store.state.req_url
-  config.header = {
-    ...config.header,
-    a: 1, // 演示
-    b: 2 // 演示
-  }
-  config.custom = {
-    // auth: false, // 是否传token
-    // loading: false // 是否使用loading
-  }
-  return config
-})
+     test.config.baseURL = 'https://www.fastmock.site/mock/26243bdf9062eeae2848fc67603bda2d/luchrequest'
+     **/
+    test.setConfig((config) => { /* 设置全局配置 */
+        console.log('res_net2--' + "11111")
+        //随机取一个用
+        var i = Math.floor((Math.random() * store.state.req_url.length));
+        config.baseURL = store.state.req_url[i]
+        config.header = {
+            ...config.header,
+            a: 1, // 演示
+            b: 2 // 演示
+        }
+        config.custom = {
+            // auth: false, // 是否传token
+            // loading: false // 是否使用loading
+        }
+        return config
+    })
 
-test.interceptors.request.use((config) => { /* 请求之前拦截器。可以使用async await 做异步操作  */
-  config.header = {
-    ...config.header,
-    a: 3 // 演示
-  }
-  /**
-	 * custom {Object} - 自定义参数
-	 */
-  // if (config.custom.auth) {
-  //   config.header.token = '123456'
-  // }
-  // if (config.custom.loading) {
-  //   uni.showLoading()
-  // }
-  /*
-  if (!token) { // 如果token不存在，return Promise.reject(config) 会取消本次请求
-    return Promise.reject(config)
-  }
-  */
-  return config
-}, (config) => {
-  return Promise.reject(config)
-})
-
-
-test.interceptors.response.use((response) => { /* 请求之后拦截器。可以使用async await 做异步操作  */
-  // if (response.config.custom.loading) {
-  //    uni.hideLoading()
-  //  }
-  if (response.data.code !== 200) { // 服务端返回的状态码不等于200，则reject()
-    return Promise.reject(response)
-  }
-  return response
-}, (response) => { // 请求错误做点什么。可以使用async await 做异步操作
-  // if (response.config.custom.loading) {
-  //    uni.hideLoading()
-  //  }
-  return Promise.reject(response)
-})
+    test.interceptors.request.use((config) => { /* 请求之前拦截器。可以使用async await 做异步操作  */
+        config.header = {
+            ...config.header,
+            a: 3 // 演示
+        }
+        /**
+         * custom {Object} - 自定义参数
+         */
+        // if (config.custom.auth) {
+        //   config.header.token = '123456'
+        // }
+        // if (config.custom.loading) {
+        //   uni.showLoading()
+        // }
+        /*
+        if (!token) { // 如果token不存在，return Promise.reject(config) 会取消本次请求
+          return Promise.reject(config)
+        }
+        */
+        return config
+    }, (config) => {
+        return Promise.reject(config)
+    })
 
 
-const http = new Request()
-http.setConfig((config) => { /* 设置全局配置 */
-  config.baseURL = store.state.req_url /* 根域名不同 */
-  config.header = {
-    ...config.header,
-    "Content-Type":"application/x-www-form-urlencoded",
-    //"x-access-uid":store.state.user&&store.state.user.id?store.state.user.id:"",
-  }
-  return config
-})
+    test.interceptors.response.use((response) => { /* 请求之后拦截器。可以使用async await 做异步操作  */
+        // if (response.config.custom.loading) {
+        //    uni.hideLoading()
+        //  }
+        if (response.data.code !== 200) { // 服务端返回的状态码不等于200，则reject()
+            return Promise.reject(response)
+        }
+        return response
+    }, (response) => { // 请求错误做点什么。可以使用async await 做异步操作
+        // if (response.config.custom.loading) {
+        //    uni.hideLoading()
+        //  }
+        return Promise.reject(response)
+    })
 
 
-http.interceptors.request.use((config) => { /* 请求之前拦截器。可以使用async await 做异步操作 */
-  const header = config.data ? config.data.header : config.header;
-  config.header = {
-    ...config.header,
-	...header,
-    //token: getTokenStorage()
-  }
-  /*
- if (!token) { // 如果token不存在，return Promise.reject(config) 会取消本次请求
-   return Promise.reject(config)
- }
- */
-  return config
-}, (config) => {
-  return Promise.reject(config)
-})
+    http = new Request()
+    http.setConfig((config) => { /* 设置全局配置 */
+        console.log('res_net1--' + "11111")
+        var i = Math.floor((Math.random() * store.state.req_url.length));
+        config.baseURL = store.state.req_url[i] /* 根域名不同 */
+        config.header = {
+            ...config.header,
+            "Content-Type": "application/x-www-form-urlencoded",
+            //"x-access-uid":store.state.user&&store.state.user.id?store.state.user.id:"",
+        }
+        return config
+    })
 
 
-http.interceptors.response.use(async (response) => { /* 请求之后拦截器。可以使用async await 做异步操作  */
-  // if (response.data.code !== 200) { // 服务端返回的状态码不等于200，则reject()
-  //   return Promise.reject(response)
-  // }
-  return response
-}, (response) => { // 请求错误做点什么。可以使用async await 做异步操作
-  console.log(response)
-  return Promise.reject(response)
-})
+    http.interceptors.request.use((config) => { /* 请求之前拦截器。可以使用async await 做异步操作 */
+        const header = config.data ? config.data.header : config.header;
+        config.header = {
+            ...config.header,
+            ...header,
+            //token: getTokenStorage()
+        }
+        /*
+       if (!token) { // 如果token不存在，return Promise.reject(config) 会取消本次请求
+         return Promise.reject(config)
+       }
+       */
+        return config
+    }, (config) => {
+        return Promise.reject(config)
+    })
+
+
+    http.interceptors.response.use(async (response) => { /* 请求之后拦截器。可以使用async await 做异步操作  */
+        // if (response.data.code !== 200) { // 服务端返回的状态码不等于200，则reject()
+        //   return Promise.reject(response)
+        // }
+        return response
+    }, (response) => { // 请求错误做点什么。可以使用async await 做异步操作
+        console.log(response)
+        return Promise.reject(response)
+    })
+}
+
+
+
+// const getTokenStorage = () => {
+//     let token = ''
+//     try {
+//         token = uni.getStorageSync('token')
+//     } catch (e) {
+//     }
+//     return token
+// }
+
+// const test = new Request()
+// /**
+//  * 修改全局配置示例
+//  const test = new Request({
+// 	header: {a:1}, // 举例
+// 	baseURL: 'https://www.fastmock.site/mock/26243bdf9062eeae2848fc67603bda2d/luchrequest',
+// 	validateStatus: (statusCode) => { // statusCode 必存在。此处示例为全局默认配置
+// 		return statusCode >= 200 && statusCode < 300
+// 	}
+// })
+//  test.config.baseURL = 'https://www.fastmock.site/mock/26243bdf9062eeae2848fc67603bda2d/luchrequest'
+//  **/
+// test.setConfig((config) => { /* 设置全局配置 */
+//   config.baseURL = store.state.req_url
+//   config.header = {
+//     ...config.header,
+//     a: 1, // 演示
+//     b: 2 // 演示
+//   }
+//   config.custom = {
+//     // auth: false, // 是否传token
+//     // loading: false // 是否使用loading
+//   }
+//   return config
+// })
+//
+// test.interceptors.request.use((config) => { /* 请求之前拦截器。可以使用async await 做异步操作  */
+//   config.header = {
+//     ...config.header,
+//     a: 3 // 演示
+//   }
+//   /**
+// 	 * custom {Object} - 自定义参数
+// 	 */
+//   // if (config.custom.auth) {
+//   //   config.header.token = '123456'
+//   // }
+//   // if (config.custom.loading) {
+//   //   uni.showLoading()
+//   // }
+//   /*
+//   if (!token) { // 如果token不存在，return Promise.reject(config) 会取消本次请求
+//     return Promise.reject(config)
+//   }
+//   */
+//   return config
+// }, (config) => {
+//   return Promise.reject(config)
+// })
+//
+//
+// test.interceptors.response.use((response) => { /* 请求之后拦截器。可以使用async await 做异步操作  */
+//   // if (response.config.custom.loading) {
+//   //    uni.hideLoading()
+//   //  }
+//   if (response.data.code !== 200) { // 服务端返回的状态码不等于200，则reject()
+//     return Promise.reject(response)
+//   }
+//   return response
+// }, (response) => { // 请求错误做点什么。可以使用async await 做异步操作
+//   // if (response.config.custom.loading) {
+//   //    uni.hideLoading()
+//   //  }
+//   return Promise.reject(response)
+// })
+//
+//
+// const http = new Request()
+// http.setConfig((config) => { /* 设置全局配置 */
+//   config.baseURL = store.state.req_url /* 根域名不同 */
+//   config.header = {
+//     ...config.header,
+//     "Content-Type":"application/x-www-form-urlencoded",
+//     //"x-access-uid":store.state.user&&store.state.user.id?store.state.user.id:"",
+//   }
+//   return config
+// })
+//
+//
+// http.interceptors.request.use((config) => { /* 请求之前拦截器。可以使用async await 做异步操作 */
+//   const header = config.data ? config.data.header : config.header;
+//   config.header = {
+//     ...config.header,
+// 	...header,
+//     //token: getTokenStorage()
+//   }
+//   /*
+//  if (!token) { // 如果token不存在，return Promise.reject(config) 会取消本次请求
+//    return Promise.reject(config)
+//  }
+//  */
+//   return config
+// }, (config) => {
+//   return Promise.reject(config)
+// })
+//
+//
+// http.interceptors.response.use(async (response) => { /* 请求之后拦截器。可以使用async await 做异步操作  */
+//   // if (response.data.code !== 200) { // 服务端返回的状态码不等于200，则reject()
+//   //   return Promise.reject(response)
+//   // }
+//   return response
+// }, (response) => { // 请求错误做点什么。可以使用async await 做异步操作
+//   console.log(response)
+//   return Promise.reject(response)
+// })
 
 export {
-  http,
-  test
+    http,
+    test
 }
 
 

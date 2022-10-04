@@ -1,21 +1,24 @@
 <script>
 	import Vue from 'vue'
+    import config from "./common/netConfig";
+    import { _initC } from "./common/netRequest";
+    import { bindHttp,bindWebSocket } from "./main";
 	var _checkLink;
 	var flag = true;
 	var flag_false_count = 0;
-	export default { 
+	export default {
 		onLaunch: function() {
 			let _this = this;
 			let uuid = this.uuid();
 			this.$store.state.app_uuid = uuid;
-			  
+
 			// //#ifndef H5
 			// 		//因为APP启动相对较慢
 			// 		setTimeout(()=>{
 			// 			_this.$websocket.dispatch('WEBSOCKET_INIT');
-			// 		},300);	
+			// 		},300);
 			// //#endif
-			
+
 			// //#ifdef H5
 			//  this.$websocket.dispatch('WEBSOCKET_INIT');
 			// //#endif
@@ -27,10 +30,10 @@
 			// 	this.$store.state.app_uuid = uuid;
 			// 	uni.setStorageSync("APP_UUID_LOCAL",uuid)
 			// }
-			
-			
-			
-			
+
+
+
+
 			uni.getSystemInfo({
 				success: function(e) {
 					//console.log(e.windowHeight);
@@ -43,14 +46,14 @@
 						Vue.prototype.CustomBar = e.statusBarHeight + 45;
 					};
 					// #endif
-					
+
 					//#ifndef H5
 					console.log("e.platform:"+e.platform);
 						if (e.platform == 'android') {
 							Vue.prototype.$clientType = "android";
 						} else {
-							Vue.prototype.$clientType = "ios"; 
-						}	
+							Vue.prototype.$clientType = "ios";
+						}
 					// #endif
 
 					// #ifdef MP-WEIXIN
@@ -58,14 +61,14 @@
 					let custom = wx.getMenuButtonBoundingClientRect();
 					Vue.prototype.Custom = custom;
 					Vue.prototype.CustomBar = custom.bottom + custom.top - e.statusBarHeight;
-					// #endif		
+					// #endif
 
 					// #ifdef MP-ALIPAY
 					Vue.prototype.StatusBar = e.statusBarHeight;
 					Vue.prototype.CustomBar = e.statusBarHeight + e.titleBarHeight;
 					// #endif
-					
-					
+
+
 				}
 			})
 
@@ -145,8 +148,8 @@
 					color: '#ffffff'
 				},
 			]
-			
-			
+
+
 			// //#ifdef APP-PLUS
 			// let timer = false;
 			// plus.push.addEventListener("click",(msg)=>{
@@ -165,14 +168,14 @@
 			// 	}else{
 			// 		if(msg.type=='receive'){
 			// 			var options = {cover:false,title:msg.title};
-			// 			plus.push.createMessage(msg.content, msg.payload, options ); 
-			// 		 }  
+			// 			plus.push.createMessage(msg.content, msg.payload, options );
+			// 		 }
 			// 	}
 			// },false)
 			// //#endif
 		},
 		onLoad(e) {
-			
+
 		},
 		onShow: function(e) {
 			console.log('App Show--')
@@ -180,31 +183,32 @@
 			// if(e.query.t&&e.query.t=="pc") {
 			// 	uni.removeStorageSync("USER");
 			// }
-			
-			  
-			
-			
-			this.$store.state.appShow = true;  
-			
+
+
+            //重要，初始化net 绑定
+            initNetBind();
+
+
+			this.$store.state.appShow = true;
 			setTimeout(()=>{
 			 	_this.$websocket.dispatch('WEBSOCKET_INIT');
-			},500);	
-			
-			
+			},500);
+
+
 			if(_checkLink) {
 				clearInterval(_checkLink);
 			}
 			_checkLink = setInterval(function(){
 				_this.checkWsLink();
 			},10000);
-					  	 
-			
-			
-			
-			//这里的主要目的是为了，更新好友在线的状态，因为当处于appHide的时候。程序没有通知到位的情况下需要更新消息列表
-			let user = uni.getStorageSync("USER"); 
+
+
+
+
+			/*//这里的主要目的是为了，更新好友在线的状态，因为当处于appHide的时候。程序没有通知到位的情况下需要更新消息列表
+			let user = uni.getStorageSync("USER");
 			if(user) {
-				
+
 				let v = {
 					uid:user.id,
 					status:1//APP处于前台
@@ -212,10 +216,10 @@
 				setTimeout(()=>{
 					this.$websocket.dispatch('WEBSOCKET_SEND', "{body:'"+JSON.stringify(v)+"',CMD:'APP_HIDE_SHOW'}");
 				},1000)
-				
+
 				_this.$store.commit("setUser",user);
 				if(_this.$store.state.ar_list.length==0) {
-					
+
 					_this.$http.post("/user/accessRecord/json/list",
 						{
 							header:{
@@ -225,16 +229,16 @@
 						}
 					).then(res_1=>{
 						let res_data_1 = eval(res_1.data);
-						if(res_data_1.code==200) {  
+						if(res_data_1.code==200) {
 							let unreadSum = 0;
 							console.log(res_data_1.body.length);
 							res_data_1.body.forEach(item=>{
-								
+
 								let s = uni.getStorageSync(item.id+"_NOTE");
 								if(s&&s!="") {
 									item.title = s;
 								}
-								
+
 								let last_txt = uni.getStorageSync(user.id+"#"+item.id+'_CHAT_MESSAGE_LASTCONTENT');
 								if(last_txt.indexOf("<img")>=0) {
 									item.content = "[图片]";
@@ -245,8 +249,8 @@
 								}  else {
 									item.content = last_txt;
 								}
-								
-								
+
+
 								let unRead = uni.getStorageSync(user.id+"#"+item.id+'_CHAT_MESSAGE_UNREAD');
 								if(unRead&&unRead!="") {
 									unreadSum+=parseInt(unRead);
@@ -254,17 +258,17 @@
 								} else {
 									item.unread = 0;
 								}
-								
+
 								let aite_count = uni.getStorageSync(item.id+"#AITE_COUNT");
 								if(aite_count&&aite_count!="") {
 									item.aiteCount = parseInt(aite_count);
 								}
-								
+
 								let zhiding = uni.getStorageSync(item.id+"_zhiding");
 								if(zhiding) {
 									item.top = 0;
 								}
-								
+
 							});
 							let list = res_data_1.body;
 							list.sort(function(a,b){
@@ -274,16 +278,16 @@
 									return a.top - b.top;
 								}
 							})
-							
-							
-							
-							
-							
+
+
+
+
+
 							_this.$store.commit("setAr_list",list)
 							_this.$store.commit("setUnReadMsgSum",unreadSum)
-							
+
 							//_this.$store.commit("setAr_list_show",list)
-							
+
 						} else {
 							uni.showToast({
 								icon: 'none',
@@ -291,8 +295,8 @@
 							});
 						}
 					})
-					
-					
+
+
 					// uni.request({
 					// 	method:"POST",
 					// 	url: _this.$store.state.req_url + "/user/accessRecord/json/list",
@@ -302,16 +306,16 @@
 					// 	},
 					// 	success(res_1) {
 					// 		let res_data_1 = eval(res_1.data);
-					// 		if(res_data_1.code==200) {  
+					// 		if(res_data_1.code==200) {
 					// 			let unreadSum = 0;
 					// 			console.log(res_data_1.body.length);
 					// 			res_data_1.body.forEach(item=>{
-									
+
 					// 				let s = uni.getStorageSync(item.id+"_NOTE");
 					// 				if(s&&s!="") {
 					// 					item.title = s;
 					// 				}
-									
+
 					// 				let last_txt = uni.getStorageSync(user.id+"#"+item.id+'_CHAT_MESSAGE_LASTCONTENT');
 					// 				if(last_txt.indexOf("<img")>=0) {
 					// 					item.content = "[图片]";
@@ -322,8 +326,8 @@
 					// 				}  else {
 					// 					item.content = last_txt;
 					// 				}
-									
-									
+
+
 					// 				let unRead = uni.getStorageSync(user.id+"#"+item.id+'_CHAT_MESSAGE_UNREAD');
 					// 				if(unRead&&unRead!="") {
 					// 					unreadSum+=parseInt(unRead);
@@ -331,12 +335,12 @@
 					// 				} else {
 					// 					item.unread = 0;
 					// 				}
-									
+
 					// 				let zhiding = uni.getStorageSync(item.id+"_zhiding");
 					// 				if(zhiding) {
 					// 					item.top = 0;
 					// 				}
-									
+
 					// 			});
 					// 			let list = res_data_1.body;
 					// 			list.sort(function(a,b){
@@ -346,16 +350,16 @@
 					// 					return a.top - b.top;
 					// 				}
 					// 			})
-								
-								
-								
-								
-								
+
+
+
+
+
 					// 			_this.$store.commit("setAr_list",list)
 					// 			_this.$store.commit("setUnReadMsgSum",unreadSum)
-								
+
 					// 			//_this.$store.commit("setAr_list_show",list)
-								
+
 					// 		} else {
 					// 			uni.showToast({
 					// 				icon: 'none',
@@ -365,8 +369,8 @@
 					// 	}
 					// })
 				}
-				
-				
+
+
 				// uni.request({
 				// 	method:"POST",
 				// 	url: _this.$store.state.req_url + "/user/accessRecord/json/list",
@@ -376,16 +380,16 @@
 				// 	},
 				// 	success(res) {
 				// 		let res_data = eval(res.data);
-				// 		if(res_data.code==200) {  
+				// 		if(res_data.code==200) {
 				// 			let unreadSum = 0;
 				// 			console.log(res_data.body.length);
 				// 			res_data.body.forEach(item=>{
-								
+
 				// 				let s = uni.getStorageSync(item.id+"_NOTE");
 				// 				if(s&&s!="") {
 				// 					item.title = s;
 				// 				}
-								
+
 				// 				let last_txt = uni.getStorageSync(user.id+"#"+item.id+'_CHAT_MESSAGE_LASTCONTENT');
 				// 				if(last_txt.indexOf("<img")>=0) {
 				// 					item.content = "[图片]";
@@ -396,8 +400,8 @@
 				// 				}  else {
 				// 					item.content = last_txt;
 				// 				}
-								
-								
+
+
 				// 				let unRead = uni.getStorageSync(user.id+"#"+item.id+'_CHAT_MESSAGE_UNREAD');
 				// 				if(unRead&&unRead!="") {
 				// 					unreadSum+=parseInt(unRead);
@@ -405,12 +409,12 @@
 				// 				} else {
 				// 					item.unread = 0;
 				// 				}
-								
+
 				// 				let zhiding = uni.getStorageSync(item.id+"_zhiding");
 				// 				if(zhiding) {
 				// 					item.top = 0;
 				// 				}
-								
+
 				// 			});
 				// 			let list = res_data.body;
 				// 			list.sort(function(a,b){
@@ -420,24 +424,24 @@
 				// 					return a.top - b.top;
 				// 				}
 				// 			})
-							
-							
-							
-							
-							
+
+
+
+
+
 				// 			_this.$store.commit("setAr_list",list)
 				// 			_this.$store.commit("setUnReadMsgSum",unreadSum)
-							
+
 				// 			//_this.$store.commit("setAr_list_show",list)
-							
+
 				// 		} else {
 				// 			uni.showToast({
 				// 				icon: 'none',
 				// 				title: "获取列表失败"
 				// 			});
 				// 		}
-						
-						
+
+
 				// 		if(_this.$store.state.ar_list.length==0) {
 				// 			uni.request({
 				// 				method:"POST",
@@ -448,16 +452,16 @@
 				// 				},
 				// 				success(res_1) {
 				// 					let res_data_1 = eval(res_1.data);
-				// 					if(res_data_1.code==200) {  
+				// 					if(res_data_1.code==200) {
 				// 						let unreadSum = 0;
 				// 						console.log(res_data_1.body.length);
 				// 						res_data_1.body.forEach(item=>{
-											
+
 				// 							let s = uni.getStorageSync(item.id+"_NOTE");
 				// 							if(s&&s!="") {
 				// 								item.title = s;
 				// 							}
-											
+
 				// 							let last_txt = uni.getStorageSync(user.id+"#"+item.id+'_CHAT_MESSAGE_LASTCONTENT');
 				// 							if(last_txt.indexOf("<img")>=0) {
 				// 								item.content = "[图片]";
@@ -468,8 +472,8 @@
 				// 							}  else {
 				// 								item.content = last_txt;
 				// 							}
-											
-											
+
+
 				// 							let unRead = uni.getStorageSync(user.id+"#"+item.id+'_CHAT_MESSAGE_UNREAD');
 				// 							if(unRead&&unRead!="") {
 				// 								unreadSum+=parseInt(unRead);
@@ -477,12 +481,12 @@
 				// 							} else {
 				// 								item.unread = 0;
 				// 							}
-											
+
 				// 							let zhiding = uni.getStorageSync(item.id+"_zhiding");
 				// 							if(zhiding) {
 				// 								item.top = 0;
 				// 							}
-											
+
 				// 						});
 				// 						let list = res_data_1.body;
 				// 						list.sort(function(a,b){
@@ -492,16 +496,16 @@
 				// 								return a.top - b.top;
 				// 							}
 				// 						})
-										
-										
-										
-										
-										
+
+
+
+
+
 				// 						_this.$store.commit("setAr_list",list)
 				// 						_this.$store.commit("setUnReadMsgSum",unreadSum)
-										
+
 				// 						//_this.$store.commit("setAr_list_show",list)
-										
+
 				// 					} else {
 				// 						uni.showToast({
 				// 							icon: 'none',
@@ -511,49 +515,49 @@
 				// 				}
 				// 			})
 				// 		}
-						
+
 				// 	}
 				// })
-				
+
 			} else {
 				uni.navigateTo({
 					url:"pages/login/login"
 				})
-			} 
-			
-			
-			
-			// uni.onSocketOpen((res) => {  
+			}*/
+
+
+
+			// uni.onSocketOpen((res) => {
 			// 	_this.$websocket.state.is_open_socket = true;
 			// 	let user = uni.getStorageSync("USER");
 			// 	if(user) {
 			// 		_this.$websocket.dispatch('WEBSOCKET_SEND', "{body:'"+user.id+"',CMD:'PUTSESSION'}");
 			// 	}
-				
+
 			// });
-			//this.$websocket.dispatch('WEBSOCKET_INIT'); 
+			//this.$websocket.dispatch('WEBSOCKET_INIT');
 			// if(!this.$websocket.state.is_open_socket) {
-			// 	this.$websocket.dispatch('WEBSOCKET_INIT');  
-			// } 
+			// 	this.$websocket.dispatch('WEBSOCKET_INIT');
+			// }
 		},
-		onHide: function() { 
+		onHide: function() {
 			let _this = this;
 			// if(this.$websocket)
 			console.log('App Hide')
 			this.$store.state.appShow = false;
-			
+
 			setTimeout(()=>{
 				_this.$websocket.dispatch('WEBSOCKET_INIT');
-			},500);	
-			
+			},500);
+
 			// if(_checkLink) {
 			// 	clearInterval(_checkLink);
 			// }
 			// _checkLink = setInterval(function(){
 			// 	_this.checkWsLink();
 			// },10000);
-			// this.checkWsLink();	 	 
-			
+			// this.checkWsLink();
+
 			let user = uni.getStorageSync("USER");
 			if(user) {
 				let v = {
@@ -561,17 +565,17 @@
 					status:0//APP处于后台
 				}
 				this.$websocket.dispatch('WEBSOCKET_SEND', "{body:'"+JSON.stringify(v)+"',CMD:'APP_HIDE_SHOW'}");
-				
-			}	
-			
+
+			}
+
 			//this.$websocket.state.socketTask.close();
-			
+
 		},
 		methods:{
 			checkWsLink() {
 				let _this = this;
-				
-					
+
+
 				if(!_this.$websocket.state.is_open_socket) {
 					_this.$websocket.dispatch('WEBSOCKET_INIT');
 				} else {
@@ -579,7 +583,7 @@
 					if(flag_false_count>=2) flag = true;
 					if(flag) {
 					console.log("app.vue->10秒检查");
-						
+
 						flag = false;
 						let user = uni.getStorageSync("USER");
 						if(user) {
@@ -594,10 +598,10 @@
 										"x-access-uid":user.id,
 										"x-access-client":_this.$clientType
 									}
-								} 
+								}
 							).then(res=>{
 								let res_data = eval(res.data);
-								if(res_data.code==200) {  
+								if(res_data.code==200) {
 									if(res_data.msg == "0") {
 										let v = {
 											user_id:user.id,
@@ -612,12 +616,12 @@
 								}
 								flag = true;
 							})
-							
+
 						}
 					}
 				}
-				
-				
+
+
 			},
 			uuid() {
 			    var s = [];
@@ -628,13 +632,25 @@
 			    s[14] = "4";  // bits 12-15 of the time_hi_and_version field to 0010
 			    s[19] = hexDigits.substr((s[19] & 0x3) | 0x8, 1);  // bits 6-7 of the clock_seq_hi_and_reserved to 01
 			    s[8] = s[13] = s[18] = s[23] = "-";
-			 
+
 			    var uuid = s.join("");
 			    return uuid;
 			}
 		}
 
 	}
+
+	function initNetBind() {
+        //1：注意，这里进行http的绑定，方便后续可以 _this.$http 类型调用
+        let remoteIP = config.requestRemoteIp(); // 获取动态设置接口请求域名
+        remoteIP.then((resolve, reject) => {
+            if(resolve){
+                _initC();
+                bindHttp();
+                bindWebSocket();
+            }
+        })
+    }
 </script>
 
 <style>
@@ -774,30 +790,30 @@
 			transform: translateY(0px);
 		}
 	}
-	
+
 	/**PC端需要的**/
-	/*定义滚动条高宽及背景 高宽分别对应横竖滚动条的尺寸 
+	/*定义滚动条高宽及背景 高宽分别对应横竖滚动条的尺寸
 	  ::-webkit-scrollbar
 	    {
 	        width: 16upx!important;
 	        height: 16upx!important;
 	        background-color: #F5F5F5;
-	    } 
-	    */ 
-	    /*定义滚动条轨道 内阴影+圆角     
+	    }
+	    */
+	    /*定义滚动条轨道 内阴影+圆角
 	   ::-webkit-scrollbar-track
 	    {
 	        // -webkit-box-shadow: inset 0 0 6px rgba(0,0,0,0.3);
 	        border-radius: 10px;
 	        background-color: #fff;
 	    }
-	*/ 
+	*/
 	    /*定义滑块 内阴影+圆角
 	 ::-webkit-scrollbar-thumb
 	    {
 	        border-radius: 10px;
 	        -webkit-box-shadow: inset 0 0 6px rgba(0,0,0,.3);
 	        background-color: #eee;
-	    } 
+	    }
 	*/
 </style>

@@ -1,5 +1,10 @@
 {
-	"pages": [{
+	"pages": [
+		{
+			"path": "pages/splash/splash",
+			"style": {}
+		},
+		{
 			"path": "pages/index/index",
 			"style": {}
 		},{ 
