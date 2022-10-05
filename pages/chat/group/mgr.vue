@@ -429,7 +429,6 @@ word-break:normal; " class="text-grey text-sm">{{$store.state.cur_chat_entity.de
 				    content: '是否退出此群组?',
 				    success: function (res) {
 						if (res.confirm) {
-							
 							_this.$http.post("/room/json/out",
 								{roomid:_this.$store.state.cur_chat_entity.id},
 								{
@@ -441,7 +440,75 @@ word-break:normal; " class="text-grey text-sm">{{$store.state.cur_chat_entity.de
 							).then(res=>{
 								let res_data = eval(res.data);
 								if(res_data.code==200) {  
-									console.log("-----");
+									uni.showToast({
+										icon: 'none',
+										title: "已成功退出此群组"
+									});
+									_this.$http.post("/user/accessRecord/json/list",
+										{
+											header: {
+												"x-access-uid":_this.$store.state.user.id,
+												"x-access-client":_this.$clientType
+											}
+										}
+									).then(res_1=>{
+										let res_data_1 = eval(res_1.data);
+										if(res_data_1.code==200) {  
+											let unreadSum = 0;
+											res_data_1.body.forEach(item=>{
+												
+												let s = uni.getStorageSync(item.id+"_NOTE");
+												if(s&&s!="") {
+													item.title = s;
+												}
+												
+												let last_txt = uni.getStorageSync(res_data.body.id+"#"+item.id+'_CHAT_MESSAGE_LASTCONTENT');
+												if(last_txt.indexOf("<img")>=0) {
+													item.content = "[图片]";
+												} else if(last_txt.indexOf("upload/chat/voice")>=0) {
+													item.content = "[语音]";
+												} else if(last_txt.indexOf("upload/chat/video")>=0) {
+													item.content = "[视频]";
+												}  else {
+													item.content = last_txt;
+												}
+												
+												let aite_count = uni.getStorageSync(item.id+"#AITE_COUNT");
+												if(aite_count&&aite_count!="") {
+													item.aiteCount = parseInt(aite_count);
+												}	
+												
+												let unRead = uni.getStorageSync(res_data.body.id+"#"+item.id+'_CHAT_MESSAGE_UNREAD');
+												if(unRead&&unRead!="") {
+													unreadSum+=parseInt(unRead);
+													item.unread = parseInt(unRead);
+												} else {
+													item.unread = 0;
+												}
+												
+												let zhiding = uni.getStorageSync(item.id+"_zhiding");
+												if(zhiding) {
+													item.top = 0;
+												}
+												
+											});
+											let list = res_data_1.body;
+											list.sort(function(a,b){
+												if(a.top==b.top) {
+													return b.createDateTime-a.createDateTime;
+												} else {
+													return a.top - b.top;
+												}
+											})
+											_this.$store.commit("setAr_list",list)
+											_this.$store.commit("setUnReadMsgSum",unreadSum)
+										} else {
+											uni.showToast({
+												icon: 'none',
+												title: "获取列表失败"
+											});
+										}
+									});
 									uni.navigateTo({
 										url:"/pages/index/index"
 									})
