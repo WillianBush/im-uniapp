@@ -75,7 +75,7 @@
 						-->
 					</view>
 					<view class="content">
-						<view class="text-black">{{item.title}}</view>
+						<view class="text-black">{{item.title}}{{item.typeid == '1' ? '（群聊）' : ''}}</view>
 						<view class="text-gray text-sm flex">
 							<view class="text-cut" style="position: relative;top: 4px;">
 								<text style="margin-right: 6px;" v-if="item.typeid=='2'&&item.online==0&&item.id!='-1'">最近登陆于{{item.lastLoginDate}} - </text>
@@ -543,6 +543,7 @@
 			search_list() {
 				let _this = this;
 				let list = this.$store.state.ar_list;
+				console.log('-------------list', list)
 				list = list.filter((item)=>{
 					return item.title.indexOf(_this.kw.trim())>=0||item.subname.indexOf(_this.kw.trim())>=0
 				});
