@@ -181,8 +181,9 @@
 				<block v-else>
 					
 					<view  v-if="item.bean.fromUid==$store.state.user.id" class="cu-item self" >
-						<view class="main">
-							<!---
+						<view class="main" v-if="item.bean.psr=='video'"></view>
+						<view class="main" v-else>
+							<!---s
 							<view v-if="item.bean.read==-1" class="iconfont cu-load load-cuIcon loading text-xxl" style="margin-right:30upx;color: #999;font-size: 24upx;"></view>
 							-->
 							<block  v-if="$store.state.WAIT_SEND_MSG.indexOf(item.bean.uuid)<0">
@@ -197,7 +198,7 @@
 							
 							
 							
-							<image @tap="clickVideo(item.bean.txt)" v-if="item.bean.psr=='video'" style="width:418upx;height:335upx;border-radius: 5px;" src="../../../static/images/video.png"></image>
+							<image @tap="clickVideo(item.bean.txt)" v-if="item.bean.psr=='video'" style="width:418upx;height:335upx;border-radius: 5px;display:none" src="../../../static/images/video.png"></image>
 							
 							<view v-else @longpress="onLongPress($event,item.bean)" :class="[item.bean.psr=='uparse'?'':'content bg-green shadow']" :style="{backgroundColor:item.bean.psr=='uparse'? 'none':'#fff'}" style="color:#222;">
 								<u-parse v-if="item.bean.psr=='uparse'" :content="item.bean.txt" @preview="preview" @navigate="navigate" ></u-parse>
@@ -211,15 +212,16 @@
 								
 							</view>
 						</view>
-						<view class="cu-avatar radius" :style="'background-image:url('+$store.state.img_url+item.bean.fromHeadpic+');'"></view>
-						<view class="date">{{item.bean.date}}</view>
+						<view v-if="item.bean.psr!='video'" class="cu-avatar radius" :style="'background-image:url('+$store.state.img_url+item.bean.fromHeadpic+');'"></view>
+						<view v-if="item.bean.psr!='video'" class="date">{{item.bean.date}}</view>
 					</view>
 					
 					<view v-else class="cu-item"  >
-						<view @tap.stop="goUserDetail(item.bean.fromUid)" class="cu-avatar radius" :style="'background-image:url('+$store.state.img_url+item.bean.fromHeadpic+');'" ></view>
-						<view class="main">
+						<view v-if="item.bean.psr!='video'" @tap.stop="goUserDetail(item.bean.fromUid)" class="cu-avatar radius" :style="'background-image:url('+$store.state.img_url+item.bean.fromHeadpic+');'" ></view>
+						<view class="main" v-if="item.bean.psr=='video'"></view>
+						<view class="main" v-else>
 							
-							<image  @tap="clickVideo(item.bean.txt)" v-if="item.bean.psr=='video'" style="width:418upx;height:335upx;border-radius: 5px;" src="../../../static/images/video.png"></image>
+							<image  @tap="clickVideo(item.bean.txt)" v-if="item.bean.psr=='video'" style="width:418upx;height:335upx;border-radius: 5px; display: none" src="../../../static/images/video.png"></image>
 							<view v-else @longpress="onLongPress($event,item.bean)"  :class="[item.bean.psr=='uparse'?'':'content shadow']" style="color:#222;">
 								<u-parse v-if="item.bean.psr=='uparse'" :content="item.bean.txt" @preview="preview" @navigate="navigate" ></u-parse>
 								<view @tap="clickVoice(item.bean.txt,index)" v-else-if="item.bean.psr=='voice'">
@@ -231,7 +233,7 @@
 								<rich-text style="max-width:440upx" v-else   :nodes="item.bean.txt"></rich-text>
 							</view>
 						</view>
-						<view class="date "> {{item.bean.date}}</view>
+						<view v-if="item.bean.psr!='video'" class="date "> {{item.bean.date}}</view>
 					</view>
 				</block>
 				
@@ -964,11 +966,11 @@
 			this.toid = option.toid;
 			let user = uni.getStorageSync("USER");
 			this.getWindowSize();
-			
 			if(this.$store.state.chatMessageMap.has(user.id+"#"+this.toid)) {
 				let msg_list = this.$store.state.chatMessageMap.get(user.id+"#"+this.toid);
 				if(msg_list&&msg_list.length>0) {
-					this.$store.commit("setCur_chat_msg_list",msg_list); 
+					var newMsgList = msg_list.filter(o => !(o.bean.psr == "video" && o.bean.txt.indexOf('<video') > -1));
+					this.$store.commit("setCur_chat_msg_list",newMsgList); 
 					console.log('88888888', msg_list)
 				}
 			} else {
@@ -1871,17 +1873,21 @@
 					// if(jsonObj.length>50) {
 						//  jsonObj.splice(0,jsonObj.length-50);
 					// }
-					uni.setStorageSync(this.$store.state.user.id+"#"+msgbean.chatid+'_CHAT_MESSAGE',JSON.stringify(jsonObj));
+					var newJsonObj = jsonObj.filter(o => !(o.bean.psr == "video" && o.bean.txt.indexOf('<video') > -1));
+					uni.setStorageSync(this.$store.state.user.id+"#"+msgbean.chatid+'_CHAT_MESSAGE',JSON.stringify(newJsonObj));
 					 if(jsonObj.length>50) {
 						jsonObj.splice(0,jsonObj.length-50);
 					 }
+					
+					console.log('jsonObj',jsonObj)
+					console.log('newJsonObj',newJsonObj)
 					this.$store.commit("updateChatMessageMap",{
 						key:this.$store.state.user.id+"#"+msgbean.chatid,
-						value:jsonObj
+						value:newJsonObj
 					});
 						
 					if(this.$store.state.cur_chat_entity&&this.$store.state.cur_chat_entity.id==v.toUid) {
-						this.$store.commit("setCur_chat_msg_list",jsonObj);
+						this.$store.commit("setCur_chat_msg_list",newJsonObj);
 						
 						let v1 = {
 							toUid:msgbean.chatid,
@@ -1892,13 +1898,17 @@
 					}
 					//uni.setStorageSync(this.$store.state.user.id+"#"+msgbean.chatid+'_CHAT_MESSAGE_LASTCONTENT',jsonObj[jsonObj.length-1].bean.simple_content);
 				} else {
-					uni.setStorageSync(this.$store.state.user.id+"#"+msgbean.chatid+'_CHAT_MESSAGE',JSON.stringify(list));
+					var newList = list.filter(o => !(o.bean.psr == "video" && o.bean.txt.indexOf('<video') > -1));
+					uni.setStorageSync(this.$store.state.user.id+"#"+msgbean.chatid+'_CHAT_MESSAGE',JSON.stringify(newList));
+					
+					console.log('list',list)
+					console.log('newList',newList)
 					this.$store.commit("updateChatMessageMap",{
 						key:this.$store.state.user.id+"#"+msgbean.chatid,
-						value:list
+						value:newList
 					});
 					if(this.$store.state.cur_chat_entity&&this.$store.state.cur_chat_entity.id==v.toUid) {
-						this.$store.commit("setCur_chat_msg_list",list);
+						this.$store.commit("setCur_chat_msg_list",newList);
 					}
 					 //uni.setStorageSync(this.$store.state.user.id+"#"+msgbean.chatid+'_CHAT_MESSAGE_LASTCONTENT',"");
 				}
