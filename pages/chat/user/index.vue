@@ -2310,12 +2310,13 @@
 					return;
 				}
 				//_vpath = "http://39.98.129.168:8080/images/upload/chat/voice/277c7e2561ff45d5b54e0760ae3b039b.amr";
-				console.log(_vpath);
+				var src = _this.$store.state.img_url + _vpath;
+				console.log(src);
 				this.selVoiceIndex = _index; 
 				//this.voicePath = _vpath;
 				
 				this.player = uni.createInnerAudioContext();
-				this.player.src = _vpath; //音频地址  
+				this.player.src = src; //音频地址
 				this.player.onEnded(() => {
 				  console.log('结束播放');
 				  _this.selVoiceIndex = -1;
@@ -2355,16 +2356,55 @@
 			Audio2dataURL(path,timeStr) {   
 				let _this = this;
 				let user = uni.getStorageSync("USER");
+
+				var uper = uni.uploadFile({
+					// 需要上传的地址
+					url:_this.$store.state.req_url+ '/user/file/uploadVoice',
+					header:{
+						"x-access-uid":_this.$store.state.user.id
+					},
+					// filePath  需要上传的文件
+					filePath: path,
+					name: 'file',
+					success(res1) {
+						let json = eval("("+res1.data+")");
+						// 显示上传信息
+						console.log("-----------111"+json);
+						if(json.code==200) {
+							// 显示上传信息
+							console.log(json.msg);
+							if(json.code==200) {
+								let v = {
+									txt:json.msg,
+									toUid:_this.toid,
+									fromUid:_this.$store.state.user.id,
+									sub_txt:timeStr,
+									uuid:_this.GenerateUUID(),
+								}
+								_this.$websocket.dispatch("WEBSOCKET_SEND", "{body:'"+JSON.stringify(v)+"',CMD:'USER_CHAT_SEND_VOICE'}");
+
+								setTimeout(function(){
+									_this.scrollToBottom();
+								},100)
+							}
+						}
+					}
+				});
+
+
+
+
+
 				//console.log("*******************:"+path);
-			    plus.io.resolveLocalFileSystemURL(path, function(entry){  
-			        entry.file(function(file){  
-			            var reader = new plus.io.FileReader();  
-			            reader.onloadend = function (e) {  
+			    /*plus.io.resolveLocalFileSystemURL(path, function(entry){
+			        entry.file(function(file){
+			            var reader = new plus.io.FileReader();
+			            reader.onloadend = function (e) {
 							//console.log("------------------------");
-			                console.log(e.target.result);  
+			                console.log(e.target.result);
 							//_this.v_base64 = e.target.result;
-							
-							
+
+
 							_this.$http.post("/user/file/uploadVoice",
 								{base64:e.target.result},
 								{
@@ -2374,7 +2414,7 @@
 								}
 							).then(res=>{
 								let res_data = eval(res.data);
-								if(res_data.code==200) {  
+								if(res_data.code==200) {
 									 console.log(res.data);
 										 let json = eval(res.data);
 										 // 显示上传信息
@@ -2388,15 +2428,15 @@
 												uuid:_this.GenerateUUID(),
 											}
 											_this.$websocket.dispatch("WEBSOCKET_SEND", "{body:'"+JSON.stringify(v)+"',CMD:'USER_CHAT_SEND_VOICE'}");
-											
+
 											setTimeout(function(){
 												_this.scrollToBottom();
 											},100)
 										 }
-									
+
 								}
 							})
-				 			
+
 							// uni.request({
 							// 	method:"POST",
 							// 	url: _this.$store.state.req_url + "/user/file/uploadVoice",
@@ -2407,7 +2447,7 @@
 							// 	},
 							// 	success(res) {
 							// 		let res_data = eval(res.data);
-							// 		if(res_data.code==200) {  
+							// 		if(res_data.code==200) {
 							// 			 console.log(res.data);
 							// 				 let json = eval(res.data);
 							// 				 // 显示上传信息
@@ -2420,25 +2460,25 @@
 							// 						sub_txt:timeStr
 							// 					}
 							// 					_this.$websocket.dispatch("WEBSOCKET_SEND", "{body:'"+JSON.stringify(v)+"',CMD:'USER_CHAT_SEND_VOICE'}");
-												
+
 							// 					setTimeout(function(){
 							// 						_this.scrollToBottom();
 							// 					},100)
 							// 				 }
-										
+
 							// 		}
 							// 	}
 							// })
-							
-							
-							
+
+
+
 							//console.log("------------------------");
-			            };  
-			            reader.readAsDataURL(file);  
-			        },function(e){  
-			            mui.toast("读写出现异常: " + e.message );  
-			        })  
-			    })  
+			            };
+			            reader.readAsDataURL(file);
+			        },function(e){
+			            mui.toast("读写出现异常: " + e.message );
+			        })
+			    })  */
 			}
 								
 		}

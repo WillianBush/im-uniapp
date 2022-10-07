@@ -247,26 +247,35 @@
 			},
 			logout() {
 				let _this = this;
-				
-				_this.$http.post("/user/json/logout",
-					{
-						header:{
-							"x-access-uid":_this.$store.state.user.id,
-							"x-access-client":_this.$clientType
+
+				uni.showModal({
+					title: '提示',
+					content: '确定要退出登陆吗？',
+					success: function(res) {
+						if (res.confirm) {
+							// 执行确认后的操作
+							_this.$http.post("/user/json/logout",
+									{
+										header:{
+											"x-access-uid":_this.$store.state.user.id,
+											"x-access-client":_this.$clientType
+										}
+									}
+							).then(res=>{
+								let res_data = eval(res.data);
+								if(res_data.code==200) {
+									//uni.clearStorageSync();
+									uni.removeStorageSync("USER");
+									_this.$store.commit("clearData");
+									uni.navigateTo({
+										url:"/pages/login/login"
+									})
+								}
+							})
 						}
 					}
-				).then(res=>{
-					let res_data = eval(res.data);
-					if(res_data.code==200) {  
-						//uni.clearStorageSync();
-						uni.removeStorageSync("USER");
-						_this.$store.commit("clearData");
-						uni.navigateTo({
-							url:"/pages/login/login"
-						})
-					}
 				})
-					
+
 				// uni.request({
 				// 	method:"POST",
 				// 	url: _this.$store.state.req_url + "/user/json/logout",
