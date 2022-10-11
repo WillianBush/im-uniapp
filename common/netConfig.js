@@ -2,7 +2,8 @@ import store from "../store"//使用vuex对状态进行管理
 
 const config = {
   isMockApi: false,
-  requestUrl: ["https://360-im.oss-cn-hongkong.aliyuncs.com/config_sys/domains.txt"],
+  // requestUrl: ["https://360-im.oss-cn-hongkong.aliyuncs.com/config_sys/domains-uat.txt"],//测试
+  requestUrl: ["https://360-im.oss-cn-hongkong.aliyuncs.com/config_sys/domains-prod.txt"],//线上
   httpDomains: {
     url: [],//这个暂时没用，当初设计是接受参数用的
   },
