@@ -262,8 +262,7 @@
 			
 			
 			<!-- @focus="InputFocus" @blur="InputBlur"-->
-			<view class="box">
-			<textarea style="height:72upx;line-height:72upx; line-height: 73upx;" 
+			<textarea style="height:72upx;line-height:72upx; line-height: 73upx;"
 			auto-height="true"
 			:show-confirm-bar="true" 
 			confirm-type="send" 
@@ -277,7 +276,6 @@
 			maxlength="-1" cursor-spacing="10"
 			
 			></textarea>
-			</view>
 			<!--
 			<button  @touchstart="checkAuthorize" @touchend="endRecord" v-show="c_type==2"  style="color: #aaa;margin-left: 20upx;width:100%" class="cu-btn block line-orange lg">按住 说话</button>
 			-->
@@ -795,7 +793,7 @@
 
 
 							<view @tap="sendCard()" style="flex:1;text-align: center;margin-top: 20upx;"><text style="font-size: 60upx;color:#FA9B4E" class="iconfont icon-mingpian2"></text><view style="font-size: 24upx;color: #8799a3;">名片</view></view>
-							<view @tap="voiceCall()" style="flex:1;text-align: center;margin-top: 20upx;"><text style="font-size: 60upx;color:#FA9B4E" class="iconfont icon-yuyin"></text><view style="font-size: 24upx;color: #8799a3;">语音</view></view>
+<!--							<view @tap="voiceCall()" style="flex:1;text-align: center;margin-top: 20upx;"><text style="font-size: 60upx;color:#FA9B4E" class="iconfont icon-yuyin"></text><view style="font-size: 24upx;color: #8799a3;">语音</view></view>-->
 						</view>
 						<!--						<view style="display: flex;margin-top: 40upx;">-->
 						<!--&lt;!&ndash; 							<view  @tap="sendRed()" style="flex:1;text-align: center;margin-top: 20upx;"><text style="font-size: 60upx;color:#FF524C" class="iconfont icon-lingquhongbao"></text><view style="font-size: 24upx;color: #8799a3;">发红包</view></view>-->

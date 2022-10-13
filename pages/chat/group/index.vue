@@ -287,7 +287,17 @@
 			<!-- @focus="InputFocus" @blur="InputBlur"-->
 			<input @keydown.enter="send" style="background: #eee!important;" disabled="true" placeholder="禁言" placeholder-style="text-align:center;background: #eee;" v-show="stopSpeak==1"  class="solid-bottom" :adjust-position="true" :focus="false" maxlength="300" cursor-spacing="10"
 			></input> 
-			<textarea style="height:72upx;margin-left:10upx;line-height:72upx;"  confirm-type="send" @confirm="send" confirm-hold="true" @keydown.shift.enter="altOrShiftEnter" @keydown.alt.enter="altOrShiftEnter"  @focus="InputFocus" @blur="InputBlur" v-show="c_type==1&&stopSpeak==0" v-model="txt" @input="inputTxt" class="solid-bottom" :adjust-position="true" :focus="input_is_focus" maxlength="-1" cursor-spacing="10"
+			<textarea style="height:72upx;margin-left:10upx;line-height:72upx;"
+					  confirm-type="send"
+					  @confirm="send"
+					  confirm-hold="true"
+					  @keydown.shift.enter="altOrShiftEnter"
+					  @keydown.alt.enter="altOrShiftEnter"
+					  @focus="InputFocus"
+					  @blur="InputBlur"
+					  v-show="c_type==1&&stopSpeak==0"
+					  v-model="txt" @input="inputTxt"
+					  class="solid-bottom" :adjust-position="true" :focus="input_is_focus" maxlength="-1" cursor-spacing="10"
 			></textarea>
 			
 			<!--
@@ -832,7 +842,7 @@
 
 
 							<view @tap="sendCard()" style="flex:1;text-align: center;margin-top: 20upx;"><text style="font-size: 60upx;color:#FA9B4E" class="iconfont icon-mingpian2"></text><view style="font-size: 24upx;color: #8799a3;">名片</view></view>
-							<view @tap="voiceCall()" style="flex:1;text-align: center;margin-top: 20upx;"><text style="font-size: 60upx;color:#FA9B4E" class="iconfont icon-yuyin"></text><view style="font-size: 24upx;color: #8799a3;">语音</view></view>
+<!--							<view @tap="voiceCall()" style="flex:1;text-align: center;margin-top: 20upx;"><text style="font-size: 60upx;color:#FA9B4E" class="iconfont icon-yuyin"></text><view style="font-size: 24upx;color: #8799a3;">语音</view></view>-->
 						</view>
 						<!--						<view style="display: flex;margin-top: 40upx;">-->
 						<!--&lt;!&ndash; 							<view  @tap="sendRed()" style="flex:1;text-align: center;margin-top: 20upx;"><text style="font-size: 60upx;color:#FF524C" class="iconfont icon-lingquhongbao"></text><view style="font-size: 24upx;color: #8799a3;">发红包</view></view>-->
@@ -2556,11 +2566,12 @@
 					return;
 				}
 				//_vpath = "http://39.98.129.168:8080/images/upload/chat/voice/277c7e2561ff45d5b54e0760ae3b039b.amr";
-				console.log(_vpath);
+				var src = _this.$store.state.img_url + _vpath;
+				console.log(src);
 				this.selVoiceIndex = _index; 
 				//this.voicePath = _vpath;
 				this.player = uni.createInnerAudioContext();
-				this.player.src = _vpath; //音频地址  
+				this.player.src = src; //音频地址
 				this.player.onEnded(() => {
 				  console.log('结束播放');
 				  _this.selVoiceIndex = -1;
@@ -2595,94 +2606,49 @@
 			 * 录音语音文件转base64字符串  
 			 * @param {Object} path  
 			 */  
-			Audio2dataURL(path,timeStr) {   
+			Audio2dataURL(path,timeStr) {
 				let _this = this;
 				let user = uni.getStorageSync("USER");
-				console.log("*******************:"+path);
-			    plus.io.resolveLocalFileSystemURL(path, function(entry){  
-			        entry.file(function(file){  
-			            var reader = new plus.io.FileReader();  
-			            reader.onloadend = function (e) {  
-							//console.log("------------------------");
-			                console.log(e.target.result);  
-							//_this.v_base64 = e.target.result;
-							
-							
-							_this.$http.post("/user/file/uploadVoice",
-								{base64:e.target.result},
-								{
-									header:{
-										"x-access-uid":_this.$store.state.user.id
-									}
+
+				var uper = uni.uploadFile({
+					// 需要上传的地址
+					url:_this.$store.state.req_url+ '/user/file/uploadVoice',
+					header:{
+						"x-access-uid":_this.$store.state.user.id
+					},
+					// filePath  需要上传的文件
+					filePath: path,
+					name: 'file',
+					success(res1) {
+						let json = eval("("+res1.data+")");
+						// 显示上传信息
+						console.log("-----------111"+json);
+						if(json.code==200) {
+							// 显示上传信息
+							console.log(json.msg);
+							if(json.code==200) {
+								let v = {
+									txt:json.msg,
+									toGroupid:_this.toid,
+									fromUid:_this.$store.state.user.id,
+									sub_txt:timeStr,
+									uuid:_this.GenerateUUID(),
 								}
-							).then(res=>{
-								let res_data = eval(res.data);
-								if(res_data.code==200) {  
-									 console.log(res.data);
-										 let json = eval(res.data);
-										 // 显示上传信息
-										 console.log(json.msg);
-										 if(json.code==200) {
-											let v = {
-												txt:json.msg,
-												toGroupid:_this.toid, 
-												fromUid:_this.$store.state.user.id,
-												sub_txt:timeStr,
-												uuid:_this.GenerateUUID(),
-											}
-											_this.$websocket.dispatch("WEBSOCKET_SEND", "{body:'"+JSON.stringify(v)+"',CMD:'GROUP_CHAT_SEND_VOICE'}");
-											
-											setTimeout(function(){
-												_this.scrollToBottom();
-											},100)
-										 }
-									
-								}
-							})
-							
-							
-							// uni.request({
-							// 	method:"POST",
-							// 	url: _this.$store.state.req_url + "/user/file/uploadVoice",
-							// 	data:{base64:e.target.result},
-							// 	header:{
-							// 		"Content-Type":"application/x-www-form-urlencoded",
-							// 		"x-access-uid":_this.$store.state.user.id
-							// 	},
-							// 	success(res) {
-							// 		let res_data = eval(res.data);
-							// 		if(res_data.code==200) {  
-							// 			 console.log(res.data);
-							// 				 let json = eval(res.data);
-							// 				 // 显示上传信息
-							// 				 console.log(json.msg);
-							// 				 if(json.code==200) {
-							// 					let v = {
-							// 						txt:json.msg,
-							// 						toGroupid:_this.toid, 
-							// 						fromUid:_this.$store.state.user.id,
-							// 						sub_txt:timeStr
-							// 					}
-							// 					_this.$websocket.dispatch("WEBSOCKET_SEND", "{body:'"+JSON.stringify(v)+"',CMD:'GROUP_CHAT_SEND_VOICE'}");
-												
-							// 					setTimeout(function(){
-							// 						_this.scrollToBottom();
-							// 					},100)
-							// 				 }
-										
-							// 		}
-							// 	}
-							// })
-							
-							
-							
-							//console.log("------------------------");
-			            };  
-			            reader.readAsDataURL(file);  
-			        },function(e){  
-			            mui.toast("读写出现异常: " + e.message );  
-			        })  
-			    })  
+								_this.$websocket.dispatch("WEBSOCKET_SEND", "{body:'"+JSON.stringify(v)+"',CMD:'GROUP_CHAT_SEND_VOICE'}");
+								setTimeout(function(){
+									_this.scrollToBottom();
+								},100)
+							}
+						}
+					}
+				});
+
+
+
+
+
+
+
 			},
 			
 			
