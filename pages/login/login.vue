@@ -159,10 +159,26 @@
 				// uni.showLoading({
 				// 	title: '登录中'
 				// });
+
+
+				let deviceType = "";
+				let deviceVersion = "";
+				uni.getSystemInfo({
+					success: function(res) {
+						console.log("test",res)
+						if(res){
+							deviceType = res.osName;
+							deviceVersion = res.osVersion;
+						}
+					}
+				});
+
 				this.$http.post("/user/json/loginV2",
 					{
 						account:_this.phoneData,
 						password:_this.passData,
+						deviceType:deviceType,
+						deviceVersion:deviceVersion
 					},
 					{
 						header:{
