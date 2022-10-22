@@ -4,7 +4,7 @@
 		<cu-custom backUrl="/pages/index/index" bgColor="bg-blue"  :isBack="true" :nameToLeft="true"><block slot="backText"></block><block slot="content">
 		{{showname}} <text v-if="chatCfg.showUserOnline==1">{{entity.online==0?' (离线)':' (在线)'}}</text>
 		<text v-show="$store.state.temp.input_ing" style="font-size: 26upx;margin-left:10upx;">- 正在输入...</text>
-			<text v-show="toIP" style="font-size: 16upx;margin-left:10upx;">{{"IP："+toIP}}</text>
+			<text v-show="toIP" style="font-size: 16upx; color: #FFCC99; margin-left:10upx;">{{"IP："+toIP}}</text>
 		</block><block slot="right">
 			<uni-text @tap="goMgr(entity.id)" style="font-size: 22px;color: #fff;margin-right: 14px;" class="lg text-gray cuIcon-more"><span></span></uni-text>
 		</block></cu-custom>
