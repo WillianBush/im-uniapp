@@ -396,48 +396,6 @@
 				uni.navigateTo({
 					url:"/pages/mine/user_info/index"
 				})
-			},
-			logout() {
-				let _this = this;
-				
-				_this.$http.post("/user/json/logout",
-					{
-						header:{
-							"x-access-uid":_this.$store.state.user.id,
-							"x-access-client":_this.$clientType
-						}
-					}
-				).then(res=>{
-					let res_data = eval(res.data);
-					if(res_data.code==200) {  
-						uni.clearStorageSync();
-						_this.$store.commit("clearData");
-						uni.navigateTo({
-							url:"../login/login"
-						})
-					}
-				})
-				
-				// uni.request({
-				// 	method:"POST",
-				// 	url: _this.$store.state.req_url + "/user/json/logout",
-				// 	header:{
-				// 		"Content-Type":"application/x-www-form-urlencoded",
-				// 		"x-access-uid":_this.$store.state.user.id
-				// 	},
-				// 	success(res) {
-				// 		let res_data = eval(res.data);
-				// 		if(res_data.code==200) {  
-				// 			uni.clearStorageSync();
-				// 			_this.$store.commit("clearData");
-				// 			uni.navigateTo({
-				// 				url:"../login/login"
-				// 			})
-				// 		}
-				// 	}
-				// })
-				
-				
 			}
 		}
 	}

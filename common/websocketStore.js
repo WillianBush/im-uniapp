@@ -314,37 +314,6 @@ export default new Vuex.Store({
 					
 				} else if(data.CMD=="OTHER_LOGIN") {
 					//别处冲线
-
-					console.log("test_logout","OTHER_LOGIN");
-
-					Vue.prototype.$http.post("/user/json/logout",
-						{
-							header:{
-								"x-access-uid":store.state.user.id,
-								"x-access-client":Vue.prototype.$clientType
-							}
-						}
-					).then(res=>{
-						let res_data = eval(res.data);
-						if(res_data.code==200) {  
-							//uni.clearStorageSync();
-							store.commit("clearData");
-							uni.showModal({
-							    title: '提示',
-								showCancel:false,
-							    content: '你的帐号已在别处上线',
-							    success: function (res) {
-							        if (res.confirm) {
-										uni.removeStorageSync("USER");
-										uni.redirectTo({
-											url:"../login/login"
-										})
-							        }
-							    }
-							});
-							
-						}
-					});
 					
 					// uni.request({
 					// 	method:"POST",
@@ -831,31 +800,6 @@ export default new Vuex.Store({
 					 //myConstants.curScope.redMap[data.body.redUUID].status = myConstants.curScope.red.status;//更新此群红包MAP中某红包的某个属性,不要整个BEAN覆盖否则会失去引用无法达到更新目的
 				} else if(data.CMD=="LOGIN_USER_STATUS_BAN") {
 
-					console.log("test_logout","LOGIN_USER_STATUS_BAN");
-					
-					Vue.prototype.$http.post("/user/json/logout",
-						{
-							header:{
-								"x-access-uid":store.state.user.id,
-								"x-access-client":Vue.prototype.$clientType
-							}
-						}
-					).then(res=>{
-						let res_data = eval(res.data);
-						if(res_data.code==200) {  
-							uni.clearStorageSync();
-							store.commit("clearData");
-							uni.showToast({
-								icon:"none",
-							    title: '帐号已被冻结',
-							    duration: 2000
-							});
-							uni.redirectTo({
-								url:"../login/login"
-							})
-						}
-					})
-					
 					// uni.request({
 					// 	method:"POST",
 					// 	url:store.state.req_url + "/user/json/logout",
@@ -880,33 +824,6 @@ export default new Vuex.Store({
 					// 	}
 					// })
 				} else if(data.CMD=="LOGIN_USER_REMOVE") {
-
-					console.log("test_logout","LOGIN_USER_REMOVE");
-					
-					Vue.prototype.$http.post("/user/json/logout",
-						{
-							header:{
-								"x-access-uid":store.state.user.id,
-								"x-access-client":Vue.prototype.$clientType
-							}
-						}
-						
-					).then(res=>{
-						let res_data = eval(res.data);
-						if(res_data.code==200) {  
-							console.log("来来来来来来来来");
-							uni.clearStorageSync();
-							store.commit("clearData");
-							uni.showToast({
-								icon:"none",
-							    title: '帐号已被删除',
-							    duration: 2000
-							});
-							uni.redirectTo({
-								url:"../login/login"
-							})
-						}
-					});
 					
 					// uni.request({
 					// 	method:"POST",
