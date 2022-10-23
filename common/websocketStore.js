@@ -314,7 +314,9 @@ export default new Vuex.Store({
 					
 				} else if(data.CMD=="OTHER_LOGIN") {
 					//别处冲线
-					
+
+					console.log("test_logout","OTHER_LOGIN");
+
 					Vue.prototype.$http.post("/user/json/logout",
 						{
 							header:{
@@ -828,6 +830,8 @@ export default new Vuex.Store({
 					 //myConstants.curScope.red = data.body;//更新当前打开红包的状态 
 					 //myConstants.curScope.redMap[data.body.redUUID].status = myConstants.curScope.red.status;//更新此群红包MAP中某红包的某个属性,不要整个BEAN覆盖否则会失去引用无法达到更新目的
 				} else if(data.CMD=="LOGIN_USER_STATUS_BAN") {
+
+					console.log("test_logout","LOGIN_USER_STATUS_BAN");
 					
 					Vue.prototype.$http.post("/user/json/logout",
 						{
@@ -876,6 +880,8 @@ export default new Vuex.Store({
 					// 	}
 					// })
 				} else if(data.CMD=="LOGIN_USER_REMOVE") {
+
+					console.log("test_logout","LOGIN_USER_REMOVE");
 					
 					Vue.prototype.$http.post("/user/json/logout",
 						{
