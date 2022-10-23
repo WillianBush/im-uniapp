@@ -14,13 +14,13 @@
 				<wInput
 					v-model="phoneData"
 					type="text"
-					maxlength="11"
+					maxlength="25"
 					placeholder="请输入手机号码"
 				></wInput>
 				<wInput
 					v-model="passData"
 					type="password"
-					maxlength="11"
+					maxlength="25"
 					placeholder="请输入新密码"
 					isShowPass
 				></wInput>

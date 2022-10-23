@@ -54,7 +54,7 @@
 				<wInput
 					v-model="passData"
 					type="password"
-					maxlength="11"
+					maxlength="25"
 					placeholder="登录密码"
 					isShowPass
 				></wInput>

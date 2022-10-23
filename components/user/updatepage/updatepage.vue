@@ -104,15 +104,18 @@ export default {
 		});
 		// #endif
 		// #ifdef APP-PLUS
-			let _appType = "";
+
+            //android:1,ios:2
+			let _appType;
+			let _appName = uni.getSystemInfoSync().appName;
 			switch(uni.getSystemInfoSync().platform){
 			    case 'android':
 			       //console.log('客户端是Android')
-				   _appType = "android";
+				   _appType = 1;
 			       break;
 			    case 'ios':
 			      // console.log('客户端是iOS')
-				   _appType = "ios";
+				   _appType = 2;
 			       break;
 			    // case 'devtools':
 			    //    console.log('客户端是在开发者工具上')
@@ -121,9 +124,10 @@ export default {
 			    //    console.log('客户端是在其他工具上')
 			    //    break;
 			}
-			_this.$http.post("/sysConfig/json/getSysVersion",
+			_this.$http.post("/appVersion/appInfo",
 				{
-					appType:_appType
+					os:_appType,
+                    appName:_appName
 				},
 				{
 					header:{
@@ -133,6 +137,8 @@ export default {
 				}
 			).then(res=>{
 				let res_data = eval(res.data);
+
+              console.log("tttttt" , res_data);
 				if(res_data.code==200) { 
 					console.log("_this.$store.state.SYS_VERSION:"+_this.$store.state.SYS_VERSION);
 					console.log("res_data.body.version:"+res_data.body.version);

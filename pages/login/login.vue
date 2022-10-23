@@ -10,13 +10,13 @@
 				<wInput
 					v-model="phoneData"
 					type="text"
-					maxlength="11"
+					maxlength="25"
 					placeholder="用户名/电话"
 				></wInput>
 				<wInput
 					v-model="passData"
 					type="password"
-					maxlength="11"
+					maxlength="25"
 					placeholder="密码" 
 				></wInput>
 			</view>
