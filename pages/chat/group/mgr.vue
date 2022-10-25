@@ -1,3 +1,4 @@
+<!--群聊天页面，点击右上角设置-->
 <template>
 	<view v-if="$store.state.cur_chat_entity&&$store.state.cur_chat_entity.owner_UUID&&$store.state.cur_chat_entity.owner_UUID!=''" style="padding-bottom:60upx;">
 		<cu-custom bgColor="bg-blue"  :isBack="true" :nameToLeft="true"><block slot="backText"></block><block slot="content">群组信息</block><block slot="right">

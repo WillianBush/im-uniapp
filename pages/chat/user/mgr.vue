@@ -1,3 +1,4 @@
+<!--聊天对象页面，点击右上角设置-->
 <template>
 	<view>
 		<cu-custom bgColor="bg-blue"  :isBack="true" :nameToLeft="true"><block slot="backText"></block><block slot="content">设置</block><block slot="right">

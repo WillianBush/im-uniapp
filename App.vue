@@ -175,7 +175,6 @@
 			// //#endif
 		},
 		onLoad(e) {
-
 		},
 		onShow: function(e) {
 			console.log('App Show--')
@@ -184,10 +183,8 @@
 			// 	uni.removeStorageSync("USER");
 			// }
 
-
             //重要，初始化net 绑定
             initNetBind();
-
 
 			this.$store.state.appShow = true;
 			setTimeout(()=>{
@@ -648,6 +645,13 @@
                 _initC();
                 bindHttp();
                 bindWebSocket();
+
+                //#ifdef H5
+                    //h5，点击浏览器刷新按钮，成功加载domain后，重新加载app
+                    uni.navigateTo({
+                        url: "/pages/splash/splash"
+                    })
+                //#endif
             }
         })
     }
