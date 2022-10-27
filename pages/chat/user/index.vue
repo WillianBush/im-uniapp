@@ -1871,11 +1871,12 @@
 					if(hasUrl) {
 						v.txt = formatTxtContent;
 						v.psr = "uparse";
-					} 
+					}
 				}
-				
+				if(v.txt.indexOf("<a") === 0 && (v.txt.indexOf("http://") || v.txt.indexOf("https://"))){
+					//TODO
+				}
 
-				
 				let msgbean = {
 					chatType:"2",
 					chatid:this.toid,
