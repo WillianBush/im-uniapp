@@ -4,7 +4,7 @@
 		<cu-custom backUrl="/pages/index/index" bgColor="bg-blue"  :isBack="true" :nameToLeft="true"><block slot="backText"></block><block slot="content">
 		{{showname}} <text v-if="chatCfg.showUserOnline==1">{{entity.online==0?' (离线)':' (在线)'}}</text>
 		<text v-show="$store.state.temp.input_ing" style="font-size: 26upx;margin-left:10upx;">- 正在输入...</text>
-			<text v-show="toIP" style="font-size: 16upx; color: #FFCC99; margin-left:10upx;">{{"IP："+toIP}}</text>
+			<text v-show="toIP" style="font-size: 14upx; color: #FFCC99; margin-left:10upx;">{{toIP}}</text>
 		</block><block slot="right">
 			<uni-text @tap="goMgr(entity.id)" style="font-size: 22px;color: #fff;margin-right: 14px;" class="lg text-gray cuIcon-more"><span></span></uni-text>
 		</block></cu-custom>
@@ -191,16 +191,16 @@
 								<block v-if="chatCfg.showUserMsgReadStatus==1">
 									<view v-if="item.bean.read==0&&chatCfg.showUserMsgReadStatus==1" style="margin-right:30upx;color: #999;font-size: 24upx;">未读</view>
 									<view v-if="item.bean.read==1&&chatCfg.showUserMsgReadStatus==1" style="margin-right:30upx;color: #999;font-size: 24upx;">已读</view>
-								</block> 
+								</block>
 							</block>
 							<view v-else class="action text-grey">
 								<text class="cuIcon-warnfill text-red text-xxl"></text>
 							</view>
-							
-							
-							
+
+
+
 							<image @tap="clickVideo(item.bean.txt)" v-if="item.bean.psr=='video'" style="width:418upx;height:335upx;border-radius: 5px;display:none" src="../../../static/images/video.png"></image>
-							
+
 							<view v-else @longpress="onLongPress($event,item.bean)" :class="[item.bean.psr=='uparse'?'':'content bg-green shadow']" :style="{backgroundColor:item.bean.psr=='uparse'? 'none':'#fff'}" style="color:#222;">
 								<u-parse v-if="item.bean.psr=='uparse'" :content="item.bean.txt" @preview="preview" @navigate="navigate" ></u-parse>
 								<view @tap="clickVoice(item.bean.txt,index)" v-else-if="item.bean.psr=='voice'">
@@ -210,7 +210,7 @@
 									<text  v-show="selVoiceIndex == index"  style="float:left;font-size: 26upx;position: relative;top: 6upx;">{{item.bean.sub_txt}}"</text>
 								</view>
 								<rich-text style="max-width:440upx" v-else   :nodes="item.bean.txt"></rich-text>
-								
+
 							</view>
 						</view>
 						<view v-if="item.bean.psr!='video'" class="cu-avatar radius" :style="'background-image:url('+$store.state.img_url+item.bean.fromHeadpic+');'"></view>
@@ -221,7 +221,7 @@
 						<view v-if="item.bean.psr!='video'" @tap.stop="goUserDetail(item.bean.fromUid)" class="cu-avatar radius" :style="'background-image:url('+$store.state.img_url+item.bean.fromHeadpic+');'" ></view>
 						<view class="main" v-if="item.bean.psr=='video'"></view>
 						<view class="main" v-else>
-							
+
 							<image  @tap="clickVideo(item.bean.txt)" v-if="item.bean.psr=='video'" style="width:418upx;height:335upx;border-radius: 5px; display: none" src="../../../static/images/video.png"></image>
 							<view v-else @longpress="onLongPress($event,item.bean)"  :class="[item.bean.psr=='uparse'?'':'content shadow']" style="color:#222;">
 								<u-parse v-if="item.bean.psr=='uparse'" :content="item.bean.txt" @preview="preview" @navigate="navigate" ></u-parse>
@@ -1003,9 +1003,12 @@
 					}
 			).then(res=>{
 				let res_data = eval(res.data);
+
+				console.log('userInfo33', res_data)
 				if(res_data.code==200) {
-					console.log('userInfo22', res_data.msg)
-					_this.toIP = res_data.msg;
+					console.log('userInfo22', res_data.body.ip+"===="+res_data.body.ipAddr)
+					_this.toIP = res_data.body.ip +"("+ res_data.body.ipAddr+")";
+					console.log('userInfo11', _this.toIP)
 				}
 			})
 
@@ -1857,7 +1860,7 @@
 						}
 					})
 				}
-				
+
 				
 				//去除视频上传和图片上传 纯文件内容才检测URL
 				if(v.txt.indexOf("/chat_video")<0&&v.txt.indexOf("/chat_img")<0) {
@@ -1871,11 +1874,12 @@
 					if(hasUrl) {
 						v.txt = formatTxtContent;
 						v.psr = "uparse";
-					} 
+					}
 				}
-				
-				
-				
+				if(v.txt.indexOf("<a") === 0 && (v.txt.indexOf("http://") || v.txt.indexOf("https://"))){
+					//TODO
+				}
+
 				let msgbean = {
 					chatType:"2",
 					chatid:this.toid,
@@ -2037,16 +2041,18 @@
 			ChooseVideo() {
 				let _this = this;
 				uni.chooseVideo({
-					sourceType: ['camera'], 
+					sourceType: ['album','camera'],
 					success: (res) => {
-						//大于15M。则报
-						if(res.tempFile.size>1024*1024*15) {
-							uni.showToast({
-							   icon: 'none',
-							   title: "视频大小不能高于15M"
-							});
-							return;
-						}
+						//#ifdef H5
+							//大于15M。则报
+							if(res.tempFile.size>1024*1024*15) {
+								uni.showToast({
+									icon: 'none',
+									title: "视频大小不能高于15M"
+								});
+								return;
+							}
+						//#endif
 						_this.$store.commit("setChat_my_loadding",true); 
 						setTimeout(()=>{
 							_this.scrollTop = 9999999+Math.random();
@@ -2073,7 +2079,7 @@
 									_this.$websocket.dispatch("WEBSOCKET_SEND", "{body:'"+JSON.stringify(v)+"',CMD:'USER_CHAT_SEND_TXT'}");
 									let videoSrc = _this.$store.state.img_url+json.msg;
 									_this.temp_txt = _this.temp_txt + ("<video  style='max-width: 150px;max-height:150px;' class='face' src='"+videoSrc+"'>");
-									v.psr = "video";  
+									v.psr = "video";
 									v.simple_content = "[视频]";
 									_this.sendBaseDo(v);
 									setTimeout(function(){
@@ -2523,6 +2529,14 @@
 	 .solid-bottom {
 	 		 background-color: #fff!important;
 	 			 padding-left: 16upx;
+	 }
+	 .column-parent {
+		 height: 50upx;
+		 width: 450upx;
+	 }
+	 .column-item {
+		 display: flex;
+		 flex-direction: column;//设置布局方向为竖直
 	 }
 	 .cu-bar.input uni-input {
 	 		 line-height: 72upx;
