@@ -51,7 +51,12 @@
 		 
 		 
 		 
-		<scroll-view style="height: calc(100vh - 100upx - 100upx - 100upx - 50upx);" :scroll-y="modalName==null" class="page" :class="modalName!=null?'show':''">
+		<scroll-view style="height: calc(100vh - 100upx - 100upx - 100upx - 50upx);" :scroll-y="modalName==null" class="page" :class="modalName!=null?'show':''"
+					 :refresher-enabled="true"
+					 :refresher-triggered="refresherTriggered"
+					 @refresherrefresh="refresherrefresh"
+					 @refresherrestore="refresherrestore"
+					 @refresherabort="refresherabort">
 				
 				
 
@@ -134,6 +139,8 @@
 	export default {
 		data() {
 			return {
+				refresherTriggered: false, //下拉刷新状态
+				_refresherTriggered: false, //防止异步操作
 				chatCfg:{},
 				showMenu:false,
 				cuIconList: [{
@@ -202,6 +209,112 @@
 			};
 		},
 		methods: {
+			refresherrefresh() {
+				console.log('自定义下拉刷新被触发');
+				let _this = this;
+				if (_this._refresherTriggered) {
+					return;
+				}
+				_this._refresherTriggered = true;
+				//界面下拉触发，triggered可能不是true，要设为true
+				if (!_this.refresherTriggered) {
+					_this.refresherTriggered = true;
+				}
+				this.loadStoreData();
+			},
+			refresherrestore() {
+				console.log('自定义下拉刷新被复位');
+				let _this = this;
+				_this.refresherTriggered = false;
+				_this._refresherTriggered = false;
+			},
+			refresherabort() {
+				console.log('自定义下拉刷新被中止    ');
+				let _this = this;
+				_this.refresherTriggered = false;
+				_this._refresherTriggered = false;
+			},
+			loadStoreData() {
+				let _this = this;
+				let user = uni.getStorageSync("USER");
+				if(user){
+					_this.$http.post("/user/accessRecord/json/list",
+							{
+								header:{
+									"x-access-uid":user.id,
+									"x-access-client":_this.$clientType
+								}
+							}
+					).then(res_1=>{
+						let res_data_1 = eval(res_1.data);
+						if(res_data_1.code==200) {
+							let unreadSum = 0;
+							console.log("---=====----==="+res_data_1.body.length);
+							res_data_1.body.forEach(item=>{
+								let s = uni.getStorageSync(item.id+"_NOTE");
+								if(s&&s!="") {
+									item.title = s;
+								}
+
+								let last_txt = uni.getStorageSync(user.id+"#"+item.id+'_CHAT_MESSAGE_LASTCONTENT');
+								if(last_txt.indexOf("<img")>=0) {
+									item.content = "[图片]";
+								} else if(last_txt.indexOf("upload/chat/voice")>=0) {
+									item.content = "[语音]";
+								} else if(last_txt.indexOf("upload/chat/video")>=0) {
+									item.content = "[视频]";
+								}  else {
+									item.content = last_txt;
+								}
+
+
+								let unRead = uni.getStorageSync(user.id+"#"+item.id+'_CHAT_MESSAGE_UNREAD');
+								if(unRead&&unRead!="") {
+									unreadSum+=parseInt(unRead);
+									item.unread = parseInt(unRead);
+								} else {
+									item.unread = 0;
+								}
+
+								let aite_count = uni.getStorageSync(item.id+"#AITE_COUNT");
+								if(aite_count&&aite_count!="") {
+									item.aiteCount = parseInt(aite_count);
+								}
+
+								let zhiding = uni.getStorageSync(item.id+"_zhiding");
+								if(zhiding) {
+									item.top = 0;
+								}
+
+							});
+							let list = res_data_1.body;
+							list.sort(function(a,b){
+								if(a.top==b.top) {
+									return b.createDateTime-a.createDateTime;
+								} else {
+									return a.top - b.top;
+								}
+							})
+
+							_this.$store.commit("setAr_list",list)
+							_this.$store.commit("setUnReadMsgSum",unreadSum)
+							this.closeRefresh();
+							//_this.$store.commit("setAr_list_show",list)
+
+						} else {
+							this.closeRefresh();
+							uni.showToast({
+								icon: 'none',
+								title: "获取列表失败"
+							});
+						}
+					})
+				}
+			},
+			closeRefresh(){
+				this.refresherTriggered = false; //触发onRestore，并关闭刷新图标
+				this._refresherTriggered = false;
+			},
 			saoma(){
 				let _this = this;
 				let user = uni.getStorageSync("USER");
@@ -212,7 +325,7 @@
 				        console.log('条码内容：' + res.result);
 						if(res.result.indexOf("#group#")==0) {
 							let roomid = res.result.split("#")[2];
-							
+
 							_this.$http.post("/room/json/isRoomMember",
 								{
 									roomid:roomid
@@ -225,7 +338,7 @@
 								}
 							).then(res=>{
 								let res_data = eval(res.data);
-								if(res_data.code==200) { 
+								if(res_data.code==200) {
 									if(res_data.msg=="1") {
 										uni.navigateTo({
 											url:"/pages/chat/group/index?toid="+roomid
@@ -242,7 +355,7 @@
 									});
 								}
 							})
-							
+
 							// uni.request({
 							// 	method:"POST",
 							// 	url: _this.$store.state.req_url + "/room/json/isRoomMember",
@@ -256,7 +369,7 @@
 							// 	success(res) {
 							// 		console.log(res.data);
 							// 		let res_data = eval(res.data);
-							// 		if(res_data.code==200) { 
+							// 		if(res_data.code==200) {
 							// 			if(res_data.msg=="1") {
 							// 				uni.navigateTo({
 							// 					url:"/pages/chat/group/index?toid="+roomid
@@ -281,11 +394,11 @@
 								console.log("进来这里");
 								uni.navigateTo({
 									url:"/pages/index/index"
-								}) 
+								})
 								return;
 							}
-							
-							
+
+
 							_this.$http.post("/user/friend/isMyFri/v1",
 								{
 									uid:member_id
@@ -299,7 +412,7 @@
 							).then(res=>{
 								console.log(res.data);
 								let res_data = eval(res.data);
-								if(res_data.code==200) { 
+								if(res_data.code==200) {
 									if(res_data.msg=="1") {
 										uni.navigateTo({
 											url:"/pages/chat/user/index?toid="+member_id
@@ -316,7 +429,7 @@
 									});
 								}
 							})
-							
+
 							// uni.request({
 							// 	method:"POST",
 							// 	url: _this.$store.state.req_url + "/user/friend/isMyFri/v1",
@@ -330,7 +443,7 @@
 							// 	success(res) {
 							// 		console.log(res.data);
 							// 		let res_data = eval(res.data);
-							// 		if(res_data.code==200) { 
+							// 		if(res_data.code==200) {
 							// 			if(res_data.msg=="1") {
 							// 				uni.navigateTo({
 							// 					url:"/pages/chat/user/index?toid="+member_id
@@ -356,9 +469,9 @@
 							uni.navigateTo({
 								url:"/pages/faxian/txtContent/txtContent?txt="+res.result
 							})
-						}	
-						
-						
+						}
+
+
 				    }
 				});
 			},
@@ -372,12 +485,12 @@
 				uni.setStorageSync(item.id+"_zhiding",false);
 				let list1 = [];	//没有置顶的
 				let list2 = [];//置顶的
-				
+
 				this.$store.state.ar_list.forEach(item1=>{
 					if(item.arid==item1.arid) {
 						item1.top = 50;
 					}
-					
+
 					let zhiding = uni.getStorageSync(item1.id+"_zhiding");
 					if(zhiding) {
 						item.top = 0;
@@ -386,8 +499,8 @@
 						list1.push(item1);
 					}
 				});
-				
-				
+
+
 				list1.sort(function(a,b){
 					return b.createDateTime-a.createDateTime;
 				})
@@ -395,20 +508,20 @@
 					return b.createDateTime-a.createDateTime;
 				})
 				this.$store.commit("setAr_list",list2.concat(list1));
-				
-				
+
+
 				this.ListTouchEnd();
 			},
 			zhidingItem(item) {
 				uni.setStorageSync(item.id+"_zhiding",true);
-				
+
 				let list1 = [];	//没有置顶的
 				let list2 = [];//置顶的
 				this.$store.state.ar_list.forEach(item1=>{
 					if(item.arid==item1.arid) {
 						item1.top = 0;
 					}
-					
+
 					let zhiding = uni.getStorageSync(item1.id+"_zhiding");
 					if(zhiding) {
 						item.top = 0;
@@ -416,9 +529,9 @@
 					} else {
 						list1.push(item1);
 					}
-					
+
 				});
-				
+
 				list1.sort(function(a,b){
 					return b.createDateTime-a.createDateTime;
 				})
@@ -426,19 +539,19 @@
 					return b.createDateTime-a.createDateTime;
 				})
 				this.$store.commit("setAr_list",list2.concat(list1));
-				
-				
+
+
 				this.ListTouchEnd();
 			},
 			removeItem(item) {
 				let _this = this;
 				let user = uni.getStorageSync("USER");
-					
+
 				this.ListTouchEnd();
-				//使用setTimeout的目的在于先左移动再进行删除	
+				//使用setTimeout的目的在于先左移动再进行删除
 				setTimeout(function(){
-					
-					
+
+
 					_this.$http.post("/user/accessRecord/json/remove",
 						{id:item.arid},
 						{
@@ -449,7 +562,7 @@
 						}
 					).then(res=>{
 						let res_data = eval(res.data);
-						if(res_data.code==200) {  
+						if(res_data.code==200) {
 							let list = _this.$store.state.ar_list.filter(item1=>{
 								if(item.arid==item1.arid) {
 									return false;
@@ -459,7 +572,7 @@
 							_this.$store.commit("setAr_list",list);
 						}
 					})
-					
+
 					// uni.request({
 					// 	method:"POST",
 					// 	url: _this.$store.state.req_url + "/user/accessRecord/json/remove",
@@ -470,7 +583,7 @@
 					// 	},
 					// 	success(res) {
 					// 		let res_data = eval(res.data);
-					// 		if(res_data.code==200) {  
+					// 		if(res_data.code==200) {
 					// 			let list = _this.$store.state.ar_list.filter(item1=>{
 					// 				if(item.arid==item1.arid) {
 					// 					return false;
@@ -482,7 +595,7 @@
 					// 	}
 					// })
 				},500)
-				
+
 			},
 			createGroup(){
 				uni.navigateTo({
@@ -508,7 +621,7 @@
 			showMenuFn() {
 				let _this = this;
 				let user = uni.getStorageSync("USER");
-				
+
 				//是否超级用户
 				_this.$http.post("/user/json/isSuperUser",
 					{
@@ -519,7 +632,7 @@
 					}
 				).then(res=>{
 					let res_data = eval(res.data);
-					if(res_data.code==200) {  
+					if(res_data.code==200) {
 						_this.super_user = parseInt(res_data.msg);
 					}
 				})
@@ -532,12 +645,12 @@
 				// 	},
 				// 	success(res) {
 				// 		let res_data = eval(res.data);
-				// 		if(res_data.code==200) {  
+				// 		if(res_data.code==200) {
 				// 			_this.super_user = parseInt(res_data.msg);
 				// 		}
 				// 	}
 				// })
-				
+
 				this.showMenu = !this.showMenu;
 			},
 			search_list() {
@@ -565,8 +678,8 @@
 						})
 					}
 				}
-				
-				
+
+
 			},
 			showModal(e) {
 				this.modalName = e.currentTarget.dataset.target
@@ -604,28 +717,28 @@
 				if((e.touches[0].pageX - this.listTouchStart)<=uni.upx2px(-100)) {
 					this.listTouchDirection = e.touches[0].pageX - this.listTouchStart > 0 ? 'right' : 'left'
 				}
-				
+
 				//console.log("e.touches[0].pageX - this.listTouchStart:"+(e.touches[0].pageX - this.listTouchStart));
 			},
 
 			// ListTouch计算滚动
 			ListTouchEnd(e) {
-				
+
 				if (this.listTouchDirection == 'left') {
 					this.modalName = e.currentTarget.dataset.target
 				} else {
 					this.modalName = null
 				}
 				this.listTouchDirection = null;
-				
+
 			}
 		},
 		//因为这个home/index.vue是组件形式显示的。所有没有页面的生命周期只有mounted等
-		mounted() {  
+		mounted() {
 			let _this = this;
-			let user = uni.getStorageSync("USER"); 
+			let user = uni.getStorageSync("USER");
 			//console.log(user.id);
-			
+
 			_this.$http.post("/sysConfig/json/getChatCfg",
 				{
 					header:{
@@ -635,11 +748,11 @@
 				}
 			).then(res=>{
 				let res_data = eval(res.data);
-				if(res_data.code==200) {  
+				if(res_data.code==200) {
 					_this.chatCfg = res_data.body;
 				}
 			})
-			
+
 			// uni.request({
 			// 	method:"POST",
 			// 	url: _this.$store.state.req_url + "/sysConfig/json/getChatCfg",
@@ -649,15 +762,15 @@
 			// 	},
 			// 	success(res) {
 			// 		let res_data = eval(res.data);
-			// 		if(res_data.code==200) {  
+			// 		if(res_data.code==200) {
 			// 			_this.chatCfg = res_data.body;
 			// 		}
 			// 	}
 			// })
-				
-			
-			
-			
+
+
+
+
 		}
 	}
 </script>
