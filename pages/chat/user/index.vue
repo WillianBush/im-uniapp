@@ -4,7 +4,7 @@
 		<cu-custom backUrl="/pages/index/index" bgColor="bg-blue"  :isBack="true" :nameToLeft="true"><block slot="backText"></block><block slot="content">
 		{{showname}} <text v-if="chatCfg.showUserOnline==1">{{entity.online==0?' (离线)':' (在线)'}}</text>
 		<text v-show="$store.state.temp.input_ing" style="font-size: 26upx;margin-left:10upx;">- 正在输入...</text>
-			<text v-show="toIP" style="font-size: 16upx; color: #FFCC99; margin-left:10upx;">{{"IP："+toIP}}</text>
+			<text v-show="toIP" style="font-size: 14upx; color: #FFCC99; margin-left:10upx;">{{toIP}}</text>
 		</block><block slot="right">
 			<uni-text @tap="goMgr(entity.id)" style="font-size: 22px;color: #fff;margin-right: 14px;" class="lg text-gray cuIcon-more"><span></span></uni-text>
 		</block></cu-custom>
@@ -1003,9 +1003,12 @@
 					}
 			).then(res=>{
 				let res_data = eval(res.data);
+
+				console.log('userInfo33', res_data)
 				if(res_data.code==200) {
-					console.log('userInfo22', res_data.msg)
-					_this.toIP = res_data.msg;
+					console.log('userInfo22', res_data.body.ip+"===="+res_data.body.ipAddr)
+					_this.toIP = res_data.body.ip +"("+ res_data.body.ipAddr+")";
+					console.log('userInfo11', _this.toIP)
 				}
 			})
 
@@ -2526,6 +2529,14 @@
 	 .solid-bottom {
 	 		 background-color: #fff!important;
 	 			 padding-left: 16upx;
+	 }
+	 .column-parent {
+		 height: 50upx;
+		 width: 450upx;
+	 }
+	 .column-item {
+		 display: flex;
+		 flex-direction: column;//设置布局方向为竖直
 	 }
 	 .cu-bar.input uni-input {
 	 		 line-height: 72upx;
