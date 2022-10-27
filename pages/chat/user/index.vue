@@ -191,16 +191,16 @@
 								<block v-if="chatCfg.showUserMsgReadStatus==1">
 									<view v-if="item.bean.read==0&&chatCfg.showUserMsgReadStatus==1" style="margin-right:30upx;color: #999;font-size: 24upx;">未读</view>
 									<view v-if="item.bean.read==1&&chatCfg.showUserMsgReadStatus==1" style="margin-right:30upx;color: #999;font-size: 24upx;">已读</view>
-								</block> 
+								</block>
 							</block>
 							<view v-else class="action text-grey">
 								<text class="cuIcon-warnfill text-red text-xxl"></text>
 							</view>
-							
-							
-							
+
+
+
 							<image @tap="clickVideo(item.bean.txt)" v-if="item.bean.psr=='video'" style="width:418upx;height:335upx;border-radius: 5px;display:none" src="../../../static/images/video.png"></image>
-							
+
 							<view v-else @longpress="onLongPress($event,item.bean)" :class="[item.bean.psr=='uparse'?'':'content bg-green shadow']" :style="{backgroundColor:item.bean.psr=='uparse'? 'none':'#fff'}" style="color:#222;">
 								<u-parse v-if="item.bean.psr=='uparse'" :content="item.bean.txt" @preview="preview" @navigate="navigate" ></u-parse>
 								<view @tap="clickVoice(item.bean.txt,index)" v-else-if="item.bean.psr=='voice'">
@@ -210,7 +210,7 @@
 									<text  v-show="selVoiceIndex == index"  style="float:left;font-size: 26upx;position: relative;top: 6upx;">{{item.bean.sub_txt}}"</text>
 								</view>
 								<rich-text style="max-width:440upx" v-else   :nodes="item.bean.txt"></rich-text>
-								
+
 							</view>
 						</view>
 						<view v-if="item.bean.psr!='video'" class="cu-avatar radius" :style="'background-image:url('+$store.state.img_url+item.bean.fromHeadpic+');'"></view>
@@ -221,7 +221,7 @@
 						<view v-if="item.bean.psr!='video'" @tap.stop="goUserDetail(item.bean.fromUid)" class="cu-avatar radius" :style="'background-image:url('+$store.state.img_url+item.bean.fromHeadpic+');'" ></view>
 						<view class="main" v-if="item.bean.psr=='video'"></view>
 						<view class="main" v-else>
-							
+
 							<image  @tap="clickVideo(item.bean.txt)" v-if="item.bean.psr=='video'" style="width:418upx;height:335upx;border-radius: 5px; display: none" src="../../../static/images/video.png"></image>
 							<view v-else @longpress="onLongPress($event,item.bean)"  :class="[item.bean.psr=='uparse'?'':'content shadow']" style="color:#222;">
 								<u-parse v-if="item.bean.psr=='uparse'" :content="item.bean.txt" @preview="preview" @navigate="navigate" ></u-parse>
@@ -1857,7 +1857,7 @@
 						}
 					})
 				}
-				
+
 				
 				//去除视频上传和图片上传 纯文件内容才检测URL
 				if(v.txt.indexOf("/chat_video")<0&&v.txt.indexOf("/chat_img")<0) {
@@ -1874,7 +1874,7 @@
 					} 
 				}
 				
-				
+
 				
 				let msgbean = {
 					chatType:"2",
@@ -2037,16 +2037,18 @@
 			ChooseVideo() {
 				let _this = this;
 				uni.chooseVideo({
-					sourceType: ['camera'], 
+					sourceType: ['album','camera'],
 					success: (res) => {
-						//大于15M。则报
-						if(res.tempFile.size>1024*1024*15) {
-							uni.showToast({
-							   icon: 'none',
-							   title: "视频大小不能高于15M"
-							});
-							return;
-						}
+						//#ifdef H5
+							//大于15M。则报
+							if(res.tempFile.size>1024*1024*15) {
+								uni.showToast({
+									icon: 'none',
+									title: "视频大小不能高于15M"
+								});
+								return;
+							}
+						//#endif
 						_this.$store.commit("setChat_my_loadding",true); 
 						setTimeout(()=>{
 							_this.scrollTop = 9999999+Math.random();
@@ -2073,7 +2075,7 @@
 									_this.$websocket.dispatch("WEBSOCKET_SEND", "{body:'"+JSON.stringify(v)+"',CMD:'USER_CHAT_SEND_TXT'}");
 									let videoSrc = _this.$store.state.img_url+json.msg;
 									_this.temp_txt = _this.temp_txt + ("<video  style='max-width: 150px;max-height:150px;' class='face' src='"+videoSrc+"'>");
-									v.psr = "video";  
+									v.psr = "video";
 									v.simple_content = "[视频]";
 									_this.sendBaseDo(v);
 									setTimeout(function(){
