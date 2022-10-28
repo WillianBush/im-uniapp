@@ -912,7 +912,12 @@
 		onHide() {
 			uni.$off("scrollTopFn");
 		},
-		onShow() { 
+		onShow() {
+
+
+			console.log("mmmmmmmmmmmnnnnnnnnnn1",this.$store.state.cur_chat_msg_list.length)
+			console.log("mmmmmmmmmmmnnnnnnnnnn2",this.$store.state.cur_chat_msg_list)
+
 			let _this = this;
 			uni.$on("scrollTopFn",()=>{
 				console.log("触发了-scrollTopFn");
@@ -1875,9 +1880,6 @@
 						v.txt = formatTxtContent;
 						v.psr = "uparse";
 					}
-				}
-				if(v.txt.indexOf("<a") === 0 && (v.txt.indexOf("http://") || v.txt.indexOf("https://"))){
-					//TODO
 				}
 
 				let msgbean = {

@@ -18,9 +18,9 @@
 				<view class="content">
 					<text class="text-grey"
 						style="float:left;margin-left: 10px;line-height: 160upx;color: #8799a3;">图像1</text>
-					<view style="float:right;width:130upx;padding-top:30upx;padding-bottom:30upx;margin-left: 10upx;">
+					<view style="float:right;width:130upx;padding-top:30upx;padding-bottom:30upx;margin-left: 10upx;" @tap="ChooseImage(1)">
 						<view class="cu-avatar radius margin-left"
-							:style="'height:100upx;width:100upx;background-image:url('+$store.state.user.greetingpic_1+');'">
+							:style="'height:100upx;width:100upx;background-image:url('+$store.state.img_url+$store.state.greetingpic_1+');'">
 						</view>
 					</view>
 				</view>
@@ -31,9 +31,9 @@
 				<view class="content">
 					<text class="text-grey"
 						style="float:left;margin-left: 10px;line-height: 160upx;color: #8799a3;">图像2</text>
-					<view style="float:right;width:130upx;padding-top:30upx;padding-bottom:30upx;margin-left: 10upx;">
+					<view style="float:right;width:130upx;padding-top:30upx;padding-bottom:30upx;margin-left: 10upx;" @tap="ChooseImage(2)">
 						<view class="cu-avatar radius margin-left"
-							:style="'height:100upx;width:100upx;background-image:url('+$store.state.user.greetingpic_2+');'">
+							:style="'height:100upx;width:100upx;background-image:url('+$store.state.img_url+$store.state.greetingpic_2+');'">
 						</view>
 					</view>
 				</view>
@@ -44,9 +44,9 @@
 				<view class="content">
 					<text class="text-grey"
 						style="float:left;margin-left: 10px;line-height: 160upx;color: #8799a3;">图像3</text>
-					<view style="float:right;width:130upx;padding-top:30upx;padding-bottom:30upx;margin-left: 10upx;">
+					<view style="float:right;width:130upx;padding-top:30upx;padding-bottom:30upx;margin-left: 10upx;" @tap="ChooseImage(3)">
 						<view class="cu-avatar radius margin-left"
-							:style="'height:100upx;width:100upx;background-image:url('+$store.state.user.greetingpic_3+');'">
+							:style="'height:100upx;width:100upx;background-image:url('+$store.state.img_url+$store.state.greetingpic_3+');'">
 						</view>
 					</view>
 				</view>
@@ -57,9 +57,9 @@
 				<view class="content">
 					<text class="text-grey"
 						style="float:left;margin-left: 10px;line-height: 160upx;color: #8799a3;">图像4</text>
-					<view style="float:right;width:130upx;padding-top:30upx;padding-bottom:30upx;margin-left: 10upx;">
+					<view style="float:right;width:130upx;padding-top:30upx;padding-bottom:30upx;margin-left: 10upx;" @tap="ChooseImage(4)">
 						<view class="cu-avatar radius margin-left"
-							:style="'height:100upx;width:100upx;background-image:url('+$store.state.user.greetingpic_4+');'">
+							:style="'height:100upx;width:100upx;background-image:url('+$store.state.img_url+$store.state.greetingpic_4+');'">
 						</view>
 					</view>
 				</view>
@@ -72,7 +72,7 @@
 						style="float:left;margin-left: 10px;line-height: 160upx;color: #8799a3;">图像5</text>
 					<view style="float:right;width:130upx;padding-top:30upx;padding-bottom:30upx;margin-left: 10upx;">
 						<view class="cu-avatar radius margin-left"
-							:style="'height:100upx;width:100upx;background-image:url('+$store.state.user.greetingpic_5+');'">
+							:style="'height:100upx;width:100upx;background-image:url('+$store.state.img_url+$store.state.greetingpic_5+');'">
 						</view>
 					</view>
 				</view>
@@ -159,6 +159,7 @@
 				var url = _this.greetingId ? "/user/employeeDefaultMessage/json/update" : "/user/employeeDefaultMessage/json/add";
 				_this.$http.post(url,
 					{
+						id: _this.greetingId,
 						msg_1: _this.txt_1,
 						msg_2: _this.txt_2,
 						msg_3: _this.txt_3,
@@ -193,10 +194,10 @@
 					}
 				})
 			},
-			ChooseImage() {
+			ChooseImage(index) {
 				let _this = this;
 				uni.chooseImage({
-					count: 4, //默认9
+					count: 1, //默认9
 					sizeType: ['compressed'], //可以指定是原图还是压缩图，默认二者都有
 					sourceType: ['album'], //从相册选择
 					success: (res) => {
@@ -211,7 +212,7 @@
 
 						var uper = uni.uploadFile({
 							// 需要上传的地址
-							url: _this.$store.state.req_url + '/user/file/uploadHeadpic',
+							url: _this.$store.state.req_url + '/user/file/uploadInvitePic',
 							header: {
 								"x-access-uid": _this.$store.state.user.id,
 								//"Content-Type":"application/x-www-form-urlencoded"
@@ -227,7 +228,24 @@
 										icon: 'success',
 										title: "上传成功"
 									});
-									_this.$store.state.user.headpic = json.msg
+									let url = json.msg;
+									switch (index) {
+										case 1:
+											_this.$store.state.greetingpic_1 = url;
+											break
+										case 2:
+											_this.$store.state.greetingpic_2 = url;
+											break
+										case 3:
+											_this.$store.state.greetingpic_3 = url;
+											break
+										case 4:
+											_this.$store.state.greetingpic_4 = url;
+											break
+										case 4:
+											_this.$store.state.greetingpic_5 = url;
+											break
+									}
 								} else {
 									uni.showToast({
 										icon: 'none',
