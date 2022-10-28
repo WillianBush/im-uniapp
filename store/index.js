@@ -40,6 +40,13 @@ const state = {
 	req_url:[],//请求URL地址
 	img_url:[],//图片资源请求地址
 	socket_url:[],//websocket URL地址
+	/*问候语图像*/
+	greetingpic_1:"",
+	greetingpic_2:"",
+	greetingpic_3:"",
+	greetingpic_4:"",
+	greetingpic_5:"",
+
 	//临时属性    
 	temp:{  
 		base64:"",//【作用于群二维码发给朋友临时存等等，因为直接使用带参数页面跳转会导致特殊符号过滤掉】
