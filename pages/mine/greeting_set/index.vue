@@ -70,7 +70,7 @@
 				<view class="content">
 					<text class="text-grey"
 						style="float:left;margin-left: 10px;line-height: 160upx;color: #8799a3;">图像5</text>
-					<view style="float:right;width:130upx;padding-top:30upx;padding-bottom:30upx;margin-left: 10upx;">
+					<view style="float:right;width:130upx;padding-top:30upx;padding-bottom:30upx;margin-left: 10upx;" @tap="ChooseImage(5)">
 						<view class="cu-avatar radius margin-left"
 							:style="'height:100upx;width:100upx;background-image:url('+$store.state.img_url+$store.state.greetingpic_5+');'">
 						</view>
@@ -110,7 +110,7 @@
 		data() {
 			return {
 				txt_1: '',
-				text_2: '',
+				txt_2: '',
 				txt_3: '',
 				greetingId: ''
 			};
@@ -242,7 +242,7 @@
 										case 4:
 											_this.$store.state.greetingpic_4 = url;
 											break
-										case 4:
+										case 5:
 											_this.$store.state.greetingpic_5 = url;
 											break
 									}
