@@ -20,7 +20,7 @@
 						style="float:left;margin-left: 10px;line-height: 160upx;color: #8799a3;">图像1</text>
 					<view style="float:right;width:130upx;padding-top:30upx;padding-bottom:30upx;margin-left: 10upx;" @tap="ChooseImage(1)">
 						<view class="cu-avatar radius margin-left"
-							:style="'height:100upx;width:100upx;background-image:url('+$store.state.img_url+$store.state.greetingpic_1+');'">
+							:style="'height:100upx;width:100upx;background-image:url('+$store.state.greetingpic_1+');'">
 						</view>
 					</view>
 				</view>
@@ -33,7 +33,7 @@
 						style="float:left;margin-left: 10px;line-height: 160upx;color: #8799a3;">图像2</text>
 					<view style="float:right;width:130upx;padding-top:30upx;padding-bottom:30upx;margin-left: 10upx;" @tap="ChooseImage(2)">
 						<view class="cu-avatar radius margin-left"
-							:style="'height:100upx;width:100upx;background-image:url('+$store.state.img_url+$store.state.greetingpic_2+');'">
+							:style="'height:100upx;width:100upx;background-image:url('+$store.state.greetingpic_2+');'">
 						</view>
 					</view>
 				</view>
@@ -46,7 +46,7 @@
 						style="float:left;margin-left: 10px;line-height: 160upx;color: #8799a3;">图像3</text>
 					<view style="float:right;width:130upx;padding-top:30upx;padding-bottom:30upx;margin-left: 10upx;" @tap="ChooseImage(3)">
 						<view class="cu-avatar radius margin-left"
-							:style="'height:100upx;width:100upx;background-image:url('+$store.state.img_url+$store.state.greetingpic_3+');'">
+							:style="'height:100upx;width:100upx;background-image:url('+$store.state.greetingpic_3+');'">
 						</view>
 					</view>
 				</view>
@@ -59,7 +59,7 @@
 						style="float:left;margin-left: 10px;line-height: 160upx;color: #8799a3;">图像4</text>
 					<view style="float:right;width:130upx;padding-top:30upx;padding-bottom:30upx;margin-left: 10upx;" @tap="ChooseImage(4)">
 						<view class="cu-avatar radius margin-left"
-							:style="'height:100upx;width:100upx;background-image:url('+$store.state.img_url+$store.state.greetingpic_4+');'">
+							:style="'height:100upx;width:100upx;background-image:url('+$store.state.greetingpic_4+');'">
 						</view>
 					</view>
 				</view>
@@ -72,7 +72,7 @@
 						style="float:left;margin-left: 10px;line-height: 160upx;color: #8799a3;">图像5</text>
 					<view style="float:right;width:130upx;padding-top:30upx;padding-bottom:30upx;margin-left: 10upx;" @tap="ChooseImage(5)">
 						<view class="cu-avatar radius margin-left"
-							:style="'height:100upx;width:100upx;background-image:url('+$store.state.img_url+$store.state.greetingpic_5+');'">
+							:style="'height:100upx;width:100upx;background-image:url('+$store.state.greetingpic_5+');'">
 						</view>
 					</view>
 				</view>
@@ -117,57 +117,42 @@
 		},
 		mounted() {
 			let _this = this;
-			_this.getGreetingMsg();
+		},
+		// navigate.vue页面接受参数
+		onLoad: function (option) {
+			let _this = this;
+			const index = JSON.parse(decodeURIComponent(option.item));
+
+			if(_this.$store.state.greetingList.length > index){
+				let bean = _this.$store.state.greetingList[index];
+				_this.txt_1 = bean.msg_1;
+				_this.txt_2 = bean.msg_2;
+				_this.txt_3 = bean.msg_3;
+				_this.greetingId = bean.id;
+				_this.$store.state.greetingpic_1 = bean.picture_1;
+				_this.$store.state.greetingpic_2 = bean.picture_2;
+				_this.$store.state.greetingpic_3 = bean.picture_3;
+				_this.$store.state.greetingpic_4 = bean.picture_4;
+				_this.$store.state.greetingpic_5 = bean.picture_5;
+			}
 		},
 		onReady() {},
 		methods: {
-			getGreetingMsg() {
-				let _this = this;
-				let user = this.$store.state.user;
-				http.get("/user/employeeDefaultMessage/json/getMyHelloMessage",
-					{
-						header:{
-							"x-access-uid":user.id,
-							"x-access-client":_this.$clientType
-						}
-					}
-				).then(res=>{
-					let res_data = eval(res.data);
-					if(res_data.code==200) {  
-						const { msg_1, msg_2, msg_3, picture_1, picture_2, picture_3, picture_4, picture_5, id } = res.data.body;
-						_this.txt_1 = msg_1;
-						_this.txt_2 = msg_2;
-						_this.txt_3 = msg_3;
-						_this.greetingId = id;
-						_this.$store.state.user.greetingpic_1 = picture_1;
-						_this.$store.state.user.greetingpic_2 = picture_2;
-						_this.$store.state.user.greetingpic_3 = picture_3;
-						_this.$store.state.user.greetingpic_4 = picture_4;
-						_this.$store.state.user.greetingpic_5 = picture_5;
-					} else {
-						uni.showToast({
-						    icon: 'none',
-							position: 'bottom',
-						    title: res_data.msg
-						});
-					}
-				})
-			},
 			tijiao() {
 				let _this = this;
 				let user = this.$store.state.user;
-				var url = _this.greetingId ? "/user/employeeDefaultMessage/json/update" : "/user/employeeDefaultMessage/json/add";
+				var url = "/user/employeeDefaultMessage/json/update";
 				_this.$http.post(url,
 					{
 						id: _this.greetingId,
 						msg_1: _this.txt_1,
 						msg_2: _this.txt_2,
 						msg_3: _this.txt_3,
-						picture_1: _this.$store.state.user.greetingpic_1,
-						picture_2: _this.$store.state.user.greetingpic_2,
-						picture_3: _this.$store.state.user.greetingpic_3,
-						picture_4: _this.$store.state.user.greetingpic_4,
-						picture_5: _this.$store.state.user.greetingpic_5
+						picture_1: _this.$store.state.greetingpic_1,
+						picture_2: _this.$store.state.greetingpic_2,
+						picture_3: _this.$store.state.greetingpic_3,
+						picture_4: _this.$store.state.greetingpic_4,
+						picture_5: _this.$store.state.greetingpic_5
 					},
 					{
 						header:{
@@ -228,7 +213,7 @@
 										icon: 'success',
 										title: "上传成功"
 									});
-									let url = json.msg;
+									let url = _this.$store.state.img_url + json.msg;
 									switch (index) {
 										case 1:
 											_this.$store.state.greetingpic_1 = url;

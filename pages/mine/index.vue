@@ -78,12 +78,22 @@
 							
 						</view>
 					</view>
-					<view @tap="goSetGreeting()" v-show="$store.state.isEmployee" class="cu-item t1" style="border:0px;" :class="true?'arrow':''">
+
+					<block  v-for="(item,index) in $store.state.greetingList">
+						<view @tap="goSetGreeting(index)" v-show="$store.state.isEmployee" class="cu-item t1" style="border:0px;" :class="true?'arrow':''">
+							<view class="content">
+								<text style="color:#F5BC50;font-size:46upx" class="iconfont icon-xiaoxi2"></text>
+								<text class="text-black" style="margin-left: 10px;">{{"设置问候语-"+item.invite_code}}</text>
+							</view>
+						</view>
+					</block>
+
+					<!--<view @tap="goSetGreeting()" v-show="$store.state.isEmployee" class="cu-item t1" style="border:0px;" :class="true?'arrow':''">
 						<view class="content">
 							<text style="color:#F5BC50;font-size:46upx" class="iconfont icon-xiaoxi2"></text>
 							<text class="text-black" style="margin-left: 10px;">设置问候语</text>
 						</view>
-					</view>
+					</view>-->
 					<!--
 					<view class="cu-item">
 						<view class="content">
@@ -195,6 +205,10 @@
 		components: {
 		  updatepage
 		},
+		mounted() {
+			let _this = this;
+			_this.getGreetingMsg(_this);
+		},
 		methods:{
 			goSignIn(){
 				uni.navigateTo({
@@ -240,9 +254,9 @@
 					url:"/pages/mine/user_info/index"
 				})
 			},
-			goSetGreeting() {
+			goSetGreeting(index) {
 				uni.navigateTo({
-					url:"/pages/mine/greeting_set/index"
+					url:"/pages/mine/greeting_set/index?item="+index
 				})
 			},
 			logout() {
@@ -297,7 +311,30 @@
 				// })
 				
 				
-			}
+			},
+			getGreetingMsg(_this) {
+				let user = this.$store.state.user;
+				_this.$http.get("/user/employeeDefaultMessage/json/getMyHelloMessage",
+						{
+							header:{
+								"x-access-uid":user.id,
+								"x-access-client":_this.$clientType
+							}
+						}
+				).then(res=>{
+					let res_data = eval(res.data);
+					if(res_data.code==200) {
+						const data = res.data.body.rows;
+						_this.$store.state.greetingList = data;
+					} else {
+						uni.showToast({
+							icon: 'none',
+							position: 'bottom',
+							title: res_data.msg
+						});
+					}
+				})
+			},
 		}
 	}
 </script>
