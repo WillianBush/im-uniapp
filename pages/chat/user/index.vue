@@ -218,13 +218,13 @@
 					</view>
 					
 					<view v-else class="cu-item"  >
-						<view v-if="item.bean.psr!='video'" @tap.stop="goUserDetail(item.bean.fromUid)" class="cu-avatar radius" :style="'background-image:url('+$store.state.img_url+item.bean.fromHeadpic+');'" ></view>
-						<view class="main" v-if="item.bean.psr=='video'"></view>
-						<view class="main" v-else>
+						<view  @tap.stop="goUserDetail(item.bean.fromUid)" class="cu-avatar radius" :style="'background-image:url('+$store.state.img_url+item.bean.fromHeadpic+');'" ></view>
+<!--						<view class="main" v-if="item.bean.psr=='video'"></view>-->
+						<view class="main">
 
-							<image  @tap="clickVideo(item.bean.txt)" v-if="item.bean.psr=='video'" style="width:418upx;height:335upx;border-radius: 5px; display: none" src="../../../static/images/video.png"></image>
-							<view v-else @longpress="onLongPress($event,item.bean)"  :class="[item.bean.psr=='uparse'?'':'content shadow']" style="color:#222;">
-								<u-parse v-if="item.bean.psr=='uparse'" :content="item.bean.txt" @preview="preview" @navigate="navigate" ></u-parse>
+<!--							<image  @tap="clickVideo(item.bean.txt)" v-if="item.bean.psr=='video'" style="width:418upx;height:335upx;border-radius: 5px; display: none" src="../../../static/images/video.png"></image>-->
+							<view @longpress="onLongPress($event,item.bean)"  :class="[item.bean.psr=='uparse'?'':'content shadow']" style="color:#222;">
+								<u-parse v-if="true" :content="item.bean.txt" @preview="preview" @navigate="navigate" ></u-parse>
 								<view @tap="clickVoice(item.bean.txt,index)" v-else-if="item.bean.psr=='voice'">
 									<text  v-show="selVoiceIndex != index"  style="text-align: right; float:right;width:100upx;font-size: 52upx;position: relative;top: 4upx;"  class="iconfont icon-yuyin1 text-xxl "></text>
 									<text  v-show="selVoiceIndex != index"  style="float:right;font-size: 26upx;position: relative;top: 4upx;">{{item.bean.sub_txt}}"</text>
@@ -234,7 +234,7 @@
 								<rich-text style="max-width:440upx" v-else   :nodes="item.bean.txt"></rich-text>
 							</view>
 						</view>
-						<view v-if="item.bean.psr!='video'" class="date "> {{item.bean.date}}</view>
+						<view class="date "> {{item.bean.date}}</view>
 					</view>
 				</block>
 				
@@ -974,8 +974,9 @@
 			if(this.$store.state.chatMessageMap.has(user.id+"#"+this.toid)) {
 				let msg_list = this.$store.state.chatMessageMap.get(user.id+"#"+this.toid);
 				if(msg_list&&msg_list.length>0) {
-					var newMsgList = msg_list.filter(o => !(o.bean.psr == "video" && o.bean.txt.indexOf('<video') > -1));
-					this.$store.commit("setCur_chat_msg_list",newMsgList); 
+					// var newMsgList = msg_list.filter(o => !(o.bean.psr == "video" && o.bean.txt.indexOf('<video') > -1));
+					var newMsgList = msg_list;
+					this.$store.commit("setCur_chat_msg_list",newMsgList);
 					console.log('88888888', msg_list)
 				}
 			} else {
@@ -1896,7 +1897,8 @@
 					// if(jsonObj.length>50) {
 						//  jsonObj.splice(0,jsonObj.length-50);
 					// }
-					var newJsonObj = jsonObj.filter(o => !(o.bean.psr == "video" && o.bean.txt.indexOf('<video') > -1));
+					// var newJsonObj = jsonObj.filter(o => !(o.bean.psr == "video" && o.bean.txt.indexOf('<video') > -1));
+					var newJsonObj = jsonObj;
 					uni.setStorageSync(this.$store.state.user.id+"#"+msgbean.chatid+'_CHAT_MESSAGE',JSON.stringify(newJsonObj));
 					 if(jsonObj.length>50) {
 						jsonObj.splice(0,jsonObj.length-50);
@@ -1921,7 +1923,8 @@
 					}
 					//uni.setStorageSync(this.$store.state.user.id+"#"+msgbean.chatid+'_CHAT_MESSAGE_LASTCONTENT',jsonObj[jsonObj.length-1].bean.simple_content);
 				} else {
-					var newList = list.filter(o => !(o.bean.psr == "video" && o.bean.txt.indexOf('<video') > -1));
+					// var newList = list.filter(o => !(o.bean.psr == "video" && o.bean.txt.indexOf('<video') > -1));
+					var newList = list;
 					uni.setStorageSync(this.$store.state.user.id+"#"+msgbean.chatid+'_CHAT_MESSAGE',JSON.stringify(newList));
 					
 					console.log('list',list)
@@ -2531,14 +2534,6 @@
 	 .solid-bottom {
 	 		 background-color: #fff!important;
 	 			 padding-left: 16upx;
-	 }
-	 .column-parent {
-		 height: 50upx;
-		 width: 450upx;
-	 }
-	 .column-item {
-		 display: flex;
-		 flex-direction: column;//设置布局方向为竖直
 	 }
 	 .cu-bar.input uni-input {
 	 		 line-height: 72upx;

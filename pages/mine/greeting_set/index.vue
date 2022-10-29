@@ -156,18 +156,18 @@
 			tijiao() {
 				let _this = this;
 				let user = this.$store.state.user;
-				var url = _this.greetingId ? "/user/employeeDefaultMessage/json/update" : "/user/employeeDefaultMessage/json/add";
+				var url = "/user/employeeDefaultMessage/json/update";
 				_this.$http.post(url,
 					{
 						id: _this.greetingId,
 						msg_1: _this.txt_1,
 						msg_2: _this.txt_2,
 						msg_3: _this.txt_3,
-						picture_1: _this.$store.state.user.greetingpic_1,
-						picture_2: _this.$store.state.user.greetingpic_2,
-						picture_3: _this.$store.state.user.greetingpic_3,
-						picture_4: _this.$store.state.user.greetingpic_4,
-						picture_5: _this.$store.state.user.greetingpic_5
+						picture_1: _this.$store.state.greetingpic_1,
+						picture_2: _this.$store.state.greetingpic_2,
+						picture_3: _this.$store.state.greetingpic_3,
+						picture_4: _this.$store.state.greetingpic_4,
+						picture_5: _this.$store.state.greetingpic_5
 					},
 					{
 						header:{
