@@ -242,7 +242,7 @@
 										case 4:
 											_this.$store.state.greetingpic_4 = url;
 											break
-										case 4:
+										case 5:
 											_this.$store.state.greetingpic_5 = url;
 											break
 									}
