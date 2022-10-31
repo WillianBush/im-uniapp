@@ -114,6 +114,10 @@
 
                                 //_this.$store.commit("setAr_list_show",list)
 
+                            } else if(res_data_1.code == 502){
+                                uni.navigateTo({
+                                    url: "/pages/empty/empty"
+                                })
                             } else {
                                 uni.showToast({
                                     icon: 'none',

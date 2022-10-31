@@ -180,51 +180,32 @@
 							
 				</block>
 				<block v-else>
-					
+					<!--自己发出的-->
 					<view  v-if="item.bean.fromUid==$store.state.user.id" class="cu-item self" >
-						<view class="main" v-if="item.bean.psr=='video'"></view>
-						<view class="main" v-else>
-							<!---s
-							<view v-if="item.bean.read==-1" class="iconfont cu-load load-cuIcon loading text-xxl" style="margin-right:30upx;color: #999;font-size: 24upx;"></view>
-							-->
-							<block  v-if="$store.state.WAIT_SEND_MSG.indexOf(item.bean.uuid)<0">
-								<block v-if="chatCfg.showUserMsgReadStatus==1">
-									<view v-if="item.bean.read==0&&chatCfg.showUserMsgReadStatus==1" style="margin-right:30upx;color: #999;font-size: 24upx;">未读</view>
-									<view v-if="item.bean.read==1&&chatCfg.showUserMsgReadStatus==1" style="margin-right:30upx;color: #999;font-size: 24upx;">已读</view>
-								</block>
-							</block>
-							<view v-else class="action text-grey">
-								<text class="cuIcon-warnfill text-red text-xxl"></text>
-							</view>
+						<view class="main">
 
-
-
-							<image @tap="clickVideo(item.bean.txt)" v-if="item.bean.psr=='video'" style="width:418upx;height:335upx;border-radius: 5px;display:none" src="../../../static/images/video.png"></image>
-
-							<view v-else @longpress="onLongPress($event,item.bean)" :class="[item.bean.psr=='uparse'?'':'content bg-green shadow']" :style="{backgroundColor:item.bean.psr=='uparse'? 'none':'#fff'}" style="color:#222;">
+							<view  v-if="item.bean.psr!='video'" @longpress="onLongPress($event,item.bean)" :class="[item.bean.psr=='uparse'?'':'content bg-green shadow']" :style="{backgroundColor:item.bean.psr=='uparse'? 'none':'#fff'}" style="color:#222;">
 								<u-parse v-if="item.bean.psr=='uparse'" :content="item.bean.txt" @preview="preview" @navigate="navigate" ></u-parse>
 								<view @tap="clickVoice(item.bean.txt,index)" v-else-if="item.bean.psr=='voice'">
-									<text  v-show="selVoiceIndex != index"  style="float:left;width:100upx;font-size: 52upx;position: relative;top: 4upx;"  class="iconfont icon-yuyin1 text-xxl "></text>
-									<text  v-show="selVoiceIndex != index"  style="float:left;font-size: 26upx;position: relative;top: 4upx;">{{item.bean.sub_txt}}"</text>
-									<text  v-show="selVoiceIndex == index"   style="float:left;width:100upx;font-size: 52upx;position: relative;text-align: left;top:0;line-height: 38upx;"  class="iconfont cu-load load-cuIcon loading text-xxl "></text>
-									<text  v-show="selVoiceIndex == index"  style="float:left;font-size: 26upx;position: relative;top: 6upx;">{{item.bean.sub_txt}}"</text>
+									<text  v-show="selVoiceIndex != index"  style="text-align: right; float:right;width:100upx;font-size: 52upx;position: relative;top: 4upx;"  class="iconfont icon-yuyin1 text-xxl "></text>
+									<text  v-show="selVoiceIndex != index"  style="float:right;font-size: 26upx;position: relative;top: 4upx;">{{item.bean.sub_txt}}"</text>
+									<text  v-show="selVoiceIndex == index"   style="text-align: right;float:right;width:100upx;font-size: 52upx;position: relative;top:0;line-height: 38upx;"  class="iconfont cu-load load-cuIcon loading text-xxl "></text>
+									<text  v-show="selVoiceIndex == index"  style="float:right;font-size: 26upx;position: relative;top: 6upx;">{{item.bean.sub_txt}}"</text>
 								</view>
 								<rich-text style="max-width:440upx" v-else   :nodes="item.bean.txt"></rich-text>
-
 							</view>
 						</view>
 						<view v-if="item.bean.psr!='video'" class="cu-avatar radius" :style="'background-image:url('+$store.state.img_url+item.bean.fromHeadpic+');'"></view>
 						<view v-if="item.bean.psr!='video'" class="date">{{item.bean.date}}</view>
 					</view>
-					
+
+					<!--别人发来的-->
 					<view v-else class="cu-item"  >
 						<view  @tap.stop="goUserDetail(item.bean.fromUid)" class="cu-avatar radius" :style="'background-image:url('+$store.state.img_url+item.bean.fromHeadpic+');'" ></view>
-<!--						<view class="main" v-if="item.bean.psr=='video'"></view>-->
 						<view class="main">
-
-<!--							<image  @tap="clickVideo(item.bean.txt)" v-if="item.bean.psr=='video'" style="width:418upx;height:335upx;border-radius: 5px; display: none" src="../../../static/images/video.png"></image>-->
 							<view @longpress="onLongPress($event,item.bean)"  :class="[item.bean.psr=='uparse'?'':'content shadow']" style="color:#222;">
-								<u-parse v-if="true" :content="item.bean.txt" @preview="preview" @navigate="navigate" ></u-parse>
+								<u-parse v-if="item.bean.psr=='video'" :content="item.bean.txt" @preview="preview" @navigate="navigate" ></u-parse>
+								<u-parse v-else-if="item.bean.psr=='uparse'" :content="item.bean.txt" @preview="preview" @navigate="navigate" ></u-parse>
 								<view @tap="clickVoice(item.bean.txt,index)" v-else-if="item.bean.psr=='voice'">
 									<text  v-show="selVoiceIndex != index"  style="text-align: right; float:right;width:100upx;font-size: 52upx;position: relative;top: 4upx;"  class="iconfont icon-yuyin1 text-xxl "></text>
 									<text  v-show="selVoiceIndex != index"  style="float:right;font-size: 26upx;position: relative;top: 4upx;">{{item.bean.sub_txt}}"</text>

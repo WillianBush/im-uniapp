@@ -185,6 +185,10 @@
 		    "style" : {}
 		},
 		{
+			"path" : "pages/empty/empty",
+			"style" : {}
+		},
+		{
 		    "path" : "pages/mine/wallet/add_bank",
 		    "style" : {}
 		},

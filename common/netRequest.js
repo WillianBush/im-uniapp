@@ -144,7 +144,11 @@ export function _initC() {
         // }
         return response
     }, (response) => { // 请求错误做点什么。可以使用async await 做异步操作
-        console.log(response)
+        if(response && response.data.code==502){
+            uni.navigateTo({
+                url: "/pages/empty/empty"
+            })
+        }
         return Promise.reject(response)
     })
 }

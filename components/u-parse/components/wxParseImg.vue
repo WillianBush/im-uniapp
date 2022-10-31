@@ -8,7 +8,6 @@
     :src="deal(node.attr.src)"
 	@click="imgPreview(node.attr.src)"
     @load="wxParseImgLoad"
-	@error="handleError"
     />
 </template>
 
