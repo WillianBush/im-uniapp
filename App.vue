@@ -68,6 +68,8 @@
 					Vue.prototype.CustomBar = e.statusBarHeight + e.titleBarHeight;
 					// #endif
 
+                    //版本
+                    _this.$store.state.SYS_VERSION = e.appVersion;
 
 				}
 			})

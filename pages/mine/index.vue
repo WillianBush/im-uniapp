@@ -88,12 +88,6 @@
 						</view>
 					</block>
 
-					<!--<view @tap="goSetGreeting()" v-show="$store.state.isEmployee" class="cu-item t1" style="border:0px;" :class="true?'arrow':''">
-						<view class="content">
-							<text style="color:#F5BC50;font-size:46upx" class="iconfont icon-xiaoxi2"></text>
-							<text class="text-black" style="margin-left: 10px;">设置问候语</text>
-						</view>
-					</view>-->
 					<!--
 					<view class="cu-item">
 						<view class="content">
@@ -101,9 +95,9 @@
 							<text class="text-black" style="margin-left: 10px;">版权说明</text>
 							<text class="text-grey" style="float:right;margin-right:10px;font-size: 26upx;color: #bbb;">抖聊</text>
 						</view>
-					</view> 
+					</view>
 					-->
-					
+
 					<view @tap="checkUpdate()" class="cu-item arrow " style="padding-right:70upx;margin-top:20upx;">
 						<view class="content">
 							<text style="color:#FF2D2D;font-size:44upx" class="iconfont icon-app_icons--"></text>
