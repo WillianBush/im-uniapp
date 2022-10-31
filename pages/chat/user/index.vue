@@ -184,6 +184,17 @@
 					<view  v-if="item.bean.fromUid==$store.state.user.id" class="cu-item self" >
 						<view class="main">
 
+							<block  v-if="$store.state.WAIT_SEND_MSG.indexOf(item.bean.uuid)<0">
+								<block v-if="chatCfg.showUserMsgReadStatus==1">
+									<view v-if="item.bean.read==0&&chatCfg.showUserMsgReadStatus==1" style="margin-right:30upx;color: #999;font-size: 24upx;">未读</view>
+									<view v-if="item.bean.read==1&&chatCfg.showUserMsgReadStatus==1" style="margin-right:30upx;color: #999;font-size: 24upx;">已读</view>
+								</block>
+							</block>
+							<view v-else class="action text-grey">
+								<text class="cuIcon-warnfill text-red text-xxl"></text>
+							</view>
+
+
 							<view  v-if="item.bean.psr!='video'" @longpress="onLongPress($event,item.bean)" :class="[item.bean.psr=='uparse'?'':'content bg-green shadow']" :style="{backgroundColor:item.bean.psr=='uparse'? 'none':'#fff'}" style="color:#222;">
 								<u-parse v-if="item.bean.psr=='uparse'" :content="item.bean.txt" @preview="preview" @navigate="navigate" ></u-parse>
 								<view @tap="clickVoice(item.bean.txt,index)" v-else-if="item.bean.psr=='voice'">
