@@ -207,7 +207,9 @@
 		},
 		mounted() {
 			let _this = this;
-			_this.getGreetingMsg(_this);
+			if (_this.$store.state.isEmployee) {
+				_this.getGreetingMsg(_this);
+			}
 		},
 		methods:{
 			goSignIn(){
@@ -314,26 +316,28 @@
 			},
 			getGreetingMsg(_this) {
 				let user = this.$store.state.user;
-				_this.$http.get("/user/employeeDefaultMessage/json/getMyHelloMessage",
-						{
-							header:{
-								"x-access-uid":user.id,
-								"x-access-client":_this.$clientType
+				if(user){
+					_this.$http.get("/user/employeeDefaultMessage/json/getMyHelloMessage",
+							{
+								header:{
+									"x-access-uid":user.id,
+									"x-access-client":_this.$clientType
+								}
 							}
+					).then(res=>{
+						let res_data = eval(res.data);
+						if(res_data.code==200) {
+							const data = res.data.body.rows;
+							_this.$store.state.greetingList = data;
+						} else {
+							uni.showToast({
+								icon: 'none',
+								position: 'bottom',
+								title: res_data.msg
+							});
 						}
-				).then(res=>{
-					let res_data = eval(res.data);
-					if(res_data.code==200) {
-						const data = res.data.body.rows;
-						_this.$store.state.greetingList = data;
-					} else {
-						uni.showToast({
-							icon: 'none',
-							position: 'bottom',
-							title: res_data.msg
-						});
-					}
-				})
+					})
+				}
 			},
 		}
 	}
