@@ -4,6 +4,7 @@
     import { _initC } from "./common/netRequest";
     import { bindHttp,bindWebSocket } from "./main";
 	var _checkLink;
+	var _netLink;
 	var flag = true;
 	var flag_false_count = 0;
 	export default {
@@ -199,11 +200,11 @@
 			}
 			_checkLink = setInterval(function(){
 				_this.checkWsLink();
+				//如果是特权用户，10秒刷新一次聊天列表
                 if (_this.$store.state.isEmployee) {
                     _this.loadStoreData();
                 }
 			},10000);
-
 
 
 
@@ -718,6 +719,34 @@
                     })
                 }
             },
+            checkHttpHealth() {
+                let _this = this;
+                console.log("tttttt0000000", _this.$store.state.req_url);
+                console.log("tttttt0000000", _this.$store.state.req_url.length);
+                console.log("tttttt0000000", _this.$store.state.req_url[0]);
+                let i = 0;
+                uni.request({
+                    url: _this.$store.state.req_url[i] + "/user/health/check", //仅为示例，并非真实接口地址。
+                    header: {
+                        header: {
+                            "x-access-uid": _this.$store.state.user.id,
+                            "x-access-client": _this.$clientType
+                        }
+                    },
+                    success: (res) => {
+                        let res_data = eval(res.data);
+                        console.log("tttttt1", res_data.code + "--00000000");
+                        if (res_data.code != 200) {
+                            console.log("tttttt2", "1111111");
+                            _this.$store.state.req_url.splice(i, 1)
+                        }
+                    },
+                    fail: (res) => {
+                        console.log("tttttt3", "22222222");
+                        _this.$store.state.req_url.splice(i, 1)
+                    }
+                });
+            }
 		}
 
 	}
@@ -740,6 +769,14 @@
                         url: "/pages/splash/splash"
                     })
                 //#endif
+
+                /*健康检查，如果后端域名挂了，更换下一个*/
+                if(_netLink) {
+                    clearInterval(_netLink);
+                }
+                _netLink = setInterval(function(){
+                    _this.checkHttpHealth();
+                },100000);
             }
         })
     }

@@ -177,13 +177,10 @@
         let _this = this;
         //如果是ios，就是直接跳转到页面
         if(_this.deviceType == "2"){
-            plus.runtime.openUrl(_this.downloadUrl);
+            plus.runtime.openUrl(encodeURI(_this.downloadUrl));
             return;
         }
 
-        if (!this.upgrading) {
-          let versionInfo = this.getVersionAndPlatform();
-          console.log(versionInfo);
           // 如果是正式更新需要打开下面这行注释
           // 这里只是做了简单的判断
           // 这里可以更据平台来下载
@@ -197,22 +194,6 @@
           //  plus.runtime.openURL( url, errorCB, identity );
           // -------------------------
           this.upgrading = true;
-          // 这里是模拟更新
-          this.timer = setInterval(() => {
-            this.downloadTime++;
-            if (this.downloadTime >= 100) {
-              this.downloadTime = 0;
-              if (this.$refs.popup) {
-                this.$refs.popup.close();
-
-                setTimeout(() => {
-                  this.upgrading = false;
-                }, 200);
-              }
-
-              clearInterval(this.timer);
-            }
-          }, 1000);
           // 注意：
           // 支持以下类型安装包：
           // 1. 应用资源安装包（wgt），扩展名为'.wgt'；
@@ -225,7 +206,6 @@
           this.downloadApplications();
           // }
           // -----------------------
-        }
       },
       // 后台下载
       hiddenUpgradeEvent() {
@@ -304,7 +284,7 @@
 
         this.downloadTask.onProgressUpdate((res) => {
           // 下载进度
-          this.downloadTime = res.progress;
+          this.downloadTime = ((res.totalBytesWritten/res.totalBytesExpectedToWrite)*100).toFixed();
           console.log("下载进度" + res.progress);
           console.log("已经下载的数据长度" + res.totalBytesWritten);
           console.log("预期需要下载的数据总长度" + res.totalBytesExpectedToWrite);
