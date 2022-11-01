@@ -186,7 +186,7 @@
 			// }
 
             //重要，初始化net 绑定
-            initNetBind();
+            initNetBind(_this);
 
 			this.$store.state.appShow = true;
 			setTimeout(()=>{
@@ -722,7 +722,7 @@
 
 	}
 
-	function initNetBind() {
+	function initNetBind(_this) {
         //1：注意，这里进行http的绑定，方便后续可以 _this.$http 类型调用
         let remoteIP = config.requestRemoteIp(); // 获取动态设置接口请求域名
         remoteIP.then((resolve, reject) => {
@@ -731,6 +731,9 @@
                 bindHttp();
                 bindWebSocket();
 
+
+                //获取domain成功后，执行
+                _this.$isResolve()
                 //#ifdef H5
                     //h5，点击浏览器刷新按钮，成功加载domain后，重新加载app
                     uni.navigateTo({

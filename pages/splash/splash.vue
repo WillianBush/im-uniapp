@@ -30,7 +30,8 @@
                 }, 2000);
             }
         },
-        onShow: function () {
+        onShow: async function () {
+            await this.$onLaunched;
             let _this = this;
             setTimeout(function () {
                 console.log('Splash Show--')
@@ -114,7 +115,7 @@
 
                                 //_this.$store.commit("setAr_list_show",list)
 
-                            } else if(res_data_1.code == 502){
+                            } else if (res_data_1.code == 502) {
                                 uni.navigateTo({
                                     url: "/pages/empty/empty"
                                 })

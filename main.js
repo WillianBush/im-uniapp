@@ -25,6 +25,11 @@ Vue.component('number-jpan',number_jpan)
 import store from "./store"//使用vuex对状态进行管理
 Vue.prototype.$store = store;
 
+/*这里是为了从domian拿到数据后，再进行app启动，防止接口访问时，domian未获取到*/
+Vue.prototype.$onLaunched = new Promise(resolve => {
+	Vue.prototype.$isResolve = resolve;
+})
+
 /*注意：这里websocket和http 都是动态从oss获取，所以是一个有延迟的网络请求过程，而main.js是启动入口，不能直接绑定，否则可能导致websocket、http
 * 没有初始化完成，就进行后续的操作，存在调用报错。这里等oss获取成功后，再进行绑定配置*/
 import websocket from './common/websocketStore.js'
