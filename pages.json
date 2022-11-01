@@ -185,6 +185,10 @@
 		    "style" : {}
 		},
 		{
+			"path" : "pages/custom/myVideo",
+			"style" : {}
+		},
+		{
 			"path" : "pages/empty/empty",
 			"style" : {}
 		},

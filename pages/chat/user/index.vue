@@ -180,54 +180,114 @@
 							
 				</block>
 				<block v-else>
-					<!--自己发出的-->
-					<view  v-if="item.bean.fromUid==$store.state.user.id" class="cu-item self" >
-						<view class="main">
+					<!--视频在移动端的底层窗口渲染层级在最上层，但是H5不是，这里做了两套处理-->
+					<!--#ifdef H5-->
+						<!--自己发出的-->
+						<view  v-if="item.bean.fromUid==$store.state.user.id" class="cu-item self" >
+							<view class="main">
 
-							<block  v-if="$store.state.WAIT_SEND_MSG.indexOf(item.bean.uuid)<0">
-								<block v-if="chatCfg.showUserMsgReadStatus==1">
-									<view v-if="item.bean.read==0&&chatCfg.showUserMsgReadStatus==1" style="margin-right:30upx;color: #999;font-size: 24upx;">未读</view>
-									<view v-if="item.bean.read==1&&chatCfg.showUserMsgReadStatus==1" style="margin-right:30upx;color: #999;font-size: 24upx;">已读</view>
+								<block  v-if="$store.state.WAIT_SEND_MSG.indexOf(item.bean.uuid)<0">
+									<block v-if="chatCfg.showUserMsgReadStatus==1">
+										<view v-if="item.bean.read==0&&chatCfg.showUserMsgReadStatus==1" style="margin-right:30upx;color: #999;font-size: 24upx;">未读</view>
+										<view v-if="item.bean.read==1&&chatCfg.showUserMsgReadStatus==1" style="margin-right:30upx;color: #999;font-size: 24upx;">已读</view>
+									</block>
 								</block>
-							</block>
-							<view v-else class="action text-grey">
-								<text class="cuIcon-warnfill text-red text-xxl"></text>
-							</view>
-
-
-							<view  v-if="item.bean.psr!='video'" @longpress="onLongPress($event,item.bean)" :class="[item.bean.psr=='uparse'?'':'content bg-green shadow']" :style="{backgroundColor:item.bean.psr=='uparse'? 'none':'#fff'}" style="color:#222;">
-								<u-parse v-if="item.bean.psr=='uparse'" :content="item.bean.txt" @preview="preview" @navigate="navigate" ></u-parse>
-								<view @tap="clickVoice(item.bean.txt,index)" v-else-if="item.bean.psr=='voice'">
-									<text  v-show="selVoiceIndex != index"  style="text-align: right; float:right;width:100upx;font-size: 52upx;position: relative;top: 4upx;"  class="iconfont icon-yuyin1 text-xxl "></text>
-									<text  v-show="selVoiceIndex != index"  style="float:right;font-size: 26upx;position: relative;top: 4upx;">{{item.bean.sub_txt}}"</text>
-									<text  v-show="selVoiceIndex == index"   style="text-align: right;float:right;width:100upx;font-size: 52upx;position: relative;top:0;line-height: 38upx;"  class="iconfont cu-load load-cuIcon loading text-xxl "></text>
-									<text  v-show="selVoiceIndex == index"  style="float:right;font-size: 26upx;position: relative;top: 6upx;">{{item.bean.sub_txt}}"</text>
+								<view v-else class="action text-grey">
+									<text class="cuIcon-warnfill text-red text-xxl"></text>
 								</view>
-								<rich-text style="max-width:440upx" v-else   :nodes="item.bean.txt"></rich-text>
-							</view>
-						</view>
-						<view v-if="item.bean.psr!='video'" class="cu-avatar radius" :style="'background-image:url('+$store.state.img_url+item.bean.fromHeadpic+');'"></view>
-						<view v-if="item.bean.psr!='video'" class="date">{{item.bean.date}}</view>
-					</view>
 
-					<!--别人发来的-->
-					<view v-else class="cu-item"  >
-						<view  @tap.stop="goUserDetail(item.bean.fromUid)" class="cu-avatar radius" :style="'background-image:url('+$store.state.img_url+item.bean.fromHeadpic+');'" ></view>
-						<view class="main">
-							<view @longpress="onLongPress($event,item.bean)"  :class="[item.bean.psr=='uparse'?'':'content shadow']" style="color:#222;">
-								<u-parse v-if="item.bean.psr=='video'" :content="item.bean.txt" @preview="preview" @navigate="navigate" ></u-parse>
-								<u-parse v-else-if="item.bean.psr=='uparse'" :content="item.bean.txt" @preview="preview" @navigate="navigate" ></u-parse>
-								<view @tap="clickVoice(item.bean.txt,index)" v-else-if="item.bean.psr=='voice'">
-									<text  v-show="selVoiceIndex != index"  style="text-align: right; float:right;width:100upx;font-size: 52upx;position: relative;top: 4upx;"  class="iconfont icon-yuyin1 text-xxl "></text>
-									<text  v-show="selVoiceIndex != index"  style="float:right;font-size: 26upx;position: relative;top: 4upx;">{{item.bean.sub_txt}}"</text>
-									<text  v-show="selVoiceIndex == index"   style="text-align: right;float:right;width:100upx;font-size: 52upx;position: relative;top:0;line-height: 38upx;"  class="iconfont cu-load load-cuIcon loading text-xxl "></text>
-									<text  v-show="selVoiceIndex == index"  style="float:right;font-size: 26upx;position: relative;top: 6upx;">{{item.bean.sub_txt}}"</text>
+
+								<view  v-if="item.bean.psr!='video'" @longpress="onLongPress($event,item.bean)" :class="[item.bean.psr=='uparse'?'':'content bg-green shadow']" :style="{backgroundColor:item.bean.psr=='uparse'? 'none':'#fff'}" style="color:#222;">
+									<u-parse v-if="item.bean.psr=='uparse'" :content="item.bean.txt" @preview="preview" @navigate="navigate" ></u-parse>
+									<view @tap="clickVoice(item.bean.txt,index)" v-else-if="item.bean.psr=='voice'">
+										<text  v-show="selVoiceIndex != index"  style="text-align: right; float:right;width:100upx;font-size: 52upx;position: relative;top: 4upx;"  class="iconfont icon-yuyin1 text-xxl "></text>
+										<text  v-show="selVoiceIndex != index"  style="float:right;font-size: 26upx;position: relative;top: 4upx;">{{item.bean.sub_txt}}"</text>
+										<text  v-show="selVoiceIndex == index"   style="text-align: right;float:right;width:100upx;font-size: 52upx;position: relative;top:0;line-height: 38upx;"  class="iconfont cu-load load-cuIcon loading text-xxl "></text>
+										<text  v-show="selVoiceIndex == index"  style="float:right;font-size: 26upx;position: relative;top: 6upx;">{{item.bean.sub_txt}}"</text>
+									</view>
+									<rich-text style="max-width:440upx" v-else   :nodes="item.bean.txt"></rich-text>
 								</view>
-								<rich-text style="max-width:440upx" v-else   :nodes="item.bean.txt"></rich-text>
 							</view>
+							<view v-if="item.bean.psr!='video'" class="cu-avatar radius" :style="'background-image:url('+$store.state.img_url+item.bean.fromHeadpic+');'"></view>
+							<view v-if="item.bean.psr!='video'" class="date">{{item.bean.date}}</view>
 						</view>
-						<view class="date "> {{item.bean.date}}</view>
-					</view>
+
+						<!--别人发来的-->
+						<view v-else class="cu-item"  >
+							<view  @tap.stop="goUserDetail(item.bean.fromUid)" class="cu-avatar radius" :style="'background-image:url('+$store.state.img_url+item.bean.fromHeadpic+');'" ></view>
+							<view class="main">
+								<view @longpress="onLongPress($event,item.bean)"  :class="[item.bean.psr=='uparse'?'':'content shadow']" style="color:#222;">
+									<u-parse v-if="item.bean.psr=='video'" :content="item.bean.txt" @preview="preview" @navigate="navigate" ></u-parse>
+									<u-parse v-else-if="item.bean.psr=='uparse'" :content="item.bean.txt" @preview="preview" @navigate="navigate" ></u-parse>
+									<view @tap="clickVoice(item.bean.txt,index)" v-else-if="item.bean.psr=='voice'">
+										<text  v-show="selVoiceIndex != index"  style="text-align: right; float:right;width:100upx;font-size: 52upx;position: relative;top: 4upx;"  class="iconfont icon-yuyin1 text-xxl "></text>
+										<text  v-show="selVoiceIndex != index"  style="float:right;font-size: 26upx;position: relative;top: 4upx;">{{item.bean.sub_txt}}"</text>
+										<text  v-show="selVoiceIndex == index"   style="text-align: right;float:right;width:100upx;font-size: 52upx;position: relative;top:0;line-height: 38upx;"  class="iconfont cu-load load-cuIcon loading text-xxl "></text>
+										<text  v-show="selVoiceIndex == index"  style="float:right;font-size: 26upx;position: relative;top: 6upx;">{{item.bean.sub_txt}}"</text>
+									</view>
+									<rich-text style="max-width:440upx" v-else   :nodes="item.bean.txt"></rich-text>
+								</view>
+							</view>
+							<view class="date "> {{item.bean.date}}</view>
+						</view>
+					<!--#endif-->
+
+
+					<!--#ifdef APP-PLUS-->
+						<!--自己发出的-->
+						<view  v-if="item.bean.fromUid==$store.state.user.id" class="cu-item self" >
+							<view class="main">
+
+								<block  v-if="$store.state.WAIT_SEND_MSG.indexOf(item.bean.uuid)<0">
+									<block v-if="chatCfg.showUserMsgReadStatus==1">
+										<view v-if="item.bean.read==0&&chatCfg.showUserMsgReadStatus==1" style="margin-right:30upx;color: #999;font-size: 24upx;">未读</view>
+										<view v-if="item.bean.read==1&&chatCfg.showUserMsgReadStatus==1" style="margin-right:30upx;color: #999;font-size: 24upx;">已读</view>
+									</block>
+								</block>
+								<view v-else class="action text-grey">
+									<text class="cuIcon-warnfill text-red text-xxl"></text>
+								</view>
+
+
+								<view  v-if="item.bean.psr!='video'" @longpress="onLongPress($event,item.bean)" :class="[item.bean.psr=='uparse'?'':'content bg-green shadow']" :style="{backgroundColor:item.bean.psr=='uparse'? 'none':'#fff'}" style="color:#222;">
+
+									<!--因为视频在底层窗口的显示等级是最上层，所以无法嵌套在scroll里面滑动，这里用image 代替-->
+									<image @tap="clickVideo($store.state.img_url+item.bean.oldTxt)" v-if="item.bean.psr=='uparse' && item.bean.txt.indexOf(videoCheck) != -1" style="width:418upx;height:335upx;border-radius: 5px" src="../../../static/images/video.png"></image>
+
+									<u-parse v-else-if="item.bean.psr=='uparse' && item.bean.txt.indexOf(verdeoCheck)  == -1" :content="item.bean.txt" @preview="preview" @navigate="navigate" ></u-parse>
+									<view @tap="clickVoice(item.bean.txt,index)" v-else-if="item.bean.psr=='voice'">
+										<text  v-show="selVoiceIndex != index"  style="text-align: right; float:right;width:100upx;font-size: 52upx;position: relative;top: 4upx;"  class="iconfont icon-yuyin1 text-xxl "></text>
+										<text  v-show="selVoiceIndex != index"  style="float:right;font-size: 26upx;position: relative;top: 4upx;">{{item.bean.sub_txt}}"</text>
+										<text  v-show="selVoiceIndex == index"   style="text-align: right;float:right;width:100upx;font-size: 52upx;position: relative;top:0;line-height: 38upx;"  class="iconfont cu-load load-cuIcon loading text-xxl "></text>
+										<text  v-show="selVoiceIndex == index"  style="float:right;font-size: 26upx;position: relative;top: 6upx;">{{item.bean.sub_txt}}"</text>
+									</view>
+									<rich-text style="max-width:440upx" v-else   :nodes="item.bean.txt"></rich-text>
+								</view>
+							</view>
+							<view v-if="item.bean.psr!='video'" class="cu-avatar radius" :style="'background-image:url('+$store.state.img_url+item.bean.fromHeadpic+');'"></view>
+							<view v-if="item.bean.psr!='video'" class="date">{{item.bean.date}}</view>
+						</view>
+
+						<!--别人发来的-->
+						<view v-else class="cu-item"  >
+							<view  @tap.stop="goUserDetail(item.bean.fromUid)" class="cu-avatar radius" :style="'background-image:url('+$store.state.img_url+item.bean.fromHeadpic+');'" ></view>
+							<view class="main">
+								<view @longpress="onLongPress($event,item.bean)"  :class="[item.bean.psr=='uparse'?'':'content shadow']" style="color:#222;">
+									<!--因为视频在底层窗口的显示等级是最上层，所以无法嵌套在scroll里面滑动，这里用image 代替-->
+									<image @tap="clickVideo($store.state.img_url+item.bean.oldTxt)" v-if="item.bean.psr=='video' && item.bean.txt.indexOf(videoCheck) != -1" style="width:418upx;height:335upx;border-radius: 5px" src="../../../static/images/video.png"></image>
+									<u-parse v-else-if="item.bean.psr=='uparse'" :content="item.bean.txt" @preview="preview" @navigate="navigate" ></u-parse>
+									<view @tap="clickVoice(item.bean.txt,index)" v-else-if="item.bean.psr=='voice'">
+										<text  v-show="selVoiceIndex != index"  style="text-align: right; float:right;width:100upx;font-size: 52upx;position: relative;top: 4upx;"  class="iconfont icon-yuyin1 text-xxl "></text>
+										<text  v-show="selVoiceIndex != index"  style="float:right;font-size: 26upx;position: relative;top: 4upx;">{{item.bean.sub_txt}}"</text>
+										<text  v-show="selVoiceIndex == index"   style="text-align: right;float:right;width:100upx;font-size: 52upx;position: relative;top:0;line-height: 38upx;"  class="iconfont cu-load load-cuIcon loading text-xxl "></text>
+										<text  v-show="selVoiceIndex == index"  style="float:right;font-size: 26upx;position: relative;top: 6upx;">{{item.bean.sub_txt}}"</text>
+									</view>
+									<rich-text style="max-width:440upx" v-else   :nodes="item.bean.txt"></rich-text>
+								</view>
+							</view>
+							<view class="date "> {{item.bean.date}}</view>
+						</view>
+					<!--#endif-->
 				</block>
 				
 				
@@ -836,6 +896,7 @@
 		},
 		data() {
 			return {
+				videoCheck:"<video",
 				showVideo:false,
 				videoSrc:"",
 				scrollDetail:{},
@@ -2294,19 +2355,24 @@
 				}
 			},
 			clickVideo(_vpath) {
-				console.log('00000000000', this.$store.state.cur_chat_msg_list)
-				let v = _vpath.split('.com')[1];
-				var s = v.split("'")[0];
-				this.videoSrc = s;
-				this.showVideo = true;
-				 // 获取 video 上下文 videoContext 对象
-                this.videoContext = uni.createVideoContext('video_play');
-                // 进入全屏状态
-               // this.videoContext.requestFullScreen();
+				uni.navigateTo({
+					url: "/pages/custom/myVideo?item="+_vpath
+				})
+
+				//播放
+// 				console.log('00000000000', this.$store.state.cur_chat_msg_list)
+// 				let v = _vpath.split('.com')[1];
+// 				var s = v.split("'")[0];
+// 				this.videoSrc = s;
+// 				this.showVideo = true;
+// 				 // 获取 video 上下文 videoContext 对象
+//                 this.videoContext = uni.createVideoContext('video_play');
+//                 // 进入全屏状态
+//                	this.videoContext.requestFullScreen();
 				
 				// let player;
 				// if(!player){
-				//     player = plus.video.createVideoPlayer('videoplayer', {  
+				//     player = plus.video.createVideoPlayer('videoplayer', {
 				//         src:_vpath,  
 				//         width: '100%',  
 				//         height: '100%',  
