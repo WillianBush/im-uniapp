@@ -413,7 +413,7 @@
 					}
 				})
 			}
-			
+
 			if (!_this.$store.state.isEmployee) {
 				_this.$http.post("/user/employeeDefaultMessage/json/isEmployee",
 					{
@@ -424,7 +424,8 @@
 					}
 				).then(res=>{
 					let res_data = eval(res.data);
-					if(res.statusCode==200) {  
+					if(res.statusCode==200) {
+						console.log("aaaaabbbbb4","444444444")
 						_this.$store.commit("setIsEmployee",res_data.msg === 'Yes');
 					} else {
 						uni.showToast({
