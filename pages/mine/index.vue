@@ -6,7 +6,8 @@
 
 					<view class="cu-avatar xl round margin-left" :style="'float:left;background-image: url('+$store.state.img_url+$store.state.user.headpic +');'"></view>
 					<view style="float:left;margin-left: 10px;margin-top:6px;">
-						<view style="    font-size: 16px;font-weight: 800;">{{$store.state.user.nickName}}</view>
+						<text class="uni-ellipsis-2" style="font-size: 16px;font-weight: 800;">{{nickName}}</text>
+<!--						<view style="    font-size: 16px;font-weight: 800;">{{$store.state.user.nickName}}</view>-->
 						<view style="margin-top: 6px;">ID号：{{$store.state.user.memberId}}</view>
 					</view>
 
@@ -199,10 +200,22 @@
 		components: {
 		  updatepage
 		},
+		data() {
+			return {
+				nickName: "",
+			}
+		},
 		mounted() {
 			let _this = this;
 			if (_this.$store.state.isEmployee) {
 				_this.getGreetingMsg(_this);
+			}
+
+			/*昵称过长*/
+			if(_this.$store.state.user.nickName.length > 12){
+				this.nickName = _this.$store.state.user.nickName.slice(0,12)+"...";
+			}else{
+				this.nickName = _this.$store.state.user.nickName;
 			}
 		},
 		methods:{
@@ -344,5 +357,14 @@
 		
 	.t1:after {
 		border:0px!important;
-	} 
+	}
+	.uni-ellipsis-2{        // 显示两行，超过的省略号
+		display: -webkit-box;
+		overflow: hidden;
+		text-overflow: ellipsis;
+		word-wrap: break-word;
+		white-space: normal !important;
+		-webkit-line-clamp: 2;
+		-webkit-box-orient: vertical;
+	}
 </style>

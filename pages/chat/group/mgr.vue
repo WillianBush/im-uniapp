@@ -6,15 +6,15 @@
 		<view style="background: #fff;width: 96%;
     margin: auto auto;
     margin-top: 10px;" class="margin-top">
-	<view style="height:60upx;width:90%;margin:auto auto;padding-top: 20upx;">
+	<view v-if="$store.state.isEmployee" style="height:60upx;width:90%;margin:auto auto;padding-top: 20upx;">
 		<text style="float:left;font-weight: 800;
     color:#333">群成员</text>
 		<text style="float:right;margin-top:6upx;" class="lg text-gray cuIcon-right"></text>
 		<text @tap="lookMemberList()" style="font-size: 26upx;float:right;    color: #aaa;">查看{{$store.state.cur_chat_entity.memberCount}}名群成员</text>
 		
 	</view>
-			
-			<view style="display: flex; width:100%">
+
+			<view v-if="$store.state.isEmployee" style="display: flex; width:100%">
 					<view   style="padding-top:30upx;padding-bottom:30upx;margin-left: 10upx;flex:1;    line-height: 140upx;">
 						<view @tap="goUserDetail(index)" v-for="(item,index) in $store.state.cur_chat_entity.top5Hp" class="cu-avatar round margin-left" :style="'height:100upx;width:100upx;background-image:url('+$store.state.img_url+item+');'"></view>
 						<text @tap="yaoqi()" style="position: relative;
@@ -92,7 +92,7 @@
 		</view>
 	</view>
 	
-	<view @tap="goQrcode"  class="cu-item arrow" >
+	<view v-if="false" @tap="goQrcode"  class="cu-item arrow" >
 		<view class="content">
 			<text class="text-grey" style="color:#333">群二维码</text>
 			<text style="color:#666;font-size:22px;float: right; position: relative; right: -20upx;" class="lg text-gray cuIcon-qr_code"><span></span></text>

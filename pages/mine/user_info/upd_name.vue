@@ -4,10 +4,10 @@
 			<uni-text @tap="tijiao()" style="font-size: 22px;color: #fff;margin-right: 14px;font-size: 30upx;" class="lg text-gray ">提交</uni-text>
 		</block></cu-custom>
 		
-		<view class="cu-form-group margin-top" style="
+		<view class="cu-form-group margin-top " style="
 		margin: auto auto;
 		margin-top: 15px;">
-				<input  maxlength="-1" v-model="txt" placeholder="请输入昵称"/>
+				<input maxlength="-1" v-model="txt" placeholder="请输入昵称"/>
 			</view>
 	
 			
@@ -97,5 +97,8 @@
 </script>
 
 <style>
-
+	.fullS {
+		width: 100%;
+		height: 100%;
+	}
 </style>

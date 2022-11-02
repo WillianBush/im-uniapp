@@ -7,7 +7,7 @@
 		<view class="cu-bar bg-white search" >
 			<view class="search-form round">
 				<text class="cuIcon-search"></text>
-				<input v-model="kw1"  type="text" placeholder="输入手机号/昵称/用户ID" confirm-type="search"></input>
+				<input v-model="kw1"  type="text" placeholder="输入用户ID" confirm-type="search"></input>
 			</view>
 			<view class="action">
 				<button @tap="search()"  class="cu-btn bg-gradual-green shadow-blur round">查找</button>
