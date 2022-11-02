@@ -328,7 +328,7 @@
 					<text @tap.stop="clearAiteToMy" class="cuIcon-close text-red " style="margin-left: 16upx;"></text>
 		</view>
 		
-		<view class="cu-bar foot input" :style="[{bottom:InputBottom+'upx'}]" >
+		<view class="cu-bar foot input" :style="[{bottom:InputBottom+'upx'}]" style="flex-direction: row; width: 100%;">
 			<!-- #ifndef H5 -->
 			<view @tap="selType(2)" v-show="c_type==1"  class="action">
 				<text class="cuIcon-sound text-grey"></text> 
@@ -343,7 +343,7 @@
 			<!-- @focus="InputFocus" @blur="InputBlur"-->
 			<input @keydown.enter="send" style="background: #eee!important;" disabled="true" placeholder="禁言" placeholder-style="text-align:center;background: #eee;" v-show="stopSpeak==1"  class="solid-bottom" :adjust-position="true" :focus="false" maxlength="300" cursor-spacing="10"
 			></input> 
-			<textarea style="height:72upx;margin-left:10upx;line-height:72upx;"
+			<textarea style="height:72upx;margin-left:10upx;line-height:72upx;width: 92%;margin-left: 15px"
 					  confirm-type="send"
 					  @confirm="send"
 					  confirm-hold="true"
@@ -359,23 +359,23 @@
 			<!--
 			<button  @touchstart="checkAuthorize" @touchend="endRecord" v-show="c_type==2"  style="color: #aaa;margin-left: 20upx;width:100%" class="cu-btn block line-orange lg">按住 说话</button>
 			-->
-			<button  
+		<!-- 	<button  
 			 @touchstart="voiceBegin"  @touchend="voiceEnd" @touchcancel="voiceCancel"
-			 v-show="c_type==2&&stopSpeak==0"  style="color: #aaa;margin-left: 20upx;width:100%" class="cu-btn block line-orange lg">按住 说话</button>
+			 v-show="c_type==2&&stopSpeak==0"  style="color: #aaa;margin-left: 20upx;width:100%" class="cu-btn block line-orange lg">按住 说话</button> -->
 			
-			<view style="margin-right: 20upx;" class="action" @tap="showItemIndex(1)">
+			<view style="margin-right: 20upx;cursor: pointer;" class="action" @tap="showItemIndex(1)">
 				<text  class="cuIcon-emojifill text-grey"></text>
 			</view>
 			<!--#ifdef APP-PLUS 
 			<text  @tap="showItemIndex(2)" style="font-size:52upx;color:#777;margin-top:6upx;margin-left:6upx;margin-right:6upx" class="iconfont icon-jia"></text>
 			#endif -->
-			<text v-show="showjia"  @tap="showItemIndex(2)" style="font-size:52upx;color:#777;margin-top:6upx;margin-left:6upx;margin-right:6upx" class="iconfont icon-jia"></text>
+			<text v-show="showjia"  @tap="showItemIndex(2)" style="font-size:52upx;color:#777;margin-top:6upx;margin-left:6upx;margin-right:6upx;cursor: pointer;" class="iconfont icon-jia"></text>
 			<button  style="    min-width: 50px;padding:0px!important" v-show="!showjia" @tap.stop="send()" class="cu-btn bg-green shadow">发送</button>
 			
 		</view>
 		
 		
-		<view v-show="showItem==1" class="cu-bar foot " style="box-shadow: none;-webkit-box-shadow: none;display: block;background: #fff;height:330upx;margin-bottom:80upx;">
+		<view v-show="showItem==1" class="cu-bar foot " style="box-shadow: none;-webkit-box-shadow: none;display: block;background: #fff;height:330upx;margin-bottom:80upx;width: 100%;">
 			<scroll-view scroll-y class="indexes" style="height:330upx;padding-bottom:20upx;padding-top: 10upx;"
 			 :scroll-with-animation="true" :enable-back-to-top="true">
 			<view v-if="emotion==1">
@@ -859,7 +859,7 @@
 		</view>
 		
 		
-		<view v-show="showItem==2" class="cu-bar foot " style="box-shadow: none;-webkit-box-shadow: none;display: block;background: #fff;height:410upx;">
+		<view v-show="showItem==2" class="cu-bar foot " style="box-shadow: none;-webkit-box-shadow: none;display: block;background: #fff;height:410upx;width: 100%">
 				<scroll-view scroll-y class="indexes" style="height:410upx;padding-bottom:20upx;padding-top: 10upx;"
 				 :scroll-with-animation="true" :enable-back-to-top="true">
 <!--					<view>-->

@@ -801,7 +801,7 @@
 		content: "\e6db";
 	}
 	.cu-list.menu-avatar>.cu-item::after{
-		border: 0;
+		border-bottom: 1px solid #ddd;
 	}  
 	.cu-list.menu-avatar>.cu-item:before {
             content: "";

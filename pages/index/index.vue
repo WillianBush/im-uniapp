@@ -1,5 +1,5 @@
 <template>
-	<view style="height: 100vh;">
+	<view style="height: 100vh; margin-left:100px">
 		<view  style="    position: fixed;
     top: 0;
     z-index: 99999999999;
