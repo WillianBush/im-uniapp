@@ -1,5 +1,5 @@
 <template>
-	<view class="main-list oBorder">
+	<view class="main-list oBorder" style="width: 500px">
 		<!-- 文本框 -->
 		<input 
 			class="main-input" 

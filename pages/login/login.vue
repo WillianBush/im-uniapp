@@ -6,7 +6,7 @@
 				<image src="/static/logo12.png"></image>
 			</view>
 			<!-- 主体表单 -->
-			<view class="main">
+			<view class="main" style="align-items:center">
 				<wInput
 					v-model="phoneData"
 					type="text"
@@ -41,9 +41,9 @@
 			</view>
 			-->
 			<!-- 底部信息 -->
-			<view class="footer" style="    width: 80%;
+			<view class="footer" style="    width: 200px;
     margin: auto auto;
-    margin-top: 14px;    display: block;">
+    margin-top: 25px;    display: block;">
 				<navigator style="float:left;" url="forget" open-type="navigate">找回密码</navigator>
 				
 				<navigator  style="float:right;" url="register" open-type="navigate">注册账号</navigator>
