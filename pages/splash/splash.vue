@@ -95,11 +95,15 @@
                         store.commit("setUser", user);
                         if (_this.$store.state.ar_list.length == 0) {
 
-                            _this.$http.post("/user/accessRecord/json/list",
+                            _this.$http.post("/user/accessRecord/json/listPage",
                                 {
-                                    header: {
-                                        "x-access-uid": user.id,
-                                        "x-access-client": _this.$clientType
+                                    pageSize:50,//数量
+                                    pageNumber:1//页数
+                                },
+                                {
+                                    header:{
+                                        "x-access-uid":user.id,
+                                        "x-access-client":_this.$clientType
                                     }
                                 }
                             ).then(res_1 => {
@@ -107,7 +111,7 @@
                                 if (res_data_1.code == 200) {
                                     let unreadSum = 0;
                                     console.log(res_data_1.body.length);
-                                    res_data_1.body.forEach(item => {
+                                    res_data_1.body.list.forEach(item => {
 
                                         let s = uni.getStorageSync(item.id + "_NOTE");
                                         if (s && s != "") {
@@ -145,7 +149,7 @@
                                         }
 
                                     });
-                                    let list = res_data_1.body;
+                                    let list = res_data_1.body.list;
                                     list.sort(function (a, b) {
                                         if (a.top == b.top) {
                                             return b.createDateTime - a.createDateTime;

@@ -23,6 +23,7 @@ const state = {
 	unDoFriendAddCount:0,//未处理好友添加
 	unDoRoomAddCount:0,//未处理群成员申请
 	isEmployee: "",
+	isOpenRefresh: false,
 	chatMessageMap:new Map(),
 	cur_chat_aiteToMyList:[],//当前聊天实体 别人@我的对象列表
 	cur_chat_entity:{},//当前聊天实体

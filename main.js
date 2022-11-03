@@ -276,25 +276,6 @@ Vue.prototype.$clientType = "H5"
 			
 // 			store.commit("setAr_list",data.body);
 // 		}
-// 	// 	uni.request({
-// 	// 		method:"POST",
-// 	// 		url:store.state.req_url + "/user/accessRecord/json/list",
-// 	// 		header:{
-// 	// 			"Content-Type":"application/x-www-form-urlencoded",
-// 	// 			"x-access-uid":user.id
-// 	// 		},
-// 	// 		success(res) {
-// 	// 			let res_data = eval(res.data);
-// 	// 			if(res_data.code==200) {  
-// 	// 				let unreadSum = 0;
-// 	// 				 res_data.body.forEach((item)=>{
-// 	// 					unreadSum+=1;
-// 	// 				})
-// 	// 				store.commit("setAr_list",res_data.body);
-// 	// 				store.commit("setUnReadMsgSum",unreadSum);
-// 	// 			}
-// 	// 		}
-// 	// 	})
 		
 // 	} 
 // 	else if(data.CMD=="GROUP_MEMBER_REMOVE") {

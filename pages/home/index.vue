@@ -56,7 +56,8 @@
 					 :refresher-triggered="refresherTriggered"
 					 @refresherrefresh="refresherrefresh"
 					 @refresherrestore="refresherrestore"
-					 @refresherabort="refresherabort">
+					 @refresherabort="refresherabort"
+					 @scrolltolower="scrollLower">
 				
 				
 
@@ -206,6 +207,11 @@
 				kw:"",
 				list:[],
 				super_user:0,
+				numPag: 1, // 第一页
+				allPageNum: 10000, // 总页数
+                pageSize: 50,//50条
+                status: "more", // 加载状态
+                timer: null
 			};
 		},
 		methods: {
@@ -220,7 +226,11 @@
 				if (!_this.refresherTriggered) {
 					_this.refresherTriggered = true;
 				}
-				this.loadStoreData();
+				//清空
+				_this.$store.state.ar_list.length = 0;
+				_this.$store.commit("setAr_list",_this.$store.state.ar_list)
+				this.numPag = 1;
+				this.loadStoreData(this.pageSize,this.numPag);
 			},
 			refresherrestore() {
 				console.log('自定义下拉刷新被复位');
@@ -234,11 +244,31 @@
 				_this.refresherTriggered = false;
 				_this._refresherTriggered = false;
 			},
-			loadStoreData() {
+            scrollLower() {
+                console.log('我滚动到底部了')
+				if (this.numPag >= this.allNum) {
+					this.status = "noMore"
+					return
+				} else {
+					this.status = "loading"
+				}
+				this.numPag = this.numPag + 1;
+				this.timer = setTimeout(() => {
+					//TODO
+					console.log('我滚动到底部了2'+this.numPag)
+					this.loadStoreData(this.pageSize,this.numPag);
+
+				}, 1000);
+            },
+			loadStoreData(pSize,pNumber) {
 				let _this = this;
 				let user = uni.getStorageSync("USER");
 				if(user){
-					_this.$http.post("/user/accessRecord/json/list",
+					_this.$http.post("/user/accessRecord/json/listPage",
+							{
+								pageSize:pSize,//数量
+								pageNumber:pNumber//页数
+							},
 							{
 								header:{
 									"x-access-uid":user.id,
@@ -249,8 +279,9 @@
 						let res_data_1 = eval(res_1.data);
 						if(res_data_1.code==200) {
 							let unreadSum = 0;
-							console.log("---=====----==="+res_data_1.body.length);
-							res_data_1.body.forEach(item=>{
+							this.numPag = res_data_1.body.pageNumber;//当前在第几页
+
+							res_data_1.body.list.forEach(item=>{
 								let s = uni.getStorageSync(item.id+"_NOTE");
 								if(s&&s!="") {
 									item.title = s;
@@ -287,7 +318,7 @@
 								}
 
 							});
-							let list = res_data_1.body;
+							let list = res_data_1.body.list;
 							list.sort(function(a,b){
 								if(a.top==b.top) {
 									return b.createDateTime-a.createDateTime;
@@ -296,7 +327,8 @@
 								}
 							})
 
-							_this.$store.commit("setAr_list",list)
+
+							_this.$store.commit("setAr_list",_this.$store.state.ar_list.concat(list))
 							_this.$store.commit("setUnReadMsgSum",unreadSum)
 							this.closeRefresh();
 							//_this.$store.commit("setAr_list_show",list)

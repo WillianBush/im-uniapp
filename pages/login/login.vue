@@ -241,23 +241,23 @@
 									});
 								}
 							})
-							
-							this.$http.post("/user/accessRecord/json/list",
+
+						_this.$http.post("/user/accessRecord/json/listPage",
 								{
-									account:_this.phoneData,
-									password:_this.passData,
+									pageSize:50,//数量
+									pageNumber:1//页数
 								},
 								{
-									header: {
-										"x-access-uid":res_data.body.id,
+									header:{
+										"x-access-uid":user.id,
 										"x-access-client":_this.$clientType
 									}
 								}
-							).then(res_1=>{
+						).then(res_1=>{
 								let res_data_1 = eval(res_1.data);
 								if(res_data_1.code==200) {  
 									let unreadSum = 0;
-									res_data_1.body.forEach(item=>{
+									res_data_1.body.list.forEach(item=>{
 										
 										let s = uni.getStorageSync(item.id+"_NOTE");
 										if(s&&s!="") {
@@ -294,7 +294,7 @@
 										}
 										
 									});
-									let list = res_data_1.body;
+									let list = res_data_1.body.list;
 									list.sort(function(a,b){
 										if(a.top==b.top) {
 											return b.createDateTime-a.createDateTime;
@@ -319,80 +319,6 @@
 									});
 								}
 							})
-							
-							// uni.request({
-							// 	method:"POST",
-							// 	url: _this.$store.state.req_url + "/user/accessRecord/json/list",
-							// 	header:{
-							// 		"Content-Type":"application/x-www-form-urlencoded",
-							// 		"x-access-uid":res_data.body.id
-							// 	},
-							// 	success(res_1) {
-							// 		let res_data_1 = eval(res_1.data);
-							// 		if(res_data_1.code==200) {  
-							// 			let unreadSum = 0;
-							// 			res_data_1.body.forEach(item=>{
-											
-							// 				let s = uni.getStorageSync(item.id+"_NOTE");
-							// 				if(s&&s!="") {
-							// 					item.title = s;
-							// 				}
-											
-							// 				let last_txt = uni.getStorageSync(res_data.body.id+"#"+item.id+'_CHAT_MESSAGE_LASTCONTENT');
-							// 				if(last_txt.indexOf("<img")>=0) {
-							// 					item.content = "[图片]";
-							// 				} else if(last_txt.indexOf("upload/chat/voice")>=0) {
-							// 					item.content = "[语音]";
-							// 				} else if(last_txt.indexOf("upload/chat/video")>=0) {
-							// 					item.content = "[视频]";
-							// 				}  else {
-							// 					item.content = last_txt;
-							// 				}
-											
-											
-							// 				let unRead = uni.getStorageSync(res_data.body.id+"#"+item.id+'_CHAT_MESSAGE_UNREAD');
-							// 				if(unRead&&unRead!="") {
-							// 					unreadSum+=parseInt(unRead);
-							// 					item.unread = parseInt(unRead);
-							// 				} else {
-							// 					item.unread = 0;
-							// 				}
-											
-							// 				let zhiding = uni.getStorageSync(item.id+"_zhiding");
-							// 				if(zhiding) {
-							// 					item.top = 0;
-							// 				}
-											
-							// 			});
-							// 			let list = res_data_1.body;
-							// 			list.sort(function(a,b){
-							// 				if(a.top==b.top) {
-							// 					return b.createDateTime-a.createDateTime;
-							// 				} else {
-							// 					return a.top - b.top;
-							// 				}
-							// 			})
-										
-										
-										
-										
-										
-							// 			_this.$store.commit("setAr_list",list)
-							// 			_this.$store.commit("setUnReadMsgSum",unreadSum)
-										
-							// 			//_this.$store.commit("setAr_list_show",list)
-										
-							// 		} else {
-							// 			uni.showToast({
-							// 				icon: 'none',
-							// 				title: "获取列表失败"
-							// 			});
-							// 		}
-							// 	}
-							// })
-						// }
-						
-						
 						uni.redirectTo({
 							url:"/pages/index/index"  
 						})
