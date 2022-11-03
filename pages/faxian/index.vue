@@ -51,7 +51,7 @@
 <!--					</view>-->
 <!--				</view>-->
 
-			<view class="cu-bar bg-white" style="clear:both;"  @tap="androidWeb()">
+			<view  v-if="false" class="cu-bar bg-white" style="clear:both;"  @tap="androidWeb()">
 				<view class="action">
 					<text style="color:#FF3F33;font-size:48upx" class="iconfont icon-shoucang"></text>
 					<text style="color:#222;margin-left:10px">Android快捷</text>

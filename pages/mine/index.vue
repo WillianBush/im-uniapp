@@ -207,31 +207,28 @@
 		},
 		mounted() {
 			let _this = this;
-
-			if (!_this.$store.state.isEmployee) {
-				_this.$http.post("/user/employeeDefaultMessage/json/isEmployee",
-						{
-							header:{
-								"x-access-uid":_this.$store.state.user.id,
-								"x-access-client":_this.$clientType
-							}
+			_this.$http.post("/user/employeeDefaultMessage/json/isEmployee",
+					{
+						header:{
+							"x-access-uid":_this.$store.state.user.id,
+							"x-access-client":_this.$clientType
 						}
-				).then(res=>{
-					let res_data = eval(res.data);
-					if(res.statusCode==200) {
-						_this.$store.commit("setIsEmployee",res_data.msg === 'Yes');
-						if (_this.$store.state.isEmployee) {
-							_this.getGreetingMsg(_this);
-						}
-					} else {
-						uni.showToast({
-							icon: 'none',
-							position: 'bottom',
-							title: res_data.msg
-						});
 					}
-				})
-			}
+			).then(res=>{
+				let res_data = eval(res.data);
+				if(res.statusCode==200) {
+					_this.$store.commit("setIsEmployee",res_data.msg === 'Yes');
+					if (_this.$store.state.isEmployee) {
+						_this.getGreetingMsg(_this);
+					}
+				} else {
+					uni.showToast({
+						icon: 'none',
+						position: 'bottom',
+						title: res_data.msg
+					});
+				}
+			})
 
 			/*昵称过长*/
 			if(_this.$store.state.user.nickName.length > 12){

@@ -197,7 +197,7 @@
 								</view>
 
 
-								<view  v-if="item.bean.psr!='video'" @longpress="onLongPress($event,item.bean)" :class="[item.bean.psr=='uparse'?'':'content bg-green shadow']" :style="{backgroundColor:item.bean.psr=='uparse'? 'none':'#fff'}" style="color:#222;">
+								<view  v-if="item.bean.psr!='video'" @click="doublebclick($event,item.bean)" :class="[item.bean.psr=='uparse'?'':'content bg-green shadow']" :style="{backgroundColor:item.bean.psr=='uparse'? 'none':'#fff'}" style="color:#222;">
 									<u-parse v-if="item.bean.psr=='uparse'" :content="item.bean.txt" @preview="preview" @navigate="navigate" ></u-parse>
 									<view @tap="clickVoice(item.bean.txt,index)" v-else-if="item.bean.psr=='voice'">
 										<text  v-show="selVoiceIndex != index"  style="text-align: right; float:right;width:100upx;font-size: 52upx;position: relative;top: 4upx;"  class="iconfont icon-yuyin1 text-xxl "></text>
@@ -216,7 +216,7 @@
 						<view v-else class="cu-item"  >
 							<view  @tap.stop="goUserDetail(item.bean.fromUid)" class="cu-avatar radius" :style="'background-image:url('+$store.state.img_url+item.bean.fromHeadpic+');'" ></view>
 							<view class="main">
-								<view @longpress="onLongPress($event,item.bean)"  :class="[item.bean.psr=='uparse'?'':'content shadow']" style="color:#222;">
+								<view @click="doublebclick($event,item.bean)"  :class="[item.bean.psr=='uparse'?'':'content shadow']" style="color:#222;">
 									<u-parse v-if="item.bean.psr=='video'" :content="item.bean.txt" @preview="preview" @navigate="navigate" ></u-parse>
 									<u-parse v-else-if="item.bean.psr=='uparse'" :content="item.bean.txt" @preview="preview" @navigate="navigate" ></u-parse>
 									<view @tap="clickVoice(item.bean.txt,index)" v-else-if="item.bean.psr=='voice'">
@@ -955,7 +955,8 @@
 				temp_bean:null,
 				showOpenRed:false,
 				showname:"",
-				toIP:""
+				toIP:"",
+                touchNum: 0,//h5 双击
 			};
 		},
 		onBackPress() {
@@ -1324,6 +1325,21 @@
 				console.log(this.txt)
 				this.txt = this.txt + '\n'
 			},
+
+			/// 双击
+			doublebclick(e,bean) {
+				this.touchNum++
+				setTimeout(() => {
+					if (this.touchNum == 1) {
+						console.log('单击')
+					}
+					if (this.touchNum >= 2) {
+						console.log('双击')
+						this.showPopup(e,bean);
+					}
+					this.touchNum = 0
+				}, 500)
+			},
 			
 			scrollFn(e) {
 				//console.log(e.detail);
@@ -1524,6 +1540,10 @@
 			},
 			/* 长按监听 */
 			onLongPress(e,bean) {
+				this.showPopup(e,bean);
+			},
+			/*显示弹窗*/
+			showPopup(e,bean){
 				if(this.showPop) {
 					this.showPop = false;
 				}
@@ -1535,36 +1555,36 @@
 				this.temp_uuid = bean.uuid;
 				this.temp_bean = bean;
 				console.log(bean);
-				
-				
-				
+
+
+
 				//console.log(this.chatCfg);
 				let list = this.popButton.filter(item=>{
-					 if(item=="撤消") {
-						 return false;
-					 }
-					 
-					 if(bean.simple_content&&bean.simple_content!=""&&bean.simple_content=="[名片]") {
-						 this.temp_content = "[名片USERCARD]#"+bean.mheadpic+"#"+bean.mid+"#"+bean.mname+"#"+bean.muuid
-					 	if(item=="复制"||item=="收藏") {
-					 		 return false;
-					 	}
-					 }
-					 
-					 return true;
-				 })
-				this.popButton =list; 
+					if(item=="撤消") {
+						return false;
+					}
+
+					if(bean.simple_content&&bean.simple_content!=""&&bean.simple_content=="[名片]") {
+						this.temp_content = "[名片USERCARD]#"+bean.mheadpic+"#"+bean.mid+"#"+bean.mname+"#"+bean.muuid
+						if(item=="复制"||item=="收藏") {
+							return false;
+						}
+					}
+
+					return true;
+				})
+				this.popButton =list;
 				if(bean.fromUid == this.$store.state.user.id) {
 					if(new Date().getTime() - bean.dateTime < this.chatCfg.chat_msg_undo_sec*1000 || this.chatCfg.chat_msg_undo_sec==0) {
-					   this.popButton.push("撤消");
+						this.popButton.push("撤消");
 					}
-				} 
-				
-				
-				
-				
+				}
+
+
+
+
 				let [touches, style] = [e.touches[0], ""];
-			
+
 				/* 因 非H5端不兼容 style 属性绑定 Object ，所以拼接字符 */
 				if (touches.clientY > (this.winSize.height / 2)) {
 					style = `bottom:${this.winSize.height-touches.clientY}px;`;
@@ -1576,7 +1596,7 @@
 				} else {
 					style += `left:${touches.clientX+15}px`;
 				}
-			
+
 				this.popStyle = style;
 				//this.pickerUserIndex = Number(index);
 				this.showShade = true;
