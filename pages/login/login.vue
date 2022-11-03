@@ -242,18 +242,19 @@
 								}
 							})
 
-						_this.$http.post("/user/accessRecord/json/listPage",
-								{
-									pageSize:50,//数量
-									pageNumber:1//页数
-								},
-								{
-									header:{
-										"x-access-uid":user.id,
-										"x-access-client":_this.$clientType
+
+							_this.$http.post("/user/accessRecord/json/listPage",
+									{
+										pageSize:50,//数量
+										pageNumber:1//页数
+									},
+									{
+										header:{
+											"x-access-uid":_this.$store.state.user.id,
+											"x-access-client":_this.$clientType
+										}
 									}
-								}
-						).then(res_1=>{
+							).then(res_1=>{
 								let res_data_1 = eval(res_1.data);
 								if(res_data_1.code==200) {  
 									let unreadSum = 0;
@@ -319,6 +320,7 @@
 									});
 								}
 							})
+
 						uni.redirectTo({
 							url:"/pages/index/index"  
 						})
