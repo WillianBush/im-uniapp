@@ -152,7 +152,7 @@
 
 						<!--接收着-->
 						<view v-else class="cu-item"  :id="item.bean.uuid">
-							<view @longpress="onLongPress1($event,item.bean)" @tap.stop="goUserDetail(item.bean.fromUid)" class="cu-avatar radius" :style="'background-image:url('+$store.state.img_url+item.bean.fromHeadpic+');'" ></view>
+							<view @click="doublebclick2($event,item.bean)" class="cu-avatar radius" :style="'background-image:url('+$store.state.img_url+item.bean.fromHeadpic+');'" ></view>
 							<view class="main" style="display: block!important;">
 								<view style="height: 40upx;font-size: 12px;color: #8799a3;">
 								<text style="color:#FFB502;margin-right:6upx;    font-size: 36upx;" v-if="item.bean.fromUid==$store.state.cur_chat_entity.owner_UUID" class="iconfont icon-tianchongxing-"></text>
@@ -160,7 +160,7 @@
 								{{item.bean.fromName}}
 								</view>
 
-								<view @click="doublebclick2($event,item.bean)" :class="[item.bean.psr=='uparse'?'':'content shadow']" style="color:#222;">
+								<view @click="doublebclick($event,item.bean)" :class="[item.bean.psr=='uparse'?'':'content shadow']" style="color:#222;">
 									<u-parse v-if="item.bean.psr=='video'" :content="item.bean.txt" @preview="preview" @navigate="navigate" ></u-parse>
 									<u-parse v-else-if="item.bean.psr=='uparse'" :content="item.bean.txt" @preview="preview" @navigate="navigate" ></u-parse>
 									<view @tap="clickVoice(item.bean.txt,index)" v-else-if="item.bean.psr=='voice'">
@@ -1655,7 +1655,7 @@
 				this.touchNum++
 				setTimeout(() => {
 					if (this.touchNum == 1) {
-						console.log('单击')
+						this.goUserDetail(bean.fromUid)
 					}
 					if (this.touchNum >= 2) {
 						console.log('双击')

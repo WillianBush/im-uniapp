@@ -6,6 +6,7 @@
 </template>
 
 <script>
+    import VersionUtil from "../../utils/VersionUtil"
     import store from "store"//使用vuex对状态进行管理
     import updatepage from "../../components/user/updatepage/updatepage.vue";
     export default {
@@ -18,6 +19,27 @@
         },
         methods: {
             loadImage() {
+            },
+            compareVersion(netV, nativeV) {
+                if (netV && nativeV) {
+                    //将两个版本号拆成数字
+                    var arr1 = netV.split('.'),
+                        arr2 = nativeV.split('.');
+                    var minLength = Math.min(arr1.length, arr2.length),
+                        position = 0,
+                        diff = 0;
+                    //依次比较版本号每一位大小，当对比得出结果后跳出循环（后文有简单介绍）
+                    while (position < minLength && ((diff = parseInt(arr1[position]) - parseInt(arr2[position])) == 0)) {
+                        position++;
+                    }
+                    diff = (diff != 0) ? diff : (arr1.length - arr2.length);
+                    //若curV大于reqV，则返回true
+                    return diff > 0;
+                } else {
+                    //输入为空
+                    console.log("版本号不能为空");
+                    return false;
+                }
             },
             checkVersion(){
                 let _this = this;
@@ -63,7 +85,18 @@
                     if(res_data.code==200) {
                         console.log("_this.$store.state.SYS_VERSION:"+_this.$store.state.SYS_VERSION);
                         console.log("res_data.body.version:"+res_data.body.version);
-                        if(_this.$store.state.SYS_VERSION != res_data.body.version) {
+
+                        //不显示
+                        if(res_data.body.is_show == 0){
+                            _this.init();
+                            return
+                        }
+
+                        let nativeV = _this.$store.state.SYS_VERSION;
+                        let netV = res_data.body.version;
+                        let vUpdate = this.compareVersion(netV,nativeV);
+
+                        if(vUpdate) {
                             //打开升级页面
                             _this.$nextTick(()=>{
                                 _this.$refs.updatepage.upgrade();
@@ -199,10 +232,12 @@
                 _this.init();
             //#endif
 
-            // #ifdef APP-PLUS
-                //检查是否需要更新
-                _this.checkVersion();
-            //#endif
+            _this.checkVersion();
+
+            // // #ifdef APP-PLUS
+            //     //检查是否需要更新
+            //     _this.checkVersion();
+            // //#endif
         }
     }
 </script>
