@@ -9,7 +9,7 @@ import module from "./module.js"
 Vue.use(Vuex)
 
 const state = {
-	SYS_VERSION:"1.0.1",//客户端版本
+	SYS_VERSION:"1.0.2",//客户端版本
 	app_uuid:"",//每次打开都会自动生成一个唯一的字符，可用于后台程序判断冲线的问题
 	signInCnf:null,//签到配置
 	WAIT_SEND_MSG:"",//发送失败，等待重头发送信息
