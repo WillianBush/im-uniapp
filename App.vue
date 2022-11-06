@@ -32,10 +32,16 @@
 			// 	uni.setStorageSync("APP_UUID_LOCAL",uuid)
 			// }
 
+            // 获取本地应用资源版本号
+            plus.runtime.getProperty(plus.runtime.appid, (wgtinfo) => {
+                // console.log(innerVer)
+                //版本
+                _this.$store.state.SYS_VERSION = wgtinfo.version;
+            })
 
 
 
-			uni.getSystemInfo({
+            uni.getSystemInfo({
 				success: function(e) {
 					//console.log(e.windowHeight);
 					Vue.prototype.winH = e.windowHeight;
@@ -68,9 +74,6 @@
 					Vue.prototype.StatusBar = e.statusBarHeight;
 					Vue.prototype.CustomBar = e.statusBarHeight + e.titleBarHeight;
 					// #endif
-
-                    //版本
-                    _this.$store.state.SYS_VERSION = e.appVersion;
 
 				}
 			})

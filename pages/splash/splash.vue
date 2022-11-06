@@ -96,6 +96,7 @@
                         let netV = res_data.body.version;
                         let vUpdate = this.compareVersion(netV,nativeV);
 
+                        console.log("res_data.body.vUpdate:"+vUpdate);
                         if(vUpdate) {
                             //打开升级页面
                             _this.$nextTick(()=>{
@@ -232,12 +233,10 @@
                 _this.init();
             //#endif
 
-            _this.checkVersion();
-
-            // // #ifdef APP-PLUS
-            //     //检查是否需要更新
-            //     _this.checkVersion();
-            // //#endif
+            // #ifdef APP-PLUS
+                //检查是否需要更新
+                _this.checkVersion();
+            //#endif
         }
     }
 </script>
