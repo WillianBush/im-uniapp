@@ -1108,7 +1108,43 @@ export default new Vuex.Store({
 						}
 						
 						 
-					} else {
+					} else if(data.body[0].bean.fromUid==store.state.user.id){//多端同步的问题
+						if(data.body[0].bean.fromUid!=store.state.user.id) {
+							console.log("11111111->"+data.act);
+							if(!darao&&data.act=="none") {
+								console.log("播放了1："+store.state.temp.msg_mp3_playtime);
+								if(store.state.temp.msg_mp3_playtime==0||(new Date().getTime() - store.state.temp.msg_mp3_playtime)>1000) {
+									// uni.showToast({
+									//     icon: 'none',
+									// 	position: 'bottom',
+									//     title: '2222'
+									// });
+									console.log("播放了2");
+									let mp3_src = '/static/mp3/msg.mp3';
+									//实例化声音
+									const Audio = uni.createInnerAudioContext();
+									Audio.autoplay = true;
+									Audio.src = mp3_src; //音频地址
+									Audio.play(); //执行播放
+									console.log("播放了3");
+									Audio.onSeeked(() => {
+										console.log('Audio 释放释放！');
+										Audio.destroy();
+									});
+									store.state.temp.msg_mp3_playtime = new Date().getTime();
+								}
+
+							}
+
+							//群成员昵称显示备注问题
+							if(data.CMD=="GROUP_CHAT_MESSAGE") {
+								let s = uni.getStorageSync(data.body[0].bean.fromUid+"_NOTE");
+								if(s&&s!="") {
+									data.body[0].bean.fromName = s;
+								}
+							}
+						}
+					}else {
 						
 						//#ifndef H5
 						if(data.CMD=="CHAT_SEND_TRANSFER_SUCCESS") {

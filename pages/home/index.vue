@@ -9,7 +9,7 @@
 		<view class="cu-bar bg-white search">
 			<view class="search-form round">
 				<text class="cuIcon-search"></text>
-				<input v-model="kw" @input="search_list()" type="text" placeholder="输入搜索的关键词" confirm-type="search"></input>
+				<input @input="search_list($event.target.value)" type="text" placeholder="输入搜索的关键词" confirm-type="search"></input>
 			</view>
 			
 		</view>
@@ -204,7 +204,6 @@
 				skin: false,
 				listTouchStart: 0,
 				listTouchDirection: null,
-				kw:"",
 				list:[],
 				super_user:0,
 				numPag: 1, // 第一页
@@ -685,14 +684,29 @@
 
 				this.showMenu = !this.showMenu;
 			},
-			search_list() {
-				let _this = this;
-				let list = this.$store.state.ar_list;
-				console.log('-------------list', list)
-				list = list.filter((item)=>{
-					return item.title.indexOf(_this.kw.trim())>=0||item.subname.indexOf(_this.kw.trim())>=0
-				});
-				this.$store.commit("setAr_list_show",list);
+			search_list(a) {
+				if(typeof a !== 'undefined' && a != null && a !== ''){
+					let _this = this;
+					_this.$http.post("/user/accessRecord/json/get",
+							{
+								nickname:a,
+							},
+							{
+								header:{
+									"x-access-uid":_this.$store.state.user.id,
+									"x-access-client":_this.$clientType
+								}
+							}
+					).then(res=>{
+						let res_data = eval(res.data);
+						if(res_data.code==200) {
+							let list = res_data.body
+							this.$store.state.ar_list_show = list;
+						}
+					})
+				}else{
+					this.refresherrefresh();
+				}
 			},
 			goChat(item) {
 				if(item.id=="-1") {
