@@ -33,11 +33,11 @@
 			// }
 
             // 获取本地应用资源版本号
-            plus.runtime.getProperty(plus.runtime.appid, (wgtinfo) => {
-                // console.log(innerVer)
-                //版本
-                _this.$store.state.SYS_VERSION = wgtinfo.version;
-            })
+            // plus.runtime.getProperty(plus.runtime.appid, (wgtinfo) => {
+            //     // console.log(innerVer)
+            //     //版本
+            //     _this.$store.state.SYS_VERSION = wgtinfo.version;
+            // })
 
 
 
@@ -75,6 +75,8 @@
 					Vue.prototype.CustomBar = e.statusBarHeight + e.titleBarHeight;
 					// #endif
 
+                    //版本
+                    _this.$store.state.SYS_VERSION = e.appWgtVersion;
 				}
 			})
 

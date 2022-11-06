@@ -15,8 +15,8 @@
     margin: auto auto;
     margin-top: 10px;" class="margin-top">
 
-			<view style=" width:100%">
-				<scroll-view style="padding-top:30upx;padding-bottom:30upx;"
+			<view style=" width:100%;height: 100%">
+				<scroll-view style="height: calc(100vh - 100upx - 100upx  - 50upx);" :scroll-y="true" class="page"
 							 :refresher-enabled="true"
 							 :refresher-triggered="refresherTriggered"
 							 @refresherrefresh="refresherrefresh"
