@@ -6,7 +6,6 @@
 </template>
 
 <script>
-    import VersionUtil from "../../utils/VersionUtil"
     import store from "store"//使用vuex对状态进行管理
     import updatepage from "../../components/user/updatepage/updatepage.vue";
     export default {

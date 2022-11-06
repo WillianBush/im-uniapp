@@ -1,6 +1,6 @@
 <template>
 	<view>
-		<cu-custom bgColor="bg-blue"  :isBack="true" :nameToLeft="true"><block slot="backText"></block><block slot="content">群组成员({{totalList.length}}人)</block><block slot="right">
+		<cu-custom bgColor="bg-blue"  :isBack="true" :nameToLeft="true"><block slot="backText"></block><block slot="content">群组成员({{totalAllListCount}}人)</block><block slot="right">
 		</block></cu-custom>
 		
 		<view class="cu-bar bg-white search">
@@ -45,6 +45,7 @@
 				refresherTriggered: false, //下拉刷新状态
 				_refresherTriggered: false, //防止异步操作
 				id:"",
+				totalAllListCount: 0,
 				totalList:[],
 				numPag: 1, // 第一页
 				allPageNum: 10000, // 总页数
@@ -156,6 +157,7 @@
 								item1.nickName=s;
 							}
 						})
+						_this.totalAllListCount = res_data.body.totalCount;
 						_this.totalList = _this.totalList.concat(list);
 					}
 					_this.closeRefresh();
