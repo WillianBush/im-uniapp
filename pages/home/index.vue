@@ -164,8 +164,9 @@
 				class="page" :class="modalName!=null?'show':''" :refresher-enabled="true"
 				:refresher-triggered="refresherTriggered" @refresherrefresh="refresherrefresh"
 				@refresherrestore="refresherrestore" @refresherabort="refresherabort">
-				<UserChat></UserChat>
+				<UserChat :msgToId="msgToId"></UserChat>
 			</scroll-view>
+			<!-- <web-view src="http://localhost:8080/#/pages/chat/user/index?toid=2c988083839e38880183a2b26ef026c9"></web-view> -->
 		</view>
 	</view>
 </template>
@@ -178,6 +179,7 @@
 		},
 		data() {
 			return {
+				msgToId: '',
 				refresherTriggered: false, //下拉刷新状态
 				_refresherTriggered: false, //防止异步操作
 				chatCfg: {},
@@ -694,11 +696,14 @@
 				this.$store.commit("setAr_list_show", list);
 			},
 			goChat(item) {
+				this.msgToId = item.id;
+				return;
 				if (item.id == "-1") {
 					uni.navigateTo({
 						url: "/pages/chat/guang_fang_chat"
 					})
 				} else {
+					this.msgToId = item.id;
 					if (item.typeid == "2") {
 						uni.navigateTo({
 							url: "/pages/chat/user/index?toid=" + item.id

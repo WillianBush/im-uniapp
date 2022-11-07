@@ -31,6 +31,7 @@ export default {
   methods: {
 	deal(v) {
 		console.log('hhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhh-----------', v)
+		console.log('this.node', this.node)
 		if (typeof v === 'string') {
 			return v;
 		} else {

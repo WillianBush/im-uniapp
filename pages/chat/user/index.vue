@@ -894,6 +894,12 @@
 		    uParse,
 			openRed
 		},
+		props: {
+			msgToId: {
+				type: String,
+				default: ''
+			}
+		},
 		data() {
 			return {
 				videoCheck:"<video",
@@ -907,10 +913,10 @@
 				domHeight:0,
 				c_type:1,
 				InputBottom: 0,
-				toid:"",
 				entity:{},
 				txt:"",
 				temp_txt:"",
+				toid: "",
 				temp_map:new Map(),
 				showjia:true,
 				emotion:1,
@@ -958,6 +964,15 @@
 				toIP:""
 			};
 		},
+		watch: {
+		      msgToId: function(newVal,oldVal){
+		        console.log('----------------------newVal',newVal)
+				console.log('---------------------oldVal',oldVal)
+				this.toid = newVal;
+				this.onShowMethod();
+				this.onLoadMethod();
+		      }
+		    },
 		onBackPress() {
 			this.$store.commit("setCur_chat_entity",null); 
 			this.$store.commit("setCur_chat_msg_list",[]); 
@@ -966,359 +981,187 @@
 			uni.$off("scrollTopFn");
 		},
 		onShow() {
-
-
-			console.log("mmmmmmmmmmmnnnnnnnnnn1",this.$store.state.cur_chat_msg_list.length)
-			console.log("mmmmmmmmmmmnnnnnnnnnn2",this.$store.state.cur_chat_msg_list)
-
-			let _this = this;
-			uni.$on("scrollTopFn",()=>{
-				console.log("触发了-scrollTopFn");
-				//scrollLeft: 0, scrollTop: 3935, scrollHeight: 4500, scrollWidth: 375, deltaX: 0
-				//console.log(_this.scrollDetail)
-				let svH = _this.winH - _this.CustomBar - 50;
-				console.log("svH:"+svH);
-				//console.log(_this.scrollDetail.scrollHeight-_this.scrollDetail.scrollTop);
-				console.log(_this.scrollDetail.scrollHeight-_this.scrollDetail.scrollTop - svH);
-				if((_this.scrollDetail.scrollHeight-_this.scrollDetail.scrollTop - svH)<300) {
-					//#ifdef APP-PLUS
-					setTimeout(()=>{
-						_this.scrollTop = 99999999+Math.random();
-					},1200)
-					//#endif
-					//#ifdef H5
-					setTimeout(()=>{
-						_this.scrollTop = 99999999+Math.random();
-					},500)
-					//#endif
-				}
-			}); 
-			 
-			let s = uni.getStorageSync(this.toid+"_NOTE");
-			if(s&&s!="") {
-				this.showname = s;
-			}
-			let v = {
-				toUid:this.toid,
-				fromUid:this.$store.state.user.id
-			}
-			this.$websocket.dispatch("WEBSOCKET_SEND", "{body:'"+JSON.stringify(v)+"',CMD:'CHAT_MSG_READED'}");
+			this.onShowMethod();
 		},
-		onLoad(option) {
-			this.$store.commit("setCur_chat_msg_list",[]);
-			this.$store.commit("setChat_my_loadding",false); 
-			
-			// #ifndef H5
-			//录音开始事件
-			this.RECORDER.onStart((e)=>{
-				this.recordBegin(e);
-			})
-			//录音结束事件
-			this.RECORDER.onStop((e)=>{
-				this.recordEnd(e);
-			})
-			// #endif
-			
-			//this.vindex = "v"+(this.$store.state.cur_chat_msg_list.length)
-			let _this = this;
-			this.toid = option.toid;
-			let user = uni.getStorageSync("USER");
-			this.getWindowSize();
-			if(this.$store.state.chatMessageMap.has(user.id+"#"+this.toid)) {
-				let msg_list = this.$store.state.chatMessageMap.get(user.id+"#"+this.toid);
-				if(msg_list&&msg_list.length>0) {
-					// var newMsgList = msg_list.filter(o => !(o.bean.psr == "video" && o.bean.txt.indexOf('<video') > -1));
-					var newMsgList = msg_list;
-					this.$store.commit("setCur_chat_msg_list",newMsgList);
-					console.log('88888888', msg_list)
-				}
-			} else {
-				let str = uni.getStorageSync(user.id+"#"+this.toid+'_CHAT_MESSAGE');
-				// console.log(str);
-				if(str&&str!="") {
-					 var jsonObj = JSON.parse(str);
-					 // if(jsonObj.length>50) {
-					 //  	jsonObj.splice(0,jsonObj.length-50);
-					 //  }
-					 this.$store.commit("updateChatMessageMap",{
-					 	key:user.id+"#"+this.toid,
-					 	value:jsonObj
-					 });
-					  this.$store.commit("setCur_chat_msg_list",jsonObj);
-					  console.log('jsonObj', jsonObj)
-				} else {
-					//如果什么都没记录的话，则从云端加载
-					//this.tongbuMsg_1stInNoData();
-				}
-			}
-
-			/*获取聊天的对象 user数据*/
-			_this.$http.get("/user/json/userInfo?toid="+_this.toid,
-					{
-						header:{
-							"x-access-uid":_this.$store.state.user.id,
-							"x-access-client":_this.$clientType
-						}
-					}
-			).then(res=>{
-				let res_data = eval(res.data);
-
-				console.log('userInfo33', res_data)
-				if(res_data.code==200) {
-					console.log('userInfo22', res_data.body.ip+"===="+res_data.body.ipAddr)
-					_this.toIP = res_data.body.ip +"("+ res_data.body.ipAddr+")";
-					console.log('userInfo11', _this.toIP)
-				}
-			})
-
-			
-			_this.$http.post("/user/json/loadById/v1",
-				{id:_this.toid},
-				{
-					header:{
-						"x-access-uid":_this.$store.state.user.id,
-						"x-access-client":_this.$clientType
-					}
-				}
-			).then(res=>{
-				let res_data = eval(res.data);
-				if(res_data.code==200) {  
-					_this.entity = res_data.body;
-					_this.$store.commit("setCur_chat_entity",_this.entity);
-					//主要是为了让onshow检查是否已设置备注，如果已设置备注则不需要使用用户原昵称
-					setTimeout(function(){
-						if(_this.showname=="") {
-							_this.showname = _this.entity.nickName;
-						}
-					},100)	
-				}
-				let unRead = uni.getStorageSync(user.id+"#"+_this.toid+'_CHAT_MESSAGE_UNREAD');
-				if(unRead&&unRead!="") {
-					uni.removeStorageSync(user.id+"#"+_this.toid+'_CHAT_MESSAGE_UNREAD');
-					_this.$store.commit("setUnReadMsgSum",_this.$store.state.setUnReadMsgSum - parseInt(unRead))
-				}
-			})
-			
-			 
-			// uni.request({
-			// 	method:"POST",
-			// 	url: _this.$store.state.req_url + "/user/json/loadById/v1",
-			// 	data:{id:_this.toid},
-			// 	header:{
-			// 		"Content-Type":"application/x-www-form-urlencoded",
-			// 		"x-access-uid":_this.$store.state.user.id
-			// 	},
-			// 	success(res) {
-			// 		let res_data = eval(res.data);
-			// 		if(res_data.code==200) {  
-			// 			_this.entity = res_data.body;
-			// 			_this.$store.commit("setCur_chat_entity",_this.entity);
-			// 			//主要是为了让onshow检查是否已设置备注，如果已设置备注则不需要使用用户原昵称
-			// 			setTimeout(function(){
-			// 				if(_this.showname=="") {
-			// 					_this.showname = _this.entity.nickName;
-			// 				}
-			// 			},100)	
-						
-						
-			// 		}
-			// 		let unRead = uni.getStorageSync(user.id+"#"+_this.toid+'_CHAT_MESSAGE_UNREAD');
-			// 		if(unRead&&unRead!="") {
-			// 			uni.removeStorageSync(user.id+"#"+_this.toid+'_CHAT_MESSAGE_UNREAD');
-			// 			_this.$store.commit("setUnReadMsgSum",_this.$store.state.setUnReadMsgSum - parseInt(unRead))
-			// 		}
-					
-					
-			// 	}
-			// })
-			
-			
-			_this.$http.post("/user/accessRecord/json/saveOrUpdate",
-				{type:2,eid:this.toid},
-				{
-					header:{
-						"x-access-uid":_this.$store.state.user.id,
-						"x-access-client":_this.$clientType
-					}
-				}
-			).then(res=>{
-				let res_data = eval(res.data);
-				if(res_data.code==200) {  
-					//更新消息列表
-					
-					// let list = _this.$store.state.ar_list.filter(item=>{
-					// 	if(item.id==res_data.body.id) return false;
-					// })
-					// list.splice(0,0,res_data.body);
-					// _this.$store.commit("setAr_list",list); 
-					
-				} else {
-					// uni.showModal({
-					//     title: '信息提示',
-					//     content: res_data.msg,
-					// 	showCancel:false,
-					//     success: function (res) {
-					//         if (res.confirm) {
-					//             uni.navigateBack({
-					//             	delta:1
-					//             })
-					//         }
-					//     }
-					// });
-					
-					
-					// uni.showToast({
-					//     icon: 'none',
-					// 	position: 'bottom',
-					//     title: res_data.msg
-					// });
-				}
-			})
-			
-			// uni.request({
-			// 	method:"POST",
-			// 	url: _this.$store.state.req_url + "/user/accessRecord/json/saveOrUpdate",
-			// 	data:{type:2,eid:this.toid},
-			// 	header:{
-			// 		"Content-Type":"application/x-www-form-urlencoded",
-			// 		"x-access-uid":_this.$store.state.user.id
-			// 	},
-			// 	success(res) {
-			// 		let res_data = eval(res.data);
-			// 		if(res_data.code==200) {  
-			// 			//更新消息列表
-						
-			// 			// let list = _this.$store.state.ar_list.filter(item=>{
-			// 			// 	if(item.id==res_data.body.id) return false;
-			// 			// })
-			// 			// list.splice(0,0,res_data.body);
-			// 			// _this.$store.commit("setAr_list",list); 
-						
-			// 		} else {
-			// 			uni.showModal({
-			// 			    title: '信息提示',
-			// 			    content: res_data.msg,
-			// 				showCancel:false,
-			// 			    success: function (res) {
-			// 			        if (res.confirm) {
-			// 			            uni.navigateBack({
-			// 			            	delta:1
-			// 			            })
-			// 			        }
-			// 			    }
-			// 			});
-						
-						
-			// 			// uni.showToast({
-			// 			//     icon: 'none',
-			// 			// 	position: 'bottom',
-			// 			//     title: res_data.msg
-			// 			// });
-			// 		}
-			// 	}
-			// })
-			
-			// this.$store.state.ar_list.forEach(item=>{
-			// 	if(item.id==option.toid) {
-			// 		_this.entity = item;
-			// 		return;
-			// 	}
-			// })
-			this.scrollToBottom();
-			
-			
-			_this.$http.post("/sysConfig/json/getChatCfg",
-				{
-					header:{
-						"x-access-uid":_this.$store.state.user.id,
-						"x-access-client":_this.$clientType
-					}
-				}
-			).then(res=>{
-				let res_data = eval(res.data);
-				if(res_data.code==200) {  
-					_this.chatCfg = res_data.body;
-				}
-			})
-			
-			// uni.request({
-			// 	method:"POST",
-			// 	url: _this.$store.state.req_url + "/sysConfig/json/getChatCfg",
-			// 	header:{
-			// 		"Content-Type":"application/x-www-form-urlencoded",
-			// 		"x-access-uid":_this.$store.state.user.id
-			// 	},
-			// 	success(res) {
-			// 		let res_data = eval(res.data);
-			// 		if(res_data.code==200) {  
-			// 			_this.chatCfg = res_data.body;
-			// 		}
-			// 	}
-			// })
-			
-			// recorderManager.onStop(function(res) {
-			// 	uni.request({
-			// 		data:{
-			// 			t:1
-			// 		},
-			// 		method:"GET",
-			// 		url:_this.$store.state.req_url+"/test1",
-			// 		success(res) {
-			// 		}
-			// 	})
-			//   console.log("录音停止了" + JSON.stringify(res)); //返回录音的临时保存地址, 可用于后面的播放
-			//   _this.voicePath = res.tempFilePath;
-			  
-			//   uni.request({
-			//   	data:{
-			//   		t:_this.voicePath
-			//   	},
-			//   	method:"GET",
-			//   	url:_this.$store.state.req_url+"/test1",
-			//   	success(res) {
-			//   	}
-			//   })
-			//   _this.$store.commit("setChat_my_loadding",true); 
-			//   setTimeout(()=>{
-			//   	uni.pageScrollTo({
-			//   	    scrollTop: 9999999999,
-			//   	    duration: 0
-			//   	});
-			//   },100)
-			//   var uper = uni.uploadFile({
-			// 		 // 需要上传的地址
-			// 		 url:_this.$store.state.req_url+ '/user/file/uploadVoice',
-			// 		 header:{
-			// 			// "Content-Type":"multipart/form-data",
-			// 			"x-access-uid":_this.$store.state.user.id
-			// 		 },
-			// 		 // filePath  需要上传的文件
-			// 		 formData: {  
-			// 			 file: _this.voicePath  
-			// 		 },  
-			// 		 fileType: 'video',  
-			// 		 filePath: _this.voicePath ,
-			// 		 name: 'file',
-			// 		 success(res1) {
-			// 			 let json = eval("("+res1.data+")");
-			// 			 // 显示上传信息
-			// 			 if(json.code==200) {
-			// 				let v = {
-			// 					txt:json.msg,
-			// 					toUid:_this.toid,
-			// 					fromUid:_this.$store.state.user.id
-			// 				}
-			// 				_this.$websocket.dispatch("WEBSOCKET_SEND", "{body:'"+JSON.stringify(v)+"',CMD:'USER_CHAT_SEND_VOICE'}");
-			// 			 }
-			// 		 }
-			//   });
-			// });
+		onLoad() {
+			this.onLoadMethod();
 		},
 		mounted() { 
 			 //this.domHeight = document.documentElement.clientHeight
+			 console.log('8888', this.toid)
 		},
 	
 		methods: {
+			onShowMethod() {
+				console.log('6666')
+				let _this = this;
+				uni.$on("scrollTopFn",()=>{
+					console.log("触发了-scrollTopFn");
+					//scrollLeft: 0, scrollTop: 3935, scrollHeight: 4500, scrollWidth: 375, deltaX: 0
+					//console.log(_this.scrollDetail)
+					let svH = _this.winH - _this.CustomBar - 50;
+					console.log("svH:"+svH);
+					//console.log(_this.scrollDetail.scrollHeight-_this.scrollDetail.scrollTop);
+					console.log(_this.scrollDetail.scrollHeight-_this.scrollDetail.scrollTop - svH);
+					if((_this.scrollDetail.scrollHeight-_this.scrollDetail.scrollTop - svH)<300) {
+						//#ifdef APP-PLUS
+						setTimeout(()=>{
+							_this.scrollTop = 99999999+Math.random();
+						},1200)
+						//#endif
+						//#ifdef H5
+						setTimeout(()=>{
+							_this.scrollTop = 99999999+Math.random();
+						},500)
+						//#endif
+					}
+				}); 
+				 
+				let s = uni.getStorageSync(this.toid+"_NOTE");
+				console.log('fuck', this.toid, s)
+				if(s&&s!="") {
+					this.showname = s;
+				}
+				let v = {
+					toUid:this.toid,
+					fromUid:this.$store.state.user.id
+				}
+				this.$websocket.dispatch("WEBSOCKET_SEND", "{body:'"+JSON.stringify(v)+"',CMD:'CHAT_MSG_READED'}");
+			},
+			onLoadMethod (){
+			  console.log('77777')
+			  this.$store.commit("setCur_chat_msg_list",[]);
+			  this.$store.commit("setChat_my_loadding",false); 
+			  
+			  // #ifndef H5
+			  //录音开始事件
+			  this.RECORDER.onStart((e)=>{
+			  	this.recordBegin(e);
+			  })
+			  //录音结束事件
+			  this.RECORDER.onStop((e)=>{
+			  	this.recordEnd(e);
+			  })
+			  // #endif
+			  
+			  //this.vindex = "v"+(this.$store.state.cur_chat_msg_list.length)
+			  let _this = this;
+			  // this.toid = _this.toid;
+			  console.log('this.props', _this.props)
+			  console.log('this.toid', _this.toid)
+			  let user = uni.getStorageSync("USER");
+			  this.getWindowSize();
+			  if(this.$store.state.chatMessageMap.has(user.id+"#"+this.toid)) {
+			  	let msg_list = this.$store.state.chatMessageMap.get(user.id+"#"+this.toid);
+			  	if(msg_list&&msg_list.length>0) {
+			  		// var newMsgList = msg_list.filter(o => !(o.bean.psr == "video" && o.bean.txt.indexOf('<video') > -1));
+			  		var newMsgList = msg_list;
+			  		this.$store.commit("setCur_chat_msg_list",newMsgList);
+			  		console.log('88888888', msg_list)
+			  	}
+			  } else {
+			  	let str = uni.getStorageSync(user.id+"#"+this.toid+'_CHAT_MESSAGE');
+			  	// console.log(str);
+			  	if(str&&str!="") {
+			  		 var jsonObj = JSON.parse(str);
+			  		 // if(jsonObj.length>50) {
+			  		 //  	jsonObj.splice(0,jsonObj.length-50);
+			  		 //  }
+			  		 this.$store.commit("updateChatMessageMap",{
+			  		 	key:user.id+"#"+this.toid,
+			  		 	value:jsonObj
+			  		 });
+			  		  this.$store.commit("setCur_chat_msg_list",jsonObj);
+			  		  console.log('jsonObj', jsonObj)
+			  	} else {
+			  		//如果什么都没记录的话，则从云端加载
+			  		//this.tongbuMsg_1stInNoData();
+			  	}
+			  }
+			  
+			  /*获取聊天的对象 user数据*/
+			  _this.$http.get("/user/json/userInfo?toid="+_this.toid,
+			  		{
+			  			header:{
+			  				"x-access-uid":_this.$store.state.user.id,
+			  				"x-access-client":_this.$clientType
+			  			}
+			  		}
+			  ).then(res=>{
+			  	let res_data = eval(res.data);
+			  
+			  	console.log('userInfo33', res_data)
+			  	if(res_data.code==200) {
+			  		console.log('userInfo22', res_data.body.ip+"===="+res_data.body.ipAddr)
+			  		_this.toIP = res_data.body.ip +"("+ res_data.body.ipAddr+")";
+			  		console.log('userInfo11', _this.toIP)
+			  	}
+			  })
+			  
+			  
+			  _this.$http.post("/user/json/loadById/v1",
+			  	{id:_this.toid},
+			  	{
+			  		header:{
+			  			"x-access-uid":_this.$store.state.user.id,
+			  			"x-access-client":_this.$clientType
+			  		}
+			  	}
+			  ).then(res=>{
+			  	let res_data = eval(res.data);
+			  	if(res_data.code==200) {  
+			  		_this.entity = res_data.body;
+			  		_this.$store.commit("setCur_chat_entity",_this.entity);
+			  		//主要是为了让onshow检查是否已设置备注，如果已设置备注则不需要使用用户原昵称
+					console.log('娃哈哈',_this.entity.nickName)
+			  		setTimeout(function(){
+			  				_this.showname = _this.entity.nickName;
+			  		},100)
+			  	}
+			  	let unRead = uni.getStorageSync(user.id+"#"+_this.toid+'_CHAT_MESSAGE_UNREAD');
+			  	if(unRead&&unRead!="") {
+			  		uni.removeStorageSync(user.id+"#"+_this.toid+'_CHAT_MESSAGE_UNREAD');
+			  		_this.$store.commit("setUnReadMsgSum",_this.$store.state.setUnReadMsgSum - parseInt(unRead))
+			  	}
+			  })
+			  	  
+			  
+			  _this.$http.post("/user/accessRecord/json/saveOrUpdate",
+			  	{type:2,eid:this.toid},
+			  	{
+			  		header:{
+			  			"x-access-uid":_this.$store.state.user.id,
+			  			"x-access-client":_this.$clientType
+			  		}
+			  	}
+			  ).then(res=>{
+			  	let res_data = eval(res.data);
+			  	if(res_data.code==200) {  
+			  		//更新消息列表
+			  		
+			  		// let list = _this.$store.state.ar_list.filter(item=>{
+			  		// 	if(item.id==res_data.body.id) return false;
+			  		// })
+			  		// list.splice(0,0,res_data.body);
+			  		// _this.$store.commit("setAr_list",list); 
+			  		
+			  	}
+			  })
+			  this.scrollToBottom();
+			  _this.$http.post("/sysConfig/json/getChatCfg",
+			  	{
+			  		header:{
+			  			"x-access-uid":_this.$store.state.user.id,
+			  			"x-access-client":_this.$clientType
+			  		}
+			  	}
+			  ).then(res=>{
+			  	let res_data = eval(res.data);
+			  	if(res_data.code==200) {  
+			  		_this.chatCfg = res_data.body;
+			  	}
+			  })
+			},
 			lineFeed () {
 				console.log('换行')
 				console.log(this.txt)
