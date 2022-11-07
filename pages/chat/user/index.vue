@@ -302,7 +302,7 @@
 	
 		
 		</scroll-view>
-		<view class="cu-bar foot input" :style="[{bottom:InputBottom+'upx'}]" style="flex-direction: row; width: 100%;">
+		<view class="cu-bar foot input" :style="[{bottom:InputBottom+'upx'}]" style="flex-direction: row; width: calc(80% - 82px);left: calc(20% + 82px)">
 			<!-- #ifndef H5 -->
 			<view @tap="selType(2)" v-show="c_type==1"  class="action">
 				<text class="cuIcon-sound text-grey"></text> 
@@ -327,7 +327,6 @@
 			@focus="InputFocus" @blur="InputBlur" v-show="c_type==1" v-model="txt" 
 			@input="inputTxt()" class="solid-bottom" :adjust-position="true" :focus="input_is_focus" 
 			maxlength="-1" cursor-spacing="10"
-			
 			></textarea>
 			<!--
 			<button  @touchstart="checkAuthorize" @touchend="endRecord" v-show="c_type==2"  style="color: #aaa;margin-left: 20upx;width:100%" class="cu-btn block line-orange lg">按住 说话</button>
@@ -890,6 +889,7 @@
 	//#endif
 	
 	export default {
+		name: 'UserChat',
 		components: {
 		    uParse,
 			openRed
