@@ -196,7 +196,10 @@
 
 			this.$store.state.appShow = true;
 			setTimeout(()=>{
-			 	_this.$websocket.dispatch('WEBSOCKET_INIT');
+                let user = uni.getStorageSync("USER");
+                if (user) {
+                    _this.$websocket.dispatch('WEBSOCKET_INIT');
+                }
 			},500);
 
 
@@ -204,7 +207,10 @@
 				clearInterval(_checkLink);
 			}
 			_checkLink = setInterval(function(){
-				_this.checkWsLink();
+                let user = uni.getStorageSync("USER");
+                if (user) {
+                    _this.checkWsLink();
+                }
 				//如果是特权用户并且开启了刷新 ，10秒刷新一次聊天列表
                 if (_this.$store.state.isEmployee && _this.$store.state.isOpenRefresh) {
                     _this.loadStoreData();
@@ -218,7 +224,10 @@
 			this.$store.state.appShow = false;
 
 			setTimeout(()=>{
-				_this.$websocket.dispatch('WEBSOCKET_INIT');
+                let user = uni.getStorageSync("USER");
+                if (user) {
+                    _this.$websocket.dispatch('WEBSOCKET_INIT');
+                }
 			},500);
 
 			// if(_checkLink) {

@@ -322,6 +322,7 @@
 								let res_data = eval(res.data);
 								if(res_data.code==200) {
 									//uni.clearStorageSync();
+                                    uni.closeSocket();
 									uni.removeStorageSync("USER");
 									_this.$store.commit("clearData");
 									uni.navigateTo({

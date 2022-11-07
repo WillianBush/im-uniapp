@@ -14,6 +14,11 @@ export default new Vuex.Store({
 	},
 	mutations: { 
 		WEBSOCKET_INIT(state) {
+			let id = store.state.user.id
+			//用户退出后，不让重新连
+			if(typeof id == 'undefined' || id == null || id == ''){
+				return;
+			}
 			var _this = this; 
 			if(state.is_open_socket) return;
 			if(state.lock) return;
