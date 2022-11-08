@@ -1,6 +1,7 @@
 <template>
-    <view class="start-wrap u-flex u-row-center">
+    <view class="start-wrap">
         <image class="start-img" src="/static/splash.png" mode="aspectFill" @load="loadImage"></image>
+        <view class="wraper-row" @click="jump">{{count}}跳过</view>
         <updatepage ref="updatepage"></updatepage>
     </view>
 </template>
@@ -14,9 +15,47 @@
         },
         data() {
             return {
+                count:'',
+                canDoNext:true//如果需要版本升级，这里就是false，不让倒计时后直接进主页或者登录页面
             };
         },
+        created() {
+            this.countDown() // 倒计时
+        },
         methods: {
+            countDown() {
+                const TIME_COUNT = 5
+                if (!this.timer) {
+                    this.count = TIME_COUNT
+                    this.timer = setInterval(() => {
+                        if (this.count >= 1 && this.count <= TIME_COUNT) { //限制倒计时区间
+                            this.count--
+                        } else {
+                            clearInterval(this.timer)   //删除定时器
+                            this.timer = null
+                            this.count = ''
+                            if(!this.canDoNext){
+                                return;
+                            }
+
+                            this.jump();
+                        }
+                    }, 1000)
+                }
+            },
+            jump(){//跳转到对应的页面
+                let user = uni.getStorageSync("USER");
+                if (user) {
+                    //进入首页
+                    uni.navigateTo({
+                        url: "/pages/index/index"
+                    })
+                }else{
+                    uni.navigateTo({
+                        url: "/pages/login/login"
+                    })
+                }
+            },
             loadImage() {
             },
             compareVersion(netV, nativeV) {
@@ -87,7 +126,6 @@
 
                         //不显示
                         if(res_data.body.is_show == 0){
-                            _this.init();
                             return
                         }
 
@@ -97,15 +135,13 @@
 
                         console.log("res_data.body.vUpdate:"+vUpdate);
                         if(vUpdate) {
+                            _this.canDoNext = false;//需要升级
                             //打开升级页面
                             _this.$nextTick(()=>{
                                 _this.$refs.updatepage.upgrade();
                             })
-                        }else{
-                            _this.init()
+                            _this.$store.state.appNeedUpdate = true;//全局app需要更新
                         }
-                    }else{
-                        _this.init();
                     }
                 })
             },
@@ -208,19 +244,7 @@
                                     });
                                 }
                             })
-                            //进入首页
-                            uni.navigateTo({
-                                url: "/pages/index/index"
-                            })
-                        } else {
-                            uni.navigateTo({
-                                url: "/pages/login/login"
-                            })
                         }
-                    }else{
-                        uni.navigateTo({
-                            url: "/pages/login/login"
-                        })
                     }
                 }, 2000)
             }
@@ -248,6 +272,22 @@
     .start-wrap, .start-img {
         width: 100%;
         height: 100%;
+    }
+    /** 全局样式-结束*/
+    .wraper-row {
+        align-items: center;
+        justify-content: center;
+        border-radius: 10rpx;
+        padding-left: 15rpx;
+        padding-top: 5rpx;
+        padding-bottom: 5rpx;
+        padding-right: 15rpx;
+        top: 44rpx;
+        right: 32rpx;
+        background: rgba(6, 6, 6, 0.3);
+        position: absolute;
+        color: white;
+        font-size: small;
     }
 </style>
 

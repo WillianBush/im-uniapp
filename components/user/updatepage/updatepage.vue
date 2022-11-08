@@ -95,6 +95,13 @@
       // 取消更新
       hiddenUppop() {
         this.$refs.popup.close();
+        var pages = getCurrentPages();
+        var currentPage = pages[pages.length - 1];
+        let name = currentPage.route;
+        if(name.indexOf("splash") === -1){//如果是我的页面调用的
+            return;
+        }
+
         let user = uni.getStorageSync("USER");
         if (user) {
           //进入首页

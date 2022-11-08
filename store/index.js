@@ -9,7 +9,7 @@ import module from "./module.js"
 Vue.use(Vuex)
 
 const state = {
-	SYS_VERSION:"1.0.4",//客户端版本
+	SYS_VERSION:"1.0.5",//客户端版本
 	app_uuid:"",//每次打开都会自动生成一个唯一的字符，可用于后台程序判断冲线的问题
 	signInCnf:null,//签到配置
 	WAIT_SEND_MSG:"",//发送失败，等待重头发送信息
@@ -29,8 +29,9 @@ const state = {
 	cur_chat_entity:{},//当前聊天实体
 	//cur_chat_id:"",//当前正在聊天的ID
 	cur_chat_msg_list:[],//当前正在聊天的记录列表
-	appShow:false, 
-	chat_my_loadding:false,   
+	appShow:false,
+	appNeedUpdate:false,
+	chat_my_loadding:false,
 	faxian_site_list:[],//发现自定义站点  
 	hotItem:{},//底部热门导航
 	shimingCfg:{},//实名配置 

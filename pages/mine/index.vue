@@ -256,7 +256,14 @@
 			},
 			checkUpdate(){
 				let _this = this;
-				_this.$refs.updatepage.upgrade();
+				if(_this.$store.state.appNeedUpdate){
+					_this.$refs.updatepage.upgrade();
+				}else{
+					uni.showToast({
+						icon: 'none',
+						title: "已经是最新版本啦！"
+					});
+				}
 			},
 			goShiming() {
 				uni.navigateTo({
