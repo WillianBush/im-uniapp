@@ -6,7 +6,7 @@
 					<text class="cuIcon-title text-orange "></text> 消息列表
 				</view>
 				<text @tap.stop="showMenuFn()"
-					style="float:right;font-size:48upx;color:#333;margin-top:6upx;margin-right:40upx"
+					style="float:right;font-size:48upx;cursor: pointer;color:#333;margin-top:6upx;margin-right:40upx"
 					class="iconfont icon-jia"></text>
 			</view>
 			<view class="cu-bar bg-white search">
@@ -23,7 +23,7 @@
 					
 					background: #4A484D;
 					top: 140upx;
-					right: 40upx;
+					left: 17%;
 					z-index: 9999;
 					border-radius: 12upx;
 					color: #fff;
@@ -55,7 +55,7 @@
 					width: 280upx;
 					background: #4A484D;
 					top: 140upx;
-					right: 40upx;
+					left: 17%;
 					z-index: 9999;
 					border-radius: 12upx;
 					color: #fff;
@@ -159,8 +159,9 @@
 				-->
 			</scroll-view>
 		</view>
-		<view style="height: calc(100vh - 50upx);width: calc(80% - 100px); float: left; border-left: 1px solid #ddd">
+		<view style="height: calc(100vh - 50upx);width: calc(85% - 100px); float: left; border-left: 1px solid #ddd">
 			<scroll-view :scroll-y="modalName==null"
+				style="width: 100%"
 				class="page" :class="modalName!=null?'show':''" :refresher-enabled="true"
 				:refresher-triggered="refresherTriggered" @refresherrefresh="refresherrefresh"
 				@refresherrestore="refresherrestore" @refresherabort="refresherabort">
@@ -834,6 +835,7 @@
 	.switch-music::before {
 		content: "\e6db";
 	}
+	.cu-list.menu-avatar>.cu-item { cursor: pointer;}
 
 	.cu-list.menu-avatar>.cu-item::after {
 		border-bottom: 1px solid #ddd;

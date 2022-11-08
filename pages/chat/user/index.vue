@@ -2,13 +2,14 @@
 	<!-- <view style="background: red;height: 100%;" > -->
 	<view  ref="topVew"  :style="chatCfg.chatBackgroundImage&&chatCfg.chatBackgroundImage!=''?'background-image: url('+$store.state.img_url+chatCfg.chatBackgroundImage+')':''" style="background-size: 100%;min-height: 100vh;" > 
 		<cu-custom backUrl="/pages/index/index" bgColor="bg-blue"  :isBack="true" :nameToLeft="true"><block slot="backText"></block><block slot="content">
+		<view class="cu-avatar radius" style="margin-right: 5px; border-radius: 50%" :style="'background-image:url('+$store.state.img_url+friendPic+');'"></view>
 		{{showname}} <text v-if="chatCfg.showUserOnline==1">{{entity.online==0?' (离线)':' (在线)'}}</text>
 		<text v-show="$store.state.temp.input_ing" style="font-size: 26upx;margin-left:10upx;">- 正在输入...</text>
 			<text v-show="toIP" style="font-size: 14upx; color: #FFCC99; margin-left:10upx;">{{toIP}}</text>
 		</block><block slot="right">
 			<uni-text @tap="goMgr(entity.id)" style="font-size: 22px;color: #fff;margin-right: 14px;" class="lg text-gray cuIcon-more"><span></span></uni-text>
 		</block></cu-custom>
-		<scroll-view @scroll="scrollFn"  :scroll-top="scrollTop" scroll-y="true"    ref="chatVew" @tap="clickChat()"  class="cu-chat" :style="'height: calc(100vh - '+CustomBar+'px - '+(120+InputBottom)+'upx)'" >	
+		<scroll-view @scroll="scrollFn"  :scroll-top="scrollTop" scroll-y="true"    ref="chatVew" @tap="clickChat()" style="background: #eee;" class="cu-chat" :style="'height: calc(100vh - '+CustomBar+'px + 8px - '+(120+InputBottom)+'upx)'" >	
 			<block  v-for="(item,index) in $store.state.cur_chat_msg_list">
 				<block v-if="item.opt&&item.opt=='undo'">
 					<!-- <view v-if="item.opt_uid==$store.state.user.id"  class="cu-info round">撤回一条消息</view>
@@ -917,6 +918,7 @@
 				txt:"",
 				temp_txt:"",
 				toid: "",
+				friendPic:"",
 				temp_map:new Map(),
 				showjia:true,
 				emotion:1,
@@ -1113,9 +1115,9 @@
 			  		_this.entity = res_data.body;
 			  		_this.$store.commit("setCur_chat_entity",_this.entity);
 			  		//主要是为了让onshow检查是否已设置备注，如果已设置备注则不需要使用用户原昵称
-					console.log('娃哈哈',_this.entity.nickName)
 			  		setTimeout(function(){
 			  				_this.showname = _this.entity.nickName;
+							_this.friendPic = _this.entity.headpic;
 			  		},100)
 			  	}
 			  	let unRead = uni.getStorageSync(user.id+"#"+_this.toid+'_CHAT_MESSAGE_UNREAD');
