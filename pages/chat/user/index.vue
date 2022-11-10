@@ -197,7 +197,7 @@
 								</view>
 
 
-								<view  v-if="item.bean.psr!='video'" @click="doublebclick($event,item.bean)" :class="[item.bean.psr=='uparse'?'':'content bg-green shadow']" :style="{backgroundColor:item.bean.psr=='uparse'? 'none':'#fff'}" style="color:#222;">
+								<view  v-if="item.bean.psr!='video'" @longtap="onLongPress($event,item.bean)" :class="[item.bean.psr=='uparse'?'':'content bg-green shadow']" :style="{backgroundColor:item.bean.psr=='uparse'? 'none':'#fff'}" style="color:#222;">
 									<u-parse v-if="item.bean.psr=='uparse'" :content="item.bean.txt" @preview="preview" @navigate="navigate" ></u-parse>
 									<view @tap="clickVoice(item.bean.txt,index)" v-else-if="item.bean.psr=='voice'">
 										<text  v-show="selVoiceIndex != index"  style="text-align: right; float:right;width:100upx;font-size: 52upx;position: relative;top: 4upx;"  class="iconfont icon-yuyin1 text-xxl "></text>
@@ -216,7 +216,7 @@
 						<view v-else class="cu-item"  >
 							<view  @tap.stop="goUserDetail(item.bean.fromUid)" class="cu-avatar radius" :style="'background-image:url('+$store.state.img_url+item.bean.fromHeadpic+');'" ></view>
 							<view class="main">
-								<view @click="doublebclick($event,item.bean)"  :class="[item.bean.psr=='uparse'?'':'content shadow']" style="color:#222;">
+								<view @longtap="onLongPress($event,item.bean)"  :class="[item.bean.psr=='uparse'?'':'content shadow']" style="color:#222;">
 									<u-parse v-if="item.bean.psr=='video'" :content="item.bean.txt" @preview="preview" @navigate="navigate" ></u-parse>
 									<u-parse v-else-if="item.bean.psr=='uparse'" :content="item.bean.txt" @preview="preview" @navigate="navigate" ></u-parse>
 									<view @tap="clickVoice(item.bean.txt,index)" v-else-if="item.bean.psr=='voice'">
@@ -1324,21 +1324,6 @@
 				console.log('换行')
 				console.log(this.txt)
 				this.txt = this.txt + '\n'
-			},
-
-			/// 双击
-			doublebclick(e,bean) {
-				this.touchNum++
-				setTimeout(() => {
-					if (this.touchNum == 1) {
-						console.log('单击')
-					}
-					if (this.touchNum >= 2) {
-						console.log('双击')
-						this.showPopup(e,bean);
-					}
-					this.touchNum = 0
-				}, 500)
 			},
 			
 			scrollFn(e) {

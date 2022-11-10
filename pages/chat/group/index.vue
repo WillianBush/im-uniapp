@@ -135,7 +135,7 @@
 									<text class="cuIcon-warnfill text-red text-xxl"></text>
 								</view>
 
-								<view v-if="item.bean.psr!='video'" @click="doublebclick($event,item.bean)" :class="[item.bean.psr=='uparse'?'':'content bg-green shadow']" :style="{backgroundColor:item.bean.psr=='uparse'? 'none':'#fff'}" style="color:#222;">
+								<view v-if="item.bean.psr!='video'" @longtap="onLongPress($event,item.bean)" :class="[item.bean.psr=='uparse'?'':'content bg-green shadow']" :style="{backgroundColor:item.bean.psr=='uparse'? 'none':'#fff'}" style="color:#222;">
 									<u-parse v-if="item.bean.psr=='uparse'" :content="item.bean.txt" @preview="preview" @navigate="navigate" ></u-parse>
 									<view @tap="clickVoice(item.bean.txt,index)" v-else-if="item.bean.psr=='voice'">
 										<text  v-show="selVoiceIndex != index"  style="float:left;width:100upx;font-size: 52upx;position: relative;top: 4upx;"  class="iconfont icon-yuyin1 text-xxl "></text>
@@ -160,7 +160,7 @@
 								{{item.bean.fromName}}
 								</view>
 
-								<view @click="doublebclick($event,item.bean)" :class="[item.bean.psr=='uparse'?'':'content shadow']" style="color:#222;">
+								<view @longtap="onLongPress($event,item.bean)" :class="[item.bean.psr=='uparse'?'':'content shadow']" style="color:#222;">
 									<u-parse v-if="item.bean.psr=='video'" :content="item.bean.txt" @preview="preview" @navigate="navigate" ></u-parse>
 									<u-parse v-else-if="item.bean.psr=='uparse'" :content="item.bean.txt" @preview="preview" @navigate="navigate" ></u-parse>
 									<view @tap="clickVoice(item.bean.txt,index)" v-else-if="item.bean.psr=='voice'">
@@ -1670,21 +1670,6 @@
 						item.nickName = bean.fromName;
 						this.txt = this.txt + "@";
 						uni.$emit("aiteFn",item);
-					}
-					this.touchNum = 0
-				}, 500)
-			},
-			// 双击
-			doublebclick(e,bean) {
-				console.log('点击了')
-				this.touchNum++
-				setTimeout(() => {
-					if (this.touchNum == 1) {
-						console.log('单击')
-					}
-					if (this.touchNum >= 2) {
-						console.log('双击')
-						this.showPopup(e,bean);
 					}
 					this.touchNum = 0
 				}, 500)
