@@ -12,10 +12,10 @@
 			<view class="main" style="margin-top:40upx;">
 				<view class="tips">若你忘记了密码，可在此重置新密码。</view>
 				<wInput
-					v-model="phoneData"
+					v-model="oldPassData"
 					type="text"
 					maxlength="25"
-					placeholder="请输入手机号码"
+					placeholder="请输入当前密码"
 				></wInput>
 				<wInput
 					v-model="passData"
@@ -23,19 +23,6 @@
 					maxlength="25"
 					placeholder="请输入新密码"
 					isShowPass
-				></wInput>
-				
-				<wInput
-					v-model="verCode"
-					type="number"
-					maxlength="4"
-					placeholder="验证码"
-					
-					isShowCode
-					codeText="获取重置码"
-					setTime="30"
-					ref="runCode"
-					@setCode="getVerCode()"
 				></wInput>
 			</view>
 			
@@ -57,9 +44,8 @@
 	export default {
 		data() {
 			return {
-				phoneData: "", //电话
+				oldPassData: "", //旧密码
 				passData: "", //密码
-				verCode:"", //验证码
 				isRotate: false, //是否加载旋转
 			}
 		},
@@ -72,13 +58,13 @@
 		},
 		methods: {
 			back() {
-				uni.navigateTo({
-					url:"login"
+				uni.navigateBack({
+					delta:1
 				})
 			},
 			getVerCode(){
 				//获取验证码
-				if (_this.phoneData.length != 11) {
+				if (_this.oldPassData.length != 11) {
 				     uni.showToast({
 				        icon: 'none',
 						position: 'bottom',
@@ -96,11 +82,6 @@
 				
 				setTimeout(function(){
 					_this.$refs.runCode.$emit('runCode',0); //假装模拟下需要 终止倒计时
-					uni.showToast({
-					    icon: 'none',
-						position: 'bottom',
-					    title: '模拟倒计时终止'
-					});
 				},3000)
 			},
 			startRePass() {
@@ -110,11 +91,11 @@
 					//判断是否加载中，避免重复点击请求
 					return false;
 				}
-				if (this.phoneData.length != 11) {
+				if (this.oldPassData.length < 6) {
 				    uni.showToast({
 				        icon: 'none',
 						position: 'bottom',
-				        title: '手机号或帐号不正确'
+				        title: '密码长度必须大于等于6'
 				    });
 				    return false;
 				}
@@ -126,14 +107,6 @@
 			        });
 			        return false;
 			    }
-				if (this.verCode.length != 4) {
-				    uni.showToast({
-				        icon: 'none',
-						position: 'bottom',
-				        title: '验证码不正确'
-				    });
-				    return false;
-				}
 				
 				_this.isRotate=true
 				/***
@@ -152,7 +125,36 @@
 					}
 				})
 				**/
-				
+
+				this.$http.post("/user/json/repwd",
+						{
+							oldpwd:_this.oldPassData,
+                            newpwd:_this.passData,
+						},
+						{
+							header:{
+								"x-access-uid":_this.$store.state.user.id,
+								"x-access-client":_this.$clientType,
+							}
+						}
+				).then(res=>{
+					_this.isRotate=false;
+					let res_data = eval(res.data);
+					if(res_data.code == 200){
+						uni.showToast({
+							title: "修改成功",
+							duration: 2000,
+							icon: "none",
+						});
+					}else{
+						uni.showToast({
+							title: res_data.msg,
+							duration: 2000,
+							icon: "none",
+						});
+					}
+
+				})
 			
 				
 				

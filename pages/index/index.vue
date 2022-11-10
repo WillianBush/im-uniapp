@@ -350,7 +350,7 @@
 			
 				
 			if(showedSignInIds.indexOf(_this.$store.state.user.id)<0) {
-				_this.$http.post("/user/signin/isToDaySignIn",
+				/*_this.$http.post("/user/signin/isToDaySignIn",
 					{
 						header:{
 							"x-access-uid":_this.$store.state.user.id,
@@ -368,7 +368,7 @@
 					} else {
 						
 					}	
-				})
+				})*/
 			}
 			
 			

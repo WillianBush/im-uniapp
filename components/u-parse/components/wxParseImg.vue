@@ -6,7 +6,7 @@
     :style="newStyleStr || node.styleStr"
     :data-src="node.attr.src"
     :src="deal(node.attr.src)"
-	@click="imgPreview(node.attr.src)"
+    @click.stop="imgPreview(node.attr.src)"
     @load="wxParseImgLoad"
     />
 </template>

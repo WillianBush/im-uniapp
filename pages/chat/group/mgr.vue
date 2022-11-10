@@ -14,10 +14,12 @@
 		
 	</view>
 
+			<!--群成员头像-->
 			<view v-if="$store.state.isEmployee" style="display: flex; width:100%">
 					<view   style="padding-top:30upx;padding-bottom:30upx;margin-left: 10upx;flex:1;    line-height: 140upx;">
 						<view @tap="goUserDetail(index)" v-for="(item,index) in $store.state.cur_chat_entity.top5Hp" class="cu-avatar round margin-left" :style="'height:100upx;width:100upx;background-image:url('+$store.state.img_url+item+');'"></view>
-						<text @tap="yaoqi()" style="position: relative;
+						<!--➕按钮-->
+						<text v-if="false" @tap="yaoqi()" style="position: relative;
     top: 36upx;font-size: 120upx;margin-top:20upx;color:#999;margin-left:20upx" class="iconfont icon-tianjiatupian"></text>
 					</view>
 					

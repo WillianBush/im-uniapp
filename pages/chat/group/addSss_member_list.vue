@@ -50,7 +50,10 @@
 			
 			
 			_this.$http.post("/room/json/getMemberList",
-				{roomid:_this.$store.state.cur_chat_entity.id},
+				{
+					roomid:_this.$store.state.cur_chat_entity.id,
+					memberType:0
+				},
 				{
 					header:{
 						"x-access-uid":_this.$store.state.user.id,

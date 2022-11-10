@@ -1222,6 +1222,7 @@
 				if(msg_list&&msg_list.length>0) {
 					this.$store.commit("setCur_chat_msg_list",msg_list); 
 				}
+				console.log("listlist121221",msg_list)
 			} else {
 				let str = uni.getStorageSync(user.id+"#"+this.toid+'_CHAT_MESSAGE');
 				if(str&&str!="") {
@@ -1238,6 +1239,7 @@
 					//如果什么都没记录的话，则从云端加载
 					//this.tongbuMsg_1stInNoData();
 				}
+				console.log("listlist3434343434",str)
 			}
 			
 			try {
@@ -1674,6 +1676,7 @@
 			},
 			// 双击
 			doublebclick(e,bean) {
+				console.log('点击了')
 				this.touchNum++
 				setTimeout(() => {
 					if (this.touchNum == 1) {
