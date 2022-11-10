@@ -9,7 +9,7 @@
 				<text style="font-size: 40upx;" class="lg text-gray cuIcon-back"></text>
 				</view>
 			<!-- 主体 -->
-			<view class="main" style="margin-top:40upx;">
+			<view class="main" style="margin-top:40upx; align-items: center;">
 				<view class="tips">若你忘记了密码，可在此重置新密码。</view>
 				<wInput
 					v-model="phoneData"

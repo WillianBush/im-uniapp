@@ -15,7 +15,7 @@
 				<!-- <view style="font-size: 24upx;color:#aaa;text-align: center;margin-top:10upx;">点击上传头像</view> -->
 			</view> 
 			<!-- 主体 -->
-			<view class="main">
+			<view class="main" style="align-items: center;">
 				<!-- <wInput
 					v-model="phoneData"
 					type="text"

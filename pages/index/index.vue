@@ -17,6 +17,17 @@
 		<faxian v-show="PageCur=='faxian'"></faxian>
 		<mine v-show="PageCur=='mine'"></mine>
 		<view ref="footerView" class="cu-bar tabbar bg-white shadow foot" style="position: fixed; z-index: 999999;">
+			<view class="action">
+				<view class='cuIcon-cu-image'></view>
+			</view>
+			<view class="action">
+				<view class='cuIcon-cu-image'>
+					<view class="cu-avatar radius" style="margin-right: 5px; border-radius: 50%" :style="'background-image:url('+$store.state.img_url+$store.state.user.headpic+');'"></view>
+				</view>
+			</view>
+			<view class="action">
+				<view class='cuIcon-cu-image'></view>
+			</view>
 			<view class="action" @click="NavChange" data-cur="home">
 				<view class='cuIcon-cu-image'>
 					<!--
@@ -75,6 +86,15 @@
 					<text  class="iconfont icon-wode" :style="'color:'+(PageCur=='mine'?'#3F92F8':'#888')" style="font-size: 46upx;"><span></span></text>
 				</view>
 				<view style="margin-top: 2upx;    padding-top: 4upx;" :style="'color:'+(PageCur=='mine'?'#3F92F8':'#888')">我的</view>
+			</view>
+			<view class="action">
+				<view class='cuIcon-cu-image'></view>
+			</view>
+			<view class="action">
+				<view class='cuIcon-cu-image'></view>
+			</view>
+			<view class="action">
+				<view class='cuIcon-cu-image'></view>
 			</view>
 		</view>
 		

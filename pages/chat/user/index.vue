@@ -303,20 +303,10 @@
 	
 		
 		</scroll-view>
-		<view class="cu-bar foot input" :style="[{bottom:InputBottom+'upx'}]" style="flex-direction: row; width: calc(80% - 82px);left: calc(20% + 82px)">
-			<!-- #ifndef H5 -->
-			<view @tap="selType(2)" v-show="c_type==1"  class="action">
-				<text class="cuIcon-sound text-grey"></text> 
-			</view> 
-			<view @tap="selType(1)" v-show="c_type==2"   class="action">
-				<text class="cuIcon-keyboard text-grey"></text> 
-			</view>
-			<!-- #endif -->
-			
-			
-			
+		<view class="cu-bar foot input" :style="[{bottom:InputBottom+'upx'}]" style="flex-direction: row; height:120px; width: calc(80% - 82px);left: calc(20% + 82px); background-color:#fff">
+
 			<!-- @focus="InputFocus" @blur="InputBlur"-->
-			<textarea style="height:72upx;line-height:72upx; line-height: 73upx; width: 92%;margin-left: 15px"
+			<textarea 
 			auto-height="true"
 			:show-confirm-bar="true" 
 			confirm-type="send" 
@@ -327,21 +317,14 @@
 			@keyup.ctrl.enter="lineFeed()"
 			@focus="InputFocus" @blur="InputBlur" v-show="c_type==1" v-model="txt" 
 			@input="inputTxt()" class="solid-bottom" :adjust-position="true" :focus="input_is_focus" 
-			maxlength="-1" cursor-spacing="10"
+			cursor-spacing="10"
+			style="height:120px !important;line-height:30px;width: 100%;"s
 			></textarea>
-			<!--
-			<button  @touchstart="checkAuthorize" @touchend="endRecord" v-show="c_type==2"  style="color: #aaa;margin-left: 20upx;width:100%" class="cu-btn block line-orange lg">按住 说话</button>
-			-->
-		<!-- 	<button  
-			 @touchstart="voiceBegin"  @touchend="voiceEnd" @touchcancel="voiceCancel"
-			 v-show="c_type==2"  style="color: #aaa;margin-left: 20upx;width:100%" class="cu-btn block line-orange lg">按住 说话</button> -->
-			 
-			
-			<view style="margin-right: 20upx;cursor: pointer;" class="action" @tap="showItemIndex(1)">
-				<text  class="cuIcon-emojifill text-grey"></text>
+			<view style="margin-right: 20upx;cursor: pointer;position: absolute;top: 0; left: 0" class="action" @tap="showItemIndex(1)">
+				<text  class="cuIcon-emojifill text-grey" style="position: absolute;top: 0;left: 35px;"></text>
 			</view>
 		
-			<text v-show="showjia"  @tap="showItemIndex(2)" style="font-size:52upx;color:#777;margin-top:6upx;margin-left:6upx;margin-right:6upx;cursor: pointer;" class="iconfont icon-jia"></text>	
+			<text  @tap="showItemIndex(2)" style="font-size:52upx;color:#777;margin-top:6upx;margin-left:6upx;margin-right:6upx;cursor: pointer;position: absolute;top: 0; left: 50" class="iconfont icon-jia"></text>	
 			<button style="min-width: 50px;padding:0px!important" v-show="!showjia" @tap.stop="send()" class="cu-btn bg-green shadow">发送</button>
 			
 		</view>
