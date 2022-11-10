@@ -318,19 +318,19 @@
 			@focus="InputFocus" @blur="InputBlur" v-show="c_type==1" v-model="txt" 
 			@input="inputTxt()" class="solid-bottom" :adjust-position="true" :focus="input_is_focus" 
 			cursor-spacing="10"
-			style="height:120px !important;line-height:30px;width: 100%;"s
+			style="height:120px !important;line-height:30px;width: 100%;"
 			></textarea>
-			<view style="margin-right: 20upx;cursor: pointer;position: absolute;top: 0; left: 0" class="action" @tap="showItemIndex(1)">
-				<text  class="cuIcon-emojifill text-grey" style="position: absolute;top: 0;left: 35px;"></text>
+			<view @tap="ChooseImage()" style="cursor: pointer;position: absolute;top: 0; left: 0px;"><text style="font-size: 60upx;color:#3F92F8" class="iconfont icon-zhaopian-cuxiantiao-fill"></text></view>
+			<view @tap="ChooseVideo()" style="cursor: pointer;position: absolute;top: 0; left: 40px;"><text style="font-size: 60upx;color:#F39F90" class="iconfont icon-paishe"></text></view>
+			<view @tap="sendCard()" style="cursor: pointer;position: absolute;top: 0; left: 80px;"><text style="font-size: 60upx;color:#FA9B4E" class="iconfont icon-mingpian2"></text></view>
+			<view style="cursor: pointer;position: absolute;top: 0; left: 110px;" class="action" @tap="showItemIndex(1)">
+				<text  class="cuIcon-emojifill text-grey" style="position: absolute;top: 0;left: 0px"></text>
 			</view>
-		
-			<text  @tap="showItemIndex(2)" style="font-size:52upx;color:#777;margin-top:6upx;margin-left:6upx;margin-right:6upx;cursor: pointer;position: absolute;top: 0; left: 50" class="iconfont icon-jia"></text>	
 			<button style="min-width: 50px;padding:0px!important" v-show="!showjia" @tap.stop="send()" class="cu-btn bg-green shadow">发送</button>
-			
 		</view>
 		
 		
-		<view v-show="showItem==1" class="cu-bar foot " style="box-shadow: none;-webkit-box-shadow: none;display: block;background: #fff;height:330upx;margin-bottom:80upx;width: 100%;">
+		<view v-show="showItem==1" class="cu-bar foot " style="box-shadow: none;-webkit-box-shadow: none;display: block;background: #fff;height:330upx;margin-bottom:80upx; width: calc(80% - 82px);left: calc(20% + 82px);">
 			<scroll-view scroll-y class="indexes" style="height:330upx;padding-bottom:20upx;padding-top: 10upx;"
 			 :scroll-with-animation="true" :enable-back-to-top="true">
 			<view v-if="emotion==1">
@@ -814,7 +814,7 @@
 		</view>
 		
 		
-		<view v-show="showItem==2" class="cu-bar foot " style="box-shadow: none;-webkit-box-shadow: none;display: block;background: #fff;height:410upx;width:100%">
+		<view v-show="showItem==2" class="cu-bar foot " style="box-shadow: none;-webkit-box-shadow: none;display: block;background: #fff;height:410upx; width: calc(80% - 82px);left: calc(20% + 82px);">
 				<scroll-view scroll-y class="indexes" style="height:410upx;padding-bottom:20upx;padding-top: 10upx;"
 				 :scroll-with-animation="true" :enable-back-to-top="true">
 					<view>
