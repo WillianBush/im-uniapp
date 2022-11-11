@@ -1022,13 +1022,13 @@
 			this.onShowMethod();
 			this.onLoadMethod();
 		  },
-		  ChatTypeId: function(newVal,oldVal){
-			console.log('watchGroupMsgToId')
-			console.log('----------------------newType',newVal)
-			console.log('---------------------oldType',oldVal)
-			this.onShowMethod();
-			this.onLoadMethod();
-		  },
+		 //  ChatTypeId: function(newVal,oldVal){
+			// console.log('watchGroupMsgToId')
+			// console.log('----------------------newType',newVal)
+			// console.log('---------------------oldType',oldVal)
+			// this.onShowMethod();
+			// this.onLoadMethod();
+		 //  },
 		},
 		onBackPress() {
 			this.$store.commit("setCur_chat_entity",{}); 
@@ -1037,12 +1037,12 @@
 		onHide() {
 			uni.$off("scrollTopFn");
 		},
-		onShow() {
-			this.onShowMethod();
-		},
-		onLoad() {
-			this.onLoadMethod();
-		},
+		// onShow() {
+		// 	this.onShowMethod();
+		// },
+		// onLoad() {
+		// 	this.onLoadMethod();
+		// },
 			
 		computed:{
 			

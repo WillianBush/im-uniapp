@@ -962,13 +962,13 @@
 			this.onShowMethod();
 			this.onLoadMethod();
 		  },
-		  ChatTypeId: function(newVal,oldVal){
-			console.log('watchUserChatTypeId')
-			console.log('newType',newVal)
-			console.log('oldType',oldVal)
-			this.onShowMethod();
-			this.onLoadMethod();
-		  },
+		 //  ChatTypeId: function(newVal,oldVal){
+			// console.log('watchUserChatTypeId')
+			// console.log('newType',newVal)
+			// console.log('oldType',oldVal)
+			// this.onShowMethod();
+			// this.onLoadMethod();
+		 //  },
 		},
 		onBackPress() {
 			this.$store.commit("setCur_chat_entity",null); 
@@ -977,12 +977,12 @@
 		onHide() {
 			uni.$off("scrollTopFn");
 		},
-		onShow() {
-			this.onShowMethod();
-		},
-		onLoad() {
-			this.onLoadMethod();
-		},
+		// onShow() {
+		// 	this.onShowMethod();
+		// },
+		// onLoad() {
+		// 	this.onLoadMethod();
+		// },
 		mounted() { 
 			 //this.domHeight = document.documentElement.clientHeight
 			 console.log('8888', this.toid)
