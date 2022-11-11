@@ -9,7 +9,7 @@
 		</block><block slot="right">
 			<uni-text @tap="goMgr(entity.id)" style="font-size: 22px;color: #fff;margin-right: 14px;" class="lg text-gray cuIcon-more"><span></span></uni-text>
 		</block></cu-custom>
-		<scroll-view @scroll="scrollFn"  :scroll-top="scrollTop" scroll-y="true"    ref="chatVew" @tap="clickChat()" style="background: #eee;" class="cu-chat" :style="'height: calc(100vh - '+CustomBar+'px + 8px - '+(120+InputBottom)+'upx)'" >	
+		<scroll-view @scroll="scrollFn"  :scroll-top="scrollTop" scroll-y="true"    ref="chatVew" @tap="clickChat()" style="background: #eee;" class="cu-chat" :style="'height: calc(100vh - '+CustomBar+'px - 62px - '+(120+InputBottom)+'upx)'" >	
 			<block  v-for="(item,index) in $store.state.cur_chat_msg_list">
 				<block v-if="item.opt&&item.opt=='undo'">
 					<!-- <view v-if="item.opt_uid==$store.state.user.id"  class="cu-info round">撤回一条消息</view>
@@ -950,14 +950,14 @@
 			};
 		},
 		watch: {
-		      msgToId: function(newVal,oldVal){
-		        console.log('----------------------newVal',newVal)
-				console.log('---------------------oldVal',oldVal)
-				this.toid = newVal;
-				this.onShowMethod();
-				this.onLoadMethod();
-		      }
-		    },
+		  msgToId: function(newVal,oldVal){
+			console.log('----------------------newVal',newVal)
+			console.log('---------------------oldVal',oldVal)
+			this.toid = newVal;
+			this.onShowMethod();
+			this.onLoadMethod();
+		  }
+		},
 		onBackPress() {
 			this.$store.commit("setCur_chat_entity",null); 
 			this.$store.commit("setCur_chat_msg_list",[]); 

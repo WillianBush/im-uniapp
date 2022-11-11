@@ -8,7 +8,7 @@
 			<uni-text @tap="goMgr(entity.id)" style="font-size: 22px;color: #fff;margin-right: 14px;" class="lg text-gray cuIcon-more"><span></span></uni-text>
 		</block></cu-custom>
 		<uni-notice-bar showIcon="" speed="35" scrollable="true" single="true" v-if="$store.state.cur_chat_entity" :text="$store.state.cur_chat_entity.descri"></uni-notice-bar>
-		<scroll-view @scroll="scrollFn" :scroll-into-view="viewId" :scroll-top="scrollTop" scroll-y="true"    ref="chatVew" @tap="clickChat()"  class="cu-chat" style="background: #eee;" :style="'height: calc(100vh - '+CustomBar+'px - '+(120+InputBottom)+'upx)'" >	
+		<scroll-view @scroll="scrollFn" :scroll-into-view="viewId" :scroll-top="scrollTop" scroll-y="true"    ref="chatVew" @tap="clickChat()"  class="cu-chat" style="background: #eee;" :style="'height: calc(100vh - '+CustomBar+'px - 68px - '+(120+InputBottom)+'upx)'" >	
 			<block  v-for="(item,index) in $store.state.cur_chat_msg_list">
 				
 				<block v-if="item.opt&&item.opt=='undo'">
@@ -330,7 +330,7 @@
 					<text @tap.stop="clearAiteToMy" class="cuIcon-close text-red " style="margin-left: 16upx;"></text>
 		</view>
 		
-		<view class="cu-bar foot input" :style="[{bottom:InputBottom+'upx'}]" style="flex-direction: row; width: calc(80% - 82px);left: calc(20% + 82px);background-color: #fff;">
+		<view class="cu-bar foot input" :style="[{bottom:InputBottom+'upx'}]" style="flex-direction: row;height:120px; width: calc(80% - 82px);left: calc(20% + 82px);background-color: #fff;">
 			<!-- #ifndef H5 -->
 			<view @tap="selType(2)" v-show="c_type==1"  class="action">
 				<text class="cuIcon-sound text-grey"></text> 
@@ -345,7 +345,7 @@
 			<!-- @focus="InputFocus" @blur="InputBlur"-->
 			<input @keydown.enter="send" style="background: #eee!important;" disabled="true" placeholder="禁言" placeholder-style="text-align:center;background: #eee;" v-show="stopSpeak==1"  class="solid-bottom" :adjust-position="true" :focus="false" maxlength="300" cursor-spacing="10"
 			></input> 
-			<textarea style="height:120px !important;line-height:30px;width: 100%;"
+			<textarea style="height:30px !important;line-height:30px;width: 100%;"
 					  confirm-type="send"
 					  @confirm="send"
 					  confirm-hold="true"
