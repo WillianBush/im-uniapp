@@ -222,25 +222,25 @@
 						
 						
 						// if(this.$store.state.ar_list.length==0) {
-							_this.$http.post("/user/employeeDefaultMessage/json/isEmployee",
-								{
-									header:{
-										"x-access-uid":res_data.body.id,
-										"x-access-client":_this.$clientType
-									}
-								}
-							).then(res=>{
-								let res_data = eval(res.data);
-								if(res.statusCode==200) {  
-									_this.$store.commit("setIsEmployee",res_data.msg === 'Yes');
-								} else {
-									uni.showToast({
-									    icon: 'none',
-										position: 'bottom',
-									    title: res_data.msg
-									});
-								}
-							})
+							// _this.$http.post("/user/employeeDefaultMessage/json/isEmployee",
+							// 	{
+							// 		header:{
+							// 			"x-access-uid":res_data.body.id,
+							// 			"x-access-client":_this.$clientType
+							// 		}
+							// 	}
+							// ).then(res=>{
+							// 	let res_data = eval(res.data);
+							// 	if(res.statusCode==200) {  
+							// 		_this.$store.commit("setIsEmployee",res_data.msg === 'Yes');
+							// 	} else {
+							// 		uni.showToast({
+							// 		    icon: 'none',
+							// 			position: 'bottom',
+							// 		    title: res_data.msg
+							// 		});
+							// 	}
+							// })
 							
 							this.$http.post("/user/accessRecord/json/list",
 								{
