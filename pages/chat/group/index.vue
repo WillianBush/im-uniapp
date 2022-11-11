@@ -940,7 +940,11 @@
 			msgToId: {
 				type: String,
 				default: ''
-			}
+			},
+			ChatTypeId: {
+				type: Number,
+				default: 0
+			},
 		},
 		data() {
 			return {
@@ -1011,12 +1015,20 @@
 		},
 		watch: {
 		  msgToId: function(newVal,oldVal){
+			console.log('watchGroupMsgToId')
 			console.log('----------------------newVal',newVal)
 			console.log('---------------------oldVal',oldVal)
 			this.toid = newVal;
 			this.onShowMethod();
 			this.onLoadMethod();
-		  }
+		  },
+		  ChatTypeId: function(newVal,oldVal){
+			console.log('watchGroupMsgToId')
+			console.log('----------------------newType',newVal)
+			console.log('---------------------oldType',oldVal)
+			this.onShowMethod();
+			this.onLoadMethod();
+		  },
 		},
 		onBackPress() {
 			this.$store.commit("setCur_chat_entity",{}); 

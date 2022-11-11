@@ -165,7 +165,7 @@
 				class="page" :class="modalName!=null?'show':''" :refresher-enabled="true"
 				:refresher-triggered="refresherTriggered" @refresherrefresh="refresherrefresh"
 				@refresherrestore="refresherrestore" @refresherabort="refresherabort">
-				<GroupChat :msgToId="msgToId"></GroupChat>
+				<GroupChat :msgToId="msgToId" :ChatTypeId="ChatTypeId"></GroupChat>
 			</scroll-view>
 		</view>
 		<view v-else style="height: calc(100vh - 50upx);width: calc(85% - 100px); float: left; border-left: 1px solid #ddd">
@@ -174,7 +174,7 @@
 				class="page" :class="modalName!=null?'show':''" :refresher-enabled="true"
 				:refresher-triggered="refresherTriggered" @refresherrefresh="refresherrefresh"
 				@refresherrestore="refresherrestore" @refresherabort="refresherabort">
-				<UserChat :msgToId="msgToId"></UserChat>
+				<UserChat :msgToId="msgToId" :ChatTypeId="ChatTypeId"></UserChat>
 			</scroll-view>
 		</view>
 	</view>
@@ -192,6 +192,7 @@
 			return {
 				isGroupChat: false,
 				msgToId: '',
+				ChatTypeId: 0,
 				refresherTriggered: false, //下拉刷新状态
 				_refresherTriggered: false, //防止异步操作
 				chatCfg: {},
@@ -708,19 +709,22 @@
 				this.$store.commit("setAr_list_show", list);
 			},
 			goChat(item) {
+				console.log('tom', item.id)
+				this.msgToId = item.id;
 				if (item.id == "-1") {
-					this.msgToId = item.id;
+					this.ChatTypeId = -1;
 					// uni.navigateTo({
 					// 	url: "/pages/chat/guang_fang_chat"
 					// })
 				} else {
-					this.msgToId = item.id;
 					if (item.typeid == "2") {
+						this.ChatTypeId = 2;
 						this.isGroupChat = false;
 						// uni.navigateTo({
 						// 	url: "/pages/chat/user/index?toid=" + item.id
 						// })
 					} else {
+						this.ChatTypeId = 1;
 						this.isGroupChat = true;
 						// uni.navigateTo({
 						// 	url: "/pages/chat/group/index?toid=" + item.id

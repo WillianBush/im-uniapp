@@ -5,7 +5,7 @@
 		<view class="cu-avatar radius" style="margin-right: 5px; border-radius: 50%" :style="'background-image:url('+$store.state.img_url+friendPic+');'"></view>
 		{{showname}} <text v-if="chatCfg.showUserOnline==1">{{entity.online==0?' (离线)':' (在线)'}}</text>
 		<text v-show="$store.state.temp.input_ing" style="font-size: 26upx;margin-left:10upx;">- 正在输入...</text>
-			<text v-show="toIP" style="font-size: 14upx; color: #FFCC99; margin-left:10upx;">{{toIP}}</text>
+			<!-- <text v-show="toIP" style="font-size: 14upx; color: #FFCC99; margin-left:10upx;">{{toIP}}</text> -->
 		</block><block slot="right">
 			<uni-text @tap="goMgr(entity.id)" style="font-size: 22px;color: #fff;margin-right: 14px;" class="lg text-gray cuIcon-more"><span></span></uni-text>
 		</block></cu-custom>
@@ -882,7 +882,11 @@
 			msgToId: {
 				type: String,
 				default: ''
-			}
+			},
+			ChatTypeId: {
+				type: Number,
+				default: 0
+			},
 		},
 		data() {
 			return {
@@ -951,12 +955,20 @@
 		},
 		watch: {
 		  msgToId: function(newVal,oldVal){
-			console.log('----------------------newVal',newVal)
-			console.log('---------------------oldVal',oldVal)
+			console.log('watchUserMsgToId')
+			console.log('newVal',newVal)
+			console.log('oldVal',oldVal)
 			this.toid = newVal;
 			this.onShowMethod();
 			this.onLoadMethod();
-		  }
+		  },
+		  ChatTypeId: function(newVal,oldVal){
+			console.log('watchUserChatTypeId')
+			console.log('newType',newVal)
+			console.log('oldType',oldVal)
+			this.onShowMethod();
+			this.onLoadMethod();
+		  },
 		},
 		onBackPress() {
 			this.$store.commit("setCur_chat_entity",null); 
@@ -1032,8 +1044,6 @@
 			  //this.vindex = "v"+(this.$store.state.cur_chat_msg_list.length)
 			  let _this = this;
 			  // this.toid = _this.toid;
-			  console.log('this.props', _this.props)
-			  console.log('this.toid', _this.toid)
 			  let user = uni.getStorageSync("USER");
 			  this.getWindowSize();
 			  if(this.$store.state.chatMessageMap.has(user.id+"#"+this.toid)) {
@@ -1042,48 +1052,21 @@
 			  		// var newMsgList = msg_list.filter(o => !(o.bean.psr == "video" && o.bean.txt.indexOf('<video') > -1));
 			  		var newMsgList = msg_list;
 			  		this.$store.commit("setCur_chat_msg_list",newMsgList);
-			  		console.log('88888888', msg_list)
 			  	}
 			  } else {
 			  	let str = uni.getStorageSync(user.id+"#"+this.toid+'_CHAT_MESSAGE');
-			  	// console.log(str);
 			  	if(str&&str!="") {
 			  		 var jsonObj = JSON.parse(str);
-			  		 // if(jsonObj.length>50) {
-			  		 //  	jsonObj.splice(0,jsonObj.length-50);
-			  		 //  }
 			  		 this.$store.commit("updateChatMessageMap",{
 			  		 	key:user.id+"#"+this.toid,
 			  		 	value:jsonObj
 			  		 });
 			  		  this.$store.commit("setCur_chat_msg_list",jsonObj);
-			  		  console.log('jsonObj', jsonObj)
 			  	} else {
 			  		//如果什么都没记录的话，则从云端加载
 			  		//this.tongbuMsg_1stInNoData();
 			  	}
 			  }
-			  
-			  /*获取聊天的对象 user数据*/
-			  _this.$http.get("/user/json/userInfo?toid="+_this.toid,
-			  		{
-			  			header:{
-			  				"x-access-uid":_this.$store.state.user.id,
-			  				"x-access-client":_this.$clientType
-			  			}
-			  		}
-			  ).then(res=>{
-			  	let res_data = eval(res.data);
-			  
-			  	console.log('userInfo33', res_data)
-			  	if(res_data.code==200) {
-			  		console.log('userInfo22', res_data.body.ip+"===="+res_data.body.ipAddr)
-			  		_this.toIP = res_data.body.ip +"("+ res_data.body.ipAddr+")";
-			  		console.log('userInfo11', _this.toIP)
-			  	}
-			  })
-			  
-			  
 			  _this.$http.post("/user/json/loadById/v1",
 			  	{id:_this.toid},
 			  	{
@@ -1111,27 +1094,19 @@
 			  })
 			  	  
 			  
-			  _this.$http.post("/user/accessRecord/json/saveOrUpdate",
-			  	{type:2,eid:this.toid},
-			  	{
-			  		header:{
-			  			"x-access-uid":_this.$store.state.user.id,
-			  			"x-access-client":_this.$clientType
-			  		}
-			  	}
-			  ).then(res=>{
-			  	let res_data = eval(res.data);
-			  	if(res_data.code==200) {  
-			  		//更新消息列表
-			  		
-			  		// let list = _this.$store.state.ar_list.filter(item=>{
-			  		// 	if(item.id==res_data.body.id) return false;
-			  		// })
-			  		// list.splice(0,0,res_data.body);
-			  		// _this.$store.commit("setAr_list",list); 
-			  		
-			  	}
-			  })
+			  // _this.$http.post("/user/accessRecord/json/saveOrUpdate",
+			  // 	{type:2,eid:this.toid},
+			  // 	{
+			  // 		header:{
+			  // 			"x-access-uid":_this.$store.state.user.id,
+			  // 			"x-access-client":_this.$clientType
+			  // 		}
+			  // 	}
+			  // ).then(res=>{
+			  // 	let res_data = eval(res.data);
+			  // 	if(res_data.code==200) {  
+			  // 	}
+			  // })
 			  this.scrollToBottom();
 			  _this.$http.post("/sysConfig/json/getChatCfg",
 			  	{
@@ -1154,7 +1129,6 @@
 			},
 			
 			scrollFn(e) {
-				//console.log(e.detail);
 				this.scrollDetail = e.detail;
 			},
 			tongbuMsg_1stInNoData(){
@@ -1187,13 +1161,11 @@
 			},
 			tongbuMsg(){
 				let _this = this;
-				
 				_this.$store.state.chatMessageMap.delete(_this.$store.state.user.id+"#"+_this.toid);
 				uni.removeStorageSync(_this.$store.state.user.id+"#"+_this.toid+'_CHAT_MESSAGE');
 				_this.$store.commit("setCur_chat_msg_list",[]);
 				uni.removeStorageSync(_this.$store.state.user.id+"#"+_this.toid+'_CHAT_MESSAGE_LASTCONTENT');
 				uni.removeStorageSync(_this.$store.state.user.id+"#"+_this.toid+'_CHAT_MESSAGE_UNREAD');
-				
 				uni.showLoading() 
 				_this.$http.post("/chat_msg/syncMsgData",
 					{
