@@ -276,7 +276,6 @@
 		flex-direction: row;
 		align-items: center;
 		padding: 6px 12px;
-		margin-bottom: 10px;
 	}
 
 	.uni-noticebar-close {

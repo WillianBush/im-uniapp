@@ -159,7 +159,16 @@
 				-->
 			</scroll-view>
 		</view>
-		<view style="height: calc(100vh - 50upx);width: calc(85% - 100px); float: left; border-left: 1px solid #ddd">
+		<view v-if="isGroupChat" style="height: calc(100vh - 50upx);width: calc(85% - 100px); float: left; border-left: 1px solid #ddd">
+			<scroll-view :scroll-y="modalName==null"
+				style="width: 100%"
+				class="page" :class="modalName!=null?'show':''" :refresher-enabled="true"
+				:refresher-triggered="refresherTriggered" @refresherrefresh="refresherrefresh"
+				@refresherrestore="refresherrestore" @refresherabort="refresherabort">
+				<GroupChat :msgToId="msgToId"></GroupChat>
+			</scroll-view>
+		</view>
+		<view v-else style="height: calc(100vh - 50upx);width: calc(85% - 100px); float: left; border-left: 1px solid #ddd">
 			<scroll-view :scroll-y="modalName==null"
 				style="width: 100%"
 				class="page" :class="modalName!=null?'show':''" :refresher-enabled="true"
@@ -167,19 +176,21 @@
 				@refresherrestore="refresherrestore" @refresherabort="refresherabort">
 				<UserChat :msgToId="msgToId"></UserChat>
 			</scroll-view>
-			<!-- <web-view src="http://localhost:8080/#/pages/chat/user/index?toid=2c988083839e38880183a2b26ef026c9"></web-view> -->
 		</view>
 	</view>
 </template>
 
 <script>
 	import UserChat from '@/pages/chat/user/index.vue';
+	import GroupChat from '@/pages/chat/group/index.vue';
 	export default {
 		components:{
-			UserChat
+			UserChat,
+			GroupChat
 		},
 		data() {
 			return {
+				isGroupChat: false,
 				msgToId: '',
 				refresherTriggered: false, //下拉刷新状态
 				_refresherTriggered: false, //防止异步操作
@@ -697,26 +708,25 @@
 				this.$store.commit("setAr_list_show", list);
 			},
 			goChat(item) {
-				this.msgToId = item.id;
-				return;
 				if (item.id == "-1") {
-					uni.navigateTo({
-						url: "/pages/chat/guang_fang_chat"
-					})
+					this.msgToId = item.id;
+					// uni.navigateTo({
+					// 	url: "/pages/chat/guang_fang_chat"
+					// })
 				} else {
 					this.msgToId = item.id;
 					if (item.typeid == "2") {
-						uni.navigateTo({
-							url: "/pages/chat/user/index?toid=" + item.id
-						})
+						this.isGroupChat = false;
+						// uni.navigateTo({
+						// 	url: "/pages/chat/user/index?toid=" + item.id
+						// })
 					} else {
-						uni.navigateTo({
-							url: "/pages/chat/group/index?toid=" + item.id
-						})
+						this.isGroupChat = true;
+						// uni.navigateTo({
+						// 	url: "/pages/chat/group/index?toid=" + item.id
+						// })
 					}
 				}
-
-
 			},
 			showModal(e) {
 				this.modalName = e.currentTarget.dataset.target

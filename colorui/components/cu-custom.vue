@@ -6,7 +6,7 @@
 					<!-- <text class="cuIcon-back"></text> -->
 					<slot name="backText"></slot>
 				</view>
-				<view v-if="!nameToLeft" class="content" style="margin-left: 5px" :style="[{top:StatusBar + 'px'}]">
+				<view v-if="!nameToLeft" class="content" style="text-align: left;margin-left: 65px" :style="[{top:StatusBar + 'px'}]">
 					<slot name="content"></slot>
 				</view>
 				<view v-else style="width: calc(100% - 140upx);text-align: left;margin-left: 5px"  class="content" :style="[{top:StatusBar + 'px'}]">
