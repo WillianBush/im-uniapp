@@ -51,12 +51,12 @@
 <!--					</view>-->
 <!--				</view>-->
 
-			<view class="cu-bar bg-white" style="clear:both;border-bottom: 1px solid #eee;"  @tap="androidWeb()">
+			<!-- <view class="cu-bar bg-white" style="clear:both;border-bottom: 1px solid #eee;"  @tap="androidWeb()">
 				<view class="action">
 					<text style="color:#FF3F33;font-size:48upx" class="iconfont icon-shoucang"></text>
 					<text style="color:#222;margin-left:10px">Android快捷</text>
 				</view>
-			</view>
+			</view> -->
 
 		</view>	
 		

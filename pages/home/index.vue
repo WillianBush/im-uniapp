@@ -159,7 +159,7 @@
 				-->
 			</scroll-view>
 		</view>
-		<view v-if="isGroupChat" style="height: calc(100vh - 50upx);width: calc(85% - 100px); float: left; border-left: 1px solid #ddd">
+		<view v-show="isGroupChat" style="height: calc(100vh - 50upx);width: calc(85% - 100px); float: left; border-left: 1px solid #ddd">
 			<scroll-view :scroll-y="modalName==null"
 				style="width: 100%"
 				class="page" :class="modalName!=null?'show':''" :refresher-enabled="true"
@@ -168,7 +168,7 @@
 				<GroupChat :msgToId="msgToId" :ChatTypeId="ChatTypeId"></GroupChat>
 			</scroll-view>
 		</view>
-		<view v-else style="height: calc(100vh - 50upx);width: calc(85% - 100px); float: left; border-left: 1px solid #ddd">
+		<view v-show="!isGroupChat" style="height: calc(100vh - 50upx);width: calc(85% - 100px); float: left; border-left: 1px solid #ddd">
 			<scroll-view :scroll-y="modalName==null"
 				style="width: 100%"
 				class="page" :class="modalName!=null?'show':''" :refresher-enabled="true"
@@ -718,14 +718,14 @@
 					// })
 				} else {
 					if (item.typeid == "2") {
-						this.ChatTypeId = 2;
 						this.isGroupChat = false;
+						this.ChatTypeId = 2;
 						// uni.navigateTo({
 						// 	url: "/pages/chat/user/index?toid=" + item.id
 						// })
 					} else {
-						this.ChatTypeId = 1;
 						this.isGroupChat = true;
+						this.ChatTypeId = 1;
 						// uni.navigateTo({
 						// 	url: "/pages/chat/group/index?toid=" + item.id
 						// })

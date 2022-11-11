@@ -1278,47 +1278,33 @@
 				// list.splice(0,0,res_data.body);
 				// _this.$store.commit("setAr_list",list); 
 				
-				_this.$http.post("/user/accessRecord/json/saveOrUpdate",
-					{type:1,eid:this.toid},
-					{
-						header:{
-							"x-access-uid":_this.$store.state.user.id,
-							"x-access-client":_this.$clientType
-						}
-					}
-				).then(res=>{
-					let res_data = eval(res.data);
-					if(res_data.code==200) {  
-						//更新消息列表
+				// _this.$http.post("/user/accessRecord/json/saveOrUpdate",
+				// 	{type:1,eid:this.toid},
+				// 	{
+				// 		header:{
+				// 			"x-access-uid":_this.$store.state.user.id,
+				// 			"x-access-client":_this.$clientType
+				// 		}
+				// 	}
+				// ).then(res=>{
+				// 	let res_data = eval(res.data);
+				// 	if(res_data.code==200) {  
 						
-						// let list = _this.$store.state.ar_list.filter(item=>{
-						// 	if(item.id==res_data.body.id) return false;
-						// })
-						// list.splice(0,0,res_data.body);
-						// _this.$store.commit("setAr_list",list); 
-						
-					} else {
-						uni.showModal({
-						    title: '信息提示',
-						    content: res_data.msg,
-							showCancel:false,
-						    success: function (res) {
-						        if (res.confirm) {
-						            uni.navigateBack({
-						            	delta:1
-						            })
-						        }
-						    }
-						});
-						
-						
-						// uni.showToast({
-						//     icon: 'none',
-						// 	position: 'bottom',
-						//     title: res_data.msg
-						// });
-					}
-				})
+				// 	} else {
+				// 		uni.showModal({
+				// 		    title: '信息提示',
+				// 		    content: res_data.msg,
+				// 			showCancel:false,
+				// 		    success: function (res) {
+				// 		        if (res.confirm) {
+				// 		            uni.navigateBack({
+				// 		            	delta:1
+				// 		            })
+				// 		        }
+				// 		    }
+				// 		});
+				// 	}
+				// })
 				
 				
 				
