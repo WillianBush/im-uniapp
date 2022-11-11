@@ -100,7 +100,7 @@
 				while(!parent.preview || typeof parent.preview !== 'function') {// TODO 遍历获取父节点执行方法
 					parent = parent.$parent;
 				}
-				let resultHref;
+				let resultHref = href;
 				if (href.indexOf(this.$store.state.img_url) != -1) {
 					resultHref = href.replace(this.$store.state.img_url,"");
 				}
