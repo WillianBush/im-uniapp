@@ -1,69 +1,72 @@
 <template>
 	<view>
-		<view style="width:20%; float: left"> 
-			<view style="height: 45px;line-height: 45px;text-align: center;background: #eee;">通讯录</view>
-			<view class="cu-bar bg-white search" >
-				<view class="search-form round">
-					<text class="cuIcon-search"></text>
-					<input v-model="kw1"  type="text" placeholder="输入搜索的关键词" confirm-type="search"></input>
-				</view>
-				<view class="action">
-					<button @tap="search()" style="background: #FFAA01;"   class="cu-btn bg-gradual-green shadow-blur round">搜索</button>
-				</view>
-			</view>
-			<scroll-view scroll-y class="indexes" :scroll-into-view="'indexes-'+ listCurID" :style="[{height:'calc(100vh - 100upx - 100upx - 150upx)'}]"
-			 :scroll-with-animation="true" :enable-back-to-top="true">
-			 
-			 <view style="margin-top:10px;" class="cu-list menu"
-			  :class="[true?'sm-border':'',false?'card-menu margin-top':'']">
-				<view @tap="goNewFriends()" class="cu-item" :class="true?'arrow':''">
-					<view class="content"> 
-						<text style="float:left;color:#FCBF00;font-size:50upx" class="iconfont icon-tianjiahaoyou"></text>	
-						<text class="text-grey" style="float:left;margin-left: 10px;">新的朋友</text>
-						<view v-if="$store.state.unDoFriendAddCount>0" style="top: 38upx;right: 72upx" class="cu-tag badge">{{$store.state.unDoFriendAddCount}}</view>
-					</view> 
-				</view>  
-				<view @tap="goMyGroup()" class="cu-item" :class="true?'arrow':''">
-					<view class="content"> 
-						<text style="color:#009FE8;font-size:50upx" class="iconfont icon-qunzhong"></text>	
-						<text class="text-grey" style="margin-left: 10px;">群聊</text>
-						<view v-if="$store.state.unDoRoomAddCount>0" style="top: 38upx;right: 72upx" class="cu-tag badge">{{$store.state.unDoRoomAddCount}}</view>
+		<view  style="width:20%; float: left">
+			<view v-show="PageCur=='tongxunlu'">
+				<view style="height: 45px;line-height: 45px;text-align: center;background: #eee;">通讯录</view>
+				<view class="cu-bar bg-white search" >
+					<view class="search-form round">
+						<text class="cuIcon-search"></text>
+						<input v-model="kw1"  type="text" placeholder="输入搜索的关键词" confirm-type="search"></input>
+					</view>
+					<view class="action">
+						<button @tap="search()" style="background: #FFAA01;"   class="cu-btn bg-gradual-green shadow-blur round">搜索</button>
 					</view>
 				</view>
-				<view @tap="goBlacklist()" class="cu-item" :class="true?'arrow':''">
-					<view class="content">
-						<text style="color:#999;font-size:50upx" class="iconfont icon-heimingdan"></text>	
-						<text class="text-grey" style="margin-left: 10px;">黑名单</text>
+				<scroll-view scroll-y class="indexes" :scroll-into-view="'indexes-'+ listCurID" :style="[{height:'calc(100vh - 100upx - 100upx - 150upx)'}]"
+				 :scroll-with-animation="true" :enable-back-to-top="true">
+				 
+				 <view style="margin-top:10px;" class="cu-list menu"
+				  :class="[true?'sm-border':'',false?'card-menu margin-top':'']">
+					<view @tap="goNewFriends()" class="cu-item" :class="true?'arrow':''">
+						<view class="content"> 
+							<text style="float:left;color:#FCBF00;font-size:50upx" class="iconfont icon-tianjiahaoyou"></text>	
+							<text class="text-grey" style="float:left;margin-left: 10px;">新的朋友</text>
+							<view v-if="$store.state.unDoFriendAddCount>0" style="top: 38upx;right: 72upx" class="cu-tag badge">{{$store.state.unDoFriendAddCount}}</view>
+						</view> 
+					</view>  
+					<view @tap="goMyGroup()" class="cu-item" :class="true?'arrow':''">
+						<view class="content"> 
+							<text style="color:#009FE8;font-size:50upx" class="iconfont icon-qunzhong"></text>	
+							<text class="text-grey" style="margin-left: 10px;">群聊</text>
+							<view v-if="$store.state.unDoRoomAddCount>0" style="top: 38upx;right: 72upx" class="cu-tag badge">{{$store.state.unDoRoomAddCount}}</view>
+						</view>
 					</view>
-				</view>
-			</view>	
-			 
-				<block v-for="(item,index) in friend_list" :key="index">
-					<view :class="'indexItem-' + item.h" :id="'indexes-' + item.h" :data-index="item.h">
-						<view class="padding">{{item.h}}</view>
-						<view class="cu-list menu-avatar no-padding">
-							<view @tap="goUserDetail(items.member_uuid)" class="cu-item" v-for="(items,index1) in item.list" :key="index1">
-								<view class="cu-avatar round lg" :style="{'backgroundImage': 'url('+$store.state.img_url+ items.headpic +')' }"  style="width: 84upx;height: 84upx;background-size: 100% 100%;"></view>
-								<view class="content">
-									<view class="text-grey">{{items.name}}</view>
+					<view @tap="goBlacklist()" class="cu-item" :class="true?'arrow':''">
+						<view class="content">
+							<text style="color:#999;font-size:50upx" class="iconfont icon-heimingdan"></text>	
+							<text class="text-grey" style="margin-left: 10px;">黑名单</text>
+						</view>
+					</view>
+				</view>	
+				 
+					<block v-for="(item,index) in friend_list" :key="index">
+						<view :class="'indexItem-' + item.h" :id="'indexes-' + item.h" :data-index="item.h">
+							<view class="padding">{{item.h}}</view>
+							<view class="cu-list menu-avatar no-padding">
+								<view @tap="goUserDetail(items.member_uuid)" class="cu-item" v-for="(items,index1) in item.list" :key="index1">
+									<view class="cu-avatar round lg" :style="{'backgroundImage': 'url('+$store.state.img_url+ items.headpic +')' }"  style="width: 84upx;height: 84upx;background-size: 100% 100%;"></view>
+									<view class="content">
+										<view class="text-grey">{{items.name}}</view>
+									</view>
 								</view>
 							</view>
 						</view>
+					</block>
+					<view style="height: 100upx;text-align: center;background: #fff;margin-top: 20upx;line-height: 100upx;color: #999;" v-if="friend_list.length<=0">
+						暂无好友
 					</view>
-				</block>
-				<view style="height: 100upx;text-align: center;background: #fff;margin-top: 20upx;line-height: 100upx;color: #999;" v-if="friend_list.length<=0">
-					暂无好友
+				</scroll-view>
+				<view style="bottom:50upx" class="indexBar" :style="[{height:'calc(100vh - ' + CustomBar + 'px - 50px)'}]">
+					<view class="indexBar-box" @touchstart="tStart" @touchend="tEnd" @touchmove.stop="tMove">
+						<view class="indexBar-item" v-for="(item,index) in list" :key="index" :id="index" @touchstart="getCur" @touchend="setCur"> {{item.name}}</view>
+					</view>
 				</view>
-			</scroll-view>
-			<view style="bottom:50upx" class="indexBar" :style="[{height:'calc(100vh - ' + CustomBar + 'px - 50px)'}]">
-				<view class="indexBar-box" @touchstart="tStart" @touchend="tEnd" @touchmove.stop="tMove">
-					<view class="indexBar-item" v-for="(item,index) in list" :key="index" :id="index" @touchstart="getCur" @touchend="setCur"> {{item.name}}</view>
+				<!--选择显示-->
+				<view v-show="!hidden" class="indexToast">
+					{{listCur}}
 				</view>
 			</view>
-			<!--选择显示-->
-			<view v-show="!hidden" class="indexToast">
-				{{listCur}}
-			</view>
+		    <newFriendList v-show="PageCur=='xinpengyou'" :keyid="keyid"></newFriendList>
 		</view>
 		<view v-show="isGroupChat" style="height: calc(100vh - 50upx);width: calc(85% - 100px); float: left; border-left: 1px solid #ddd">
 			<scroll-view :scroll-y="modalName==null"
@@ -108,6 +111,8 @@
 				isGroupChat: false,
 				msgToId: '',
 				ChatTypeId: 0,
+				PageCur: 'tongxunlu',
+				keyid: 0,
 			};
 		},
 		mounted() {
@@ -198,9 +203,11 @@
 				// })
 			},
 			goNewFriends() {
-				uni.navigateTo({
-					url:"/pages/addressBook/new_friend/new_friend_list"
-				})
+				this.PageCur = 'xinpengyou';
+				this.keyid = parseInt(Math.random()*100000000);
+				// uni.navigateTo({
+				// 	url:"/pages/addressBook/new_friend/new_friend_list"
+				// })
 			},
 			goMyGroup() {
 				uni.navigateTo({
@@ -275,7 +282,7 @@
 		display: flex;
 		align-items: center;
 	}
-	.cu-list.menu-avatar>.cu-item {
+	.cu-list .cu-item, .cu-list.menu-avatar>.cu-item {
 		cursor: pointer;
 	}
 	.indexBar .indexBar-box {

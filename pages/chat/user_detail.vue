@@ -14,9 +14,6 @@
 				</view>
 				
 				<view style="margin:auto auto;font-size:28upx;margin-top:26upx;height:34upx;margin-left:20upx;color:#777">ID号：{{user.memberId}}</view>
-				<!--
-				<view style="margin:auto auto;font-size:28upx;margin-top:16upx;height:34upx;margin-left:20upx;color:#777">地区：--</view>
-				-->
 			</view>
 			<view  v-else style="margin-left: 20upx;line-height:190upx;">
 				<view style="margin:auto auto;font-size:34upx;height:34upx;font-weight: 800;margin-left:20upx">{{user.nickName}}</view>
@@ -103,35 +100,7 @@
 						    duration: 2000
 						});
 					}
-				});
-				
-				
-				// uni.request({
-				// 	method:"POST",
-				// 	url: _this.$store.state.req_url + "/room/json/isStopSpeak4User",
-				// 	data:{roomid:_this.room_id,uid:_this.id},
-				// 	header:{
-				// 		"Content-Type":"application/x-www-form-urlencoded",
-				// 		"x-access-uid":_this.$store.state.user.id
-				// 	},
-				// 	success(res) {
-				// 		let res_data = eval(res.data);
-				// 		console.log(res_data);
-				// 		if(res_data.code==200) {  
-				// 			if(res_data.msg=="0") {
-				// 				_this.groupStopSpeak = false;
-				// 			} else {
-				// 				_this.groupStopSpeak = true;
-				// 			}
-				// 		} else {
-				// 			uni.showToast({
-				// 			    title: res_data.msg,
-				// 			    duration: 2000
-				// 			});
-				// 		}
-				// 	}
-				// })
-				
+				});				
 			}
 			
 			
@@ -154,29 +123,7 @@
 					}
 				}
 			})
-				
-			// uni.request({
-			// 	method:"POST",
-			// 	url: _this.$store.state.req_url + "/user/json/loadById/v1",
-			// 	data:{id:this.id},
-			// 	header:{
-			// 		"Content-Type":"application/x-www-form-urlencoded"
-			// 	},
-			// 	success(res) {
-			// 		let res_data = eval(res.data);
-			// 		if(res_data.code==200) {  
-			// 			_this.user = res_data.body;
-			// 			let s = uni.getStorageSync(_this.user.id+"_NOTE");
-			// 			if(s&&s!="") {
-			// 				_this.user.nickName_real = _this.user.nickName;
-			// 				_this.user.nickName=s;
-			// 			}
-			// 		}
-			// 	}
-			// })
-			
-			
-			
+					
 			_this.$http.post("/user/friend/isMyFri/v1",
 				{uid:this.id},
 				{
@@ -193,27 +140,6 @@
 					}
 				}
 			})
-			
-			
-			// uni.request({
-			// 	method:"POST",
-			// 	url: _this.$store.state.req_url + "/user/friend/isMyFri/v1",
-			// 	data:{uid:this.id},
-			// 	header:{
-			// 		"Content-Type":"application/x-www-form-urlencoded",
-			// 		"x-access-uid":_this.$store.state.user.id
-			// 	},
-			// 	success(res) {
-			// 		let res_data = eval(res.data);
-			// 		if(res_data.code==200) {  
-			// 			if(res_data.msg=="1") {
-			// 				_this.isMyFri = true;
-			// 			}
-			// 		}
-			// 	}
-			// })
-			
-			
 		},
 		methods: {
 			GroupStopSpeak(e) {

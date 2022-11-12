@@ -7,6 +7,9 @@ Vue.component('home',home)
 import addressBook from './pages/addressBook/index.vue'
 Vue.component('addressBook',addressBook)
 
+import newFriendList from './pages/addressBook/new_friend/new_friend_list.vue'
+Vue.component('newFriendList',newFriendList)
+
 import faxian from './pages/faxian/index.vue'
 Vue.component('faxian',faxian)
 
