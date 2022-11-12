@@ -1,7 +1,7 @@
 <template>
 	<view>
 		<view style="width:20%; float: left"> 
-			<view style="height: 40px;line-height: 40px;text-align: center;background: #eee;">通讯录</view>
+			<view style="height: 45px;line-height: 45px;text-align: center;background: #eee;">通讯录</view>
 			<view class="cu-bar bg-white search" >
 				<view class="search-form round">
 					<text class="cuIcon-search"></text>
@@ -71,7 +71,7 @@
 				class="page" :class="modalName!=null?'show':''" :refresher-enabled="true"
 				:refresher-triggered="refresherTriggered" @refresherrefresh="refresherrefresh"
 				@refresherrestore="refresherrestore" @refresherabort="refresherabort">
-				<GroupChat :msgToId="msgToId" :ChatTypeId="ChatTypeId"></GroupChat>
+				<GroupChat :msgToId="msgToId"></GroupChat>
 			</scroll-view>
 		</view>
 		<view v-show="!isGroupChat" style="height: calc(100vh - 50upx);width: calc(85% - 100px); float: left; border-left: 1px solid #ddd">
@@ -80,7 +80,7 @@
 				class="page" :class="modalName!=null?'show':''" :refresher-enabled="true"
 				:refresher-triggered="refresherTriggered" @refresherrefresh="refresherrefresh"
 				@refresherrestore="refresherrestore" @refresherabort="refresherabort">
-				<UserChat :msgToId="msgToId" :ChatTypeId="ChatTypeId"></UserChat>
+				<UserChat :msgToId="msgToId"></UserChat>
 			</scroll-view>
 		</view>
 	</view>

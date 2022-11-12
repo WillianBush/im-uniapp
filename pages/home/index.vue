@@ -165,7 +165,7 @@
 				class="page" :class="modalName!=null?'show':''" :refresher-enabled="true"
 				:refresher-triggered="refresherTriggered" @refresherrefresh="refresherrefresh"
 				@refresherrestore="refresherrestore" @refresherabort="refresherabort">
-				<GroupChat :msgToId="msgToId" :ChatTypeId="ChatTypeId"></GroupChat>
+				<GroupChat :msgToId="msgToId"></GroupChat>
 			</scroll-view>
 		</view>
 		<view v-show="!isGroupChat" style="height: calc(100vh - 50upx);width: calc(85% - 100px); float: left; border-left: 1px solid #ddd">
@@ -174,7 +174,7 @@
 				class="page" :class="modalName!=null?'show':''" :refresher-enabled="true"
 				:refresher-triggered="refresherTriggered" @refresherrefresh="refresherrefresh"
 				@refresherrestore="refresherrestore" @refresherabort="refresherabort">
-				<UserChat :msgToId="msgToId" :ChatTypeId="ChatTypeId"></UserChat>
+				<UserChat :msgToId="msgToId"></UserChat>
 			</scroll-view>
 		</view>
 	</view>

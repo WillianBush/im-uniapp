@@ -941,10 +941,10 @@
 				type: String,
 				default: ''
 			},
-			ChatTypeId: {
-				type: Number,
-				default: 0
-			},
+			// ChatTypeId: {
+			// 	type: Number,
+			// 	default: 0
+			// },
 		},
 		data() {
 			return {
