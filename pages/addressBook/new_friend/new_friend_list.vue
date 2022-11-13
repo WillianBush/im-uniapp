@@ -1,6 +1,7 @@
 <template>
 	<view> 
 		<view style="height: 45px;line-height: 45px;background: #eee;padding-left: 5px">
+			<text class="cuIcon-back" @click="goback" style="float:left; margin:0 5px; cursor: pointer;"></text>
 			新的好友
 			<text @tap="goSearchFriend()" style="float:right;font-size: 30upx;color: #000; margin-right: 5px" class="lg text-gray ">添加朋友</text>
 		</view>
@@ -134,6 +135,9 @@
 						_this.$store.commit("setUnDoFriendAddCount",c);
 					}
 				});
+			},
+			goback () {
+				this.$emit('goBack');
 			},
 			verify(_id, _t){
 				let _this = this;

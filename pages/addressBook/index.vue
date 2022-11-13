@@ -66,9 +66,9 @@
 					{{listCur}}
 				</view>
 			</view>
-		    <newFriendList v-show="PageCur=='xinpengyou'" :keyid="keyid"></newFriendList>
-			<blackList v-show="PageCur=='heimingdan'" :keyid="keyid"></blackList>
-			<qunliao v-show="PageCur=='qunliao'" :keyid="keyid" @goGroupChat="goGroupChat"></qunliao>
+		    <newFriendList v-show="PageCur=='xinpengyou'" :keyid="keyid" @goBack="showMain"></newFriendList>
+			<blackList v-show="PageCur=='heimingdan'" :keyid="keyid" @goBack="showMain"></blackList>
+			<qunliao v-show="PageCur=='qunliao'" :keyid="keyid" @goBack="showMain" @goGroupChat="goGroupChat"></qunliao>
 		</view>
 		<view v-show="isGroupChat" style="height: calc(100vh - 50upx);width: 80%; float: left; border-left: 1px solid #ddd">
 			<scroll-view :scroll-y="modalName==null"
@@ -185,6 +185,9 @@
 			
 		},
 		methods: {
+			showMain() {
+				this.PageCur = 'tongxunlu';
+			},
 			goGroupChat(_id) {
 				console.log('tom wang 666',_id)
 				this.isGroupChat = true;

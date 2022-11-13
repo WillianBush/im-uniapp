@@ -2,6 +2,7 @@
 	<view>
 	<view v-show="!showList">
 		<view style="height: 45px;line-height: 45px;background: #eee;padding-left: 5px">
+			<text class="cuIcon-back" @click="goback" style="float:left; margin:0 5px; cursor: pointer;"></text>
 			群聊
 			<text @tap="goSearch()" style="float:right;font-size: 30upx;color: #000; margin-right: 5px"
 				class="lg text-gray ">搜索</text>
@@ -96,6 +97,9 @@
 			},
 			showGroup() {
 				this.showList = false;
+			},
+			goback () {
+				this.$emit('goBack');
 			},
 			goRoomAddList() {
 				this.showList = true;

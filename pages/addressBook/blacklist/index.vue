@@ -1,6 +1,9 @@
 <template>
 	<view>
-		<view style="height: 45px;line-height: 45px;text-align: center;background: #eee;">黑名单列表</view>
+		<view style="height: 45px;line-height: 45px;text-align: center;background: #eee;">
+			<text class="cuIcon-back" @click="goback" style="float:left; margin:0 5px; cursor: pointer;"></text>
+			黑名单列表
+		</view>
 		<view style="background: #fff;width: 96%;margin: auto auto;margin-top: 10px;" class="margin-top">
 			<view style=" width:100%">
 					<view   style="padding-top:30upx;padding-bottom:30upx;">
@@ -57,6 +60,9 @@
 						_this.list = res_data.body;
 					}
 				});
+			},
+			goback () {
+				this.$emit('goBack');
 			},
 			removeBlack(_id) {
 				let _this = this;
