@@ -67,6 +67,8 @@
 				</view>
 			</view>
 		    <newFriendList v-show="PageCur=='xinpengyou'" :keyid="keyid"></newFriendList>
+			<blackList v-show="PageCur=='heimingdan'" :keyid="keyid"></blackList>
+			<qunliao v-show="PageCur=='qunliao'" :keyid="keyid" @goGroupChat="goGroupChat"></qunliao>
 		</view>
 		<view v-show="isGroupChat" style="height: calc(100vh - 50upx);width: calc(85% - 100px); float: left; border-left: 1px solid #ddd">
 			<scroll-view :scroll-y="modalName==null"
@@ -183,10 +185,17 @@
 			
 		},
 		methods: {
+			goGroupChat(_id) {
+				console.log('tom wang 666',_id)
+				this.isGroupChat = true;
+				this.msgToId = _id;
+			},
 			goBlacklist() {
-				uni.navigateTo({
-					url:"/pages/addressBook/blacklist/index"
-				})
+				this.PageCur = 'heimingdan';
+				this.keyid = parseInt(Math.random()*100000000);
+				// uni.navigateTo({
+				// 	url:"/pages/addressBook/blacklist/index"
+				// })
 			},
 			showMsg() {
 				uni.showToast({
@@ -196,7 +205,7 @@
 				});
 			},
 			goUserDetail(_id){
-				console.log('_id',_id)
+				this.isGroupChat = false;
 				this.msgToId = _id;
 				// uni.navigateTo({
 				// 	url:"/pages/chat/user_detail?id="+_id
@@ -210,9 +219,11 @@
 				// })
 			},
 			goMyGroup() {
-				uni.navigateTo({
-					url:"/pages/addressBook/group/index"
-				})
+				this.PageCur = 'qunliao';
+				this.keyid = parseInt(Math.random()*100000000);
+				// uni.navigateTo({
+				// 	url:"/pages/addressBook/group/index"
+				// })
 			},
 			search() {
 				this.kw = this.kw1;

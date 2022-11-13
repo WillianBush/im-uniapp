@@ -1,12 +1,7 @@
 <template>
 	<view>
-		<cu-custom bgColor="bg-blue"  :isBack="true" :nameToLeft="true"><block slot="backText"></block><block slot="content">黑名单列表</block><block slot="right">
-		</block></cu-custom>
-		<view style="background: #fff;width: 96%;
-    margin: auto auto;
-    margin-top: 10px;" class="margin-top">
-	
-			
+		<view style="height: 45px;line-height: 45px;text-align: center;background: #eee;">黑名单列表</view>
+		<view style="background: #fff;width: 96%;margin: auto auto;margin-top: 10px;" class="margin-top">
 			<view style=" width:100%">
 					<view   style="padding-top:30upx;padding-bottom:30upx;">
 						<view v-if="item.id!=$store.state.user.id" style="display: inline-block;width:25%;margin-bottom:30upx;text-align: center;" v-for="(item,index) in list">
@@ -17,62 +12,52 @@
 						<view v-if="list.length<=0" style="text-align: center;color:#aaa">
 							<uni-view  class="padding">暂无可移除的黑名单</uni-view>
 						</view>
-						
 					</view>
-			</view>
-			
-			 
+			</view>			 
 		</view> 
-		
-	
 	</view>
 </template>
 
 <script>
 	export default {
+		props: {
+			keyid: {
+				type: Number,
+				default: 0
+			}
+		},
 		data() {
 			return {
 				id:"",
 				list:[]
 			}
 		},
-		onLoad() {
-			let _this = this;
-			let user = uni.getStorageSync("USER");
-			
-			this.$http.post("/user/json/getBlackList",
-				{
-					header:{
-						"x-access-uid":_this.$store.state.user.id,
-						"x-access-client":_this.$clientType
-					}
-				}
-				
-			).then(res=>{
-				let res_data = eval(res.data);
-				if(res_data.code==200) {  
-					_this.list = res_data.body;
-				}
-			});
-		
-			// uni.request({
-			// 	method:"POST",
-			// 	url: _this.$store.state.req_url + "/user/json/getBlackList",
-			// 	header:{
-			// 		"Content-Type":"application/x-www-form-urlencoded",
-			// 		"x-access-uid":_this.$store.state.user.id
-			// 	},
-			// 	success(res) {
-			// 		//console.log(res.data);
-			// 		let res_data = eval(res.data);
-			// 		if(res_data.code==200) {  
-			// 			_this.list = res_data.body;
-			// 		}
-			// 	}
-			// })
-			
+		watch: {
+		  keyid: function(newVal,oldVal){
+			console.log('----------------------newVal',newVal)
+			console.log('---------------------oldVal',oldVal)
+			this.fetchData();
+		  }
 		},
 		methods: {
+			fetchData() {
+				let _this = this;
+				let user = uni.getStorageSync("USER");
+				this.$http.post("/user/json/getBlackList",
+					{
+						header:{
+							"x-access-uid":_this.$store.state.user.id,
+							"x-access-client":_this.$clientType
+						}
+					}
+					
+				).then(res=>{
+					let res_data = eval(res.data);
+					if(res_data.code==200) {  
+						_this.list = res_data.body;
+					}
+				});
+			},
 			removeBlack(_id) {
 				let _this = this;
 				let user = uni.getStorageSync("USER");
@@ -107,34 +92,6 @@
 									_this.list = nlist;
 								}
 							});
-							
-				           // uni.request({
-				           // 	method:"POST",
-				           // 	url: _this.$store.state.req_url + "/user/json/removeBlack",
-				           // 	data:{
-				           // 		uid:_id
-				           // 	},
-				           // 	header:{
-				           // 		"Content-Type":"application/x-www-form-urlencoded",
-				           // 		"x-access-uid":_this.$store.state.user.id
-				           // 	},
-				           // 	success(res) {
-				           // 		let res_data = eval(res.data);
-				           // 		if(res_data.code==200) {  
-				           // 			uni.showToast({
-				           // 			    title: '移除成功',
-				           // 			    duration: 2000
-				           // 			});
-				           // 			let nlist = [];
-				           // 			_this.list.forEach(item=>{
-				           // 				if(item.id!=_id) {
-				           // 					nlist.push(item);
-				           // 				}
-				           // 			});
-				           // 			_this.list = nlist;
-				           // 		}
-				           // 	}
-				           // })
 				        } 
 				    }
 				});

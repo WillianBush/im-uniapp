@@ -10,6 +10,12 @@ Vue.component('addressBook',addressBook)
 import newFriendList from './pages/addressBook/new_friend/new_friend_list.vue'
 Vue.component('newFriendList',newFriendList)
 
+import blackList from './pages/addressBook/blacklist/index.vue'
+Vue.component('blackList',blackList)
+
+import qunliao from './pages/addressBook/group/index.vue'
+Vue.component('qunliao',qunliao)
+
 import faxian from './pages/faxian/index.vue'
 Vue.component('faxian',faxian)
 
@@ -69,28 +75,6 @@ export function bindHttp(){
 				//websocket.dispatch("WEBSOCKET_SEND", "{body:'"+res_data.body.id+"',CMD:'PUTSESSION'}");
 			}
 		})
-		// uni.request({
-		// 	method:"POST",
-		// 	url: store.state.req_url + "/user/json/load/v1",
-		// 	header:{
-		// 		"Content-Type":"application/x-www-form-urlencoded",
-		// 		"x-access-uid":user.id
-		// 	},
-		// 	success(res) {
-		// 		let res_data = eval(res.data);
-		// 		if(res_data.code==200) {
-		// 			store.commit("setUser",res_data.body)
-		// 			uni.setStorageSync("USER",res_data.body);
-		// 			store.commit("setUnDoFriendAddCount",res_data.body.unDoFriendAddCount);
-		// 			store.commit("setUnDoRoomAddCount",res_data.body.unDoRoomAddCount);
-		// 			//websocket.dispatch("WEBSOCKET_SEND", "{body:'"+res_data.body.id+"',CMD:'PUTSESSION'}");
-		// 			uni.navigateTo({
-		// 				url:"/pages/index/index"
-		// 			})
-		// 		}
-		// 	}
-		// })
-
 	}
 }
 

@@ -1,12 +1,11 @@
 <template>
 	<view> 
-		<cu-custom bgColor="bg-blue" :isBack="true" :nameToLeft="true"><block  slot="content">群聊</block>
-		<block slot="right">
-			<uni-text @tap="goSearch()" style="font-size: 22px;color: #fff;margin-right: 14px;font-size: 30upx;" class="lg text-gray ">搜索</uni-text>
-		</block>
-		</cu-custom>
+		<view style="height: 45px;line-height: 45px;background: #eee;padding-left: 5px">
+			群聊
+			<text @tap="goSearch()" style="float:right;font-size: 30upx;color: #000; margin-right: 5px" class="lg text-gray ">搜索</text>
+		</view>
 	
-	<view style="" class="cu-list menu" style="height: 100upx;">
+	<view class="cu-list menu" style="height: 100upx;">
 		<view @tap="goRoomAddList()" class="cu-item" :class="true?'arrow':''">
 			<view class="content"> 
 				<text style="color:#F56B2D;font-size:54upx;top: 10upx; position: relative;" class="iconfont icon-qun-tongguo"></text>	
@@ -21,9 +20,6 @@
 	</view>
 		<scroll-view scroll-y class="indexes" :style="'height:calc(100vh - '+CustomBar+'px - 100upx - 80upx)'"
 		 :scroll-with-animation="true" :enable-back-to-top="true">
-		 
-		
-		 
 			<block >
 				<view class="cu-list menu-avatar no-padding">
 					<view @tap="goChat(item)" class="cu-item" v-for="(item,index) in $store.state.group_list" :key="index">
@@ -31,18 +27,11 @@
 						<view class="cu-avatar round lg" :style="{'backgroundImage': 'url('+$store.state.img_url+ item.img +')' }"  style="width: 80upx;height: 80upx;background-size: 100% 100%;"></view>
 						<view class="content">
 							<view class="text-grey">{{item.name}}</view>
-							<!--
-							<view class="text-gray text-sm">
-								有{{sub+2}}个主子需要伺候
-							</view>
-							-->
 						</view>
 					</view>
 				</view>
 			</block>
-			<view style="height: 100upx;text-align: center;background: #fff;
-    margin-top: 20upx;
-    line-height: 100upx;
+			<view style="height: 100upx;text-align: center;background: #fff;margin-top: 20upx;line-height: 100upx;
     color: #999;" v-if="$store.state.group_list.length<=0">
 				暂无群聊信息
 			</view>
@@ -52,98 +41,50 @@
 
 <script>
 	export default {
+		props: {
+			keyid: {
+				type: Number,
+				default: 0
+			}
+		},
 		data() {
 			return {
 
 			};
 		},
-		mounted() {
-			let _this = this;
-			let user = uni.getStorageSync("USER");
-			/**
-			let list = [{}];
-			for (let i = 0; i < 26; i++) {
-				list[i] = {};
-				list[i].name = String.fromCharCode(65 + i);
-			}
-			this.list = list;
-			this.listCur = list[0];
-			**/
-				
-			this.$http.post("/user/json/room/list",
-				{type:"1"},
-				{
-					header:{
-						"x-access-uid":user.id,
-						"x-access-client":_this.$clientType
-					}
-				}
-				
-			).then(res=>{
-				let res_data = eval(res.data);
-				if(res_data.code==200) {  
-					//_this.list = res_data.body;	
-					_this.$store.commit("setGroup_list",res_data.body)
-				} else {
-					uni.showToast({
-						icon: 'none',
-						title: "获取列表失败"
-					});
-				}
-			});	
-			
-				
-			// uni.request({
-			// 	method:"POST",
-			// 	data:{type:"1"},
-			// 	url: _this.$store.state.req_url + "/user/json/room/list",
-			// 	header:{
-			// 		"Content-Type":"application/x-www-form-urlencoded",
-			// 		"x-access-uid":user.id
-			// 	},
-			// 	success(res) {
-			// 		let res_data = eval(res.data);
-			// 		if(res_data.code==200) {  
-			// 			//_this.list = res_data.body;	
-			// 			_this.$store.commit("setGroup_list",res_data.body)
-			// 		} else {
-			// 			uni.showToast({
-			// 				icon: 'none',
-			// 				title: "获取列表失败"
-			// 			});
-			// 		}
-			// 	}
-			// })
-			
-			
-			// uni.request({
-			// 	method:"POST",
-			// 	url: _this.$store.state.req_url + "/room/json/verify_list",
-			// 	header:{
-			// 		"Content-Type":"application/x-www-form-urlencoded",
-			// 		"x-access-uid":user.id
-			// 	},
-			// 	success(res) {
-			// 		let res_data = eval(res.data);
-			// 		if(res_data.code==200) {  
-			// 			//_this.list = res_data.body;	
-			// 			_this.$store.commit("setGroup_list",res_data.body)
-			// 		} else {
-			// 			uni.showToast({
-			// 				icon: 'none',
-			// 				title: "获取列表失败"
-			// 			});
-			// 		}
-			// 	}
-			// })
-			
-			
-		},
-		onReady() {
-			
-			
+		watch: {
+		  keyid: function(newVal,oldVal){
+			console.log('----------------------newVal',newVal)
+			console.log('---------------------oldVal',oldVal)
+			this.fetchData();
+		  }
 		},
 		methods: {
+			fetchData() {
+				let _this = this;
+				let user = uni.getStorageSync("USER");
+				this.$http.post("/user/json/room/list",
+					{type:"1"},
+					{
+						header:{
+							"x-access-uid":user.id,
+							"x-access-client":_this.$clientType
+						}
+					}
+					
+				).then(res=>{
+					let res_data = eval(res.data);
+					if(res_data.code==200) {  
+						//_this.list = res_data.body;	
+						_this.$store.commit("setGroup_list",res_data.body)
+					} else {
+						uni.showToast({
+							icon: 'none',
+							title: "获取列表失败"
+						});
+					}
+				});	
+			},
 			goRoomAddList() {
 				uni.navigateTo({
 					url:"/pages/addressBook/group/verify_list"
@@ -155,9 +96,10 @@
 				})
 			},
 			goChat(item) {
-				uni.navigateTo({
-					url:"/pages/chat/group/index?toid="+item.roomUUID
-				})
+				this.$emit('goGroupChat',item.roomUUID);
+				// uni.navigateTo({
+				// 	url:"/pages/chat/group/index?toid="+item.roomUUID
+				// })
 			}
 		}
 	}
@@ -236,7 +178,9 @@
 	.text-grey {
 		color:#333
 	}
-	 
+	.cu-list .cu-item, .cu-list.menu-avatar>.cu-item {
+	 	cursor: pointer;
+	}
 	.cu-list.menu-avatar>.cu-item::after{
 		border: 0;
 	}  
