@@ -62,10 +62,16 @@
 					<text  style="float:left;margin-left: 10px;color: #8799a3;">性别</text>
 					<text class="text-grey text-sm" style="float:right;color:#aaa;font-size: 26upx;">{{$store.state.user.sex}}</text>
 				</view> 
-			</view> 
-			
-			
-		</view>	
+			</view>
+
+			 <view @tap="modifyPwd()"  class="cu-item" :class="true?'arrow':''">
+				 <view class="content">
+					 <text  style="float:left;margin-left: 10px;color: #8799a3;">修改密码</text>
+				 </view>
+			 </view>
+
+
+		 </view>
 		
 		
 		
@@ -111,7 +117,12 @@
 			
 		},
 		methods: {
-			goQrcode() {
+            modifyPwd(){
+                uni.navigateTo({
+                    url:"/pages/login/forget"
+                })
+            },
+            goQrcode() {
 				uni.navigateTo({
 					url:"/pages/mine/user_info/qrCode"
 				})

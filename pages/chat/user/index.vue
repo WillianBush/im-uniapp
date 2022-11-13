@@ -5,6 +5,7 @@
 		<view class="cu-avatar radius" style="margin-right: 5px; border-radius: 50%" :style="'background-image:url('+$store.state.img_url+friendPic+');'"></view>
 		{{showname}} <text v-if="chatCfg.showUserOnline==1">{{entity.online==0?' (离线)':' (在线)'}}</text>
 		<text v-show="$store.state.temp.input_ing" style="font-size: 26upx;margin-left:10upx;">- 正在输入...</text>
+			<text v-show="toIP" style="font-size: 16upx; color: #FFCC99; margin-left:10upx;">{{"IP："+toIP}}</text>
 			<!-- <text v-show="toIP" style="font-size: 14upx; color: #FFCC99; margin-left:10upx;">{{toIP}}</text> -->
 		</block><block slot="right">
 			<uni-text @tap="goMgr(entity.id)" style="font-size: 22px;color: #fff;margin-right: 14px;" class="lg text-gray cuIcon-more"><span></span></uni-text>
@@ -876,7 +877,8 @@
 		name: 'UserChat',
 		components: {
 		    uParse,
-			openRed
+			openRed,
+			toIP:""
 		},
 		props: {
 			msgToId: {
@@ -1067,7 +1069,24 @@
 			  		//this.tongbuMsg_1stInNoData();
 			  	}
 			  }
-			  _this.$http.post("/user/json/loadById/v1",
+
+				/*获取聊天的对象 user数据*/
+				_this.$http.get("/user/json/userInfo?toid="+_this.toid,
+						{
+							header:{
+								"x-access-uid":_this.$store.state.user.id,
+								"x-access-client":_this.$clientType
+							}
+						}
+				).then(res=>{
+					let res_data = eval(res.data);
+					if(res_data.code==200) {
+						console.log('userInfo22', res_data.msg)
+						_this.toIP = res_data.msg;
+					}
+				})
+
+				_this.$http.post("/user/json/loadById/v1",
 			  	{id:_this.toid},
 			  	{
 			  		header:{

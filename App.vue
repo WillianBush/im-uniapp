@@ -550,8 +550,11 @@
 			this.$store.state.appShow = false;
 
 			setTimeout(()=>{
-				_this.$websocket.dispatch('WEBSOCKET_INIT');
-			},500);
+                let user = uni.getStorageSync("USER");
+                if (user) {
+                    _this.$websocket.dispatch('WEBSOCKET_INIT');
+                }
+            },500);
 
 			// if(_checkLink) {
 			// 	clearInterval(_checkLink);

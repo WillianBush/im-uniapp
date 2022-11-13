@@ -14,6 +14,11 @@ export default new Vuex.Store({
 	},
 	mutations: { 
 		WEBSOCKET_INIT(state) {
+			let id = store.state.user.id
+			//用户退出后，不让重新连
+			if(typeof id == 'undefined' || id == null || id == ''){
+				return;
+			}
 			var _this = this; 
 			if(state.is_open_socket) return;
 			if(state.lock) return;
@@ -28,8 +33,10 @@ export default new Vuex.Store({
 				state.socketTask.close();
 			}
 			var i = Math.floor((Math.random() * store.state.req_url.length));
+			let websocket_id = uni.getStorageSync("websocket_id");
+			console.log("hahahahahhaahhahahah2",websocket_id)
 			state.socketTask = uni.connectSocket({
-				url: store.state.socket_url[i]+"/chat/socket"+"?app_uuid="+store.state.app_uuid,
+				url:store.state.socket_url[i]+"/chat/socket"+"?app_uuid="+store.state.app_uuid+"&session_id"+websocket_id,
 				// 【非常重要】必须确保你的服务器是成功的,如果是手机测试千万别使用ws://127.0.0.1:9099【特别容易犯的错误】
 				success(data) {
 					state.lock = false;	
