@@ -16,6 +16,9 @@ Vue.component('blackList',blackList)
 import qunliao from './pages/addressBook/group/index.vue'
 Vue.component('qunliao',qunliao)
 
+import verifyList from './pages/addressBook/group/verify_list.vue'
+Vue.component('verifyList',verifyList)
+
 import faxian from './pages/faxian/index.vue'
 Vue.component('faxian',faxian)
 

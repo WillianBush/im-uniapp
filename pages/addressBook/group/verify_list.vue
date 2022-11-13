@@ -1,9 +1,9 @@
 <template>
 	<view>
-		<cu-custom bgColor="bg-blue" :isBack="true" :nameToLeft="true">
-			<block slot="backText"></block>
-			<block slot="content">他人申请入群</block>
-		</cu-custom>
+		<view style="height: 45px;line-height: 45px;text-align: center;background: #eee;">
+			<text class="cuIcon-back" @click="goback" style="float:left; margin-left: 5px; cursor: pointer;"></text>
+			他人申请入群
+		</view>
 		<scroll-view scroll-y class="indexes" :style="[{height:'calc(100vh - 100upx)'}]" :scroll-with-animation="true"
 		 :enable-back-to-top="true">
 
@@ -29,13 +29,7 @@
 				font-size: 26upx;background: #fff;padding-bottom:30upx;">
 						验证内容：{{item.txt}}
 					</view>
-
 				</block>
-
-
-
-
-
 			</view>
 
 
@@ -52,6 +46,12 @@
 
 <script>
 	export default {
+		props: {
+			keyid: {
+				type: Number,
+				default: 0
+			}
+		},
 		data() {
 			return {
 				StatusBar: this.StatusBar,
@@ -62,8 +62,12 @@
 				kw1: ""
 			};
 		},
-		onShow() {
-			this.initData();
+		watch: {
+			keyid: function(newVal, oldVal) {
+				console.log('----------------------newVal', newVal)
+				console.log('---------------------oldVal', oldVal)
+				this.initData();
+			}
 		},
 		onReady() {},
 		methods: {
@@ -85,21 +89,9 @@
 						_this.list = res_data.body
 					}
 				});
-				
-				// uni.request({
-				// 	method: "POST",
-				// 	url: _this.$store.state.req_url + "/room/json/verify_list",
-				// 	header: {
-				// 		"Content-Type": "application/x-www-form-urlencoded",
-				// 		"x-access-uid": user.id
-				// 	},
-				// 	success(res) {
-				// 		let res_data = eval(res.data);
-				// 		if (res_data.code == 200) {
-				// 			_this.list = res_data.body
-				// 		}
-				// 	}
-				// })
+			},
+			goback () {
+				this.$emit('goBack');
 			},
 			verify(_id, _t) {
 				let _this = this;
@@ -110,7 +102,6 @@
 					 content: _t==2?'拒绝通过':'验证通过',
 					success: function(r) {
 						if (r.confirm) {
-							
 							_this.$http.post("/room/json/verifyDo",
 								{
 									raid: _id,
@@ -122,7 +113,6 @@
 										"x-access-client":_this.$clientType
 									}
 								}
-								
 							).then(res=>{
 								let res_data = eval(res.data);
 								if (res_data.code == 200) {
@@ -138,14 +128,12 @@
 										_this.$store.state.ar_list.forEach(item => {
 											if (item.id == res_data.body.id) {
 												item.img = res_data.body.img;
-												//item.top5Hp = _this.$store.state.cur_chat_entity.top5Hp;
 												return;
 											}
 										})
 										_this.$store.state.ar_list_show.forEach(item => {
 											if (item.id == res_data.body.id) {
 												item.img = res_data.body.img;
-												//item.top5Hp = _this.$store.state.cur_chat_entity.top5Hp;
 												return;
 											} 
 										})
@@ -161,57 +149,6 @@
 									});
 								}
 							});
-							
-							// uni.request({
-							// 	method: "POST",
-							// 	url: _this.$store.state.req_url + "/room/json/verifyDo",
-							// 	data: {
-							// 		raid: _id,
-							// 		t: _t
-							// 	},
-							// 	header: {
-							// 		"Content-Type": "application/x-www-form-urlencoded",
-							// 		"x-access-uid": user.id
-							// 	},
-							// 	success(res) {
-							// 		let res_data = eval(res.data);
-							// 		if (res_data.code == 200) {
-							// 			uni.showToast({
-							// 				icon: 'none',
-							// 				position: 'bottom',
-							// 				title: "操作成功"
-							// 			});
-							// 			_this.$store.commit("setUnDoRoomAddCount", _this.$store.state.unDoRoomAddCount-1);
-							// 			_this.initData();
-							// 			if (_t == 1) {
-							// 				//通过
-							// 				_this.$store.state.ar_list.forEach(item => {
-							// 					if (item.id == res_data.body.id) {
-							// 						item.img = res_data.body.img;
-							// 						//item.top5Hp = _this.$store.state.cur_chat_entity.top5Hp;
-							// 						return;
-							// 					}
-							// 				})
-							// 				_this.$store.state.ar_list_show.forEach(item => {
-							// 					if (item.id == res_data.body.id) {
-							// 						item.img = res_data.body.img;
-							// 						//item.top5Hp = _this.$store.state.cur_chat_entity.top5Hp;
-							// 						return;
-							// 					} 
-							// 				})
-							// 			} else if (_t == 2) {
-							// 				//拒绝	
-							// 			}
-
-							// 		} else {
-							// 			uni.showToast({
-							// 				icon: 'none',
-							// 				position: 'bottom',
-							// 				title: res_data.msg
-							// 			});
-							// 		}
-							// 	}
-							// })
 						} else if (res.cancel) {
 							console.log('用户点击取消');
 						}
