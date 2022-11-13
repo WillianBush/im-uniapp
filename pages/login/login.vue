@@ -44,7 +44,7 @@
 			<view class="footer" style="    width: 200px;
     margin: auto auto;
     margin-top: 25px;    display: block;">
-				<navigator style="float:left;" url="forget" open-type="navigate">找回密码</navigator>
+				<navigator v-if="false" vstyle="float:left;" url="forget" open-type="navigate">找回密码</navigator>
 				
 				<navigator  style="float:right;" url="register" open-type="navigate">注册账号</navigator>
 			</view>
@@ -102,6 +102,19 @@
 		// 	} 
 		// },
 		methods: {
+			// 32位随机数
+			random32String(user_id){
+				let str = 'ABCDEFGHIJKIMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789'
+				let num = '';
+				for(let i =0;i<32;i++){
+					num +=str.charAt(Math.floor(Math.random() * str.length));
+				}
+				num += user_id;
+				uni.setStorageSync("websocket_id",num);
+
+				let websocket_id = uni.getStorageSync("websocket_id");
+				console.log("hahahahahhaahhahahah1",websocket_id)
+			},
 			isLogin(){
 				//判断缓存中是否登录过，直接登录
 				// try {
@@ -193,6 +206,8 @@
 						uni.setStorageSync("USER",res_data.body);
 						_this.$store.commit("setUnDoFriendAddCount",res_data.body.unDoFriendAddCount);
 						_this.$store.commit("setUnDoRoomAddCount",res_data.body.unDoRoomAddCount);
+						//生成websocket id和当前用户对应上
+						_this.random32String(res_data.body.id);
 						let v = {
 							user_id:res_data.body.id,
 							app_uuid:_this.$store.state.app_uuid,
