@@ -901,8 +901,8 @@ button.cuIcon.lg {
 }
 
 .cu-avatar.lg {
-	width: 100upx;
-	height: 100upx;
+	width: 60upx;
+	height: 60upx;
 	font-size: 2em;
 }
 
@@ -1231,9 +1231,11 @@ button.cuIcon.lg {
 
 .cu-list.menu-avatar>.cu-item .content {
 	position: absolute;
-	left: 146upx;
-	width: calc(100% - 96upx - 60upx - 120upx - 20upx);
+	left: 106upx;
+	width: calc(100% - 96upx - 20upx - 120upx - 20upx);
 	line-height: 1.6em;
+	overflow: hidden;
+	white-space:nowrap;
 }
 
 .cu-list.menu-avatar>.cu-item .content.flex-sub {
@@ -1241,7 +1243,7 @@ button.cuIcon.lg {
 }
 
 .cu-list.menu-avatar>.cu-item .content>view:first-child {
-	font-size: 32upx;
+	font-size: 12px;
 	display: flex;
 	align-items: center
 }

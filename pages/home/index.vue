@@ -123,7 +123,7 @@
 							<view data-v-3174c329="" class="cuIcon-notice_forbid_fill text-gray"></view>
 							-->
 							<view v-if="item.unread>0" class="cu-tag round bg-red sm">{{item.unread}}</view>
-							<view v-else style="font-size: 46upx;color: #ccc;" class="cuIcon-commentfill text-gray"></view>
+							<!-- <view v-else style="font-size: 46upx;color: #ccc;" class="cuIcon-commentfill text-gray"></view> -->
 						</view>
 						<view class="move">
 							<view v-if="item.top>0" @touchend.stop="" @touchmove.stop="" @touchstart.stop=""
@@ -159,7 +159,7 @@
 				-->
 			</scroll-view>
 		</view>
-		<view v-show="isGroupChat" style="height: calc(100vh - 50upx);width: calc(85% - 100px); float: left; border-left: 1px solid #ddd">
+		<view v-show="isGroupChat" style="height: calc(100vh - 50upx);width: 80%; float: left; border-left: 1px solid #ddd">
 			<scroll-view :scroll-y="modalName==null"
 				style="width: 100%"
 				class="page" :class="modalName!=null?'show':''" :refresher-enabled="true"
@@ -168,7 +168,7 @@
 				<GroupChat :msgToId="msgToId"></GroupChat>
 			</scroll-view>
 		</view>
-		<view v-show="!isGroupChat" style="height: calc(100vh - 50upx);width: calc(85% - 100px); float: left; border-left: 1px solid #ddd">
+		<view v-show="!isGroupChat" style="height: calc(100vh - 50upx);width: 80%; float: left; border-left: 1px solid #ddd">
 			<scroll-view :scroll-y="modalName==null"
 				style="width: 100%"
 				class="page" :class="modalName!=null?'show':''" :refresher-enabled="true"

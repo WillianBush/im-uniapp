@@ -44,7 +44,7 @@
 							<view class="padding">{{item.h}}</view>
 							<view class="cu-list menu-avatar no-padding">
 								<view @tap="goUserDetail(items.member_uuid)" class="cu-item" v-for="(items,index1) in item.list" :key="index1">
-									<view class="cu-avatar round lg" :style="{'backgroundImage': 'url('+$store.state.img_url+ items.headpic +')' }"  style="width: 84upx;height: 84upx;background-size: 100% 100%;"></view>
+									<view class="cu-avatar round lg" :style="{'backgroundImage': 'url('+$store.state.img_url+ items.headpic +')' }"  style="width: 60upx;height: 60upx;background-size: 100% 100%;"></view>
 									<view class="content">
 										<view class="text-grey">{{items.name}}</view>
 									</view>
@@ -70,7 +70,7 @@
 			<blackList v-show="PageCur=='heimingdan'" :keyid="keyid"></blackList>
 			<qunliao v-show="PageCur=='qunliao'" :keyid="keyid" @goGroupChat="goGroupChat"></qunliao>
 		</view>
-		<view v-show="isGroupChat" style="height: calc(100vh - 50upx);width: calc(85% - 100px); float: left; border-left: 1px solid #ddd">
+		<view v-show="isGroupChat" style="height: calc(100vh - 50upx);width: 80%; float: left; border-left: 1px solid #ddd">
 			<scroll-view :scroll-y="modalName==null"
 				style="width: 100%"
 				class="page" :class="modalName!=null?'show':''" :refresher-enabled="true"
@@ -79,7 +79,7 @@
 				<GroupChat :msgToId="msgToId"></GroupChat>
 			</scroll-view>
 		</view>
-		<view v-show="!isGroupChat" style="height: calc(100vh - 50upx);width: calc(85% - 100px); float: left; border-left: 1px solid #ddd">
+		<view v-show="!isGroupChat" style="height: calc(100vh - 50upx);width: 80%; float: left; border-left: 1px solid #ddd">
 			<scroll-view :scroll-y="modalName==null"
 				style="width: 100%"
 				class="page" :class="modalName!=null?'show':''" :refresher-enabled="true"

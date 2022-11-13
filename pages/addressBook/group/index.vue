@@ -31,7 +31,7 @@
 
 						<view class="cu-avatar round lg"
 							:style="{'backgroundImage': 'url('+$store.state.img_url+ item.img +')' }"
-							style="width: 80upx;height: 80upx;background-size: 100% 100%;"></view>
+							style="width: 60upx;height: 60upx;background-size: 100% 100%;"></view>
 						<view class="content">
 							<view class="text-grey">{{item.name}}</view>
 						</view>
