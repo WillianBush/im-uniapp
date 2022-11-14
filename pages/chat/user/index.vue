@@ -8,7 +8,7 @@
 			<text v-show="toIP" style="font-size: 16upx; color: #FFCC99; margin-left:10upx;">{{"IP："+toIP}}</text>
 			<!-- <text v-show="toIP" style="font-size: 14upx; color: #FFCC99; margin-left:10upx;">{{toIP}}</text> -->
 		</block><block slot="right">
-			<uni-text @tap="goMgr(entity.id)" style="font-size: 22px;color: #fff;margin-right: 14px;" class="lg text-gray cuIcon-more"><span></span></uni-text>
+			<uni-text @tap="goMgr(entity.id)" style="font-size: 22px;color: #000;margin-right: 5%;cursor: pointer;" class="lg text-gray cuIcon-more"><span></span></uni-text>
 		</block></cu-custom>
 		<scroll-view @scroll="scrollFn"  :scroll-top="scrollTop" scroll-y="true"    ref="chatVew" @tap="clickChat()" style="background: #eee;" class="cu-chat" :style="'height: calc(100vh - '+CustomBar+'px - 62px - '+(120+InputBottom)+'upx)'" >	
 			<block  v-for="(item,index) in $store.state.cur_chat_msg_list">

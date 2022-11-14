@@ -104,7 +104,7 @@
 							<uni-view data-v-3174c329="" class="cu-tag badge">99+</uni-view>
 							-->
 						</view>
-						<view class="content">
+						<view class="content" style="min-width: 120px;z-index: 20;background: #fff;">
 							<view class="text-black">{{item.title}}{{item.typeid == '1' ? '（群聊）' : ''}}</view>
 							<view class="text-gray text-sm flex">
 								<view class="text-cut" style="position: relative;top: 4px;">

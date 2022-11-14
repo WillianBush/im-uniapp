@@ -5,7 +5,7 @@
 				<view class="cu-avatar radius" style="margin-right: 5px; border-radius: 50%" :style="'background-image:url('+$store.state.img_url+friendPic+');'"></view>
 			</block>
 			<block slot="content" style="margin-left: 66px;">{{$store.state.cur_chat_entity.name}}({{$store.state.cur_chat_entity.memberCount}}人)</block><block slot="right">
-			<uni-text @tap="goMgr(entity.id)" style="font-size: 22px;color: #fff;margin-right: 14px;" class="lg text-gray cuIcon-more"><span></span></uni-text>
+			<uni-text @tap="goMgr(entity.id)" style="font-size: 22px;color: #000;margin-right: 5%;cursor: pointer;" class="lg text-gray cuIcon-more"><span></span></uni-text>
 		</block></cu-custom>
 		<uni-notice-bar showIcon="" speed="35" scrollable="true" single="true" v-if="$store.state.cur_chat_entity" :text="$store.state.cur_chat_entity.descri"></uni-notice-bar>
 		<scroll-view @scroll="scrollFn" :scroll-into-view="viewId" :scroll-top="scrollTop" scroll-y="true"    ref="chatVew" @tap="clickChat()"  class="cu-chat" style="background: #eee;" :style="'height: calc(100vh - '+CustomBar+'px - 68px - '+(120+InputBottom)+'upx)'" >	
