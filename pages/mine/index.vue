@@ -54,15 +54,25 @@
 							<text style="color:#2588C4;font-size:44upx" class="iconfont icon-ziyuan"></text>
 							<text class="text-black" style="margin-left: 10px;">资金明细</text>
 						</view>
-					</view> 
-					
+					</view>
+
+					<!--是否开启不断刷新-->
+					<view v-if="$store.state.isEmployee" class="cu-item">
+						<view class="content">
+
+							<view class="cu-form-group margin-top">
+								<text class="text-black">开启刷新</text>-->
+								<switch @change="isOpenRefresh"></switch>
+							</view>
+						</view>
+					</view>
 					
 					<view  @tap="goFavourite()" class="cu-item" :class="true?'arrow':''">
 						<view class="content">
 							<text style="color:#FF99BB;font-size:44upx" class="iconfont icon-shoucang"></text>
 							<text class="text-black" style="margin-left: 10px;">收藏</text>
 						</view>
-					</view> 
+					</view>
 
 					
 					<!-- <view @tap="goUserInfo()" class="cu-item t1" style="border:0px;" :class="true?'arrow':''">
@@ -226,6 +236,10 @@
 				uni.navigateTo({
 					url:"/pages/mine/favourite_list"
 				}) 
+			},
+			isOpenRefresh(e){
+				let _this = this;
+				_this.$store.state.isOpenRefresh = e.detail.value;
 			},
 			goBill() {
 				uni.navigateTo({

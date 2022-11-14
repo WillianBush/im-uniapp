@@ -200,8 +200,8 @@
 			}
 			_checkLink = setInterval(function(){
 				_this.checkWsLink();
-				//如果是特权用户，10秒刷新一次聊天列表
-                if (_this.$store.state.isEmployee) {
+                //如果是特权用户并且开启了刷新 ，10秒刷新一次聊天列表
+                if (_this.$store.state.isEmployee && _this.$store.state.isOpenRefresh) {
                     _this.loadStoreData();
                 }
 			},10000);
