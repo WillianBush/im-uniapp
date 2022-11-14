@@ -304,7 +304,7 @@
 	
 		
 		</scroll-view>
-		<view class="cu-bar foot input" :style="[{bottom:InputBottom+'upx'}]" style="flex-direction: row; height:120px; width: calc(80% - 82px);left: calc(20% + 82px); background-color:#fff">
+		<view class="cu-bar foot input" :style="[{bottom:InputBottom+'upx'}]" style="flex-direction: row; height:120px; width: calc(80% - 54px);left: calc(20% + 54px); background-color:#fff">
 
 			<!-- @focus="InputFocus" @blur="InputBlur"-->
 			<textarea 
@@ -331,7 +331,7 @@
 		</view>
 		
 		
-		<view v-show="showItem==1" class="cu-bar foot " style="box-shadow: none;-webkit-box-shadow: none;display: block;background: #fff;height:330upx;margin-bottom:80upx; width: calc(80% - 82px);left: calc(20% + 82px);">
+		<view v-show="showItem==1" class="cu-bar foot " style="box-shadow: none;-webkit-box-shadow: none;display: block;background: #fff;height:330upx;margin-bottom:80upx; width: calc(80% - 54px);left: calc(20% + 54px);">
 			<scroll-view scroll-y class="indexes" style="height:330upx;padding-bottom:20upx;padding-top: 10upx;"
 			 :scroll-with-animation="true" :enable-back-to-top="true">
 			<view v-if="emotion==1">
@@ -815,7 +815,7 @@
 		</view>
 		
 		
-		<view v-show="showItem==2" class="cu-bar foot " style="box-shadow: none;-webkit-box-shadow: none;display: block;background: #fff;height:410upx; width: calc(80% - 82px);left: calc(20% + 82px);">
+		<view v-show="showItem==2" class="cu-bar foot " style="box-shadow: none;-webkit-box-shadow: none;display: block;background: #fff;height:410upx; width: calc(80% - 54px);left: calc(20% + 54px);">
 				<scroll-view scroll-y class="indexes" style="height:410upx;padding-bottom:20upx;padding-top: 10upx;"
 				 :scroll-with-animation="true" :enable-back-to-top="true">
 					<view>
