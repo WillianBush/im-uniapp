@@ -19,6 +19,9 @@ Vue.component('qunliao',qunliao)
 import verifyList from './pages/addressBook/group/verify_list.vue'
 Vue.component('verifyList',verifyList)
 
+import groupSearch from './pages/addressBook/group/search.vue'
+Vue.component('groupSearch',groupSearch)
+
 import faxian from './pages/faxian/index.vue'
 Vue.component('faxian',faxian)
 

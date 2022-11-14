@@ -1,10 +1,10 @@
 <template>
 	<view>
-	<view v-show="!showList">
+	<view v-show="PageCur=='main'">
 		<view style="height: 45px;line-height: 45px;background: #eee;padding-left: 5px">
 			<text class="cuIcon-back" @click="goback" style="float:left; margin:0 5px; cursor: pointer;"></text>
 			群聊
-			<text @tap="goSearch()" style="float:right;font-size: 30upx;color: #000; margin-right: 5px"
+			<text @tap="goSearch()" style="float:right;font-size: 30upx; cursor: pointer;color: #000; margin-right: 5px"
 				class="lg text-gray ">搜索</text>
 		</view>
 
@@ -45,7 +45,8 @@
 			</view>
 		</scroll-view>
 	</view>
-	<verifyList v-show="showList" :keyid="randomKeyId" @goBack="showGroup"></verifyList>
+	<verifyList v-show="PageCur=='list'" :keyid="randomKeyId" @goBack="showGroup"></verifyList>
+	<groupSearch v-show="PageCur=='search'"  @goBack="showGroup"></groupSearch>
 	</view>
 </template>
 
@@ -59,7 +60,7 @@
 		},
 		data() {
 			return {
-				showList: false,
+				PageCur: 'main',
 				randomKeyId: 0
 			};
 		},
@@ -96,22 +97,23 @@
 				});
 			},
 			showGroup() {
-				this.showList = false;
+				this.PageCur = 'main';
 			},
 			goback () {
 				this.$emit('goBack');
 			},
 			goRoomAddList() {
-				this.showList = true;
+				this.PageCur = 'list';
 				this.randomKeyId = parseInt(Math.random()*100000000);
 				// uni.navigateTo({
 				// 	url: "/pages/addressBook/group/verify_list"
 				// })
 			},
 			goSearch() {
-				uni.navigateTo({
-					url: "/pages/addressBook/group/search"
-				})
+				this.PageCur = 'search';
+				// uni.navigateTo({
+				// 	url: "/pages/addressBook/group/search"
+				// })
 			},
 			goChat(item) {
 				this.$emit('goGroupChat', item.roomUUID);

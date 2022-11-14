@@ -1,9 +1,9 @@
 <template>
 	<view> 
-		<cu-custom bgColor="bg-blue"  :isBack="true" :nameToLeft="true"><block slot="backText"></block><block slot="content">查找群组</block><block slot="right">
-			
-		</block></cu-custom>
-		
+		<view style="height: 45px;line-height: 45px;text-align: center;background: #eee;">
+			<text class="cuIcon-back" @click="goback" style="float:left; margin-left: 5px; cursor: pointer;"></text>
+			查找群组
+		</view>
 		<view class="cu-bar bg-white search" >
 			<view class="search-form round">
 				<text class="cuIcon-search"></text>
@@ -34,21 +34,12 @@
 					<text v-else-if="item.status==2" style="float:right;margin-top:15upx;color:#999;font-size: 26upx;" v-else>等待验证</text>
 		    	</view>
 		    </view>  
-			
-				
-
-
 		</view>	
-		 
-			
-			<view v-else  style="height: 100upx;text-align: center;background: #fff;
-    margin-top: 20upx;
-    line-height: 100upx;
-    color: #999;" >
+
+			<view v-else  style="height: 100upx;text-align: center;background: #fff;margin-top: 20upx;line-height: 100upx;color: #999;" >
 				暂无信息
 			</view>
 		</scroll-view>
-		
 	</view>
 </template>
 
@@ -64,12 +55,11 @@
 				kw1:""
 			};
 		},
-		
-		onReady() {
-		
-			
-		},
+
 		methods: {
+			goback () {
+				this.$emit('goBack');
+			},
 			goVerify(_uuid){
 				uni.navigateTo({
 					url:"/pages/addressBook/group/add_verify?uuid="+_uuid
@@ -120,29 +110,6 @@
 						});
 					}
 				});
-				
-				// uni.request({
-				// 	method:"POST",
-				// 	url: _this.$store.state.req_url + "/room/json/search_list",
-				// 	data:{
-				// 		kw:this.kw
-				// 	},
-				// 	header:{
-				// 		"Content-Type":"application/x-www-form-urlencoded",
-				// 		"x-access-uid":user.id
-				// 	},
-				// 	success(res) {
-				// 		let res_data = eval(res.data);
-				// 		if(res_data.code==200) {  
-				// 			_this.list = res_data.body
-				// 		} else {
-				// 			uni.showToast({
-				// 			    icon: 'none',
-				// 			    title: res_data.msg
-				// 			});
-				// 		}
-				// 	}
-				// })
 			},
 			//获取文字信息
 			getCur(e) {
