@@ -132,6 +132,7 @@
 				// }
 			},
 		    startLogin(e){
+				_this= this;
                 //console.log(e)
 				//登录
 				if(this.isRotate){
@@ -239,25 +240,27 @@
 						
 						
 						// if(this.$store.state.ar_list.length==0) {
-							// _this.$http.post("/user/employeeDefaultMessage/json/isEmployee",
-							// 	{
-							// 		header:{
-							// 			"x-access-uid":res_data.body.id,
-							// 			"x-access-client":_this.$clientType
-							// 		}
-							// 	}
-							// ).then(res=>{
-							// 	let res_data = eval(res.data);
-							// 	if(res.statusCode==200) {  
-							// 		_this.$store.commit("setIsEmployee",res_data.msg === 'Yes');
-							// 	} else {
-							// 		uni.showToast({
-							// 		    icon: 'none',
-							// 			position: 'bottom',
-							// 		    title: res_data.msg
-							// 		});
-							// 	}
-							// })
+						_this.$http.post("/user/employeeDefaultMessage/json/isEmployee",
+								{
+									header:{
+										"x-access-uid":res_data.body.id,
+										"x-access-client":_this.$clientType
+									}
+								}
+						).then(res=>{
+							let res_data = eval(res.data);
+							console.log("tttttttttt,,,,",res_data.msg === 'Yes')
+							if(res_data.status=="success") {
+								_this.$store.state.isEmployee = (res_data.msg === 'Yes');
+								console.log("tttttttttt,,,,2",_this.$store.state.isEmployee)
+							} else {
+								uni.showToast({
+									icon: 'none',
+									position: 'bottom',
+									title: res_data.msg
+								});
+							}
+						})
 							
 							this.$http.post("/user/accessRecord/json/list",
 								{

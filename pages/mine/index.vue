@@ -187,23 +187,25 @@
 		-->
 
 				</view>
-<updatepage ref="updatepage"></updatepage>
 			</view>
 		</scroll-view>
 	</view>
 </template>
 
 <script>
-	import updatepage from "@/components/user/updatepage/updatepage.vue";
 	export default {
-		components: {
-		  updatepage
-		},
-		mounted() {
+		async mounted() {
+			await this.$onLaunched;
 			let _this = this;
-			if (_this.$store.state.isEmployee) {
-				_this.getGreetingMsg(_this);
-			}
+			console.log("abc22222", "2222222")
+			console.log("abc333333", _this.$store.state.isEmployee)
+
+			setTimeout(()=>{
+				if (_this.$store.state.isEmployee) {
+					_this.getGreetingMsg(_this);
+				}
+			},1000);
+
 		},
 		methods:{
 			goSignIn(){
@@ -321,6 +323,7 @@
 							}
 					).then(res=>{
 						let res_data = eval(res.data);
+						console.log("abc1111",res_data)
 						if(res_data.code==200) {
 							const data = res.data.body.rows;
 							_this.$store.state.greetingList = data;
