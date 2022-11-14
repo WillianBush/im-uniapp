@@ -55,7 +55,7 @@
 					width: 280upx;
 					background: #4A484D;
 					top: 140upx;
-					left: 17%;
+					left: calc(20% - 87px);
 					z-index: 9999;
 					border-radius: 12upx;
 					color: #fff;
