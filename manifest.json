@@ -134,7 +134,7 @@
         "router" : {
             "base" : "/"
         },
-        "title" : "约伴APP",
+        "title" : "IM即时通讯",
         "optimization" : {
             "treeShaking" : {
                 "enable" : true
