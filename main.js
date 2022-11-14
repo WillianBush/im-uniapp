@@ -10,6 +10,9 @@ Vue.component('addressBook',addressBook)
 import newFriendList from './pages/addressBook/new_friend/new_friend_list.vue'
 Vue.component('newFriendList',newFriendList)
 
+import friendSearch from './pages/addressBook/new_friend/search.vue'
+Vue.component('friendSearch',friendSearch)
+
 import blackList from './pages/addressBook/blacklist/index.vue'
 Vue.component('blackList',blackList)
 

@@ -1,47 +1,50 @@
 <template>
-	<view> 
-		<view style="height: 45px;line-height: 45px;background: #eee;padding-left: 5px">
-			<text class="cuIcon-back" @click="goback" style="float:left; margin:0 5px; cursor: pointer;"></text>
-			新的好友
-			<text @tap="goSearchFriend()" style="float:right;font-size: 30upx;color: #000; margin-right: 5px" class="lg text-gray ">添加朋友</text>
-		</view>
-		<scroll-view scroll-y class="indexes" :style="[{height:'calc(100vh - 100upx)'}]"
-		 :scroll-with-animation="true" :enable-back-to-top="true">
-			 <view v-if="list.length>0" style="margin-top:10px;padding:20upx 0;background: #fff;" class="cu-list menu"
-			  :class="[true?'sm-border':'',false?'card-menu ':'']" >
-				<view v-for="item in list" class="cu-item"  >
-					<view v-if="item.from_member_uuid==$store.state.user.id" class="content"> 
-						<view class="cu-avatar round lg" :style="{'backgroundImage': 'url('+$store.state.img_url+ item.to_headpic +')' }"  style="float:left;width: 80upx;height: 80upx;background-size: 100% 100%;"></view>
-						<text class="text-grey" style="float:left;margin-left: 10px;margin-top:15upx">{{item.to_name}}</text>
-						<text v-if="item.status=='wait'" style="float:right;margin-top:15upx;color:#999;font-size: 26upx;" >等待确认</text>
-						<text v-if="item.status=='success'" style="float:right;margin-top:15upx;color:#999;font-size: 26upx;" >已添加</text>
-						<text v-if="item.status=='faile'" style="float:right;margin-top:15upx;color:#999;font-size: 26upx;" >已拒绝</text>
-						<text v-if="item.status=='pass'" style="float:right;margin-top:15upx;color:#999;font-size: 26upx;" >已过期</text>
-						
-					</view>
-					<view v-if="item.to_member_uuid==$store.state.user.id"  class="content">
-						<view class="cu-avatar round lg" :style="{'backgroundImage': 'url('+$store.state.img_url+ item.from_headpic +')' }"  style="float:left;width: 80upx;height: 80upx;background-size: 100% 100%;"></view>
-						<text class="text-grey" style="float:left;margin-left: 10px;margin-top:15upx">{{item.from_name}}</text>
-						<button  v-if="item.status=='wait'" @tap="verify(item.id,2)" style="float:right;margin-top:8upx;" class="cu-btn">拒绝</button>
-						<button  v-if="item.status=='wait'" @tap="verify(item.id,1)" style="float:right;margin-top:8upx;margin-right: 12upx;background-color: #07C160;color:#fff"
-						 class="cu-btn">通过</button>
-						<text v-if="item.status=='success'" style="float:right;margin-top:15upx;color:#999;font-size: 26upx;" >已添加</text>
-						<text v-if="item.status=='faile'" style="float:right;margin-top:15upx;color:#999;font-size: 26upx;" >已拒绝</text>
-						<view v-if="item.status=='wait'" style="clear: both;
-							padding: 16upx 20px;
-							color: #999;
-							font-size: 26upx;">
-							验证内容：{{item.content}}
-						</view>
-						<text v-if="item.status=='pass'" style="float:right;margin-top:15upx;color:#999;font-size: 26upx;" >已过期</text>
-					</view>
-				</view>  
-			</view>	
-			<view v-else  style="height: 100upx;text-align: center;background: #fff;margin-top: 20upx;line-height: 100upx;color: #999;" >
-				暂无好友
+	<view>
+		<view v-show="PageCur=='main'"> 
+			<view style="height: 45px;line-height: 45px;background: #eee;padding-left: 5px">
+				<text class="cuIcon-back" @click="goback" style="float:left; margin:0 5px; cursor: pointer;"></text>
+				新的好友
+				<text @tap="goSearchFriend()" style="float:right;font-size: 30upx;color: #000; margin-right: 5px;cursor: pointer;" class="lg text-gray ">添加朋友</text>
 			</view>
-		</scroll-view>
-	</view>
+			<scroll-view scroll-y class="indexes" :style="[{height:'calc(100vh - 100upx)'}]"
+			 :scroll-with-animation="true" :enable-back-to-top="true">
+				 <view v-if="list.length>0" style="margin-top:10px;padding:20upx 0;background: #fff;" class="cu-list menu"
+				  :class="[true?'sm-border':'',false?'card-menu ':'']" >
+					<view v-for="item in list" class="cu-item"  >
+						<view v-if="item.from_member_uuid==$store.state.user.id" class="content"> 
+							<view class="cu-avatar round lg" :style="{'backgroundImage': 'url('+$store.state.img_url+ item.to_headpic +')' }"  style="float:left;width: 80upx;height: 80upx;background-size: 100% 100%;"></view>
+							<text class="text-grey" style="float:left;margin-left: 10px;margin-top:15upx">{{item.to_name}}</text>
+							<text v-if="item.status=='wait'" style="float:right;margin-top:15upx;color:#999;font-size: 26upx;" >等待确认</text>
+							<text v-if="item.status=='success'" style="float:right;margin-top:15upx;color:#999;font-size: 26upx;" >已添加</text>
+							<text v-if="item.status=='faile'" style="float:right;margin-top:15upx;color:#999;font-size: 26upx;" >已拒绝</text>
+							<text v-if="item.status=='pass'" style="float:right;margin-top:15upx;color:#999;font-size: 26upx;" >已过期</text>
+							
+						</view>
+						<view v-if="item.to_member_uuid==$store.state.user.id"  class="content">
+							<view class="cu-avatar round lg" :style="{'backgroundImage': 'url('+$store.state.img_url+ item.from_headpic +')' }"  style="float:left;width: 80upx;height: 80upx;background-size: 100% 100%;"></view>
+							<text class="text-grey" style="float:left;margin-left: 10px;margin-top:15upx">{{item.from_name}}</text>
+							<button  v-if="item.status=='wait'" @tap="verify(item.id,2)" style="float:right;margin-top:8upx;" class="cu-btn">拒绝</button>
+							<button  v-if="item.status=='wait'" @tap="verify(item.id,1)" style="float:right;margin-top:8upx;margin-right: 12upx;background-color: #07C160;color:#fff"
+							 class="cu-btn">通过</button>
+							<text v-if="item.status=='success'" style="float:right;margin-top:15upx;color:#999;font-size: 26upx;" >已添加</text>
+							<text v-if="item.status=='faile'" style="float:right;margin-top:15upx;color:#999;font-size: 26upx;" >已拒绝</text>
+							<view v-if="item.status=='wait'" style="clear: both;
+								padding: 16upx 20px;
+								color: #999;
+								font-size: 26upx;">
+								验证内容：{{item.content}}
+							</view>
+							<text v-if="item.status=='pass'" style="float:right;margin-top:15upx;color:#999;font-size: 26upx;" >已过期</text>
+						</view>
+					</view>  
+				</view>	
+				<view v-else  style="height: 100upx;text-align: center;background: #fff;margin-top: 20upx;line-height: 100upx;color: #999;" >
+					暂无好友
+				</view>
+			</scroll-view>
+		</view>
+		<friendSearch v-show="PageCur=='search'"  @goBack="showGroup"></friendSearch>
+	</view>	
 </template>
 
 <script>
@@ -59,7 +62,8 @@
 				hidden: true,
 				list: [],
 				kw:"",
-				kw1:""
+				kw1:"",
+				PageCur: 'main'
 			};
 		},
 		watch: {
@@ -136,6 +140,9 @@
 					}
 				});
 			},
+			showGroup() {
+				this.PageCur = 'main';
+			},
 			goback () {
 				this.$emit('goBack');
 			},
@@ -201,9 +208,10 @@
 				
 			},
 			goSearchFriend(){
-				uni.navigateTo({
-					url:"/pages/addressBook/new_friend/search"
-				})
+				this.PageCur = 'search';
+				// uni.navigateTo({
+				// 	url:"/pages/addressBook/new_friend/search"
+				// })
 			},
 			goMyGroup() {
 				uni.navigateTo({
