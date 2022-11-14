@@ -2347,6 +2347,7 @@ button.cuIcon.lg {
 	position: relative;
 	height: 60upx;
 	line-height: 60upx;
+	color: #000;
 }
 
 .cu-form-group input {

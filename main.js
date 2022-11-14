@@ -25,6 +25,9 @@ Vue.component('verifyList',verifyList)
 import groupSearch from './pages/addressBook/group/search.vue'
 Vue.component('groupSearch',groupSearch)
 
+import UserMgr from './pages/chat/user/mgr.vue'
+Vue.component('UserMgr',UserMgr)
+
 import faxian from './pages/faxian/index.vue'
 Vue.component('faxian',faxian)
 

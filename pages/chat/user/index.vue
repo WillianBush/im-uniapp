@@ -1,48 +1,102 @@
 <template>
-	<!-- <view style="background: red;height: 100%;" > -->
-	<view  ref="topVew"  :style="chatCfg.chatBackgroundImage&&chatCfg.chatBackgroundImage!=''?'background-image: url('+$store.state.img_url+chatCfg.chatBackgroundImage+')':''" style="background-size: 100%;min-height: 100vh;" > 
-		<cu-custom backUrl="/pages/index/index" bgColor="bg-blue"  :isBack="true" :nameToLeft="true"><block slot="backText"></block><block slot="content">
-		<view class="cu-avatar radius" style="margin-right: 5px; border-radius: 50%" :style="'background-image:url('+$store.state.img_url+friendPic+');'"></view>
-		{{showname}} <text v-if="chatCfg.showUserOnline==1">{{entity.online==0?' (离线)':' (在线)'}}</text>
-		<text v-show="$store.state.temp.input_ing" style="font-size: 26upx;margin-left:10upx;">- 正在输入...</text>
-			<text v-show="toIP" style="font-size: 16upx; color: #FFCC99; margin-left:10upx;">{{"IP："+toIP}}</text>
-			<!-- <text v-show="toIP" style="font-size: 14upx; color: #FFCC99; margin-left:10upx;">{{toIP}}</text> -->
-		</block><block slot="right">
-			<uni-text @tap="goMgr(entity.id)" style="font-size: 22px;color: #000;margin-right: 5%;cursor: pointer;" class="lg text-gray cuIcon-more"><span></span></uni-text>
-		</block></cu-custom>
-		<scroll-view @scroll="scrollFn"  :scroll-top="scrollTop" scroll-y="true"    ref="chatVew" @tap="clickChat()" style="background: #eee;" class="cu-chat" :style="'height: calc(100vh - '+CustomBar+'px - 62px - '+(120+InputBottom)+'upx)'" >	
-			<block  v-for="(item,index) in $store.state.cur_chat_msg_list">
-				<block v-if="item.opt&&item.opt=='undo'">
-					<!-- <view v-if="item.opt_uid==$store.state.user.id"  class="cu-info round">撤回一条消息</view>
-					<view v-else  class="cu-info round">对方撤回一条消息</view> -->
-					<view style="display: none"></view>
-				</block>
-				<block v-else-if="item.type=='SYS_TXT'">
-					<view   class="cu-info round">
-						<rich-text  :nodes="item.bean.txt"></rich-text>
-					</view>
-				</block>
-					 
-					<block v-else-if="item.type=='USER_CARD'">
+		<view  ref="topVew"  :style="chatCfg.chatBackgroundImage&&chatCfg.chatBackgroundImage!=''?'background-image: url('+$store.state.img_url+chatCfg.chatBackgroundImage+')':''" style="background-size: 100%;min-height: 100vh;" > 
+			<cu-custom backUrl="/pages/index/index" bgColor="bg-blue"  :isBack="true" :nameToLeft="true"><block slot="backText"></block><block slot="content">
+			<view class="cu-avatar radius" style="margin-right: 5px; border-radius: 50%" :style="'background-image:url('+$store.state.img_url+friendPic+');'"></view>
+			{{showname}} <text v-if="chatCfg.showUserOnline==1">{{entity.online==0?' (离线)':' (在线)'}}</text>
+			<text v-show="$store.state.temp.input_ing" style="font-size: 26upx;margin-left:10upx;">- 正在输入...</text>
+				<text v-show="toIP" style="font-size: 16upx; color: #FFCC99; margin-left:10upx;">{{"IP："+toIP}}</text>
+				<!-- <text v-show="toIP" style="font-size: 14upx; color: #FFCC99; margin-left:10upx;">{{toIP}}</text> -->
+			</block><block slot="right">
+				<uni-text @tap="goMgr(entity.id)" style="font-size: 22px;color: #000;margin-right: 5%;cursor: pointer;" class="lg text-gray cuIcon-more"><span></span></uni-text>
+			</block></cu-custom>
+			<scroll-view @scroll="scrollFn"  :scroll-top="scrollTop" scroll-y="true"    ref="chatVew" @tap="clickChat()" style="background: #eee;" class="cu-chat" :style="'height: calc(100vh - '+CustomBar+'px - 62px - '+(120+InputBottom)+'upx)'" >	
+				<block  v-for="(item,index) in $store.state.cur_chat_msg_list">
+					<block v-if="item.opt&&item.opt=='undo'">
+						<!-- <view v-if="item.opt_uid==$store.state.user.id"  class="cu-info round">撤回一条消息</view>
+						<view v-else  class="cu-info round">对方撤回一条消息</view> -->
+						<view style="display: none"></view>
+					</block>
+					<block v-else-if="item.type=='SYS_TXT'">
+						<view   class="cu-info round">
+							<rich-text  :nodes="item.bean.txt"></rich-text>
+						</view>
+					</block>
+						 
+						<block v-else-if="item.type=='USER_CARD'">
+									<view   v-if="item.bean.fromUid==$store.state.user.id" class="cu-item self" >
+										<view class="main">
+											<view @longpress="onLongPress($event,item.bean)"   @tap="clickCard(item.bean)"  style="border: 1px solid #eee;background-color: #fff;width:400upx;height:180upx;border-radius: 6px;">
+												<view style="    height: 130upx;
+														border-bottom: 1px solid #eee;
+														width: 90%;
+														margin: auto auto;display: flex;">
+													<view style="width:90upx;margin-top: 26upx;width: 80upx;height: 80upx;" class="cu-avatar radius" :style="'background-image:url('+$store.state.img_url+item.bean.mheadpic+');'" ></view>
+													<view style="width: 240upx;;margin-top: 30upx;margin-left: 12upx; text-align: left;">
+														<view style="overflow: hidden;word-break: keep-all;text-overflow: ellipsis;">{{item.bean.mname}}</view>
+														<view style="color: #bbb;font-size: 24upx; margin-top: 8upx;">ID：{{item.bean.mid}}</view>
+													</view>
+												</view>
+												<view style="    height: 50upx;
+														line-height: 50upx;
+														text-align: left;
+														font-size: 23upx;
+														padding-left: 20upx;
+														color: #777;">个人名片</view>
+											</view>
+										</view>
+										<view class="cu-avatar radius" :style="'background-image:url('+$store.state.img_url+item.bean.fromHeadpic+');'"></view>
+										<view class="date">{{item.bean.date}}</view>
+									</view>
+									<view  v-else class="cu-item"  >
+										<view @tap.stop="goUserDetail(item.bean.fromUid)" class="cu-avatar radius" :style="'background-image:url('+$store.state.img_url+item.bean.fromHeadpic+');'" ></view>
+										<view class="main">
+											<view  @longpress="onLongPress($event,item.bean)"  @tap="clickCard(item.bean)"  style="border: 1px solid #eee;background-color: #fff;width:400upx;height:180upx;border-radius: 6px;">
+												<view style="    height: 130upx;
+														border-bottom: 1px solid #eee;
+														width: 90%;
+														margin: auto auto;display: flex;">
+													<view style="width:90upx;margin-top: 26upx;width: 80upx;height: 80upx;" class="cu-avatar radius" :style="'background-image:url('+$store.state.img_url+item.bean.mheadpic+');'" ></view>
+													<view style="width: 240upx;;margin-top: 30upx;margin-left: 12upx; text-align: left;">
+														<view style="overflow: hidden;word-break: keep-all;text-overflow: ellipsis;">{{item.bean.mname}}</view>
+														<view style="color: #bbb;font-size: 24upx; margin-top: 8upx;">ID：{{item.bean.mid}}</view>
+													</view>
+												</view>
+												<view style="    height: 50upx;
+														line-height: 50upx;
+														text-align: left;
+														font-size: 23upx;
+														padding-left: 20upx;
+														color: #777;">个人名片</view>
+											</view>
+										</view>
+										<view class="date "> {{item.bean.date}}</view>
+									</view>
+
+						</block>
+						
+					<block v-else-if="item.type=='USER_TRANSFER'" >
 								<view   v-if="item.bean.fromUid==$store.state.user.id" class="cu-item self" >
 									<view class="main">
-										<view @longpress="onLongPress($event,item.bean)"   @tap="clickCard(item.bean)"  style="border: 1px solid #eee;background-color: #fff;width:400upx;height:180upx;border-radius: 6px;">
-											<view style="    height: 130upx;
-													border-bottom: 1px solid #eee;
-													width: 90%;
-													margin: auto auto;display: flex;">
-												<view style="width:90upx;margin-top: 26upx;width: 80upx;height: 80upx;" class="cu-avatar radius" :style="'background-image:url('+$store.state.img_url+item.bean.mheadpic+');'" ></view>
-												<view style="width: 240upx;;margin-top: 30upx;margin-left: 12upx; text-align: left;">
-													<view style="overflow: hidden;word-break: keep-all;text-overflow: ellipsis;">{{item.bean.mname}}</view>
-													<view style="color: #bbb;font-size: 24upx; margin-top: 8upx;">ID：{{item.bean.mid}}</view>
+										<view :style="item.bean.status&&item.bean.status==1?'opacity: .6;':''"  @tap="clickTransfer(item.bean)"  style="background-color: #FC9105;width:380upx;height:150upx;border-radius: 6px;">
+											<view style="float:left;height:150upx;">
+												<view style="float: left;margin-top: 40upx;margin-left: 20upx;">
+													<text :class="item.bean.status&&item.bean.status==1?'icon-chenggong1':'icon-zhuanzhang'"   class="iconfont " style="font-size: 68upx; color: #f6f6f6;"><span></span></text>	
+												</view>
+												<view style="float:left;">
+													
+													<view v-if="item.bean.status&&item.bean.status==1"  style="text-align: left; color: #f6f6f6; margin-top: 30upx; margin-left: 20upx;font-size: 28upx;
+													overflow: hidden;width: 250upx;height: 44upx;">已收款</view> 
+													<view v-else-if="item.bean.status&&item.bean.status==2"  style="text-align: left; color: #f6f6f6; margin-top: 30upx; margin-left: 20upx;font-size: 28upx;
+													overflow: hidden;width: 250upx;height: 44upx;">转账已过期</view> 
+													<view v-else style="text-align: left; color: #f6f6f6; margin-top: 30upx; margin-left: 20upx;font-size: 28upx;
+													overflow: hidden;width: 250upx;height: 44upx; word-break: keep-all;text-overflow: ellipsis;">{{item.bean.descri}}</view> 
+													
+													<view style="text-align: left;color: #f6f6f6; margin-top: 4upx; margin-left: 20upx;font-size: 32upx;">¥{{item.bean.money}}</view>
 												</view>
 											</view>
-											<view style="    height: 50upx;
-													line-height: 50upx;
-													text-align: left;
-													font-size: 23upx;
-													padding-left: 20upx;
-													color: #777;">个人名片</view>
+											<!--
+											<view style=" height:40upx;background-color: #f6f6f6;float:left;width:100%;text-align: left;">11</view>
+											-->
 										</view>
 									</view>
 									<view class="cu-avatar radius" :style="'background-image:url('+$store.state.img_url+item.bean.fromHeadpic+');'"></view>
@@ -51,815 +105,760 @@
 								<view  v-else class="cu-item"  >
 									<view @tap.stop="goUserDetail(item.bean.fromUid)" class="cu-avatar radius" :style="'background-image:url('+$store.state.img_url+item.bean.fromHeadpic+');'" ></view>
 									<view class="main">
-										<view  @longpress="onLongPress($event,item.bean)"  @tap="clickCard(item.bean)"  style="border: 1px solid #eee;background-color: #fff;width:400upx;height:180upx;border-radius: 6px;">
-											<view style="    height: 130upx;
-													border-bottom: 1px solid #eee;
-													width: 90%;
-													margin: auto auto;display: flex;">
-												<view style="width:90upx;margin-top: 26upx;width: 80upx;height: 80upx;" class="cu-avatar radius" :style="'background-image:url('+$store.state.img_url+item.bean.mheadpic+');'" ></view>
-												<view style="width: 240upx;;margin-top: 30upx;margin-left: 12upx; text-align: left;">
-													<view style="overflow: hidden;word-break: keep-all;text-overflow: ellipsis;">{{item.bean.mname}}</view>
-													<view style="color: #bbb;font-size: 24upx; margin-top: 8upx;">ID：{{item.bean.mid}}</view>
+										<view :style="item.bean.status&&item.bean.status==1?'opacity: .6;':''" @tap="clickTransfer(item.bean)" style="background-color: #FC9105;width:380upx;height:150upx;border-radius: 6px;">
+											<view style="float:left;height:150upx;">
+												<view style="float: left;margin-top: 40upx;margin-left: 20upx;">
+													<text :class="item.bean.status&&item.bean.status==1?'icon-chenggong1':'icon-zhuanzhang'"    class="iconfont " style="font-size: 68upx; color: #f6f6f6;"><span></span></text>	
+												</view>
+												<view style="float:left;">
+													<view v-if="item.bean.status&&item.bean.status==1" style="text-align: left; color: #f6f6f6; margin-top: 30upx; margin-left: 20upx;font-size: 28upx;
+													overflow: hidden;width: 250upx;height: 44upx;">已收钱</view>
+													<view v-else-if="item.bean.status&&item.bean.status==2" style="text-align: left; color: #f6f6f6; margin-top: 30upx; margin-left: 20upx;font-size: 28upx;
+													overflow: hidden;width: 250upx;height: 44upx;">转账已过期</view>
+													<view v-else style="text-align: left; color: #f6f6f6; margin-top: 30upx; margin-left: 20upx;font-size: 28upx;
+													overflow: hidden;width: 250upx;height: 44upx;word-break: keep-all;text-overflow: ellipsis;">{{item.bean.descri}}</view>
+													<view style="text-align: left;color: #f6f6f6; margin-top: 4upx; margin-left: 20upx;font-size: 32upx;">¥{{item.bean.money}}</view>
 												</view>
 											</view>
-											<view style="    height: 50upx;
-													line-height: 50upx;
-													text-align: left;
-													font-size: 23upx;
-													padding-left: 20upx;
-													color: #777;">个人名片</view>
+											<!--
+											<view style=" height:40upx;background-color: #f6f6f6;float:left;width:100%;text-align: left;">11</view>
+											-->
 										</view>
 									</view>
 									<view class="date "> {{item.bean.date}}</view>
 								</view>
+								
+								
+					</block>
+					<block v-else-if="item.type=='USER_RED'">
+								<view   v-if="item.bean.fromUid==$store.state.user.id" class="cu-item self" >
+									<view class="main">
+										<view :style="redOpened4My(item.bean)?'opacity: .6;':''" @tap="clickHongbao(item.bean)" style="background-color: #FF3A36;width:380upx;height:150upx;border-radius: 6px;">
+											<view style="float:left;height:150upx;">
+												<view style="float: left;margin-top: 40upx;margin-left: 20upx;">
+													<text   class="iconfont icon-lingquhongbao" style="font-size: 64upx; color: #FCBF00;"><span></span></text>	
+												</view>
+												<view style="float:left;">
+													<view style="text-align: left; color: #f6f6f6; margin-top: 52upx; margin-left: 20upx;font-size: 28upx;
+													overflow: hidden;width: 250upx;height: 44upx;">{{item.bean.descri}}</view>
+													<!--
+													<view style="text-align: left;color: #f6f6f6; margin-top: 12upx; margin-left: 20upx;font-size: 26upx;">领取红包</view>
+													-->
+												</view>
+											</view>
+											<!--
+											<view style=" height:40upx;background-color: #f6f6f6;float:left;width:100%;text-align: left;">11</view>
+											-->
+										</view>
+									</view>
+									<view class="cu-avatar radius" :style="'background-image:url('+$store.state.img_url+item.bean.fromHeadpic+');'"></view>
+									<view class="date">{{item.bean.date}}</view>
+								</view>
+								<view  v-else class="cu-item"  >
+									<view @tap.stop="goUserDetail(item.bean.fromUid)" class="cu-avatar radius" :style="'background-image:url('+$store.state.img_url+item.bean.fromHeadpic+');'" ></view>
+									<view class="main">
+										<view :style="redOpened4My(item.bean)?'opacity: .6;':''" @tap="clickHongbao(item.bean)" style="background-color: #FF3A36;width:380upx;height:150upx;border-radius: 6px;">
+											<view style="float:left;height:150upx;">
+												<view style="float: left;margin-top: 40upx;margin-left: 20upx;">
+													<text   class="iconfont icon-lingquhongbao" style="font-size: 64upx; color: #FCBF00;"><span></span></text>	
+												</view>
+												<view style="float:left;">
+													<view style="text-align: left; color: #f6f6f6; margin-top: 52upx; margin-left: 20upx;font-size: 28upx;
+													overflow: hidden;width: 250upx;height: 44upx;">{{item.bean.descri}}</view>
+													<!--
+													<view style="text-align: left;color: #f6f6f6; margin-top: 12upx; margin-left: 20upx;font-size: 26upx;">领取红包</view>
+													-->
+												</view>
+											</view>
+											<!--
+											<view style=" height:40upx;background-color: #f6f6f6;float:left;width:100%;text-align: left;">11</view>
+											-->
+										</view>
+									</view>
+									<view class="date "> {{item.bean.date}}</view>
+								</view>
+								
+								
+					</block>
+					<block v-else>
+						<!--视频在移动端的底层窗口渲染层级在最上层，但是H5不是，这里做了两套处理-->
+						<!--#ifdef H5-->
+							<!--自己发出的-->
+							<view  v-if="item.bean.fromUid==$store.state.user.id" class="cu-item self" >
+								<view class="main">
 
+									<block  v-if="$store.state.WAIT_SEND_MSG.indexOf(item.bean.uuid)<0">
+										<block v-if="chatCfg.showUserMsgReadStatus==1">
+											<view v-if="item.bean.read==0&&chatCfg.showUserMsgReadStatus==1" style="margin-right:30upx;color: #999;font-size: 24upx;">未读</view>
+											<view v-if="item.bean.read==1&&chatCfg.showUserMsgReadStatus==1" style="margin-right:30upx;color: #999;font-size: 24upx;">已读</view>
+										</block>
+									</block>
+									<view v-else class="action text-grey">
+										<text class="cuIcon-warnfill text-red text-xxl"></text>
+									</view>
+
+
+									<view  v-if="item.bean.psr!='video'" @longpress="onLongPress($event,item.bean)" :class="[item.bean.psr=='uparse'?'':'content bg-green shadow']" :style="{backgroundColor:item.bean.psr=='uparse'? 'none':'#fff'}" style="color:#222;">
+										<u-parse v-if="item.bean.psr=='uparse'" :content="item.bean.txt" @preview="preview" @navigate="navigate" ></u-parse>
+										<view @tap="clickVoice(item.bean.txt,index)" v-else-if="item.bean.psr=='voice'">
+											<text  v-show="selVoiceIndex != index"  style="text-align: right; float:right;width:100upx;font-size: 52upx;position: relative;top: 4upx;"  class="iconfont icon-yuyin1 text-xxl "></text>
+											<text  v-show="selVoiceIndex != index"  style="float:right;font-size: 26upx;position: relative;top: 4upx;">{{item.bean.sub_txt}}"</text>
+											<text  v-show="selVoiceIndex == index"   style="text-align: right;float:right;width:100upx;font-size: 52upx;position: relative;top:0;line-height: 38upx;"  class="iconfont cu-load load-cuIcon loading text-xxl "></text>
+											<text  v-show="selVoiceIndex == index"  style="float:right;font-size: 26upx;position: relative;top: 6upx;">{{item.bean.sub_txt}}"</text>
+										</view>
+										<rich-text style="max-width:440upx" v-else   :nodes="item.bean.txt"></rich-text>
+									</view>
+								</view>
+								<view v-if="item.bean.psr!='video'" class="cu-avatar radius" :style="'background-image:url('+$store.state.img_url+item.bean.fromHeadpic+');'"></view>
+								<view v-if="item.bean.psr!='video'" class="date">{{item.bean.date}}</view>
+							</view>
+
+							<!--别人发来的-->
+							<view v-else class="cu-item"  >
+								<view  @tap.stop="goUserDetail(item.bean.fromUid)" class="cu-avatar radius" :style="'background-image:url('+$store.state.img_url+item.bean.fromHeadpic+');'" ></view>
+								<view class="main">
+									<view @longpress="onLongPress($event,item.bean)"  :class="[item.bean.psr=='uparse'?'':'content shadow']" style="color:#222;">
+										<u-parse v-if="item.bean.psr=='video'" :content="item.bean.txt" @preview="preview" @navigate="navigate" ></u-parse>
+										<u-parse v-else-if="item.bean.psr=='uparse'" :content="item.bean.txt" @preview="preview" @navigate="navigate" ></u-parse>
+										<view @tap="clickVoice(item.bean.txt,index)" v-else-if="item.bean.psr=='voice'">
+											<text  v-show="selVoiceIndex != index"  style="text-align: right; float:right;width:100upx;font-size: 52upx;position: relative;top: 4upx;"  class="iconfont icon-yuyin1 text-xxl "></text>
+											<text  v-show="selVoiceIndex != index"  style="float:right;font-size: 26upx;position: relative;top: 4upx;">{{item.bean.sub_txt}}"</text>
+											<text  v-show="selVoiceIndex == index"   style="text-align: right;float:right;width:100upx;font-size: 52upx;position: relative;top:0;line-height: 38upx;"  class="iconfont cu-load load-cuIcon loading text-xxl "></text>
+											<text  v-show="selVoiceIndex == index"  style="float:right;font-size: 26upx;position: relative;top: 6upx;">{{item.bean.sub_txt}}"</text>
+										</view>
+										<rich-text style="max-width:440upx" v-else   :nodes="item.bean.txt"></rich-text>
+									</view>
+								</view>
+								<view class="date "> {{item.bean.date}}</view>
+							</view>
+						<!--#endif-->
+
+
+						<!--#ifdef APP-PLUS-->
+							<!--自己发出的-->
+							<view  v-if="item.bean.fromUid==$store.state.user.id" class="cu-item self" >
+								<view class="main">
+
+									<block  v-if="$store.state.WAIT_SEND_MSG.indexOf(item.bean.uuid)<0">
+										<block v-if="chatCfg.showUserMsgReadStatus==1">
+											<view v-if="item.bean.read==0&&chatCfg.showUserMsgReadStatus==1" style="margin-right:30upx;color: #999;font-size: 24upx;">未读</view>
+											<view v-if="item.bean.read==1&&chatCfg.showUserMsgReadStatus==1" style="margin-right:30upx;color: #999;font-size: 24upx;">已读</view>
+										</block>
+									</block>
+									<view v-else class="action text-grey">
+										<text class="cuIcon-warnfill text-red text-xxl"></text>
+									</view>
+
+
+									<view  v-if="item.bean.psr!='video'" @longpress="onLongPress($event,item.bean)" :class="[item.bean.psr=='uparse'?'':'content bg-green shadow']" :style="{backgroundColor:item.bean.psr=='uparse'? 'none':'#fff'}" style="color:#222;">
+
+										<!--因为视频在底层窗口的显示等级是最上层，所以无法嵌套在scroll里面滑动，这里用image 代替-->
+										<image @tap="clickVideo($store.state.img_url+item.bean.oldTxt)" v-if="item.bean.psr=='uparse' && item.bean.txt.indexOf(videoCheck) != -1" style="width:418upx;height:335upx;border-radius: 5px" src="../../../static/images/video.png"></image>
+
+										<u-parse v-else-if="item.bean.psr=='uparse' && item.bean.txt.indexOf(verdeoCheck)  == -1" :content="item.bean.txt" @preview="preview" @navigate="navigate" ></u-parse>
+										<view @tap="clickVoice(item.bean.txt,index)" v-else-if="item.bean.psr=='voice'">
+											<text  v-show="selVoiceIndex != index"  style="text-align: right; float:right;width:100upx;font-size: 52upx;position: relative;top: 4upx;"  class="iconfont icon-yuyin1 text-xxl "></text>
+											<text  v-show="selVoiceIndex != index"  style="float:right;font-size: 26upx;position: relative;top: 4upx;">{{item.bean.sub_txt}}"</text>
+											<text  v-show="selVoiceIndex == index"   style="text-align: right;float:right;width:100upx;font-size: 52upx;position: relative;top:0;line-height: 38upx;"  class="iconfont cu-load load-cuIcon loading text-xxl "></text>
+											<text  v-show="selVoiceIndex == index"  style="float:right;font-size: 26upx;position: relative;top: 6upx;">{{item.bean.sub_txt}}"</text>
+										</view>
+										<rich-text style="max-width:440upx" v-else   :nodes="item.bean.txt"></rich-text>
+									</view>
+								</view>
+								<view v-if="item.bean.psr!='video'" class="cu-avatar radius" :style="'background-image:url('+$store.state.img_url+item.bean.fromHeadpic+');'"></view>
+								<view v-if="item.bean.psr!='video'" class="date">{{item.bean.date}}</view>
+							</view>
+
+							<!--别人发来的-->
+							<view v-else class="cu-item"  >
+								<view  @tap.stop="goUserDetail(item.bean.fromUid)" class="cu-avatar radius" :style="'background-image:url('+$store.state.img_url+item.bean.fromHeadpic+');'" ></view>
+								<view class="main">
+									<view @longpress="onLongPress($event,item.bean)"  :class="[item.bean.psr=='uparse'?'':'content shadow']" style="color:#222;">
+										<!--因为视频在底层窗口的显示等级是最上层，所以无法嵌套在scroll里面滑动，这里用image 代替-->
+										<image @tap="clickVideo($store.state.img_url+item.bean.oldTxt)" v-if="item.bean.psr=='video' && item.bean.txt.indexOf(videoCheck) != -1" style="width:418upx;height:335upx;border-radius: 5px" src="../../../static/images/video.png"></image>
+										<u-parse v-else-if="item.bean.psr=='uparse'" :content="item.bean.txt" @preview="preview" @navigate="navigate" ></u-parse>
+										<view @tap="clickVoice(item.bean.txt,index)" v-else-if="item.bean.psr=='voice'">
+											<text  v-show="selVoiceIndex != index"  style="text-align: right; float:right;width:100upx;font-size: 52upx;position: relative;top: 4upx;"  class="iconfont icon-yuyin1 text-xxl "></text>
+											<text  v-show="selVoiceIndex != index"  style="float:right;font-size: 26upx;position: relative;top: 4upx;">{{item.bean.sub_txt}}"</text>
+											<text  v-show="selVoiceIndex == index"   style="text-align: right;float:right;width:100upx;font-size: 52upx;position: relative;top:0;line-height: 38upx;"  class="iconfont cu-load load-cuIcon loading text-xxl "></text>
+											<text  v-show="selVoiceIndex == index"  style="float:right;font-size: 26upx;position: relative;top: 6upx;">{{item.bean.sub_txt}}"</text>
+										</view>
+										<rich-text style="max-width:440upx" v-else   :nodes="item.bean.txt"></rich-text>
+									</view>
+								</view>
+								<view class="date "> {{item.bean.date}}</view>
+							</view>
+						<!--#endif-->
 					</block>
 					
-				<block v-else-if="item.type=='USER_TRANSFER'" >
-							<view   v-if="item.bean.fromUid==$store.state.user.id" class="cu-item self" >
-								<view class="main">
-									<view :style="item.bean.status&&item.bean.status==1?'opacity: .6;':''"  @tap="clickTransfer(item.bean)"  style="background-color: #FC9105;width:380upx;height:150upx;border-radius: 6px;">
-										<view style="float:left;height:150upx;">
-											<view style="float: left;margin-top: 40upx;margin-left: 20upx;">
-												<text :class="item.bean.status&&item.bean.status==1?'icon-chenggong1':'icon-zhuanzhang'"   class="iconfont " style="font-size: 68upx; color: #f6f6f6;"><span></span></text>	
-											</view>
-											<view style="float:left;">
-												
-												<view v-if="item.bean.status&&item.bean.status==1"  style="text-align: left; color: #f6f6f6; margin-top: 30upx; margin-left: 20upx;font-size: 28upx;
-												overflow: hidden;width: 250upx;height: 44upx;">已收款</view> 
-												<view v-else-if="item.bean.status&&item.bean.status==2"  style="text-align: left; color: #f6f6f6; margin-top: 30upx; margin-left: 20upx;font-size: 28upx;
-												overflow: hidden;width: 250upx;height: 44upx;">转账已过期</view> 
-												<view v-else style="text-align: left; color: #f6f6f6; margin-top: 30upx; margin-left: 20upx;font-size: 28upx;
-												overflow: hidden;width: 250upx;height: 44upx; word-break: keep-all;text-overflow: ellipsis;">{{item.bean.descri}}</view> 
-												
-												<view style="text-align: left;color: #f6f6f6; margin-top: 4upx; margin-left: 20upx;font-size: 32upx;">¥{{item.bean.money}}</view>
-											</view>
-										</view>
-										<!--
-										<view style=" height:40upx;background-color: #f6f6f6;float:left;width:100%;text-align: left;">11</view>
-										-->
-									</view>
-								</view>
-								<view class="cu-avatar radius" :style="'background-image:url('+$store.state.img_url+item.bean.fromHeadpic+');'"></view>
-								<view class="date">{{item.bean.date}}</view>
-							</view>
-							<view  v-else class="cu-item"  >
-								<view @tap.stop="goUserDetail(item.bean.fromUid)" class="cu-avatar radius" :style="'background-image:url('+$store.state.img_url+item.bean.fromHeadpic+');'" ></view>
-								<view class="main">
-									<view :style="item.bean.status&&item.bean.status==1?'opacity: .6;':''" @tap="clickTransfer(item.bean)" style="background-color: #FC9105;width:380upx;height:150upx;border-radius: 6px;">
-										<view style="float:left;height:150upx;">
-											<view style="float: left;margin-top: 40upx;margin-left: 20upx;">
-												<text :class="item.bean.status&&item.bean.status==1?'icon-chenggong1':'icon-zhuanzhang'"    class="iconfont " style="font-size: 68upx; color: #f6f6f6;"><span></span></text>	
-											</view>
-											<view style="float:left;">
-												<view v-if="item.bean.status&&item.bean.status==1" style="text-align: left; color: #f6f6f6; margin-top: 30upx; margin-left: 20upx;font-size: 28upx;
-												overflow: hidden;width: 250upx;height: 44upx;">已收钱</view>
-												<view v-else-if="item.bean.status&&item.bean.status==2" style="text-align: left; color: #f6f6f6; margin-top: 30upx; margin-left: 20upx;font-size: 28upx;
-												overflow: hidden;width: 250upx;height: 44upx;">转账已过期</view>
-												<view v-else style="text-align: left; color: #f6f6f6; margin-top: 30upx; margin-left: 20upx;font-size: 28upx;
-												overflow: hidden;width: 250upx;height: 44upx;word-break: keep-all;text-overflow: ellipsis;">{{item.bean.descri}}</view>
-												<view style="text-align: left;color: #f6f6f6; margin-top: 4upx; margin-left: 20upx;font-size: 32upx;">¥{{item.bean.money}}</view>
-											</view>
-										</view>
-										<!--
-										<view style=" height:40upx;background-color: #f6f6f6;float:left;width:100%;text-align: left;">11</view>
-										-->
-									</view>
-								</view>
-								<view class="date "> {{item.bean.date}}</view>
-							</view>
-							
-							
-				</block>
-				<block v-else-if="item.type=='USER_RED'">
-							<view   v-if="item.bean.fromUid==$store.state.user.id" class="cu-item self" >
-								<view class="main">
-									<view :style="redOpened4My(item.bean)?'opacity: .6;':''" @tap="clickHongbao(item.bean)" style="background-color: #FF3A36;width:380upx;height:150upx;border-radius: 6px;">
-										<view style="float:left;height:150upx;">
-											<view style="float: left;margin-top: 40upx;margin-left: 20upx;">
-												<text   class="iconfont icon-lingquhongbao" style="font-size: 64upx; color: #FCBF00;"><span></span></text>	
-											</view>
-											<view style="float:left;">
-												<view style="text-align: left; color: #f6f6f6; margin-top: 52upx; margin-left: 20upx;font-size: 28upx;
-												overflow: hidden;width: 250upx;height: 44upx;">{{item.bean.descri}}</view>
-												<!--
-												<view style="text-align: left;color: #f6f6f6; margin-top: 12upx; margin-left: 20upx;font-size: 26upx;">领取红包</view>
-												-->
-											</view>
-										</view>
-										<!--
-										<view style=" height:40upx;background-color: #f6f6f6;float:left;width:100%;text-align: left;">11</view>
-										-->
-									</view>
-								</view>
-								<view class="cu-avatar radius" :style="'background-image:url('+$store.state.img_url+item.bean.fromHeadpic+');'"></view>
-								<view class="date">{{item.bean.date}}</view>
-							</view>
-							<view  v-else class="cu-item"  >
-								<view @tap.stop="goUserDetail(item.bean.fromUid)" class="cu-avatar radius" :style="'background-image:url('+$store.state.img_url+item.bean.fromHeadpic+');'" ></view>
-								<view class="main">
-									<view :style="redOpened4My(item.bean)?'opacity: .6;':''" @tap="clickHongbao(item.bean)" style="background-color: #FF3A36;width:380upx;height:150upx;border-radius: 6px;">
-										<view style="float:left;height:150upx;">
-											<view style="float: left;margin-top: 40upx;margin-left: 20upx;">
-												<text   class="iconfont icon-lingquhongbao" style="font-size: 64upx; color: #FCBF00;"><span></span></text>	
-											</view>
-											<view style="float:left;">
-												<view style="text-align: left; color: #f6f6f6; margin-top: 52upx; margin-left: 20upx;font-size: 28upx;
-												overflow: hidden;width: 250upx;height: 44upx;">{{item.bean.descri}}</view>
-												<!--
-												<view style="text-align: left;color: #f6f6f6; margin-top: 12upx; margin-left: 20upx;font-size: 26upx;">领取红包</view>
-												-->
-											</view>
-										</view>
-										<!--
-										<view style=" height:40upx;background-color: #f6f6f6;float:left;width:100%;text-align: left;">11</view>
-										-->
-									</view>
-								</view>
-								<view class="date "> {{item.bean.date}}</view>
-							</view>
-							
-							
-				</block>
-				<block v-else>
-					<!--视频在移动端的底层窗口渲染层级在最上层，但是H5不是，这里做了两套处理-->
-					<!--#ifdef H5-->
-						<!--自己发出的-->
-						<view  v-if="item.bean.fromUid==$store.state.user.id" class="cu-item self" >
-							<view class="main">
-
-								<block  v-if="$store.state.WAIT_SEND_MSG.indexOf(item.bean.uuid)<0">
-									<block v-if="chatCfg.showUserMsgReadStatus==1">
-										<view v-if="item.bean.read==0&&chatCfg.showUserMsgReadStatus==1" style="margin-right:30upx;color: #999;font-size: 24upx;">未读</view>
-										<view v-if="item.bean.read==1&&chatCfg.showUserMsgReadStatus==1" style="margin-right:30upx;color: #999;font-size: 24upx;">已读</view>
-									</block>
-								</block>
-								<view v-else class="action text-grey">
-									<text class="cuIcon-warnfill text-red text-xxl"></text>
-								</view>
-
-
-								<view  v-if="item.bean.psr!='video'" @longpress="onLongPress($event,item.bean)" :class="[item.bean.psr=='uparse'?'':'content bg-green shadow']" :style="{backgroundColor:item.bean.psr=='uparse'? 'none':'#fff'}" style="color:#222;">
-									<u-parse v-if="item.bean.psr=='uparse'" :content="item.bean.txt" @preview="preview" @navigate="navigate" ></u-parse>
-									<view @tap="clickVoice(item.bean.txt,index)" v-else-if="item.bean.psr=='voice'">
-										<text  v-show="selVoiceIndex != index"  style="text-align: right; float:right;width:100upx;font-size: 52upx;position: relative;top: 4upx;"  class="iconfont icon-yuyin1 text-xxl "></text>
-										<text  v-show="selVoiceIndex != index"  style="float:right;font-size: 26upx;position: relative;top: 4upx;">{{item.bean.sub_txt}}"</text>
-										<text  v-show="selVoiceIndex == index"   style="text-align: right;float:right;width:100upx;font-size: 52upx;position: relative;top:0;line-height: 38upx;"  class="iconfont cu-load load-cuIcon loading text-xxl "></text>
-										<text  v-show="selVoiceIndex == index"  style="float:right;font-size: 26upx;position: relative;top: 6upx;">{{item.bean.sub_txt}}"</text>
-									</view>
-									<rich-text style="max-width:440upx" v-else   :nodes="item.bean.txt"></rich-text>
-								</view>
-							</view>
-							<view v-if="item.bean.psr!='video'" class="cu-avatar radius" :style="'background-image:url('+$store.state.img_url+item.bean.fromHeadpic+');'"></view>
-							<view v-if="item.bean.psr!='video'" class="date">{{item.bean.date}}</view>
-						</view>
-
-						<!--别人发来的-->
-						<view v-else class="cu-item"  >
-							<view  @tap.stop="goUserDetail(item.bean.fromUid)" class="cu-avatar radius" :style="'background-image:url('+$store.state.img_url+item.bean.fromHeadpic+');'" ></view>
-							<view class="main">
-								<view @longpress="onLongPress($event,item.bean)"  :class="[item.bean.psr=='uparse'?'':'content shadow']" style="color:#222;">
-									<u-parse v-if="item.bean.psr=='video'" :content="item.bean.txt" @preview="preview" @navigate="navigate" ></u-parse>
-									<u-parse v-else-if="item.bean.psr=='uparse'" :content="item.bean.txt" @preview="preview" @navigate="navigate" ></u-parse>
-									<view @tap="clickVoice(item.bean.txt,index)" v-else-if="item.bean.psr=='voice'">
-										<text  v-show="selVoiceIndex != index"  style="text-align: right; float:right;width:100upx;font-size: 52upx;position: relative;top: 4upx;"  class="iconfont icon-yuyin1 text-xxl "></text>
-										<text  v-show="selVoiceIndex != index"  style="float:right;font-size: 26upx;position: relative;top: 4upx;">{{item.bean.sub_txt}}"</text>
-										<text  v-show="selVoiceIndex == index"   style="text-align: right;float:right;width:100upx;font-size: 52upx;position: relative;top:0;line-height: 38upx;"  class="iconfont cu-load load-cuIcon loading text-xxl "></text>
-										<text  v-show="selVoiceIndex == index"  style="float:right;font-size: 26upx;position: relative;top: 6upx;">{{item.bean.sub_txt}}"</text>
-									</view>
-									<rich-text style="max-width:440upx" v-else   :nodes="item.bean.txt"></rich-text>
-								</view>
-							</view>
-							<view class="date "> {{item.bean.date}}</view>
-						</view>
-					<!--#endif-->
-
-
-					<!--#ifdef APP-PLUS-->
-						<!--自己发出的-->
-						<view  v-if="item.bean.fromUid==$store.state.user.id" class="cu-item self" >
-							<view class="main">
-
-								<block  v-if="$store.state.WAIT_SEND_MSG.indexOf(item.bean.uuid)<0">
-									<block v-if="chatCfg.showUserMsgReadStatus==1">
-										<view v-if="item.bean.read==0&&chatCfg.showUserMsgReadStatus==1" style="margin-right:30upx;color: #999;font-size: 24upx;">未读</view>
-										<view v-if="item.bean.read==1&&chatCfg.showUserMsgReadStatus==1" style="margin-right:30upx;color: #999;font-size: 24upx;">已读</view>
-									</block>
-								</block>
-								<view v-else class="action text-grey">
-									<text class="cuIcon-warnfill text-red text-xxl"></text>
-								</view>
-
-
-								<view  v-if="item.bean.psr!='video'" @longpress="onLongPress($event,item.bean)" :class="[item.bean.psr=='uparse'?'':'content bg-green shadow']" :style="{backgroundColor:item.bean.psr=='uparse'? 'none':'#fff'}" style="color:#222;">
-
-									<!--因为视频在底层窗口的显示等级是最上层，所以无法嵌套在scroll里面滑动，这里用image 代替-->
-									<image @tap="clickVideo($store.state.img_url+item.bean.oldTxt)" v-if="item.bean.psr=='uparse' && item.bean.txt.indexOf(videoCheck) != -1" style="width:418upx;height:335upx;border-radius: 5px" src="../../../static/images/video.png"></image>
-
-									<u-parse v-else-if="item.bean.psr=='uparse' && item.bean.txt.indexOf(verdeoCheck)  == -1" :content="item.bean.txt" @preview="preview" @navigate="navigate" ></u-parse>
-									<view @tap="clickVoice(item.bean.txt,index)" v-else-if="item.bean.psr=='voice'">
-										<text  v-show="selVoiceIndex != index"  style="text-align: right; float:right;width:100upx;font-size: 52upx;position: relative;top: 4upx;"  class="iconfont icon-yuyin1 text-xxl "></text>
-										<text  v-show="selVoiceIndex != index"  style="float:right;font-size: 26upx;position: relative;top: 4upx;">{{item.bean.sub_txt}}"</text>
-										<text  v-show="selVoiceIndex == index"   style="text-align: right;float:right;width:100upx;font-size: 52upx;position: relative;top:0;line-height: 38upx;"  class="iconfont cu-load load-cuIcon loading text-xxl "></text>
-										<text  v-show="selVoiceIndex == index"  style="float:right;font-size: 26upx;position: relative;top: 6upx;">{{item.bean.sub_txt}}"</text>
-									</view>
-									<rich-text style="max-width:440upx" v-else   :nodes="item.bean.txt"></rich-text>
-								</view>
-							</view>
-							<view v-if="item.bean.psr!='video'" class="cu-avatar radius" :style="'background-image:url('+$store.state.img_url+item.bean.fromHeadpic+');'"></view>
-							<view v-if="item.bean.psr!='video'" class="date">{{item.bean.date}}</view>
-						</view>
-
-						<!--别人发来的-->
-						<view v-else class="cu-item"  >
-							<view  @tap.stop="goUserDetail(item.bean.fromUid)" class="cu-avatar radius" :style="'background-image:url('+$store.state.img_url+item.bean.fromHeadpic+');'" ></view>
-							<view class="main">
-								<view @longpress="onLongPress($event,item.bean)"  :class="[item.bean.psr=='uparse'?'':'content shadow']" style="color:#222;">
-									<!--因为视频在底层窗口的显示等级是最上层，所以无法嵌套在scroll里面滑动，这里用image 代替-->
-									<image @tap="clickVideo($store.state.img_url+item.bean.oldTxt)" v-if="item.bean.psr=='video' && item.bean.txt.indexOf(videoCheck) != -1" style="width:418upx;height:335upx;border-radius: 5px" src="../../../static/images/video.png"></image>
-									<u-parse v-else-if="item.bean.psr=='uparse'" :content="item.bean.txt" @preview="preview" @navigate="navigate" ></u-parse>
-									<view @tap="clickVoice(item.bean.txt,index)" v-else-if="item.bean.psr=='voice'">
-										<text  v-show="selVoiceIndex != index"  style="text-align: right; float:right;width:100upx;font-size: 52upx;position: relative;top: 4upx;"  class="iconfont icon-yuyin1 text-xxl "></text>
-										<text  v-show="selVoiceIndex != index"  style="float:right;font-size: 26upx;position: relative;top: 4upx;">{{item.bean.sub_txt}}"</text>
-										<text  v-show="selVoiceIndex == index"   style="text-align: right;float:right;width:100upx;font-size: 52upx;position: relative;top:0;line-height: 38upx;"  class="iconfont cu-load load-cuIcon loading text-xxl "></text>
-										<text  v-show="selVoiceIndex == index"  style="float:right;font-size: 26upx;position: relative;top: 6upx;">{{item.bean.sub_txt}}"</text>
-									</view>
-									<rich-text style="max-width:440upx" v-else   :nodes="item.bean.txt"></rich-text>
-								</view>
-							</view>
-							<view class="date "> {{item.bean.date}}</view>
-						</view>
-					<!--#endif-->
+					
 				</block>
 				
-				
-			</block>
-			
-			<view  class="cu-item self" v-show="$store.state.chat_my_loadding" >
-					<view class="main">
-						<view style="background-color: #F1F1F1;" class="cu-load load-cuIcon loading"></view>
-					</view>
-					<view class="cu-avatar radius" :style="'background-image:url('+$store.state.img_url+$store.state.user.headpic+');'"></view>
-			</view>
-	
+				<view  class="cu-item self" v-show="$store.state.chat_my_loadding" >
+						<view class="main">
+							<view style="background-color: #F1F1F1;" class="cu-load load-cuIcon loading"></view>
+						</view>
+						<view class="cu-avatar radius" :style="'background-image:url('+$store.state.img_url+$store.state.user.headpic+');'"></view>
+				</view>
 		
-		</scroll-view>
-		<view class="cu-bar foot input" :style="[{bottom:InputBottom+'upx'}]" style="flex-direction: row; height:120px; width: calc(80% - 54px);left: calc(20% + 54px); background-color:#fff">
-
-			<!-- @focus="InputFocus" @blur="InputBlur"-->
-			<textarea 
-			auto-height="true"
-			:show-confirm-bar="true" 
-			confirm-type="send" 
-			@confirm="send" 
-			confirm-hold="true" 
-			@keydown.shift.enter="altOrShiftEnter" 
-			@keydown.alt.enter="altOrShiftEnter"  
-			@keyup.ctrl.enter="lineFeed()"
-			@focus="InputFocus" @blur="InputBlur" v-show="c_type==1" v-model="txt" 
-			@input="inputTxt()" class="solid-bottom" :adjust-position="true" :focus="input_is_focus" 
-			cursor-spacing="10"
-			style="height:120px !important;line-height:30px;width: 100%;"
-			></textarea>
-			<view @tap="ChooseImage()" style="cursor: pointer;position: absolute;top: 0; left: 0px;"><text style="font-size: 60upx;color:#3F92F8" class="iconfont icon-zhaopian-cuxiantiao-fill"></text></view>
-			<view @tap="ChooseVideo()" style="cursor: pointer;position: absolute;top: 0; left: 40px;"><text style="font-size: 60upx;color:#F39F90" class="iconfont icon-paishe"></text></view>
-			<view @tap="sendCard()" style="cursor: pointer;position: absolute;top: 0; left: 80px;"><text style="font-size: 60upx;color:#FA9B4E" class="iconfont icon-mingpian2"></text></view>
-			<view style="cursor: pointer;position: absolute;top: 0; left: 110px;" class="action" @tap="showItemIndex(1)">
-				<text  class="cuIcon-emojifill text-grey" style="position: absolute;top: 0;left: 0px"></text>
-			</view>
-			<button style="min-width: 50px;padding:0px!important" v-show="!showjia" @tap.stop="send()" class="cu-btn bg-green shadow">发送</button>
-		</view>
-		
-		
-		<view v-show="showItem==1" class="cu-bar foot " style="box-shadow: none;-webkit-box-shadow: none;display: block;background: #fff;height:330upx;margin-bottom:80upx; width: calc(80% - 54px);left: calc(20% + 54px);">
-			<scroll-view scroll-y class="indexes" style="height:330upx;padding-bottom:20upx;padding-top: 10upx;"
-			 :scroll-with-animation="true" :enable-back-to-top="true">
-			<view v-if="emotion==1">
-	<view style="display: flex;">
-		<view @tap="sendEmotion(0,0)" style="flex:1;text-align: center;"><image lazy-load src="../../../static/emotion/face00/0.gif" style="width:50upx;height:50upx;margin-top: 10upx;;"></image></view>
-		<view @tap="sendEmotion(0,1)" style="flex:1;text-align: center;"><image lazy-load src="../../../static/emotion/face00/1.gif" style="width:50upx;height:50upx;margin-top: 10upx;;"></image></view>
-		<view @tap="sendEmotion(0,2)" style="flex:1;text-align: center;"><image lazy-load src="../../../static/emotion/face00/2.gif" style="width:50upx;height:50upx;margin-top: 10upx;;"></image></view>
-		<view @tap="sendEmotion(0,3)" style="flex:1;text-align: center;"><image lazy-load src="../../../static/emotion/face00/3.gif" style="width:50upx;height:50upx;margin-top: 10upx;;"></image></view>
-		<view @tap="sendEmotion(0,4)" style="flex:1;text-align: center;"><image lazy-load src="../../../static/emotion/face00/4.gif" style="width:50upx;height:50upx;margin-top: 10upx;;"></image></view>
-		<view @tap="sendEmotion(0,5)" style="flex:1;text-align: center;"><image lazy-load src="../../../static/emotion/face00/5.gif" style="width:50upx;height:50upx;margin-top: 10upx;;"></image></view>
-		<view @tap="sendEmotion(0,6)" style="flex:1;text-align: center;"><image lazy-load src="../../../static/emotion/face00/6.gif" style="width:50upx;height:50upx;margin-top: 10upx;;"></image></view>
-		<view @tap="sendEmotion(0,7)" style="flex:1;text-align: center;"><image lazy-load src="../../../static/emotion/face00/7.gif" style="width:50upx;height:50upx;margin-top: 10upx;;"></image></view>
-	</view>
-	<view style="display: flex;">
-		<view @tap="sendEmotion(0,8)" style="flex:1;text-align: center;"><image lazy-load src="../../../static/emotion/face00/8.gif" style="width:50upx;height:50upx;margin-top: 10upx;;"></image></view>
-		<view @tap="sendEmotion(0,9)" style="flex:1;text-align: center;"><image lazy-load src="../../../static/emotion/face00/9.gif" style="width:50upx;height:50upx;margin-top: 10upx;;"></image></view>
-		<view @tap="sendEmotion(0,10)" style="flex:1;text-align: center;"><image lazy-load src="../../../static/emotion/face00/10.gif" style="width:50upx;height:50upx;margin-top: 10upx;;"></image></view>
-		<view @tap="sendEmotion(0,11)" style="flex:1;text-align: center;"><image lazy-load src="../../../static/emotion/face00/11.gif" style="width:50upx;height:50upx;margin-top: 10upx;;"></image></view>
-		<view @tap="sendEmotion(0,12)" style="flex:1;text-align: center;"><image lazy-load src="../../../static/emotion/face00/12.gif" style="width:50upx;height:50upx;margin-top: 10upx;;"></image></view>
-		<view @tap="sendEmotion(0,13)" style="flex:1;text-align: center;"><image lazy-load src="../../../static/emotion/face00/13.gif" style="width:50upx;height:50upx;margin-top: 10upx;;"></image></view>
-		<view @tap="sendEmotion(0,14)" style="flex:1;text-align: center;"><image lazy-load src="../../../static/emotion/face00/14.gif" style="width:50upx;height:50upx;margin-top: 10upx;;"></image></view>
-		<view @tap="sendEmotion(0,15)" style="flex:1;text-align: center;"><image lazy-load src="../../../static/emotion/face00/15.gif" style="width:50upx;height:50upx;margin-top: 10upx;;"></image></view>
-		
-	</view>
-	<view style="display: flex;">
-		<view @tap="sendEmotion(0,16)" style="flex:1;text-align: center;"><image lazy-load src="../../../static/emotion/face00/16.gif" style="width:50upx;height:50upx;margin-top: 10upx;;"></image></view>
-		<view @tap="sendEmotion(0,17)" style="flex:1;text-align: center;"><image lazy-load src="../../../static/emotion/face00/17.gif" style="width:50upx;height:50upx;margin-top: 10upx;;"></image></view>
-		<view @tap="sendEmotion(0,18)" style="flex:1;text-align: center;"><image lazy-load src="../../../static/emotion/face00/18.gif" style="width:50upx;height:50upx;margin-top: 10upx;;"></image></view>
-		<view @tap="sendEmotion(0,19)" style="flex:1;text-align: center;"><image lazy-load src="../../../static/emotion/face00/19.gif" style="width:50upx;height:50upx;margin-top: 10upx;;"></image></view>
-		<view @tap="sendEmotion(0,20)" style="flex:1;text-align: center;"><image lazy-load src="../../../static/emotion/face00/20.gif" style="width:50upx;height:50upx;margin-top: 10upx;;"></image></view>
-		<view @tap="sendEmotion(0,21)" style="flex:1;text-align: center;"><image lazy-load src="../../../static/emotion/face00/21.gif" style="width:50upx;height:50upx;margin-top: 10upx;;"></image></view>
-		<view @tap="sendEmotion(0,22)" style="flex:1;text-align: center;"><image lazy-load src="../../../static/emotion/face00/22.gif" style="width:50upx;height:50upx;margin-top: 10upx;;"></image></view>
-		<view @tap="sendEmotion(0,23)" style="flex:1;text-align: center;"><image lazy-load src="../../../static/emotion/face00/23.gif" style="width:50upx;height:50upx;margin-top: 10upx;;"></image></view>
-		
-	</view>
-	<view style="display: flex;">
-		<view @tap="sendEmotion(0,24)" style="flex:1;text-align: center;"><image lazy-load src="../../../static/emotion/face00/24.gif" style="width:50upx;height:50upx;margin-top: 10upx;;"></image></view>
-		<view @tap="sendEmotion(0,25)" style="flex:1;text-align: center;"><image lazy-load src="../../../static/emotion/face00/25.gif" style="width:50upx;height:50upx;margin-top: 10upx;;"></image></view>
-		<view @tap="sendEmotion(0,26)" style="flex:1;text-align: center;"><image lazy-load src="../../../static/emotion/face00/26.gif" style="width:50upx;height:50upx;margin-top: 10upx;;"></image></view>
-		<view @tap="sendEmotion(0,27)" style="flex:1;text-align: center;"><image lazy-load src="../../../static/emotion/face00/27.gif" style="width:50upx;height:50upx;margin-top: 10upx;;"></image></view>
-		<view @tap="sendEmotion(0,28)" style="flex:1;text-align: center;"><image lazy-load src="../../../static/emotion/face00/28.gif" style="width:50upx;height:50upx;margin-top: 10upx;;"></image></view>
-		<view @tap="sendEmotion(0,29)" style="flex:1;text-align: center;"><image lazy-load src="../../../static/emotion/face00/29.gif" style="width:50upx;height:50upx;margin-top: 10upx;;"></image></view>
-		<view @tap="sendEmotion(0,30)" style="flex:1;text-align: center;"><image lazy-load src="../../../static/emotion/face00/30.gif" style="width:50upx;height:50upx;margin-top: 10upx;;"></image></view>
-		<view @tap="sendEmotion(0,31)" style="flex:1;text-align: center;"><image lazy-load src="../../../static/emotion/face00/31.gif" style="width:50upx;height:50upx;margin-top: 10upx;;"></image></view>
-	</view>
-	<view style="display: flex;">
-		<view @tap="sendEmotion(0,32)" style="flex:1;text-align: center;"><image lazy-load src="../../../static/emotion/face00/32.gif" style="width:50upx;height:50upx;margin-top: 10upx;;"></image></view>
-		<view @tap="sendEmotion(0,33)" style="flex:1;text-align: center;"><image lazy-load src="../../../static/emotion/face00/33.gif" style="width:50upx;height:50upx;margin-top: 10upx;;"></image></view>
-		<view @tap="sendEmotion(0,34)" style="flex:1;text-align: center;"><image lazy-load src="../../../static/emotion/face00/34.gif" style="width:50upx;height:50upx;margin-top: 10upx;;"></image></view>
-		<view @tap="sendEmotion(0,35)" style="flex:1;text-align: center;"><image lazy-load src="../../../static/emotion/face00/35.gif" style="width:50upx;height:50upx;margin-top: 10upx;;"></image></view>
-		<view @tap="sendEmotion(0,36)" style="flex:1;text-align: center;"><image lazy-load src="../../../static/emotion/face00/36.gif" style="width:50upx;height:50upx;margin-top: 10upx;;"></image></view>
-		<view @tap="sendEmotion(0,37)" style="flex:1;text-align: center;"><image lazy-load src="../../../static/emotion/face00/37.gif" style="width:50upx;height:50upx;margin-top: 10upx;;"></image></view>
-		<view @tap="sendEmotion(0,38)" style="flex:1;text-align: center;"><image lazy-load src="../../../static/emotion/face00/38.gif" style="width:50upx;height:50upx;margin-top: 10upx;;"></image></view>
-		<view @tap="sendEmotion(0,39)" style="flex:1;text-align: center;"><image lazy-load src="../../../static/emotion/face00/39.gif" style="width:50upx;height:50upx;margin-top: 10upx;;"></image></view>
-	</view>	
-	<view style="display: flex;">
-		<view @tap="sendEmotion(0,40)" style="flex:1;text-align: center;"><image lazy-load src="../../../static/emotion/face00/40.gif" style="width:50upx;height:50upx;margin-top: 10upx;;"></image></view>
-		<view @tap="sendEmotion(0,41)" style="flex:1;text-align: center;"><image lazy-load src="../../../static/emotion/face00/41.gif" style="width:50upx;height:50upx;margin-top: 10upx;;"></image></view>
-		<view @tap="sendEmotion(0,42)" style="flex:1;text-align: center;"><image lazy-load src="../../../static/emotion/face00/42.gif" style="width:50upx;height:50upx;margin-top: 10upx;;"></image></view>
-		<view @tap="sendEmotion(0,43)" style="flex:1;text-align: center;"><image lazy-load src="../../../static/emotion/face00/43.gif" style="width:50upx;height:50upx;margin-top: 10upx;;"></image></view>
-		<view @tap="sendEmotion(0,44)" style="flex:1;text-align: center;"><image lazy-load src="../../../static/emotion/face00/44.gif" style="width:50upx;height:50upx;margin-top: 10upx;;"></image></view>
-		<view @tap="sendEmotion(0,45)" style="flex:1;text-align: center;"><image lazy-load src="../../../static/emotion/face00/45.gif" style="width:50upx;height:50upx;margin-top: 10upx;;"></image></view>
-		<view @tap="sendEmotion(0,46)" style="flex:1;text-align: center;"><image lazy-load src="../../../static/emotion/face00/46.gif" style="width:50upx;height:50upx;margin-top: 10upx;;"></image></view>
-		<view @tap="sendEmotion(0,47)" style="flex:1;text-align: center;"><image lazy-load src="../../../static/emotion/face00/47.gif" style="width:50upx;height:50upx;margin-top: 10upx;;"></image></view>
-	</view>	
-	<view style="display: flex;">
-		<view @tap="sendEmotion(0,48)" style="flex:1;text-align: center;"><image lazy-load src="../../../static/emotion/face00/48.gif" style="width:50upx;height:50upx;margin-top: 10upx;;"></image></view>
-		<view @tap="sendEmotion(0,49)" style="flex:1;text-align: center;"><image lazy-load src="../../../static/emotion/face00/49.gif" style="width:50upx;height:50upx;margin-top: 10upx;;"></image></view>
-		<view @tap="sendEmotion(0,50)" style="flex:1;text-align: center;"><image lazy-load src="../../../static/emotion/face00/50.gif" style="width:50upx;height:50upx;margin-top: 10upx;;"></image></view>
-		<view @tap="sendEmotion(0,51)" style="flex:1;text-align: center;"><image lazy-load src="../../../static/emotion/face00/51.gif" style="width:50upx;height:50upx;margin-top: 10upx;;"></image></view>
-		<view @tap="sendEmotion(0,52)" style="flex:1;text-align: center;"><image lazy-load src="../../../static/emotion/face00/52.gif" style="width:50upx;height:50upx;margin-top: 10upx;;"></image></view>
-		<view @tap="sendEmotion(0,53)" style="flex:1;text-align: center;"><image lazy-load src="../../../static/emotion/face00/53.gif" style="width:50upx;height:50upx;margin-top: 10upx;;"></image></view>
-		<view @tap="sendEmotion(0,54)" style="flex:1;text-align: center;"><image lazy-load src="../../../static/emotion/face00/54.gif" style="width:50upx;height:50upx;margin-top: 10upx;;"></image></view>
-		<view @tap="sendEmotion(0,55)" style="flex:1;text-align: center;"><image lazy-load src="../../../static/emotion/face00/55.gif" style="width:50upx;height:50upx;margin-top: 10upx;;"></image></view>
-	</view>
-	<view style="display: flex;">
-		<view @tap="sendEmotion(0,56)" style="flex:1;text-align: center;"><image lazy-load src="../../../static/emotion/face00/56.gif" style="width:50upx;height:50upx;margin-top: 10upx;;"></image></view>
-		<view @tap="sendEmotion(0,57)" style="flex:1;text-align: center;"><image lazy-load src="../../../static/emotion/face00/57.gif" style="width:50upx;height:50upx;margin-top: 10upx;;"></image></view>
-		<view @tap="sendEmotion(0,58)" style="flex:1;text-align: center;"><image lazy-load src="../../../static/emotion/face00/58.gif" style="width:50upx;height:50upx;margin-top: 10upx;;"></image></view>
-		<view @tap="sendEmotion(0,59)" style="flex:1;text-align: center;"><image lazy-load src="../../../static/emotion/face00/59.gif" style="width:50upx;height:50upx;margin-top: 10upx;;"></image></view>
-		<view @tap="sendEmotion(0,60)" style="flex:1;text-align: center;"><image lazy-load src="../../../static/emotion/face00/60.gif" style="width:50upx;height:50upx;margin-top: 10upx;;"></image></view>
-		<view @tap="sendEmotion(0,61)" style="flex:1;text-align: center;"><image lazy-load src="../../../static/emotion/face00/61.gif" style="width:50upx;height:50upx;margin-top: 10upx;;"></image></view>
-		<view @tap="sendEmotion(0,62)" style="flex:1;text-align: center;"><image lazy-load src="../../../static/emotion/face00/62.gif" style="width:50upx;height:50upx;margin-top: 10upx;;"></image></view>
-		<view @tap="sendEmotion(0,63)" style="flex:1;text-align: center;"><image lazy-load src="../../../static/emotion/face00/63.gif" style="width:50upx;height:50upx;margin-top: 10upx;;"></image></view>
-	</view>
-	<view style="display: flex;">
-		<view @tap="sendEmotion(0,64)" style="flex:1;text-align: center;"><image lazy-load src="../../../static/emotion/face00/64.gif" style="width:50upx;height:50upx;margin-top: 10upx;;"></image></view>
-		<view @tap="sendEmotion(0,65)" style="flex:1;text-align: center;"><image lazy-load src="../../../static/emotion/face00/65.gif" style="width:50upx;height:50upx;margin-top: 10upx;;"></image></view>
-		<view @tap="sendEmotion(0,66)" style="flex:1;text-align: center;"><image lazy-load src="../../../static/emotion/face00/66.gif" style="width:50upx;height:50upx;margin-top: 10upx;;"></image></view>
-		<view @tap="sendEmotion(0,67)" style="flex:1;text-align: center;"><image lazy-load src="../../../static/emotion/face00/67.gif" style="width:50upx;height:50upx;margin-top: 10upx;;"></image></view>
-		<view @tap="sendEmotion(0,68)" style="flex:1;text-align: center;"><image lazy-load src="../../../static/emotion/face00/68.gif" style="width:50upx;height:50upx;margin-top: 10upx;;"></image></view>
-		<view @tap="sendEmotion(0,69)" style="flex:1;text-align: center;"><image lazy-load src="../../../static/emotion/face00/69.gif" style="width:50upx;height:50upx;margin-top: 10upx;;"></image></view>
-		<view @tap="sendEmotion(0,70)" style="flex:1;text-align: center;"><image lazy-load src="../../../static/emotion/face00/70.gif" style="width:50upx;height:50upx;margin-top: 10upx;;"></image></view>
-		<view @tap="sendEmotion(0,71)" style="flex:1;text-align: center;"><image lazy-load src="../../../static/emotion/face00/71.gif" style="width:50upx;height:50upx;margin-top: 10upx;;"></image></view>
-	</view>
-	<view style="display: flex;">
-		<view @tap="sendEmotion(0,72)" style="flex:1;text-align: center;"><image lazy-load src="../../../static/emotion/face00/72.gif" style="width:50upx;height:50upx;margin-top: 10upx;;"></image></view>
-		<view @tap="sendEmotion(0,73)" style="flex:1;text-align: center;"><image lazy-load src="../../../static/emotion/face00/73.gif" style="width:50upx;height:50upx;margin-top: 10upx;;"></image></view>
-		<view @tap="sendEmotion(0,74)" style="flex:1;text-align: center;"><image lazy-load src="../../../static/emotion/face00/74.gif" style="width:50upx;height:50upx;margin-top: 10upx;;"></image></view>
-		<view @tap="sendEmotion(0,75)" style="flex:1;text-align: center;"><image lazy-load src="../../../static/emotion/face00/75.gif" style="width:50upx;height:50upx;margin-top: 10upx;;"></image></view>
-		<view @tap="sendEmotion(0,76)" style="flex:1;text-align: center;"><image lazy-load src="../../../static/emotion/face00/76.gif" style="width:50upx;height:50upx;margin-top: 10upx;;"></image></view>
-		<view @tap="sendEmotion(0,77)" style="flex:1;text-align: center;"><image lazy-load src="../../../static/emotion/face00/77.gif" style="width:50upx;height:50upx;margin-top: 10upx;;"></image></view>
-		<view @tap="sendEmotion(0,78)" style="flex:1;text-align: center;"><image lazy-load src="../../../static/emotion/face00/78.gif" style="width:50upx;height:50upx;margin-top: 10upx;;"></image></view>
-		<view @tap="sendEmotion(0,79)" style="flex:1;text-align: center;"><image lazy-load src="../../../static/emotion/face00/79.gif" style="width:50upx;height:50upx;margin-top: 10upx;;"></image></view>
-	</view>
-	<view style="display: flex;">
-		<view @tap="sendEmotion(0,80)" style="flex:1;text-align: center;"><image lazy-load src="../../../static/emotion/face00/80.gif" style="width:50upx;height:50upx;margin-top: 10upx;;"></image></view>
-		<view @tap="sendEmotion(0,81)" style="flex:1;text-align: center;"><image lazy-load src="../../../static/emotion/face00/81.gif" style="width:50upx;height:50upx;margin-top: 10upx;;"></image></view>
-		<view @tap="sendEmotion(0,82)" style="flex:1;text-align: center;"><image lazy-load src="../../../static/emotion/face00/82.gif" style="width:50upx;height:50upx;margin-top: 10upx;;"></image></view>
-		<view @tap="sendEmotion(0,83)" style="flex:1;text-align: center;"><image lazy-load src="../../../static/emotion/face00/83.gif" style="width:50upx;height:50upx;margin-top: 10upx;;"></image></view>
-		<view @tap="sendEmotion(0,84)" style="flex:1;text-align: center;"><image lazy-load src="../../../static/emotion/face00/84.gif" style="width:50upx;height:50upx;margin-top: 10upx;;"></image></view>
-		<view @tap="sendEmotion(0,85)" style="flex:1;text-align: center;"><image lazy-load src="../../../static/emotion/face00/85.gif" style="width:50upx;height:50upx;margin-top: 10upx;;"></image></view>
-		<view @tap="sendEmotion(0,86)" style="flex:1;text-align: center;"><image lazy-load src="../../../static/emotion/face00/86.gif" style="width:50upx;height:50upx;margin-top: 10upx;;"></image></view>
-		<view @tap="sendEmotion(0,87)" style="flex:1;text-align: center;"><image lazy-load src="../../../static/emotion/face00/87.gif" style="width:50upx;height:50upx;margin-top: 10upx;;"></image></view>
-	</view>
-	<view style="display: flex;">
-		<view @tap="sendEmotion(0,88)" style="flex:1;text-align: center;"><image lazy-load src="../../../static/emotion/face00/88.gif" style="width:50upx;height:50upx;margin-top: 10upx;;"></image></view>
-		<view @tap="sendEmotion(0,89)" style="flex:1;text-align: center;"><image lazy-load src="../../../static/emotion/face00/89.gif" style="width:50upx;height:50upx;margin-top: 10upx;;"></image></view>
-		<view @tap="sendEmotion(0,90)" style="flex:1;text-align: center;"><image lazy-load src="../../../static/emotion/face00/90.gif" style="width:50upx;height:50upx;margin-top: 10upx;;"></image></view>
-		<view @tap="sendEmotion(0,91)" style="flex:1;text-align: center;"><image lazy-load src="../../../static/emotion/face00/91.gif" style="width:50upx;height:50upx;margin-top: 10upx;;"></image></view>
-		<view @tap="sendEmotion(0,92)" style="flex:1;text-align: center;"><image lazy-load src="../../../static/emotion/face00/92.gif" style="width:50upx;height:50upx;margin-top: 10upx;;"></image></view>
-		<view @tap="sendEmotion(0,93)" style="flex:1;text-align: center;"><image lazy-load src="../../../static/emotion/face00/93.gif" style="width:50upx;height:50upx;margin-top: 10upx;;"></image></view>
-		<view @tap="sendEmotion(0,94)" style="flex:1;text-align: center;"><image lazy-load src="../../../static/emotion/face00/94.gif" style="width:50upx;height:50upx;margin-top: 10upx;;"></image></view>
-		<view @tap="sendEmotion(0,95)" style="flex:1;text-align: center;"><image lazy-load src="../../../static/emotion/face00/95.gif" style="width:50upx;height:50upx;margin-top: 10upx;;"></image></view>
-	</view>
-	<view style="display: flex;">
-		<view @tap="sendEmotion(0,96)" style="flex:1;text-align: center;"><image lazy-load src="../../../static/emotion/face00/96.gif" style="width:50upx;height:50upx;margin-top: 10upx;;"></image></view>
-		<view @tap="sendEmotion(0,97)" style="flex:1;text-align: center;"><image lazy-load src="../../../static/emotion/face00/97.gif" style="width:50upx;height:50upx;margin-top: 10upx;;"></image></view>
-		<view @tap="sendEmotion(0,98)" style="flex:1;text-align: center;"><image lazy-load src="../../../static/emotion/face00/98.gif" style="width:50upx;height:50upx;margin-top: 10upx;;"></image></view>
-		<view @tap="sendEmotion(0,99)" style="flex:1;text-align: center;"><image lazy-load src="../../../static/emotion/face00/99.gif" style="width:50upx;height:50upx;margin-top: 10upx;;"></image></view>
-		<view @tap="sendEmotion(0,100)" style="flex:1;text-align: center;"><image lazy-load src="../../../static/emotion/face00/100.gif" style="width:50upx;height:50upx;margin-top: 10upx;;"></image></view>
-		<view @tap="sendEmotion(0,101)" style="flex:1;text-align: center;"><image lazy-load src="../../../static/emotion/face00/101.gif" style="width:50upx;height:50upx;margin-top: 10upx;;"></image></view>
-		<view @tap="sendEmotion(0,102)" style="flex:1;text-align: center;"><image lazy-load src="../../../static/emotion/face00/102.gif" style="width:50upx;height:50upx;margin-top: 10upx;;"></image></view>
-		<view @tap="sendEmotion(0,103)" style="flex:1;text-align: center;"><image lazy-load src="../../../static/emotion/face00/103.gif" style="width:50upx;height:50upx;margin-top: 10upx;;"></image></view>
-	</view>
-	<view style="display: flex;">
-		<view @tap="sendEmotion(0,104)" style="flex:1;text-align: center;"><image lazy-load src="../../../static/emotion/face00/104.gif" style="width:50upx;height:50upx;margin-top: 10upx;;"></image></view>
-		<view  style="flex:1;text-align: center;"></view>
-		<view  style="flex:1;text-align: center;"></view>
-		<view  style="flex:1;text-align: center;"></view>
-		<view  style="flex:1;text-align: center;"></view>
-		<view  style="flex:1;text-align: center;"></view>
-		<view  style="flex:1;text-align: center;"></view>
-		<view  style="flex:1;text-align: center;"></view>
-	</view>
-</view>
-
-			<view v-if="emotion==2">
-	<view style="display: flex;">
-		<view @tap="sendEmotion(1,0)" style="flex:1;text-align: center;"><image lazy-load src="../../../static/emotion/face01/0.png" style="width:50upx;height:50upx;margin-top: 10upx;;"></image></view>
-		<view @tap="sendEmotion(1,1)" style="flex:1;text-align: center;"><image lazy-load src="../../../static/emotion/face01/1.png" style="width:50upx;height:50upx;margin-top: 10upx;;"></image></view>
-		<view @tap="sendEmotion(1,2)" style="flex:1;text-align: center;"><image lazy-load src="../../../static/emotion/face01/2.png" style="width:50upx;height:50upx;margin-top: 10upx;;"></image></view>
-		<view @tap="sendEmotion(1,3)" style="flex:1;text-align: center;"><image lazy-load src="../../../static/emotion/face01/3.png" style="width:50upx;height:50upx;margin-top: 10upx;;"></image></view>
-		<view @tap="sendEmotion(1,4)" style="flex:1;text-align: center;"><image lazy-load src="../../../static/emotion/face01/4.png" style="width:50upx;height:50upx;margin-top: 10upx;;"></image></view>
-		<view @tap="sendEmotion(1,5)" style="flex:1;text-align: center;"><image lazy-load src="../../../static/emotion/face01/5.png" style="width:50upx;height:50upx;margin-top: 10upx;;"></image></view>
-		<view @tap="sendEmotion(1,6)" style="flex:1;text-align: center;"><image lazy-load src="../../../static/emotion/face01/6.png" style="width:50upx;height:50upx;margin-top: 10upx;;"></image></view>
-		<view @tap="sendEmotion(1,7)" style="flex:1;text-align: center;"><image lazy-load src="../../../static/emotion/face01/7.png" style="width:50upx;height:50upx;margin-top: 10upx;;"></image></view>
-	</view>
-	<view style="display: flex;">
-		<view @tap="sendEmotion(1,8)" style="flex:1;text-align: center;"><image lazy-load src="../../../static/emotion/face01/8.png" style="width:50upx;height:50upx;margin-top: 10upx;;"></image></view>
-		<view @tap="sendEmotion(1,9)" style="flex:1;text-align: center;"><image lazy-load src="../../../static/emotion/face01/9.png" style="width:50upx;height:50upx;margin-top: 10upx;;"></image></view>
-		<view @tap="sendEmotion(1,10)" style="flex:1;text-align: center;"><image lazy-load src="../../../static/emotion/face01/10.png" style="width:50upx;height:50upx;margin-top: 10upx;;"></image></view>
-		<view @tap="sendEmotion(1,11)" style="flex:1;text-align: center;"><image lazy-load src="../../../static/emotion/face01/11.png" style="width:50upx;height:50upx;margin-top: 10upx;;"></image></view>
-		<view @tap="sendEmotion(1,12)" style="flex:1;text-align: center;"><image lazy-load src="../../../static/emotion/face01/12.png" style="width:50upx;height:50upx;margin-top: 10upx;;"></image></view>
-		<view @tap="sendEmotion(1,13)" style="flex:1;text-align: center;"><image lazy-load src="../../../static/emotion/face01/13.png" style="width:50upx;height:50upx;margin-top: 10upx;;"></image></view>
-		<view @tap="sendEmotion(1,14)" style="flex:1;text-align: center;"><image lazy-load src="../../../static/emotion/face01/14.png" style="width:50upx;height:50upx;margin-top: 10upx;;"></image></view>
-		<view @tap="sendEmotion(1,15)" style="flex:1;text-align: center;"><image lazy-load src="../../../static/emotion/face01/15.png" style="width:50upx;height:50upx;margin-top: 10upx;;"></image></view>
-		
-	</view>
-	<view style="display: flex;">
-		<view @tap="sendEmotion(1,16)" style="flex:1;text-align: center;"><image lazy-load src="../../../static/emotion/face01/16.png" style="width:50upx;height:50upx;margin-top: 10upx;;"></image></view>
-		<view @tap="sendEmotion(1,17)" style="flex:1;text-align: center;"><image lazy-load src="../../../static/emotion/face01/17.png" style="width:50upx;height:50upx;margin-top: 10upx;;"></image></view>
-		<view @tap="sendEmotion(1,18)" style="flex:1;text-align: center;"><image lazy-load src="../../../static/emotion/face01/18.png" style="width:50upx;height:50upx;margin-top: 10upx;;"></image></view>
-		<view @tap="sendEmotion(1,19)" style="flex:1;text-align: center;"><image lazy-load src="../../../static/emotion/face01/19.png" style="width:50upx;height:50upx;margin-top: 10upx;;"></image></view>
-		<view @tap="sendEmotion(1,20)" style="flex:1;text-align: center;"><image lazy-load src="../../../static/emotion/face01/20.png" style="width:50upx;height:50upx;margin-top: 10upx;;"></image></view>
-		<view @tap="sendEmotion(1,21)" style="flex:1;text-align: center;"><image lazy-load src="../../../static/emotion/face01/21.png" style="width:50upx;height:50upx;margin-top: 10upx;;"></image></view>
-		<view @tap="sendEmotion(1,22)" style="flex:1;text-align: center;"><image lazy-load src="../../../static/emotion/face01/22.png" style="width:50upx;height:50upx;margin-top: 10upx;;"></image></view>
-		<view @tap="sendEmotion(1,23)" style="flex:1;text-align: center;"><image lazy-load src="../../../static/emotion/face01/23.png" style="width:50upx;height:50upx;margin-top: 10upx;;"></image></view>
-		
-	</view>
-	<view style="display: flex;">
-		<view @tap="sendEmotion(1,24)" style="flex:1;text-align: center;"><image lazy-load src="../../../static/emotion/face01/24.png" style="width:50upx;height:50upx;margin-top: 10upx;;"></image></view>
-		<view @tap="sendEmotion(1,25)" style="flex:1;text-align: center;"><image lazy-load src="../../../static/emotion/face01/25.png" style="width:50upx;height:50upx;margin-top: 10upx;;"></image></view>
-		<view @tap="sendEmotion(1,26)" style="flex:1;text-align: center;"><image lazy-load src="../../../static/emotion/face01/26.png" style="width:50upx;height:50upx;margin-top: 10upx;;"></image></view>
-		<view @tap="sendEmotion(1,27)" style="flex:1;text-align: center;"><image lazy-load src="../../../static/emotion/face01/27.png" style="width:50upx;height:50upx;margin-top: 10upx;;"></image></view>
-		<view @tap="sendEmotion(1,28)" style="flex:1;text-align: center;"><image lazy-load src="../../../static/emotion/face01/28.png" style="width:50upx;height:50upx;margin-top: 10upx;;"></image></view>
-		<view @tap="sendEmotion(1,29)" style="flex:1;text-align: center;"><image lazy-load src="../../../static/emotion/face01/29.png" style="width:50upx;height:50upx;margin-top: 10upx;;"></image></view>
-		<view @tap="sendEmotion(1,30)" style="flex:1;text-align: center;"><image lazy-load src="../../../static/emotion/face01/30.png" style="width:50upx;height:50upx;margin-top: 10upx;;"></image></view>
-		<view @tap="sendEmotion(1,31)" style="flex:1;text-align: center;"><image lazy-load src="../../../static/emotion/face01/31.png" style="width:50upx;height:50upx;margin-top: 10upx;;"></image></view>
-	</view>
-	<view style="display: flex;">
-		<view @tap="sendEmotion(1,32)" style="flex:1;text-align: center;"><image lazy-load src="../../../static/emotion/face01/32.png" style="width:50upx;height:50upx;margin-top: 10upx;;"></image></view>
-		<view @tap="sendEmotion(1,33)" style="flex:1;text-align: center;"><image lazy-load src="../../../static/emotion/face01/33.png" style="width:50upx;height:50upx;margin-top: 10upx;;"></image></view>
-		<view @tap="sendEmotion(1,34)" style="flex:1;text-align: center;"><image lazy-load src="../../../static/emotion/face01/34.png" style="width:50upx;height:50upx;margin-top: 10upx;;"></image></view>
-		<view @tap="sendEmotion(1,35)" style="flex:1;text-align: center;"><image lazy-load src="../../../static/emotion/face01/35.png" style="width:50upx;height:50upx;margin-top: 10upx;;"></image></view>
-		<view @tap="sendEmotion(1,36)" style="flex:1;text-align: center;"><image lazy-load src="../../../static/emotion/face01/36.png" style="width:50upx;height:50upx;margin-top: 10upx;;"></image></view>
-		<view @tap="sendEmotion(1,37)" style="flex:1;text-align: center;"><image lazy-load src="../../../static/emotion/face01/37.png" style="width:50upx;height:50upx;margin-top: 10upx;;"></image></view>
-		<view @tap="sendEmotion(1,38)" style="flex:1;text-align: center;"><image lazy-load src="../../../static/emotion/face01/38.png" style="width:50upx;height:50upx;margin-top: 10upx;;"></image></view>
-		<view @tap="sendEmotion(1,39)" style="flex:1;text-align: center;"><image lazy-load src="../../../static/emotion/face01/39.png" style="width:50upx;height:50upx;margin-top: 10upx;;"></image></view>
-	</view>	
-	<view style="display: flex;">
-		<view @tap="sendEmotion(1,40)" style="flex:1;text-align: center;"><image lazy-load src="../../../static/emotion/face01/40.png" style="width:50upx;height:50upx;margin-top: 10upx;;"></image></view>
-		<view @tap="sendEmotion(1,41)" style="flex:1;text-align: center;"><image lazy-load src="../../../static/emotion/face01/41.png" style="width:50upx;height:50upx;margin-top: 10upx;;"></image></view>
-		<view @tap="sendEmotion(1,42)" style="flex:1;text-align: center;"><image lazy-load src="../../../static/emotion/face01/42.png" style="width:50upx;height:50upx;margin-top: 10upx;;"></image></view>
-		<view @tap="sendEmotion(1,43)" style="flex:1;text-align: center;"><image lazy-load src="../../../static/emotion/face01/43.png" style="width:50upx;height:50upx;margin-top: 10upx;;"></image></view>
-		<view @tap="sendEmotion(1,44)" style="flex:1;text-align: center;"><image lazy-load src="../../../static/emotion/face01/44.png" style="width:50upx;height:50upx;margin-top: 10upx;;"></image></view>
-		<view @tap="sendEmotion(1,45)" style="flex:1;text-align: center;"><image lazy-load src="../../../static/emotion/face01/45.png" style="width:50upx;height:50upx;margin-top: 10upx;;"></image></view>
-		<view @tap="sendEmotion(1,46)" style="flex:1;text-align: center;"><image lazy-load src="../../../static/emotion/face01/46.png" style="width:50upx;height:50upx;margin-top: 10upx;;"></image></view>
-		<view @tap="sendEmotion(1,47)" style="flex:1;text-align: center;"><image lazy-load src="../../../static/emotion/face01/47.png" style="width:50upx;height:50upx;margin-top: 10upx;;"></image></view>
-	</view>	
-	<view style="display: flex;">
-		<view @tap="sendEmotion(1,48)" style="flex:1;text-align: center;"><image lazy-load src="../../../static/emotion/face01/48.png" style="width:50upx;height:50upx;margin-top: 10upx;;"></image></view>
-		<view @tap="sendEmotion(1,49)" style="flex:1;text-align: center;"><image lazy-load src="../../../static/emotion/face01/49.png" style="width:50upx;height:50upx;margin-top: 10upx;;"></image></view>
-		<view @tap="sendEmotion(1,50)" style="flex:1;text-align: center;"><image lazy-load src="../../../static/emotion/face01/50.png" style="width:50upx;height:50upx;margin-top: 10upx;;"></image></view>
-		<view @tap="sendEmotion(1,51)" style="flex:1;text-align: center;"><image lazy-load src="../../../static/emotion/face01/51.png" style="width:50upx;height:50upx;margin-top: 10upx;;"></image></view>
-		<view @tap="sendEmotion(1,52)" style="flex:1;text-align: center;"><image lazy-load src="../../../static/emotion/face01/52.png" style="width:50upx;height:50upx;margin-top: 10upx;;"></image></view>
-		<view @tap="sendEmotion(1,53)" style="flex:1;text-align: center;"><image lazy-load src="../../../static/emotion/face01/53.png" style="width:50upx;height:50upx;margin-top: 10upx;;"></image></view>
-		<view @tap="sendEmotion(1,54)" style="flex:1;text-align: center;"><image lazy-load src="../../../static/emotion/face01/54.png" style="width:50upx;height:50upx;margin-top: 10upx;;"></image></view>
-		<view @tap="sendEmotion(1,55)" style="flex:1;text-align: center;"><image lazy-load src="../../../static/emotion/face01/55.png" style="width:50upx;height:50upx;margin-top: 10upx;;"></image></view>
-	</view>
-	<view style="display: flex;">
-		<view @tap="sendEmotion(1,56)" style="flex:1;text-align: center;"><image lazy-load src="../../../static/emotion/face01/56.png" style="width:50upx;height:50upx;margin-top: 10upx;;"></image></view>
-		<view @tap="sendEmotion(1,57)" style="flex:1;text-align: center;"><image lazy-load src="../../../static/emotion/face01/57.png" style="width:50upx;height:50upx;margin-top: 10upx;;"></image></view>
-		<view @tap="sendEmotion(1,58)" style="flex:1;text-align: center;"><image lazy-load src="../../../static/emotion/face01/58.png" style="width:50upx;height:50upx;margin-top: 10upx;;"></image></view>
-		<view @tap="sendEmotion(1,59)" style="flex:1;text-align: center;"><image lazy-load src="../../../static/emotion/face01/59.png" style="width:50upx;height:50upx;margin-top: 10upx;;"></image></view>
-		<view @tap="sendEmotion(1,60)" style="flex:1;text-align: center;"><image lazy-load src="../../../static/emotion/face01/60.png" style="width:50upx;height:50upx;margin-top: 10upx;;"></image></view>
-		<view @tap="sendEmotion(1,61)" style="flex:1;text-align: center;"><image lazy-load src="../../../static/emotion/face01/61.png" style="width:50upx;height:50upx;margin-top: 10upx;;"></image></view>
-		<view @tap="sendEmotion(1,62)" style="flex:1;text-align: center;"><image lazy-load src="../../../static/emotion/face01/62.png" style="width:50upx;height:50upx;margin-top: 10upx;;"></image></view>
-		<view @tap="sendEmotion(1,63)" style="flex:1;text-align: center;"><image lazy-load src="../../../static/emotion/face01/63.png" style="width:50upx;height:50upx;margin-top: 10upx;;"></image></view>
-	</view>
-	<view style="display: flex;">
-		<view @tap="sendEmotion(1,64)" style="flex:1;text-align: center;"><image lazy-load src="../../../static/emotion/face01/64.png" style="width:50upx;height:50upx;margin-top: 10upx;;"></image></view>
-		<view @tap="sendEmotion(1,65)" style="flex:1;text-align: center;"><image lazy-load src="../../../static/emotion/face01/65.png" style="width:50upx;height:50upx;margin-top: 10upx;;"></image></view>
-		<view @tap="sendEmotion(1,66)" style="flex:1;text-align: center;"><image lazy-load src="../../../static/emotion/face01/66.png" style="width:50upx;height:50upx;margin-top: 10upx;;"></image></view>
-		<view @tap="sendEmotion(1,67)" style="flex:1;text-align: center;"><image lazy-load src="../../../static/emotion/face01/67.png" style="width:50upx;height:50upx;margin-top: 10upx;;"></image></view>
-		<view @tap="sendEmotion(1,68)" style="flex:1;text-align: center;"><image lazy-load src="../../../static/emotion/face01/68.png" style="width:50upx;height:50upx;margin-top: 10upx;;"></image></view>
-		<view @tap="sendEmotion(1,69)" style="flex:1;text-align: center;"><image lazy-load src="../../../static/emotion/face01/69.png" style="width:50upx;height:50upx;margin-top: 10upx;;"></image></view>
-		<view @tap="sendEmotion(1,70)" style="flex:1;text-align: center;"><image lazy-load src="../../../static/emotion/face01/70.png" style="width:50upx;height:50upx;margin-top: 10upx;;"></image></view>
-		<view @tap="sendEmotion(1,71)" style="flex:1;text-align: center;"><image lazy-load src="../../../static/emotion/face01/71.png" style="width:50upx;height:50upx;margin-top: 10upx;;"></image></view>
-	</view>
-	<view style="display: flex;">
-		<view @tap="sendEmotion(1,72)" style="flex:1;text-align: center;"><image lazy-load src="../../../static/emotion/face01/72.png" style="width:50upx;height:50upx;margin-top: 10upx;;"></image></view>
-		<view @tap="sendEmotion(1,73)" style="flex:1;text-align: center;"><image lazy-load src="../../../static/emotion/face01/73.png" style="width:50upx;height:50upx;margin-top: 10upx;;"></image></view>
-		<view @tap="sendEmotion(1,74)" style="flex:1;text-align: center;"><image lazy-load src="../../../static/emotion/face01/74.png" style="width:50upx;height:50upx;margin-top: 10upx;;"></image></view>
-		<view @tap="sendEmotion(1,75)" style="flex:1;text-align: center;"><image lazy-load src="../../../static/emotion/face01/75.png" style="width:50upx;height:50upx;margin-top: 10upx;;"></image></view>
-		<view @tap="sendEmotion(1,76)" style="flex:1;text-align: center;"><image lazy-load src="../../../static/emotion/face01/76.png" style="width:50upx;height:50upx;margin-top: 10upx;;"></image></view>
-		<view @tap="sendEmotion(1,77)" style="flex:1;text-align: center;"><image lazy-load src="../../../static/emotion/face01/77.png" style="width:50upx;height:50upx;margin-top: 10upx;;"></image></view>
-		<view @tap="sendEmotion(1,78)" style="flex:1;text-align: center;"><image lazy-load src="../../../static/emotion/face01/78.png" style="width:50upx;height:50upx;margin-top: 10upx;;"></image></view>
-		<view @tap="sendEmotion(1,79)" style="flex:1;text-align: center;"><image lazy-load src="../../../static/emotion/face01/79.png" style="width:50upx;height:50upx;margin-top: 10upx;;"></image></view>
-	</view>
-	<view style="display: flex;">
-		<view @tap="sendEmotion(1,80)" style="flex:1;text-align: center;"><image lazy-load src="../../../static/emotion/face01/80.png" style="width:50upx;height:50upx;margin-top: 10upx;;"></image></view>
-		<view @tap="sendEmotion(1,81)" style="flex:1;text-align: center;"><image lazy-load src="../../../static/emotion/face01/81.png" style="width:50upx;height:50upx;margin-top: 10upx;;"></image></view>
-		<view @tap="sendEmotion(1,82)" style="flex:1;text-align: center;"><image lazy-load src="../../../static/emotion/face01/82.png" style="width:50upx;height:50upx;margin-top: 10upx;;"></image></view>
-		<view @tap="sendEmotion(1,83)" style="flex:1;text-align: center;"><image lazy-load src="../../../static/emotion/face01/83.png" style="width:50upx;height:50upx;margin-top: 10upx;;"></image></view>
-		<view @tap="sendEmotion(1,84)" style="flex:1;text-align: center;"><image lazy-load src="../../../static/emotion/face01/84.png" style="width:50upx;height:50upx;margin-top: 10upx;;"></image></view>
-		<view @tap="sendEmotion(1,85)" style="flex:1;text-align: center;"><image lazy-load src="../../../static/emotion/face01/85.png" style="width:50upx;height:50upx;margin-top: 10upx;;"></image></view>
-		<view @tap="sendEmotion(1,86)" style="flex:1;text-align: center;"><image lazy-load src="../../../static/emotion/face01/86.png" style="width:50upx;height:50upx;margin-top: 10upx;;"></image></view>
-		<view @tap="sendEmotion(1,87)" style="flex:1;text-align: center;"><image lazy-load src="../../../static/emotion/face01/87.png" style="width:50upx;height:50upx;margin-top: 10upx;;"></image></view>
-	</view>
-	<view style="display: flex;">
-		<view @tap="sendEmotion(1,88)" style="flex:1;text-align: center;"><image lazy-load src="../../../static/emotion/face01/88.png" style="width:50upx;height:50upx;margin-top: 10upx;;"></image></view>
-		<view @tap="sendEmotion(1,89)" style="flex:1;text-align: center;"><image lazy-load src="../../../static/emotion/face01/89.png" style="width:50upx;height:50upx;margin-top: 10upx;;"></image></view>
-		<view @tap="sendEmotion(1,90)" style="flex:1;text-align: center;"><image lazy-load src="../../../static/emotion/face01/90.png" style="width:50upx;height:50upx;margin-top: 10upx;;"></image></view>
-		<view @tap="sendEmotion(1,91)" style="flex:1;text-align: center;"><image lazy-load src="../../../static/emotion/face01/91.png" style="width:50upx;height:50upx;margin-top: 10upx;;"></image></view>
-		<view @tap="sendEmotion(1,92)" style="flex:1;text-align: center;"><image lazy-load src="../../../static/emotion/face01/92.png" style="width:50upx;height:50upx;margin-top: 10upx;;"></image></view>
-		<view @tap="sendEmotion(1,93)" style="flex:1;text-align: center;"><image lazy-load src="../../../static/emotion/face01/93.png" style="width:50upx;height:50upx;margin-top: 10upx;;"></image></view>
-		<view @tap="sendEmotion(1,94)" style="flex:1;text-align: center;"><image lazy-load src="../../../static/emotion/face01/94.png" style="width:50upx;height:50upx;margin-top: 10upx;;"></image></view>
-		<view @tap="sendEmotion(1,95)" style="flex:1;text-align: center;"><image lazy-load src="../../../static/emotion/face01/95.png" style="width:50upx;height:50upx;margin-top: 10upx;;"></image></view>
-	</view>
-	<view style="display: flex;">
-		<view @tap="sendEmotion(1,96)" style="flex:1;text-align: center;"><image lazy-load src="../../../static/emotion/face01/96.png" style="width:50upx;height:50upx;margin-top: 10upx;;"></image></view>
-		<view @tap="sendEmotion(1,97)" style="flex:1;text-align: center;"><image lazy-load src="../../../static/emotion/face01/97.png" style="width:50upx;height:50upx;margin-top: 10upx;;"></image></view>
-		<view @tap="sendEmotion(1,98)" style="flex:1;text-align: center;"><image lazy-load src="../../../static/emotion/face01/98.png" style="width:50upx;height:50upx;margin-top: 10upx;;"></image></view>
-		<view @tap="sendEmotion(1,99)" style="flex:1;text-align: center;"><image lazy-load src="../../../static/emotion/face01/99.png" style="width:50upx;height:50upx;margin-top: 10upx;;"></image></view>
-		<view @tap="sendEmotion(1,100)" style="flex:1;text-align: center;"><image lazy-load src="../../../static/emotion/face01/100.png" style="width:50upx;height:50upx;margin-top: 10upx;;"></image></view>
-		<view @tap="sendEmotion(1,101)" style="flex:1;text-align: center;"><image lazy-load src="../../../static/emotion/face01/101.png" style="width:50upx;height:50upx;margin-top: 10upx;;"></image></view>
-		<view @tap="sendEmotion(1,102)" style="flex:1;text-align: center;"><image lazy-load src="../../../static/emotion/face01/102.png" style="width:50upx;height:50upx;margin-top: 10upx;;"></image></view>
-		<view @tap="sendEmotion(1,103)" style="flex:1;text-align: center;"><image lazy-load src="../../../static/emotion/face01/103.png" style="width:50upx;height:50upx;margin-top: 10upx;;"></image></view>
-	</view>
-	<view style="display: flex;">
-		<view @tap="sendEmotion(1,104)" style="flex:1;text-align: center;"><image lazy-load src="../../../static/emotion/face01/104.png" style="width:50upx;height:50upx;margin-top: 10upx;;"></image></view>
-		<view  style="flex:1;text-align: center;"></view>
-		<view  style="flex:1;text-align: center;"></view>
-		<view  style="flex:1;text-align: center;"></view>
-		<view  style="flex:1;text-align: center;"></view>
-		<view  style="flex:1;text-align: center;"></view>
-		<view  style="flex:1;text-align: center;"></view>
-		<view  style="flex:1;text-align: center;"></view>
-	</view>
-</view>
-			
-			
-			<view v-if="emotion==3">
-				<view style="display: flex;">
-					<view @tap="sendEmotion(2,0)" style="flex:1;text-align: center;"><image lazy-load src="../../../static/emotion/face02/0.gif" style="width:80upx;height:80upx;margin-top: 10upx;;"></image></view>
-					<view @tap="sendEmotion(2,1)" style="flex:1;text-align: center;"><image lazy-load src="../../../static/emotion/face02/1.gif" style="width:80upx;height:80upx;margin-top: 10upx;;"></image></view>
-					<view @tap="sendEmotion(2,2)" style="flex:1;text-align: center;"><image lazy-load src="../../../static/emotion/face02/2.gif" style="width:80upx;height:80upx;margin-top: 10upx;;"></image></view>
-					<view @tap="sendEmotion(2,3)" style="flex:1;text-align: center;"><image lazy-load src="../../../static/emotion/face02/3.gif" style="width:80upx;height:80upx;margin-top: 10upx;;"></image></view>
-					<view @tap="sendEmotion(2,4)" style="flex:1;text-align: center;"><image lazy-load src="../../../static/emotion/face02/4.gif" style="width:80upx;height:80upx;margin-top: 10upx;;"></image></view>
-					
-				</view>
-				<view style="display: flex;">
-					<view @tap="sendEmotion(2,5)" style="flex:1;text-align: center;"><image lazy-load src="../../../static/emotion/face02/5.gif" style="width:80upx;height:80upx;margin-top: 10upx;;"></image></view>
-					<view @tap="sendEmotion(2,6)" style="flex:1;text-align: center;"><image lazy-load src="../../../static/emotion/face02/6.gif" style="width:80upx;height:80upx;margin-top: 10upx;;"></image></view>
-					<view @tap="sendEmotion(2,7)" style="flex:1;text-align: center;"><image lazy-load src="../../../static/emotion/face02/7.gif" style="width:80upx;height:80upx;margin-top: 10upx;;"></image></view>
-					<view @tap="sendEmotion(2,8)" style="flex:1;text-align: center;"><image lazy-load src="../../../static/emotion/face02/8.gif" style="width:80upx;height:80upx;margin-top: 10upx;;"></image></view>
-					<view @tap="sendEmotion(2,9)" style="flex:1;text-align: center;"><image lazy-load src="../../../static/emotion/face02/9.gif" style="width:80upx;height:80upx;margin-top: 10upx;;"></image></view>
-				</view>
-				<view style="display: flex;">
-					<view @tap="sendEmotion(2,10)" style="flex:1;text-align: center;"><image lazy-load src="../../../static/emotion/face02/10.gif" style="width:80upx;height:80upx;margin-top: 10upx;;"></image></view>
-					<view @tap="sendEmotion(2,11)" style="flex:1;text-align: center;"><image lazy-load src="../../../static/emotion/face02/11.gif" style="width:80upx;height:80upx;margin-top: 10upx;;"></image></view>
-					<view @tap="sendEmotion(2,12)" style="flex:1;text-align: center;"><image lazy-load src="../../../static/emotion/face02/12.gif" style="width:80upx;height:80upx;margin-top: 10upx;;"></image></view>
-					<view @tap="sendEmotion(2,13)" style="flex:1;text-align: center;"><image lazy-load src="../../../static/emotion/face02/13.gif" style="width:80upx;height:80upx;margin-top: 10upx;;"></image></view>
-					<view @tap="sendEmotion(2,14)" style="flex:1;text-align: center;"><image lazy-load src="../../../static/emotion/face02/14.gif" style="width:80upx;height:80upx;margin-top: 10upx;;"></image></view>
-				</view>	
-				<view style="display: flex;">
-					<view @tap="sendEmotion(2,15)" style="flex:1;text-align: center;"><image lazy-load src="../../../static/emotion/face02/15.gif" style="width:80upx;height:80upx;margin-top: 10upx;;"></image></view>
-					<view  style="flex:1;text-align: center;"></view>
-					<view  style="flex:1;text-align: center;"></view>
-					<view  style="flex:1;text-align: center;"></view>
-					<view  style="flex:1;text-align: center;"></view>
-				</view>	
-			</view>
-			
-			<view v-if="emotion==4">
-				<view style="display: flex;">
-					<view @tap="sendEmotion(3,0)" style="flex:1;text-align: center;"><image lazy-load src="../../../static/emotion/face03/0.gif" style="width:80upx;height:80upx;margin-top: 10upx;;"></image></view>
-					<view @tap="sendEmotion(3,1)" style="flex:1;text-align: center;"><image lazy-load src="../../../static/emotion/face03/1.gif" style="width:80upx;height:80upx;margin-top: 10upx;;"></image></view>
-					<view @tap="sendEmotion(3,2)" style="flex:1;text-align: center;"><image lazy-load src="../../../static/emotion/face03/2.gif" style="width:80upx;height:80upx;margin-top: 10upx;;"></image></view>
-					<view @tap="sendEmotion(3,3)" style="flex:1;text-align: center;"><image lazy-load src="../../../static/emotion/face03/3.gif" style="width:80upx;height:80upx;margin-top: 10upx;;"></image></view>
-					<view @tap="sendEmotion(3,4)" style="flex:1;text-align: center;"><image lazy-load src="../../../static/emotion/face03/4.gif" style="width:80upx;height:80upx;margin-top: 10upx;;"></image></view>
-					
-				</view>
-				<view style="display: flex;">
-					<view @tap="sendEmotion(3,5)" style="flex:1;text-align: center;"><image lazy-load src="../../../static/emotion/face03/5.gif" style="width:80upx;height:80upx;margin-top: 10upx;;"></image></view>
-					<view @tap="sendEmotion(3,6)" style="flex:1;text-align: center;"><image lazy-load src="../../../static/emotion/face03/6.gif" style="width:80upx;height:80upx;margin-top: 10upx;;"></image></view>
-					<view @tap="sendEmotion(3,7)" style="flex:1;text-align: center;"><image lazy-load src="../../../static/emotion/face03/7.gif" style="width:80upx;height:80upx;margin-top: 10upx;;"></image></view>
-					<view @tap="sendEmotion(3,8)" style="flex:1;text-align: center;"><image lazy-load src="../../../static/emotion/face03/8.gif" style="width:80upx;height:80upx;margin-top: 10upx;;"></image></view>
-					<view @tap="sendEmotion(3,9)" style="flex:1;text-align: center;"><image lazy-load src="../../../static/emotion/face03/9.gif" style="width:80upx;height:80upx;margin-top: 10upx;;"></image></view>
-				</view>
-				<view style="display: flex;">
-					<view @tap="sendEmotion(3,10)" style="flex:1;text-align: center;"><image lazy-load src="../../../static/emotion/face03/10.gif" style="width:80upx;height:80upx;margin-top: 10upx;;"></image></view>
-					<view @tap="sendEmotion(3,11)" style="flex:1;text-align: center;"><image lazy-load src="../../../static/emotion/face03/11.gif" style="width:80upx;height:80upx;margin-top: 10upx;;"></image></view>
-					<view @tap="sendEmotion(3,12)" style="flex:1;text-align: center;"><image lazy-load src="../../../static/emotion/face03/12.gif" style="width:80upx;height:80upx;margin-top: 10upx;;"></image></view>
-					<view @tap="sendEmotion(3,13)" style="flex:1;text-align: center;"><image lazy-load src="../../../static/emotion/face03/13.gif" style="width:80upx;height:80upx;margin-top: 10upx;;"></image></view>
-					<view @tap="sendEmotion(3,14)" style="flex:1;text-align: center;"><image lazy-load src="../../../static/emotion/face03/14.gif" style="width:80upx;height:80upx;margin-top: 10upx;;"></image></view>
-				</view>	
-				<view style="display: flex;">
-					<view @tap="sendEmotion(3,15)" style="flex:1;text-align: center;"><image lazy-load src="../../../static/emotion/face03/15.gif" style="width:80upx;height:80upx;margin-top: 10upx;;"></image></view>
-					<view  style="flex:1;text-align: center;"></view>
-					<view  style="flex:1;text-align: center;"></view>
-					<view  style="flex:1;text-align: center;"></view>
-					<view  style="flex:1;text-align: center;"></view>
-				</view>	
-			</view>
-
-
-			<view v-if="emotion==5">
-				<view style="display: flex;">
-					<view @tap="sendEmotion(4,0)" style="flex:1;text-align: center;"><image lazy-load src="../../../static/emotion/face04/0.gif" style="width:80upx;height:80upx;margin-top: 10upx;;"></image></view>
-					<view @tap="sendEmotion(4,1)" style="flex:1;text-align: center;"><image lazy-load src="../../../static/emotion/face04/1.gif" style="width:80upx;height:80upx;margin-top: 10upx;;"></image></view>
-					<view @tap="sendEmotion(4,2)" style="flex:1;text-align: center;"><image lazy-load src="../../../static/emotion/face04/2.gif" style="width:80upx;height:80upx;margin-top: 10upx;;"></image></view>
-					<view @tap="sendEmotion(4,3)" style="flex:1;text-align: center;"><image lazy-load src="../../../static/emotion/face04/3.gif" style="width:80upx;height:80upx;margin-top: 10upx;;"></image></view>
-					<view @tap="sendEmotion(4,4)" style="flex:1;text-align: center;"><image lazy-load src="../../../static/emotion/face04/4.gif" style="width:80upx;height:80upx;margin-top: 10upx;;"></image></view>
-					
-				</view>
-				<view style="display: flex;">
-					<view @tap="sendEmotion(4,5)" style="flex:1;text-align: center;"><image lazy-load src="../../../static/emotion/face04/5.gif" style="width:80upx;height:80upx;margin-top: 10upx;;"></image></view>
-					<view @tap="sendEmotion(4,6)" style="flex:1;text-align: center;"><image lazy-load src="../../../static/emotion/face04/6.gif" style="width:80upx;height:80upx;margin-top: 10upx;;"></image></view>
-					<view @tap="sendEmotion(4,7)" style="flex:1;text-align: center;"><image lazy-load src="../../../static/emotion/face04/7.gif" style="width:80upx;height:80upx;margin-top: 10upx;;"></image></view>
-					<view @tap="sendEmotion(4,8)" style="flex:1;text-align: center;"><image lazy-load src="../../../static/emotion/face04/8.gif" style="width:80upx;height:80upx;margin-top: 10upx;;"></image></view>
-					<view @tap="sendEmotion(4,9)" style="flex:1;text-align: center;"><image lazy-load src="../../../static/emotion/face04/9.gif" style="width:80upx;height:80upx;margin-top: 10upx;;"></image></view>
-				</view>
-				<view style="display: flex;">
-					<view @tap="sendEmotion(4,10)" style="flex:1;text-align: center;"><image lazy-load src="../../../static/emotion/face04/10.gif" style="width:80upx;height:80upx;margin-top: 10upx;;"></image></view>
-					<view @tap="sendEmotion(4,11)" style="flex:1;text-align: center;"><image lazy-load src="../../../static/emotion/face04/11.gif" style="width:80upx;height:80upx;margin-top: 10upx;;"></image></view>
-					<view @tap="sendEmotion(4,12)" style="flex:1;text-align: center;"><image lazy-load src="../../../static/emotion/face04/12.gif" style="width:80upx;height:80upx;margin-top: 10upx;;"></image></view>
-					<view @tap="sendEmotion(4,13)" style="flex:1;text-align: center;"><image lazy-load src="../../../static/emotion/face04/13.gif" style="width:80upx;height:80upx;margin-top: 10upx;;"></image></view>
-					<view @tap="sendEmotion(4,14)" style="flex:1;text-align: center;"><image lazy-load src="../../../static/emotion/face04/14.gif" style="width:80upx;height:80upx;margin-top: 10upx;;"></image></view>
-				</view>	
-				<view style="display: flex;">
-					<view @tap="sendEmotion(4,15)" style="flex:1;text-align: center;"><image lazy-load src="../../../static/emotion/face04/15.gif" style="width:80upx;height:80upx;margin-top: 10upx;;"></image></view>
-					<view  style="flex:1;text-align: center;"></view>
-					<view  style="flex:1;text-align: center;"></view>
-					<view  style="flex:1;text-align: center;"></view>
-					<view  style="flex:1;text-align: center;"></view>
-				</view>	
-			</view>
-
-			<view v-if="emotion==6">
-				<view style="display: flex;">
-					<view @tap="sendEmotion(5,0)" style="flex:1;text-align: center;"><image lazy-load src="../../../static/emotion/face05/0.gif" style="width:80upx;height:80upx;margin-top: 10upx;;"></image></view>
-					<view @tap="sendEmotion(5,1)" style="flex:1;text-align: center;"><image lazy-load src="../../../static/emotion/face05/1.gif" style="width:80upx;height:80upx;margin-top: 10upx;;"></image></view>
-					<view @tap="sendEmotion(5,2)" style="flex:1;text-align: center;"><image lazy-load src="../../../static/emotion/face05/2.gif" style="width:80upx;height:80upx;margin-top: 10upx;;"></image></view>
-					<view @tap="sendEmotion(5,3)" style="flex:1;text-align: center;"><image lazy-load src="../../../static/emotion/face05/3.gif" style="width:80upx;height:80upx;margin-top: 10upx;;"></image></view>
-					<view @tap="sendEmotion(5,4)" style="flex:1;text-align: center;"><image lazy-load src="../../../static/emotion/face05/4.gif" style="width:80upx;height:80upx;margin-top: 10upx;;"></image></view>
-					
-				</view>
-				<view style="display: flex;">
-					<view @tap="sendEmotion(5,5)" style="flex:1;text-align: center;"><image lazy-load src="../../../static/emotion/face05/5.gif" style="width:80upx;height:80upx;margin-top: 10upx;;"></image></view>
-					<view @tap="sendEmotion(5,6)" style="flex:1;text-align: center;"><image lazy-load src="../../../static/emotion/face05/6.gif" style="width:80upx;height:80upx;margin-top: 10upx;;"></image></view>
-					<view @tap="sendEmotion(5,7)" style="flex:1;text-align: center;"><image lazy-load src="../../../static/emotion/face05/7.gif" style="width:80upx;height:80upx;margin-top: 10upx;;"></image></view>
-					<view @tap="sendEmotion(5,8)" style="flex:1;text-align: center;"><image lazy-load src="../../../static/emotion/face05/8.gif" style="width:80upx;height:80upx;margin-top: 10upx;;"></image></view>
-					<view @tap="sendEmotion(5,9)" style="flex:1;text-align: center;"><image lazy-load src="../../../static/emotion/face05/9.gif" style="width:80upx;height:80upx;margin-top: 10upx;;"></image></view>
-				</view>
-				<view style="display: flex;">
-					<view @tap="sendEmotion(5,10)" style="flex:1;text-align: center;"><image lazy-load src="../../../static/emotion/face05/10.gif" style="width:80upx;height:80upx;margin-top: 10upx;;"></image></view>
-					<view @tap="sendEmotion(5,11)" style="flex:1;text-align: center;"><image lazy-load src="../../../static/emotion/face05/11.gif" style="width:80upx;height:80upx;margin-top: 10upx;;"></image></view>
-					<view @tap="sendEmotion(5,12)" style="flex:1;text-align: center;"><image lazy-load src="../../../static/emotion/face05/12.gif" style="width:80upx;height:80upx;margin-top: 10upx;;"></image></view>
-					<view @tap="sendEmotion(5,13)" style="flex:1;text-align: center;"><image lazy-load src="../../../static/emotion/face05/13.gif" style="width:80upx;height:80upx;margin-top: 10upx;;"></image></view>
-					<view @tap="sendEmotion(5,14)" style="flex:1;text-align: center;"><image lazy-load src="../../../static/emotion/face05/14.gif" style="width:80upx;height:80upx;margin-top: 10upx;;"></image></view>
-				</view>	
-				<view style="display: flex;">
-					<view @tap="sendEmotion(5,15)" style="flex:1;text-align: center;"><image lazy-load src="../../../static/emotion/face05/15.gif" style="width:80upx;height:80upx;margin-top: 10upx;;"></image></view>
-					<view  style="flex:1;text-align: center;"></view>
-					<view  style="flex:1;text-align: center;"></view>
-					<view  style="flex:1;text-align: center;"></view>
-					<view  style="flex:1;text-align: center;"></view>
-				</view>	
-			</view>
-			
-			
-			
-			<view v-if="emotion==7">
-				<view style="display: flex;">
-					<view @tap="sendEmotion(6,0)" style="flex:1;text-align: center;"><image lazy-load src="../../../static/emotion/face06/0.gif" style="width:80upx;height:80upx;margin-top: 10upx;;"></image></view>
-					<view @tap="sendEmotion(6,1)" style="flex:1;text-align: center;"><image lazy-load src="../../../static/emotion/face06/1.gif" style="width:80upx;height:80upx;margin-top: 10upx;;"></image></view>
-					<view @tap="sendEmotion(6,2)" style="flex:1;text-align: center;"><image lazy-load src="../../../static/emotion/face06/2.gif" style="width:80upx;height:80upx;margin-top: 10upx;;"></image></view>
-					<view @tap="sendEmotion(6,3)" style="flex:1;text-align: center;"><image lazy-load src="../../../static/emotion/face06/3.gif" style="width:80upx;height:80upx;margin-top: 10upx;;"></image></view>
-					<view @tap="sendEmotion(6,4)" style="flex:1;text-align: center;"><image lazy-load src="../../../static/emotion/face06/4.gif" style="width:80upx;height:80upx;margin-top: 10upx;;"></image></view>
-					
-				</view>
-				<view style="display: flex;">
-					<view @tap="sendEmotion(6,5)" style="flex:1;text-align: center;"><image lazy-load src="../../../static/emotion/face06/5.gif" style="width:80upx;height:80upx;margin-top: 10upx;;"></image></view>
-					<view @tap="sendEmotion(6,6)" style="flex:1;text-align: center;"><image lazy-load src="../../../static/emotion/face06/6.gif" style="width:80upx;height:80upx;margin-top: 10upx;;"></image></view>
-					<view @tap="sendEmotion(6,7)" style="flex:1;text-align: center;"><image lazy-load src="../../../static/emotion/face06/7.gif" style="width:80upx;height:80upx;margin-top: 10upx;;"></image></view>
-					<view @tap="sendEmotion(6,8)" style="flex:1;text-align: center;"><image lazy-load src="../../../static/emotion/face06/8.gif" style="width:80upx;height:80upx;margin-top: 10upx;;"></image></view>
-					<view @tap="sendEmotion(6,9)" style="flex:1;text-align: center;"><image lazy-load src="../../../static/emotion/face06/9.gif" style="width:80upx;height:80upx;margin-top: 10upx;;"></image></view>
-				</view>
-				<view style="display: flex;">
-					<view @tap="sendEmotion(6,10)" style="flex:1;text-align: center;"><image lazy-load src="../../../static/emotion/face06/10.gif" style="width:80upx;height:80upx;margin-top: 10upx;;"></image></view>
-					<view @tap="sendEmotion(6,11)" style="flex:1;text-align: center;"><image lazy-load src="../../../static/emotion/face06/11.gif" style="width:80upx;height:80upx;margin-top: 10upx;;"></image></view>
-					<view @tap="sendEmotion(6,12)" style="flex:1;text-align: center;"><image lazy-load src="../../../static/emotion/face06/12.gif" style="width:80upx;height:80upx;margin-top: 10upx;;"></image></view>
-					<view @tap="sendEmotion(6,13)" style="flex:1;text-align: center;"><image lazy-load src="../../../static/emotion/face06/13.gif" style="width:80upx;height:80upx;margin-top: 10upx;;"></image></view>
-					<view @tap="sendEmotion(6,14)" style="flex:1;text-align: center;"><image lazy-load src="../../../static/emotion/face06/14.gif" style="width:80upx;height:80upx;margin-top: 10upx;;"></image></view>
-				</view>	
-				<view style="display: flex;">
-					<view @tap="sendEmotion(6,15)" style="flex:1;text-align: center;"><image lazy-load src="../../../static/emotion/face06/15.gif" style="width:80upx;height:80upx;margin-top: 10upx;;"></image></view>
-					<view  style="flex:1;text-align: center;"></view>
-					<view  style="flex:1;text-align: center;"></view>
-					<view  style="flex:1;text-align: center;"></view>
-					<view  style="flex:1;text-align: center;"></view>
-				</view>	
-			</view>
 			
 			</scroll-view>
-			<view style="width:100%;height:80upx;background: #f6f6f6;border-top:1px solid #eee;bottom:0;position: fixed;display: flex;">
-				<view @tap="showEmotion(1)" :style="emotion==1?'background: #fff;':''" style="flex:1;height:100%;text-align: center;">
-					<image lazy-load src="../../../static/emotion/face00/face-lbl.gif" style="width:50upx;height:50upx;margin-top: 10upx;;"></image>
+			<view class="cu-bar foot input" :style="[{bottom:InputBottom+'upx'}]" style="flex-direction: row; height:120px; width: calc(80% - 54px);left: calc(20% + 54px); background-color:#fff">
+
+				<!-- @focus="InputFocus" @blur="InputBlur"-->
+				<textarea 
+				auto-height="true"
+				:show-confirm-bar="true" 
+				confirm-type="send" 
+				@confirm="send" 
+				confirm-hold="true" 
+				@keydown.shift.enter="altOrShiftEnter" 
+				@keydown.alt.enter="altOrShiftEnter"  
+				@keyup.ctrl.enter="lineFeed()"
+				@focus="InputFocus" @blur="InputBlur" v-show="c_type==1" v-model="txt" 
+				@input="inputTxt()" class="solid-bottom" :adjust-position="true" :focus="input_is_focus" 
+				cursor-spacing="10"
+				style="height:120px !important;line-height:30px;width: 100%;"
+				></textarea>
+				<view @tap="ChooseImage()" style="cursor: pointer;position: absolute;top: 0; left: 0px;"><text style="font-size: 60upx;color:#3F92F8" class="iconfont icon-zhaopian-cuxiantiao-fill"></text></view>
+				<view @tap="ChooseVideo()" style="cursor: pointer;position: absolute;top: 0; left: 40px;"><text style="font-size: 60upx;color:#F39F90" class="iconfont icon-paishe"></text></view>
+				<view @tap="sendCard()" style="cursor: pointer;position: absolute;top: 0; left: 80px;"><text style="font-size: 60upx;color:#FA9B4E" class="iconfont icon-mingpian2"></text></view>
+				<view style="cursor: pointer;position: absolute;top: 0; left: 110px;" class="action" @tap="showItemIndex(1)">
+					<text  class="cuIcon-emojifill text-grey" style="position: absolute;top: 0;left: 0px"></text>
 				</view>
-				<view @tap="showEmotion(2)" :style="emotion==2?'background: #fff;':''" style="flex:1;height:100%;text-align: center;">
-					<image lazy-load src="../../../static/emotion/face01/face-lbl.png" style="width:50upx;height:50upx;margin-top: 10upx;;"></image>
+				<button style="min-width: 50px;padding:0px!important" v-show="!showjia" @tap.stop="send()" class="cu-btn bg-green shadow">发送</button>
+			</view>
+			
+			
+			<view v-show="showItem==1" class="cu-bar foot " style="box-shadow: none;-webkit-box-shadow: none;display: block;background: #fff;height:330upx;margin-bottom:80upx; width: calc(80% - 54px);left: calc(20% + 54px);">
+				<scroll-view scroll-y class="indexes" style="height:330upx;padding-bottom:20upx;padding-top: 10upx;"
+				 :scroll-with-animation="true" :enable-back-to-top="true">
+				<view v-if="emotion==1">
+		<view style="display: flex;">
+			<view @tap="sendEmotion(0,0)" style="flex:1;text-align: center;"><image lazy-load src="../../../static/emotion/face00/0.gif" style="width:50upx;height:50upx;margin-top: 10upx;;"></image></view>
+			<view @tap="sendEmotion(0,1)" style="flex:1;text-align: center;"><image lazy-load src="../../../static/emotion/face00/1.gif" style="width:50upx;height:50upx;margin-top: 10upx;;"></image></view>
+			<view @tap="sendEmotion(0,2)" style="flex:1;text-align: center;"><image lazy-load src="../../../static/emotion/face00/2.gif" style="width:50upx;height:50upx;margin-top: 10upx;;"></image></view>
+			<view @tap="sendEmotion(0,3)" style="flex:1;text-align: center;"><image lazy-load src="../../../static/emotion/face00/3.gif" style="width:50upx;height:50upx;margin-top: 10upx;;"></image></view>
+			<view @tap="sendEmotion(0,4)" style="flex:1;text-align: center;"><image lazy-load src="../../../static/emotion/face00/4.gif" style="width:50upx;height:50upx;margin-top: 10upx;;"></image></view>
+			<view @tap="sendEmotion(0,5)" style="flex:1;text-align: center;"><image lazy-load src="../../../static/emotion/face00/5.gif" style="width:50upx;height:50upx;margin-top: 10upx;;"></image></view>
+			<view @tap="sendEmotion(0,6)" style="flex:1;text-align: center;"><image lazy-load src="../../../static/emotion/face00/6.gif" style="width:50upx;height:50upx;margin-top: 10upx;;"></image></view>
+			<view @tap="sendEmotion(0,7)" style="flex:1;text-align: center;"><image lazy-load src="../../../static/emotion/face00/7.gif" style="width:50upx;height:50upx;margin-top: 10upx;;"></image></view>
+		</view>
+		<view style="display: flex;">
+			<view @tap="sendEmotion(0,8)" style="flex:1;text-align: center;"><image lazy-load src="../../../static/emotion/face00/8.gif" style="width:50upx;height:50upx;margin-top: 10upx;;"></image></view>
+			<view @tap="sendEmotion(0,9)" style="flex:1;text-align: center;"><image lazy-load src="../../../static/emotion/face00/9.gif" style="width:50upx;height:50upx;margin-top: 10upx;;"></image></view>
+			<view @tap="sendEmotion(0,10)" style="flex:1;text-align: center;"><image lazy-load src="../../../static/emotion/face00/10.gif" style="width:50upx;height:50upx;margin-top: 10upx;;"></image></view>
+			<view @tap="sendEmotion(0,11)" style="flex:1;text-align: center;"><image lazy-load src="../../../static/emotion/face00/11.gif" style="width:50upx;height:50upx;margin-top: 10upx;;"></image></view>
+			<view @tap="sendEmotion(0,12)" style="flex:1;text-align: center;"><image lazy-load src="../../../static/emotion/face00/12.gif" style="width:50upx;height:50upx;margin-top: 10upx;;"></image></view>
+			<view @tap="sendEmotion(0,13)" style="flex:1;text-align: center;"><image lazy-load src="../../../static/emotion/face00/13.gif" style="width:50upx;height:50upx;margin-top: 10upx;;"></image></view>
+			<view @tap="sendEmotion(0,14)" style="flex:1;text-align: center;"><image lazy-load src="../../../static/emotion/face00/14.gif" style="width:50upx;height:50upx;margin-top: 10upx;;"></image></view>
+			<view @tap="sendEmotion(0,15)" style="flex:1;text-align: center;"><image lazy-load src="../../../static/emotion/face00/15.gif" style="width:50upx;height:50upx;margin-top: 10upx;;"></image></view>
+			
+		</view>
+		<view style="display: flex;">
+			<view @tap="sendEmotion(0,16)" style="flex:1;text-align: center;"><image lazy-load src="../../../static/emotion/face00/16.gif" style="width:50upx;height:50upx;margin-top: 10upx;;"></image></view>
+			<view @tap="sendEmotion(0,17)" style="flex:1;text-align: center;"><image lazy-load src="../../../static/emotion/face00/17.gif" style="width:50upx;height:50upx;margin-top: 10upx;;"></image></view>
+			<view @tap="sendEmotion(0,18)" style="flex:1;text-align: center;"><image lazy-load src="../../../static/emotion/face00/18.gif" style="width:50upx;height:50upx;margin-top: 10upx;;"></image></view>
+			<view @tap="sendEmotion(0,19)" style="flex:1;text-align: center;"><image lazy-load src="../../../static/emotion/face00/19.gif" style="width:50upx;height:50upx;margin-top: 10upx;;"></image></view>
+			<view @tap="sendEmotion(0,20)" style="flex:1;text-align: center;"><image lazy-load src="../../../static/emotion/face00/20.gif" style="width:50upx;height:50upx;margin-top: 10upx;;"></image></view>
+			<view @tap="sendEmotion(0,21)" style="flex:1;text-align: center;"><image lazy-load src="../../../static/emotion/face00/21.gif" style="width:50upx;height:50upx;margin-top: 10upx;;"></image></view>
+			<view @tap="sendEmotion(0,22)" style="flex:1;text-align: center;"><image lazy-load src="../../../static/emotion/face00/22.gif" style="width:50upx;height:50upx;margin-top: 10upx;;"></image></view>
+			<view @tap="sendEmotion(0,23)" style="flex:1;text-align: center;"><image lazy-load src="../../../static/emotion/face00/23.gif" style="width:50upx;height:50upx;margin-top: 10upx;;"></image></view>
+			
+		</view>
+		<view style="display: flex;">
+			<view @tap="sendEmotion(0,24)" style="flex:1;text-align: center;"><image lazy-load src="../../../static/emotion/face00/24.gif" style="width:50upx;height:50upx;margin-top: 10upx;;"></image></view>
+			<view @tap="sendEmotion(0,25)" style="flex:1;text-align: center;"><image lazy-load src="../../../static/emotion/face00/25.gif" style="width:50upx;height:50upx;margin-top: 10upx;;"></image></view>
+			<view @tap="sendEmotion(0,26)" style="flex:1;text-align: center;"><image lazy-load src="../../../static/emotion/face00/26.gif" style="width:50upx;height:50upx;margin-top: 10upx;;"></image></view>
+			<view @tap="sendEmotion(0,27)" style="flex:1;text-align: center;"><image lazy-load src="../../../static/emotion/face00/27.gif" style="width:50upx;height:50upx;margin-top: 10upx;;"></image></view>
+			<view @tap="sendEmotion(0,28)" style="flex:1;text-align: center;"><image lazy-load src="../../../static/emotion/face00/28.gif" style="width:50upx;height:50upx;margin-top: 10upx;;"></image></view>
+			<view @tap="sendEmotion(0,29)" style="flex:1;text-align: center;"><image lazy-load src="../../../static/emotion/face00/29.gif" style="width:50upx;height:50upx;margin-top: 10upx;;"></image></view>
+			<view @tap="sendEmotion(0,30)" style="flex:1;text-align: center;"><image lazy-load src="../../../static/emotion/face00/30.gif" style="width:50upx;height:50upx;margin-top: 10upx;;"></image></view>
+			<view @tap="sendEmotion(0,31)" style="flex:1;text-align: center;"><image lazy-load src="../../../static/emotion/face00/31.gif" style="width:50upx;height:50upx;margin-top: 10upx;;"></image></view>
+		</view>
+		<view style="display: flex;">
+			<view @tap="sendEmotion(0,32)" style="flex:1;text-align: center;"><image lazy-load src="../../../static/emotion/face00/32.gif" style="width:50upx;height:50upx;margin-top: 10upx;;"></image></view>
+			<view @tap="sendEmotion(0,33)" style="flex:1;text-align: center;"><image lazy-load src="../../../static/emotion/face00/33.gif" style="width:50upx;height:50upx;margin-top: 10upx;;"></image></view>
+			<view @tap="sendEmotion(0,34)" style="flex:1;text-align: center;"><image lazy-load src="../../../static/emotion/face00/34.gif" style="width:50upx;height:50upx;margin-top: 10upx;;"></image></view>
+			<view @tap="sendEmotion(0,35)" style="flex:1;text-align: center;"><image lazy-load src="../../../static/emotion/face00/35.gif" style="width:50upx;height:50upx;margin-top: 10upx;;"></image></view>
+			<view @tap="sendEmotion(0,36)" style="flex:1;text-align: center;"><image lazy-load src="../../../static/emotion/face00/36.gif" style="width:50upx;height:50upx;margin-top: 10upx;;"></image></view>
+			<view @tap="sendEmotion(0,37)" style="flex:1;text-align: center;"><image lazy-load src="../../../static/emotion/face00/37.gif" style="width:50upx;height:50upx;margin-top: 10upx;;"></image></view>
+			<view @tap="sendEmotion(0,38)" style="flex:1;text-align: center;"><image lazy-load src="../../../static/emotion/face00/38.gif" style="width:50upx;height:50upx;margin-top: 10upx;;"></image></view>
+			<view @tap="sendEmotion(0,39)" style="flex:1;text-align: center;"><image lazy-load src="../../../static/emotion/face00/39.gif" style="width:50upx;height:50upx;margin-top: 10upx;;"></image></view>
+		</view>	
+		<view style="display: flex;">
+			<view @tap="sendEmotion(0,40)" style="flex:1;text-align: center;"><image lazy-load src="../../../static/emotion/face00/40.gif" style="width:50upx;height:50upx;margin-top: 10upx;;"></image></view>
+			<view @tap="sendEmotion(0,41)" style="flex:1;text-align: center;"><image lazy-load src="../../../static/emotion/face00/41.gif" style="width:50upx;height:50upx;margin-top: 10upx;;"></image></view>
+			<view @tap="sendEmotion(0,42)" style="flex:1;text-align: center;"><image lazy-load src="../../../static/emotion/face00/42.gif" style="width:50upx;height:50upx;margin-top: 10upx;;"></image></view>
+			<view @tap="sendEmotion(0,43)" style="flex:1;text-align: center;"><image lazy-load src="../../../static/emotion/face00/43.gif" style="width:50upx;height:50upx;margin-top: 10upx;;"></image></view>
+			<view @tap="sendEmotion(0,44)" style="flex:1;text-align: center;"><image lazy-load src="../../../static/emotion/face00/44.gif" style="width:50upx;height:50upx;margin-top: 10upx;;"></image></view>
+			<view @tap="sendEmotion(0,45)" style="flex:1;text-align: center;"><image lazy-load src="../../../static/emotion/face00/45.gif" style="width:50upx;height:50upx;margin-top: 10upx;;"></image></view>
+			<view @tap="sendEmotion(0,46)" style="flex:1;text-align: center;"><image lazy-load src="../../../static/emotion/face00/46.gif" style="width:50upx;height:50upx;margin-top: 10upx;;"></image></view>
+			<view @tap="sendEmotion(0,47)" style="flex:1;text-align: center;"><image lazy-load src="../../../static/emotion/face00/47.gif" style="width:50upx;height:50upx;margin-top: 10upx;;"></image></view>
+		</view>	
+		<view style="display: flex;">
+			<view @tap="sendEmotion(0,48)" style="flex:1;text-align: center;"><image lazy-load src="../../../static/emotion/face00/48.gif" style="width:50upx;height:50upx;margin-top: 10upx;;"></image></view>
+			<view @tap="sendEmotion(0,49)" style="flex:1;text-align: center;"><image lazy-load src="../../../static/emotion/face00/49.gif" style="width:50upx;height:50upx;margin-top: 10upx;;"></image></view>
+			<view @tap="sendEmotion(0,50)" style="flex:1;text-align: center;"><image lazy-load src="../../../static/emotion/face00/50.gif" style="width:50upx;height:50upx;margin-top: 10upx;;"></image></view>
+			<view @tap="sendEmotion(0,51)" style="flex:1;text-align: center;"><image lazy-load src="../../../static/emotion/face00/51.gif" style="width:50upx;height:50upx;margin-top: 10upx;;"></image></view>
+			<view @tap="sendEmotion(0,52)" style="flex:1;text-align: center;"><image lazy-load src="../../../static/emotion/face00/52.gif" style="width:50upx;height:50upx;margin-top: 10upx;;"></image></view>
+			<view @tap="sendEmotion(0,53)" style="flex:1;text-align: center;"><image lazy-load src="../../../static/emotion/face00/53.gif" style="width:50upx;height:50upx;margin-top: 10upx;;"></image></view>
+			<view @tap="sendEmotion(0,54)" style="flex:1;text-align: center;"><image lazy-load src="../../../static/emotion/face00/54.gif" style="width:50upx;height:50upx;margin-top: 10upx;;"></image></view>
+			<view @tap="sendEmotion(0,55)" style="flex:1;text-align: center;"><image lazy-load src="../../../static/emotion/face00/55.gif" style="width:50upx;height:50upx;margin-top: 10upx;;"></image></view>
+		</view>
+		<view style="display: flex;">
+			<view @tap="sendEmotion(0,56)" style="flex:1;text-align: center;"><image lazy-load src="../../../static/emotion/face00/56.gif" style="width:50upx;height:50upx;margin-top: 10upx;;"></image></view>
+			<view @tap="sendEmotion(0,57)" style="flex:1;text-align: center;"><image lazy-load src="../../../static/emotion/face00/57.gif" style="width:50upx;height:50upx;margin-top: 10upx;;"></image></view>
+			<view @tap="sendEmotion(0,58)" style="flex:1;text-align: center;"><image lazy-load src="../../../static/emotion/face00/58.gif" style="width:50upx;height:50upx;margin-top: 10upx;;"></image></view>
+			<view @tap="sendEmotion(0,59)" style="flex:1;text-align: center;"><image lazy-load src="../../../static/emotion/face00/59.gif" style="width:50upx;height:50upx;margin-top: 10upx;;"></image></view>
+			<view @tap="sendEmotion(0,60)" style="flex:1;text-align: center;"><image lazy-load src="../../../static/emotion/face00/60.gif" style="width:50upx;height:50upx;margin-top: 10upx;;"></image></view>
+			<view @tap="sendEmotion(0,61)" style="flex:1;text-align: center;"><image lazy-load src="../../../static/emotion/face00/61.gif" style="width:50upx;height:50upx;margin-top: 10upx;;"></image></view>
+			<view @tap="sendEmotion(0,62)" style="flex:1;text-align: center;"><image lazy-load src="../../../static/emotion/face00/62.gif" style="width:50upx;height:50upx;margin-top: 10upx;;"></image></view>
+			<view @tap="sendEmotion(0,63)" style="flex:1;text-align: center;"><image lazy-load src="../../../static/emotion/face00/63.gif" style="width:50upx;height:50upx;margin-top: 10upx;;"></image></view>
+		</view>
+		<view style="display: flex;">
+			<view @tap="sendEmotion(0,64)" style="flex:1;text-align: center;"><image lazy-load src="../../../static/emotion/face00/64.gif" style="width:50upx;height:50upx;margin-top: 10upx;;"></image></view>
+			<view @tap="sendEmotion(0,65)" style="flex:1;text-align: center;"><image lazy-load src="../../../static/emotion/face00/65.gif" style="width:50upx;height:50upx;margin-top: 10upx;;"></image></view>
+			<view @tap="sendEmotion(0,66)" style="flex:1;text-align: center;"><image lazy-load src="../../../static/emotion/face00/66.gif" style="width:50upx;height:50upx;margin-top: 10upx;;"></image></view>
+			<view @tap="sendEmotion(0,67)" style="flex:1;text-align: center;"><image lazy-load src="../../../static/emotion/face00/67.gif" style="width:50upx;height:50upx;margin-top: 10upx;;"></image></view>
+			<view @tap="sendEmotion(0,68)" style="flex:1;text-align: center;"><image lazy-load src="../../../static/emotion/face00/68.gif" style="width:50upx;height:50upx;margin-top: 10upx;;"></image></view>
+			<view @tap="sendEmotion(0,69)" style="flex:1;text-align: center;"><image lazy-load src="../../../static/emotion/face00/69.gif" style="width:50upx;height:50upx;margin-top: 10upx;;"></image></view>
+			<view @tap="sendEmotion(0,70)" style="flex:1;text-align: center;"><image lazy-load src="../../../static/emotion/face00/70.gif" style="width:50upx;height:50upx;margin-top: 10upx;;"></image></view>
+			<view @tap="sendEmotion(0,71)" style="flex:1;text-align: center;"><image lazy-load src="../../../static/emotion/face00/71.gif" style="width:50upx;height:50upx;margin-top: 10upx;;"></image></view>
+		</view>
+		<view style="display: flex;">
+			<view @tap="sendEmotion(0,72)" style="flex:1;text-align: center;"><image lazy-load src="../../../static/emotion/face00/72.gif" style="width:50upx;height:50upx;margin-top: 10upx;;"></image></view>
+			<view @tap="sendEmotion(0,73)" style="flex:1;text-align: center;"><image lazy-load src="../../../static/emotion/face00/73.gif" style="width:50upx;height:50upx;margin-top: 10upx;;"></image></view>
+			<view @tap="sendEmotion(0,74)" style="flex:1;text-align: center;"><image lazy-load src="../../../static/emotion/face00/74.gif" style="width:50upx;height:50upx;margin-top: 10upx;;"></image></view>
+			<view @tap="sendEmotion(0,75)" style="flex:1;text-align: center;"><image lazy-load src="../../../static/emotion/face00/75.gif" style="width:50upx;height:50upx;margin-top: 10upx;;"></image></view>
+			<view @tap="sendEmotion(0,76)" style="flex:1;text-align: center;"><image lazy-load src="../../../static/emotion/face00/76.gif" style="width:50upx;height:50upx;margin-top: 10upx;;"></image></view>
+			<view @tap="sendEmotion(0,77)" style="flex:1;text-align: center;"><image lazy-load src="../../../static/emotion/face00/77.gif" style="width:50upx;height:50upx;margin-top: 10upx;;"></image></view>
+			<view @tap="sendEmotion(0,78)" style="flex:1;text-align: center;"><image lazy-load src="../../../static/emotion/face00/78.gif" style="width:50upx;height:50upx;margin-top: 10upx;;"></image></view>
+			<view @tap="sendEmotion(0,79)" style="flex:1;text-align: center;"><image lazy-load src="../../../static/emotion/face00/79.gif" style="width:50upx;height:50upx;margin-top: 10upx;;"></image></view>
+		</view>
+		<view style="display: flex;">
+			<view @tap="sendEmotion(0,80)" style="flex:1;text-align: center;"><image lazy-load src="../../../static/emotion/face00/80.gif" style="width:50upx;height:50upx;margin-top: 10upx;;"></image></view>
+			<view @tap="sendEmotion(0,81)" style="flex:1;text-align: center;"><image lazy-load src="../../../static/emotion/face00/81.gif" style="width:50upx;height:50upx;margin-top: 10upx;;"></image></view>
+			<view @tap="sendEmotion(0,82)" style="flex:1;text-align: center;"><image lazy-load src="../../../static/emotion/face00/82.gif" style="width:50upx;height:50upx;margin-top: 10upx;;"></image></view>
+			<view @tap="sendEmotion(0,83)" style="flex:1;text-align: center;"><image lazy-load src="../../../static/emotion/face00/83.gif" style="width:50upx;height:50upx;margin-top: 10upx;;"></image></view>
+			<view @tap="sendEmotion(0,84)" style="flex:1;text-align: center;"><image lazy-load src="../../../static/emotion/face00/84.gif" style="width:50upx;height:50upx;margin-top: 10upx;;"></image></view>
+			<view @tap="sendEmotion(0,85)" style="flex:1;text-align: center;"><image lazy-load src="../../../static/emotion/face00/85.gif" style="width:50upx;height:50upx;margin-top: 10upx;;"></image></view>
+			<view @tap="sendEmotion(0,86)" style="flex:1;text-align: center;"><image lazy-load src="../../../static/emotion/face00/86.gif" style="width:50upx;height:50upx;margin-top: 10upx;;"></image></view>
+			<view @tap="sendEmotion(0,87)" style="flex:1;text-align: center;"><image lazy-load src="../../../static/emotion/face00/87.gif" style="width:50upx;height:50upx;margin-top: 10upx;;"></image></view>
+		</view>
+		<view style="display: flex;">
+			<view @tap="sendEmotion(0,88)" style="flex:1;text-align: center;"><image lazy-load src="../../../static/emotion/face00/88.gif" style="width:50upx;height:50upx;margin-top: 10upx;;"></image></view>
+			<view @tap="sendEmotion(0,89)" style="flex:1;text-align: center;"><image lazy-load src="../../../static/emotion/face00/89.gif" style="width:50upx;height:50upx;margin-top: 10upx;;"></image></view>
+			<view @tap="sendEmotion(0,90)" style="flex:1;text-align: center;"><image lazy-load src="../../../static/emotion/face00/90.gif" style="width:50upx;height:50upx;margin-top: 10upx;;"></image></view>
+			<view @tap="sendEmotion(0,91)" style="flex:1;text-align: center;"><image lazy-load src="../../../static/emotion/face00/91.gif" style="width:50upx;height:50upx;margin-top: 10upx;;"></image></view>
+			<view @tap="sendEmotion(0,92)" style="flex:1;text-align: center;"><image lazy-load src="../../../static/emotion/face00/92.gif" style="width:50upx;height:50upx;margin-top: 10upx;;"></image></view>
+			<view @tap="sendEmotion(0,93)" style="flex:1;text-align: center;"><image lazy-load src="../../../static/emotion/face00/93.gif" style="width:50upx;height:50upx;margin-top: 10upx;;"></image></view>
+			<view @tap="sendEmotion(0,94)" style="flex:1;text-align: center;"><image lazy-load src="../../../static/emotion/face00/94.gif" style="width:50upx;height:50upx;margin-top: 10upx;;"></image></view>
+			<view @tap="sendEmotion(0,95)" style="flex:1;text-align: center;"><image lazy-load src="../../../static/emotion/face00/95.gif" style="width:50upx;height:50upx;margin-top: 10upx;;"></image></view>
+		</view>
+		<view style="display: flex;">
+			<view @tap="sendEmotion(0,96)" style="flex:1;text-align: center;"><image lazy-load src="../../../static/emotion/face00/96.gif" style="width:50upx;height:50upx;margin-top: 10upx;;"></image></view>
+			<view @tap="sendEmotion(0,97)" style="flex:1;text-align: center;"><image lazy-load src="../../../static/emotion/face00/97.gif" style="width:50upx;height:50upx;margin-top: 10upx;;"></image></view>
+			<view @tap="sendEmotion(0,98)" style="flex:1;text-align: center;"><image lazy-load src="../../../static/emotion/face00/98.gif" style="width:50upx;height:50upx;margin-top: 10upx;;"></image></view>
+			<view @tap="sendEmotion(0,99)" style="flex:1;text-align: center;"><image lazy-load src="../../../static/emotion/face00/99.gif" style="width:50upx;height:50upx;margin-top: 10upx;;"></image></view>
+			<view @tap="sendEmotion(0,100)" style="flex:1;text-align: center;"><image lazy-load src="../../../static/emotion/face00/100.gif" style="width:50upx;height:50upx;margin-top: 10upx;;"></image></view>
+			<view @tap="sendEmotion(0,101)" style="flex:1;text-align: center;"><image lazy-load src="../../../static/emotion/face00/101.gif" style="width:50upx;height:50upx;margin-top: 10upx;;"></image></view>
+			<view @tap="sendEmotion(0,102)" style="flex:1;text-align: center;"><image lazy-load src="../../../static/emotion/face00/102.gif" style="width:50upx;height:50upx;margin-top: 10upx;;"></image></view>
+			<view @tap="sendEmotion(0,103)" style="flex:1;text-align: center;"><image lazy-load src="../../../static/emotion/face00/103.gif" style="width:50upx;height:50upx;margin-top: 10upx;;"></image></view>
+		</view>
+		<view style="display: flex;">
+			<view @tap="sendEmotion(0,104)" style="flex:1;text-align: center;"><image lazy-load src="../../../static/emotion/face00/104.gif" style="width:50upx;height:50upx;margin-top: 10upx;;"></image></view>
+			<view  style="flex:1;text-align: center;"></view>
+			<view  style="flex:1;text-align: center;"></view>
+			<view  style="flex:1;text-align: center;"></view>
+			<view  style="flex:1;text-align: center;"></view>
+			<view  style="flex:1;text-align: center;"></view>
+			<view  style="flex:1;text-align: center;"></view>
+			<view  style="flex:1;text-align: center;"></view>
+		</view>
+	</view>
+
+				<view v-if="emotion==2">
+		<view style="display: flex;">
+			<view @tap="sendEmotion(1,0)" style="flex:1;text-align: center;"><image lazy-load src="../../../static/emotion/face01/0.png" style="width:50upx;height:50upx;margin-top: 10upx;;"></image></view>
+			<view @tap="sendEmotion(1,1)" style="flex:1;text-align: center;"><image lazy-load src="../../../static/emotion/face01/1.png" style="width:50upx;height:50upx;margin-top: 10upx;;"></image></view>
+			<view @tap="sendEmotion(1,2)" style="flex:1;text-align: center;"><image lazy-load src="../../../static/emotion/face01/2.png" style="width:50upx;height:50upx;margin-top: 10upx;;"></image></view>
+			<view @tap="sendEmotion(1,3)" style="flex:1;text-align: center;"><image lazy-load src="../../../static/emotion/face01/3.png" style="width:50upx;height:50upx;margin-top: 10upx;;"></image></view>
+			<view @tap="sendEmotion(1,4)" style="flex:1;text-align: center;"><image lazy-load src="../../../static/emotion/face01/4.png" style="width:50upx;height:50upx;margin-top: 10upx;;"></image></view>
+			<view @tap="sendEmotion(1,5)" style="flex:1;text-align: center;"><image lazy-load src="../../../static/emotion/face01/5.png" style="width:50upx;height:50upx;margin-top: 10upx;;"></image></view>
+			<view @tap="sendEmotion(1,6)" style="flex:1;text-align: center;"><image lazy-load src="../../../static/emotion/face01/6.png" style="width:50upx;height:50upx;margin-top: 10upx;;"></image></view>
+			<view @tap="sendEmotion(1,7)" style="flex:1;text-align: center;"><image lazy-load src="../../../static/emotion/face01/7.png" style="width:50upx;height:50upx;margin-top: 10upx;;"></image></view>
+		</view>
+		<view style="display: flex;">
+			<view @tap="sendEmotion(1,8)" style="flex:1;text-align: center;"><image lazy-load src="../../../static/emotion/face01/8.png" style="width:50upx;height:50upx;margin-top: 10upx;;"></image></view>
+			<view @tap="sendEmotion(1,9)" style="flex:1;text-align: center;"><image lazy-load src="../../../static/emotion/face01/9.png" style="width:50upx;height:50upx;margin-top: 10upx;;"></image></view>
+			<view @tap="sendEmotion(1,10)" style="flex:1;text-align: center;"><image lazy-load src="../../../static/emotion/face01/10.png" style="width:50upx;height:50upx;margin-top: 10upx;;"></image></view>
+			<view @tap="sendEmotion(1,11)" style="flex:1;text-align: center;"><image lazy-load src="../../../static/emotion/face01/11.png" style="width:50upx;height:50upx;margin-top: 10upx;;"></image></view>
+			<view @tap="sendEmotion(1,12)" style="flex:1;text-align: center;"><image lazy-load src="../../../static/emotion/face01/12.png" style="width:50upx;height:50upx;margin-top: 10upx;;"></image></view>
+			<view @tap="sendEmotion(1,13)" style="flex:1;text-align: center;"><image lazy-load src="../../../static/emotion/face01/13.png" style="width:50upx;height:50upx;margin-top: 10upx;;"></image></view>
+			<view @tap="sendEmotion(1,14)" style="flex:1;text-align: center;"><image lazy-load src="../../../static/emotion/face01/14.png" style="width:50upx;height:50upx;margin-top: 10upx;;"></image></view>
+			<view @tap="sendEmotion(1,15)" style="flex:1;text-align: center;"><image lazy-load src="../../../static/emotion/face01/15.png" style="width:50upx;height:50upx;margin-top: 10upx;;"></image></view>
+			
+		</view>
+		<view style="display: flex;">
+			<view @tap="sendEmotion(1,16)" style="flex:1;text-align: center;"><image lazy-load src="../../../static/emotion/face01/16.png" style="width:50upx;height:50upx;margin-top: 10upx;;"></image></view>
+			<view @tap="sendEmotion(1,17)" style="flex:1;text-align: center;"><image lazy-load src="../../../static/emotion/face01/17.png" style="width:50upx;height:50upx;margin-top: 10upx;;"></image></view>
+			<view @tap="sendEmotion(1,18)" style="flex:1;text-align: center;"><image lazy-load src="../../../static/emotion/face01/18.png" style="width:50upx;height:50upx;margin-top: 10upx;;"></image></view>
+			<view @tap="sendEmotion(1,19)" style="flex:1;text-align: center;"><image lazy-load src="../../../static/emotion/face01/19.png" style="width:50upx;height:50upx;margin-top: 10upx;;"></image></view>
+			<view @tap="sendEmotion(1,20)" style="flex:1;text-align: center;"><image lazy-load src="../../../static/emotion/face01/20.png" style="width:50upx;height:50upx;margin-top: 10upx;;"></image></view>
+			<view @tap="sendEmotion(1,21)" style="flex:1;text-align: center;"><image lazy-load src="../../../static/emotion/face01/21.png" style="width:50upx;height:50upx;margin-top: 10upx;;"></image></view>
+			<view @tap="sendEmotion(1,22)" style="flex:1;text-align: center;"><image lazy-load src="../../../static/emotion/face01/22.png" style="width:50upx;height:50upx;margin-top: 10upx;;"></image></view>
+			<view @tap="sendEmotion(1,23)" style="flex:1;text-align: center;"><image lazy-load src="../../../static/emotion/face01/23.png" style="width:50upx;height:50upx;margin-top: 10upx;;"></image></view>
+			
+		</view>
+		<view style="display: flex;">
+			<view @tap="sendEmotion(1,24)" style="flex:1;text-align: center;"><image lazy-load src="../../../static/emotion/face01/24.png" style="width:50upx;height:50upx;margin-top: 10upx;;"></image></view>
+			<view @tap="sendEmotion(1,25)" style="flex:1;text-align: center;"><image lazy-load src="../../../static/emotion/face01/25.png" style="width:50upx;height:50upx;margin-top: 10upx;;"></image></view>
+			<view @tap="sendEmotion(1,26)" style="flex:1;text-align: center;"><image lazy-load src="../../../static/emotion/face01/26.png" style="width:50upx;height:50upx;margin-top: 10upx;;"></image></view>
+			<view @tap="sendEmotion(1,27)" style="flex:1;text-align: center;"><image lazy-load src="../../../static/emotion/face01/27.png" style="width:50upx;height:50upx;margin-top: 10upx;;"></image></view>
+			<view @tap="sendEmotion(1,28)" style="flex:1;text-align: center;"><image lazy-load src="../../../static/emotion/face01/28.png" style="width:50upx;height:50upx;margin-top: 10upx;;"></image></view>
+			<view @tap="sendEmotion(1,29)" style="flex:1;text-align: center;"><image lazy-load src="../../../static/emotion/face01/29.png" style="width:50upx;height:50upx;margin-top: 10upx;;"></image></view>
+			<view @tap="sendEmotion(1,30)" style="flex:1;text-align: center;"><image lazy-load src="../../../static/emotion/face01/30.png" style="width:50upx;height:50upx;margin-top: 10upx;;"></image></view>
+			<view @tap="sendEmotion(1,31)" style="flex:1;text-align: center;"><image lazy-load src="../../../static/emotion/face01/31.png" style="width:50upx;height:50upx;margin-top: 10upx;;"></image></view>
+		</view>
+		<view style="display: flex;">
+			<view @tap="sendEmotion(1,32)" style="flex:1;text-align: center;"><image lazy-load src="../../../static/emotion/face01/32.png" style="width:50upx;height:50upx;margin-top: 10upx;;"></image></view>
+			<view @tap="sendEmotion(1,33)" style="flex:1;text-align: center;"><image lazy-load src="../../../static/emotion/face01/33.png" style="width:50upx;height:50upx;margin-top: 10upx;;"></image></view>
+			<view @tap="sendEmotion(1,34)" style="flex:1;text-align: center;"><image lazy-load src="../../../static/emotion/face01/34.png" style="width:50upx;height:50upx;margin-top: 10upx;;"></image></view>
+			<view @tap="sendEmotion(1,35)" style="flex:1;text-align: center;"><image lazy-load src="../../../static/emotion/face01/35.png" style="width:50upx;height:50upx;margin-top: 10upx;;"></image></view>
+			<view @tap="sendEmotion(1,36)" style="flex:1;text-align: center;"><image lazy-load src="../../../static/emotion/face01/36.png" style="width:50upx;height:50upx;margin-top: 10upx;;"></image></view>
+			<view @tap="sendEmotion(1,37)" style="flex:1;text-align: center;"><image lazy-load src="../../../static/emotion/face01/37.png" style="width:50upx;height:50upx;margin-top: 10upx;;"></image></view>
+			<view @tap="sendEmotion(1,38)" style="flex:1;text-align: center;"><image lazy-load src="../../../static/emotion/face01/38.png" style="width:50upx;height:50upx;margin-top: 10upx;;"></image></view>
+			<view @tap="sendEmotion(1,39)" style="flex:1;text-align: center;"><image lazy-load src="../../../static/emotion/face01/39.png" style="width:50upx;height:50upx;margin-top: 10upx;;"></image></view>
+		</view>	
+		<view style="display: flex;">
+			<view @tap="sendEmotion(1,40)" style="flex:1;text-align: center;"><image lazy-load src="../../../static/emotion/face01/40.png" style="width:50upx;height:50upx;margin-top: 10upx;;"></image></view>
+			<view @tap="sendEmotion(1,41)" style="flex:1;text-align: center;"><image lazy-load src="../../../static/emotion/face01/41.png" style="width:50upx;height:50upx;margin-top: 10upx;;"></image></view>
+			<view @tap="sendEmotion(1,42)" style="flex:1;text-align: center;"><image lazy-load src="../../../static/emotion/face01/42.png" style="width:50upx;height:50upx;margin-top: 10upx;;"></image></view>
+			<view @tap="sendEmotion(1,43)" style="flex:1;text-align: center;"><image lazy-load src="../../../static/emotion/face01/43.png" style="width:50upx;height:50upx;margin-top: 10upx;;"></image></view>
+			<view @tap="sendEmotion(1,44)" style="flex:1;text-align: center;"><image lazy-load src="../../../static/emotion/face01/44.png" style="width:50upx;height:50upx;margin-top: 10upx;;"></image></view>
+			<view @tap="sendEmotion(1,45)" style="flex:1;text-align: center;"><image lazy-load src="../../../static/emotion/face01/45.png" style="width:50upx;height:50upx;margin-top: 10upx;;"></image></view>
+			<view @tap="sendEmotion(1,46)" style="flex:1;text-align: center;"><image lazy-load src="../../../static/emotion/face01/46.png" style="width:50upx;height:50upx;margin-top: 10upx;;"></image></view>
+			<view @tap="sendEmotion(1,47)" style="flex:1;text-align: center;"><image lazy-load src="../../../static/emotion/face01/47.png" style="width:50upx;height:50upx;margin-top: 10upx;;"></image></view>
+		</view>	
+		<view style="display: flex;">
+			<view @tap="sendEmotion(1,48)" style="flex:1;text-align: center;"><image lazy-load src="../../../static/emotion/face01/48.png" style="width:50upx;height:50upx;margin-top: 10upx;;"></image></view>
+			<view @tap="sendEmotion(1,49)" style="flex:1;text-align: center;"><image lazy-load src="../../../static/emotion/face01/49.png" style="width:50upx;height:50upx;margin-top: 10upx;;"></image></view>
+			<view @tap="sendEmotion(1,50)" style="flex:1;text-align: center;"><image lazy-load src="../../../static/emotion/face01/50.png" style="width:50upx;height:50upx;margin-top: 10upx;;"></image></view>
+			<view @tap="sendEmotion(1,51)" style="flex:1;text-align: center;"><image lazy-load src="../../../static/emotion/face01/51.png" style="width:50upx;height:50upx;margin-top: 10upx;;"></image></view>
+			<view @tap="sendEmotion(1,52)" style="flex:1;text-align: center;"><image lazy-load src="../../../static/emotion/face01/52.png" style="width:50upx;height:50upx;margin-top: 10upx;;"></image></view>
+			<view @tap="sendEmotion(1,53)" style="flex:1;text-align: center;"><image lazy-load src="../../../static/emotion/face01/53.png" style="width:50upx;height:50upx;margin-top: 10upx;;"></image></view>
+			<view @tap="sendEmotion(1,54)" style="flex:1;text-align: center;"><image lazy-load src="../../../static/emotion/face01/54.png" style="width:50upx;height:50upx;margin-top: 10upx;;"></image></view>
+			<view @tap="sendEmotion(1,55)" style="flex:1;text-align: center;"><image lazy-load src="../../../static/emotion/face01/55.png" style="width:50upx;height:50upx;margin-top: 10upx;;"></image></view>
+		</view>
+		<view style="display: flex;">
+			<view @tap="sendEmotion(1,56)" style="flex:1;text-align: center;"><image lazy-load src="../../../static/emotion/face01/56.png" style="width:50upx;height:50upx;margin-top: 10upx;;"></image></view>
+			<view @tap="sendEmotion(1,57)" style="flex:1;text-align: center;"><image lazy-load src="../../../static/emotion/face01/57.png" style="width:50upx;height:50upx;margin-top: 10upx;;"></image></view>
+			<view @tap="sendEmotion(1,58)" style="flex:1;text-align: center;"><image lazy-load src="../../../static/emotion/face01/58.png" style="width:50upx;height:50upx;margin-top: 10upx;;"></image></view>
+			<view @tap="sendEmotion(1,59)" style="flex:1;text-align: center;"><image lazy-load src="../../../static/emotion/face01/59.png" style="width:50upx;height:50upx;margin-top: 10upx;;"></image></view>
+			<view @tap="sendEmotion(1,60)" style="flex:1;text-align: center;"><image lazy-load src="../../../static/emotion/face01/60.png" style="width:50upx;height:50upx;margin-top: 10upx;;"></image></view>
+			<view @tap="sendEmotion(1,61)" style="flex:1;text-align: center;"><image lazy-load src="../../../static/emotion/face01/61.png" style="width:50upx;height:50upx;margin-top: 10upx;;"></image></view>
+			<view @tap="sendEmotion(1,62)" style="flex:1;text-align: center;"><image lazy-load src="../../../static/emotion/face01/62.png" style="width:50upx;height:50upx;margin-top: 10upx;;"></image></view>
+			<view @tap="sendEmotion(1,63)" style="flex:1;text-align: center;"><image lazy-load src="../../../static/emotion/face01/63.png" style="width:50upx;height:50upx;margin-top: 10upx;;"></image></view>
+		</view>
+		<view style="display: flex;">
+			<view @tap="sendEmotion(1,64)" style="flex:1;text-align: center;"><image lazy-load src="../../../static/emotion/face01/64.png" style="width:50upx;height:50upx;margin-top: 10upx;;"></image></view>
+			<view @tap="sendEmotion(1,65)" style="flex:1;text-align: center;"><image lazy-load src="../../../static/emotion/face01/65.png" style="width:50upx;height:50upx;margin-top: 10upx;;"></image></view>
+			<view @tap="sendEmotion(1,66)" style="flex:1;text-align: center;"><image lazy-load src="../../../static/emotion/face01/66.png" style="width:50upx;height:50upx;margin-top: 10upx;;"></image></view>
+			<view @tap="sendEmotion(1,67)" style="flex:1;text-align: center;"><image lazy-load src="../../../static/emotion/face01/67.png" style="width:50upx;height:50upx;margin-top: 10upx;;"></image></view>
+			<view @tap="sendEmotion(1,68)" style="flex:1;text-align: center;"><image lazy-load src="../../../static/emotion/face01/68.png" style="width:50upx;height:50upx;margin-top: 10upx;;"></image></view>
+			<view @tap="sendEmotion(1,69)" style="flex:1;text-align: center;"><image lazy-load src="../../../static/emotion/face01/69.png" style="width:50upx;height:50upx;margin-top: 10upx;;"></image></view>
+			<view @tap="sendEmotion(1,70)" style="flex:1;text-align: center;"><image lazy-load src="../../../static/emotion/face01/70.png" style="width:50upx;height:50upx;margin-top: 10upx;;"></image></view>
+			<view @tap="sendEmotion(1,71)" style="flex:1;text-align: center;"><image lazy-load src="../../../static/emotion/face01/71.png" style="width:50upx;height:50upx;margin-top: 10upx;;"></image></view>
+		</view>
+		<view style="display: flex;">
+			<view @tap="sendEmotion(1,72)" style="flex:1;text-align: center;"><image lazy-load src="../../../static/emotion/face01/72.png" style="width:50upx;height:50upx;margin-top: 10upx;;"></image></view>
+			<view @tap="sendEmotion(1,73)" style="flex:1;text-align: center;"><image lazy-load src="../../../static/emotion/face01/73.png" style="width:50upx;height:50upx;margin-top: 10upx;;"></image></view>
+			<view @tap="sendEmotion(1,74)" style="flex:1;text-align: center;"><image lazy-load src="../../../static/emotion/face01/74.png" style="width:50upx;height:50upx;margin-top: 10upx;;"></image></view>
+			<view @tap="sendEmotion(1,75)" style="flex:1;text-align: center;"><image lazy-load src="../../../static/emotion/face01/75.png" style="width:50upx;height:50upx;margin-top: 10upx;;"></image></view>
+			<view @tap="sendEmotion(1,76)" style="flex:1;text-align: center;"><image lazy-load src="../../../static/emotion/face01/76.png" style="width:50upx;height:50upx;margin-top: 10upx;;"></image></view>
+			<view @tap="sendEmotion(1,77)" style="flex:1;text-align: center;"><image lazy-load src="../../../static/emotion/face01/77.png" style="width:50upx;height:50upx;margin-top: 10upx;;"></image></view>
+			<view @tap="sendEmotion(1,78)" style="flex:1;text-align: center;"><image lazy-load src="../../../static/emotion/face01/78.png" style="width:50upx;height:50upx;margin-top: 10upx;;"></image></view>
+			<view @tap="sendEmotion(1,79)" style="flex:1;text-align: center;"><image lazy-load src="../../../static/emotion/face01/79.png" style="width:50upx;height:50upx;margin-top: 10upx;;"></image></view>
+		</view>
+		<view style="display: flex;">
+			<view @tap="sendEmotion(1,80)" style="flex:1;text-align: center;"><image lazy-load src="../../../static/emotion/face01/80.png" style="width:50upx;height:50upx;margin-top: 10upx;;"></image></view>
+			<view @tap="sendEmotion(1,81)" style="flex:1;text-align: center;"><image lazy-load src="../../../static/emotion/face01/81.png" style="width:50upx;height:50upx;margin-top: 10upx;;"></image></view>
+			<view @tap="sendEmotion(1,82)" style="flex:1;text-align: center;"><image lazy-load src="../../../static/emotion/face01/82.png" style="width:50upx;height:50upx;margin-top: 10upx;;"></image></view>
+			<view @tap="sendEmotion(1,83)" style="flex:1;text-align: center;"><image lazy-load src="../../../static/emotion/face01/83.png" style="width:50upx;height:50upx;margin-top: 10upx;;"></image></view>
+			<view @tap="sendEmotion(1,84)" style="flex:1;text-align: center;"><image lazy-load src="../../../static/emotion/face01/84.png" style="width:50upx;height:50upx;margin-top: 10upx;;"></image></view>
+			<view @tap="sendEmotion(1,85)" style="flex:1;text-align: center;"><image lazy-load src="../../../static/emotion/face01/85.png" style="width:50upx;height:50upx;margin-top: 10upx;;"></image></view>
+			<view @tap="sendEmotion(1,86)" style="flex:1;text-align: center;"><image lazy-load src="../../../static/emotion/face01/86.png" style="width:50upx;height:50upx;margin-top: 10upx;;"></image></view>
+			<view @tap="sendEmotion(1,87)" style="flex:1;text-align: center;"><image lazy-load src="../../../static/emotion/face01/87.png" style="width:50upx;height:50upx;margin-top: 10upx;;"></image></view>
+		</view>
+		<view style="display: flex;">
+			<view @tap="sendEmotion(1,88)" style="flex:1;text-align: center;"><image lazy-load src="../../../static/emotion/face01/88.png" style="width:50upx;height:50upx;margin-top: 10upx;;"></image></view>
+			<view @tap="sendEmotion(1,89)" style="flex:1;text-align: center;"><image lazy-load src="../../../static/emotion/face01/89.png" style="width:50upx;height:50upx;margin-top: 10upx;;"></image></view>
+			<view @tap="sendEmotion(1,90)" style="flex:1;text-align: center;"><image lazy-load src="../../../static/emotion/face01/90.png" style="width:50upx;height:50upx;margin-top: 10upx;;"></image></view>
+			<view @tap="sendEmotion(1,91)" style="flex:1;text-align: center;"><image lazy-load src="../../../static/emotion/face01/91.png" style="width:50upx;height:50upx;margin-top: 10upx;;"></image></view>
+			<view @tap="sendEmotion(1,92)" style="flex:1;text-align: center;"><image lazy-load src="../../../static/emotion/face01/92.png" style="width:50upx;height:50upx;margin-top: 10upx;;"></image></view>
+			<view @tap="sendEmotion(1,93)" style="flex:1;text-align: center;"><image lazy-load src="../../../static/emotion/face01/93.png" style="width:50upx;height:50upx;margin-top: 10upx;;"></image></view>
+			<view @tap="sendEmotion(1,94)" style="flex:1;text-align: center;"><image lazy-load src="../../../static/emotion/face01/94.png" style="width:50upx;height:50upx;margin-top: 10upx;;"></image></view>
+			<view @tap="sendEmotion(1,95)" style="flex:1;text-align: center;"><image lazy-load src="../../../static/emotion/face01/95.png" style="width:50upx;height:50upx;margin-top: 10upx;;"></image></view>
+		</view>
+		<view style="display: flex;">
+			<view @tap="sendEmotion(1,96)" style="flex:1;text-align: center;"><image lazy-load src="../../../static/emotion/face01/96.png" style="width:50upx;height:50upx;margin-top: 10upx;;"></image></view>
+			<view @tap="sendEmotion(1,97)" style="flex:1;text-align: center;"><image lazy-load src="../../../static/emotion/face01/97.png" style="width:50upx;height:50upx;margin-top: 10upx;;"></image></view>
+			<view @tap="sendEmotion(1,98)" style="flex:1;text-align: center;"><image lazy-load src="../../../static/emotion/face01/98.png" style="width:50upx;height:50upx;margin-top: 10upx;;"></image></view>
+			<view @tap="sendEmotion(1,99)" style="flex:1;text-align: center;"><image lazy-load src="../../../static/emotion/face01/99.png" style="width:50upx;height:50upx;margin-top: 10upx;;"></image></view>
+			<view @tap="sendEmotion(1,100)" style="flex:1;text-align: center;"><image lazy-load src="../../../static/emotion/face01/100.png" style="width:50upx;height:50upx;margin-top: 10upx;;"></image></view>
+			<view @tap="sendEmotion(1,101)" style="flex:1;text-align: center;"><image lazy-load src="../../../static/emotion/face01/101.png" style="width:50upx;height:50upx;margin-top: 10upx;;"></image></view>
+			<view @tap="sendEmotion(1,102)" style="flex:1;text-align: center;"><image lazy-load src="../../../static/emotion/face01/102.png" style="width:50upx;height:50upx;margin-top: 10upx;;"></image></view>
+			<view @tap="sendEmotion(1,103)" style="flex:1;text-align: center;"><image lazy-load src="../../../static/emotion/face01/103.png" style="width:50upx;height:50upx;margin-top: 10upx;;"></image></view>
+		</view>
+		<view style="display: flex;">
+			<view @tap="sendEmotion(1,104)" style="flex:1;text-align: center;"><image lazy-load src="../../../static/emotion/face01/104.png" style="width:50upx;height:50upx;margin-top: 10upx;;"></image></view>
+			<view  style="flex:1;text-align: center;"></view>
+			<view  style="flex:1;text-align: center;"></view>
+			<view  style="flex:1;text-align: center;"></view>
+			<view  style="flex:1;text-align: center;"></view>
+			<view  style="flex:1;text-align: center;"></view>
+			<view  style="flex:1;text-align: center;"></view>
+			<view  style="flex:1;text-align: center;"></view>
+		</view>
+	</view>
+				
+				
+				<view v-if="emotion==3">
+					<view style="display: flex;">
+						<view @tap="sendEmotion(2,0)" style="flex:1;text-align: center;"><image lazy-load src="../../../static/emotion/face02/0.gif" style="width:80upx;height:80upx;margin-top: 10upx;;"></image></view>
+						<view @tap="sendEmotion(2,1)" style="flex:1;text-align: center;"><image lazy-load src="../../../static/emotion/face02/1.gif" style="width:80upx;height:80upx;margin-top: 10upx;;"></image></view>
+						<view @tap="sendEmotion(2,2)" style="flex:1;text-align: center;"><image lazy-load src="../../../static/emotion/face02/2.gif" style="width:80upx;height:80upx;margin-top: 10upx;;"></image></view>
+						<view @tap="sendEmotion(2,3)" style="flex:1;text-align: center;"><image lazy-load src="../../../static/emotion/face02/3.gif" style="width:80upx;height:80upx;margin-top: 10upx;;"></image></view>
+						<view @tap="sendEmotion(2,4)" style="flex:1;text-align: center;"><image lazy-load src="../../../static/emotion/face02/4.gif" style="width:80upx;height:80upx;margin-top: 10upx;;"></image></view>
+						
+					</view>
+					<view style="display: flex;">
+						<view @tap="sendEmotion(2,5)" style="flex:1;text-align: center;"><image lazy-load src="../../../static/emotion/face02/5.gif" style="width:80upx;height:80upx;margin-top: 10upx;;"></image></view>
+						<view @tap="sendEmotion(2,6)" style="flex:1;text-align: center;"><image lazy-load src="../../../static/emotion/face02/6.gif" style="width:80upx;height:80upx;margin-top: 10upx;;"></image></view>
+						<view @tap="sendEmotion(2,7)" style="flex:1;text-align: center;"><image lazy-load src="../../../static/emotion/face02/7.gif" style="width:80upx;height:80upx;margin-top: 10upx;;"></image></view>
+						<view @tap="sendEmotion(2,8)" style="flex:1;text-align: center;"><image lazy-load src="../../../static/emotion/face02/8.gif" style="width:80upx;height:80upx;margin-top: 10upx;;"></image></view>
+						<view @tap="sendEmotion(2,9)" style="flex:1;text-align: center;"><image lazy-load src="../../../static/emotion/face02/9.gif" style="width:80upx;height:80upx;margin-top: 10upx;;"></image></view>
+					</view>
+					<view style="display: flex;">
+						<view @tap="sendEmotion(2,10)" style="flex:1;text-align: center;"><image lazy-load src="../../../static/emotion/face02/10.gif" style="width:80upx;height:80upx;margin-top: 10upx;;"></image></view>
+						<view @tap="sendEmotion(2,11)" style="flex:1;text-align: center;"><image lazy-load src="../../../static/emotion/face02/11.gif" style="width:80upx;height:80upx;margin-top: 10upx;;"></image></view>
+						<view @tap="sendEmotion(2,12)" style="flex:1;text-align: center;"><image lazy-load src="../../../static/emotion/face02/12.gif" style="width:80upx;height:80upx;margin-top: 10upx;;"></image></view>
+						<view @tap="sendEmotion(2,13)" style="flex:1;text-align: center;"><image lazy-load src="../../../static/emotion/face02/13.gif" style="width:80upx;height:80upx;margin-top: 10upx;;"></image></view>
+						<view @tap="sendEmotion(2,14)" style="flex:1;text-align: center;"><image lazy-load src="../../../static/emotion/face02/14.gif" style="width:80upx;height:80upx;margin-top: 10upx;;"></image></view>
+					</view>	
+					<view style="display: flex;">
+						<view @tap="sendEmotion(2,15)" style="flex:1;text-align: center;"><image lazy-load src="../../../static/emotion/face02/15.gif" style="width:80upx;height:80upx;margin-top: 10upx;;"></image></view>
+						<view  style="flex:1;text-align: center;"></view>
+						<view  style="flex:1;text-align: center;"></view>
+						<view  style="flex:1;text-align: center;"></view>
+						<view  style="flex:1;text-align: center;"></view>
+					</view>	
 				</view>
-				<view @tap="showEmotion(3)" :style="emotion==3?'background: #fff;':''" style="flex:1;height:100%;text-align: center;">
-					<image lazy-load src="../../../static/emotion/face02/face-lbl.gif" style="width:50upx;height:50upx;margin-top: 10upx;;"></image>
+				
+				<view v-if="emotion==4">
+					<view style="display: flex;">
+						<view @tap="sendEmotion(3,0)" style="flex:1;text-align: center;"><image lazy-load src="../../../static/emotion/face03/0.gif" style="width:80upx;height:80upx;margin-top: 10upx;;"></image></view>
+						<view @tap="sendEmotion(3,1)" style="flex:1;text-align: center;"><image lazy-load src="../../../static/emotion/face03/1.gif" style="width:80upx;height:80upx;margin-top: 10upx;;"></image></view>
+						<view @tap="sendEmotion(3,2)" style="flex:1;text-align: center;"><image lazy-load src="../../../static/emotion/face03/2.gif" style="width:80upx;height:80upx;margin-top: 10upx;;"></image></view>
+						<view @tap="sendEmotion(3,3)" style="flex:1;text-align: center;"><image lazy-load src="../../../static/emotion/face03/3.gif" style="width:80upx;height:80upx;margin-top: 10upx;;"></image></view>
+						<view @tap="sendEmotion(3,4)" style="flex:1;text-align: center;"><image lazy-load src="../../../static/emotion/face03/4.gif" style="width:80upx;height:80upx;margin-top: 10upx;;"></image></view>
+						
+					</view>
+					<view style="display: flex;">
+						<view @tap="sendEmotion(3,5)" style="flex:1;text-align: center;"><image lazy-load src="../../../static/emotion/face03/5.gif" style="width:80upx;height:80upx;margin-top: 10upx;;"></image></view>
+						<view @tap="sendEmotion(3,6)" style="flex:1;text-align: center;"><image lazy-load src="../../../static/emotion/face03/6.gif" style="width:80upx;height:80upx;margin-top: 10upx;;"></image></view>
+						<view @tap="sendEmotion(3,7)" style="flex:1;text-align: center;"><image lazy-load src="../../../static/emotion/face03/7.gif" style="width:80upx;height:80upx;margin-top: 10upx;;"></image></view>
+						<view @tap="sendEmotion(3,8)" style="flex:1;text-align: center;"><image lazy-load src="../../../static/emotion/face03/8.gif" style="width:80upx;height:80upx;margin-top: 10upx;;"></image></view>
+						<view @tap="sendEmotion(3,9)" style="flex:1;text-align: center;"><image lazy-load src="../../../static/emotion/face03/9.gif" style="width:80upx;height:80upx;margin-top: 10upx;;"></image></view>
+					</view>
+					<view style="display: flex;">
+						<view @tap="sendEmotion(3,10)" style="flex:1;text-align: center;"><image lazy-load src="../../../static/emotion/face03/10.gif" style="width:80upx;height:80upx;margin-top: 10upx;;"></image></view>
+						<view @tap="sendEmotion(3,11)" style="flex:1;text-align: center;"><image lazy-load src="../../../static/emotion/face03/11.gif" style="width:80upx;height:80upx;margin-top: 10upx;;"></image></view>
+						<view @tap="sendEmotion(3,12)" style="flex:1;text-align: center;"><image lazy-load src="../../../static/emotion/face03/12.gif" style="width:80upx;height:80upx;margin-top: 10upx;;"></image></view>
+						<view @tap="sendEmotion(3,13)" style="flex:1;text-align: center;"><image lazy-load src="../../../static/emotion/face03/13.gif" style="width:80upx;height:80upx;margin-top: 10upx;;"></image></view>
+						<view @tap="sendEmotion(3,14)" style="flex:1;text-align: center;"><image lazy-load src="../../../static/emotion/face03/14.gif" style="width:80upx;height:80upx;margin-top: 10upx;;"></image></view>
+					</view>	
+					<view style="display: flex;">
+						<view @tap="sendEmotion(3,15)" style="flex:1;text-align: center;"><image lazy-load src="../../../static/emotion/face03/15.gif" style="width:80upx;height:80upx;margin-top: 10upx;;"></image></view>
+						<view  style="flex:1;text-align: center;"></view>
+						<view  style="flex:1;text-align: center;"></view>
+						<view  style="flex:1;text-align: center;"></view>
+						<view  style="flex:1;text-align: center;"></view>
+					</view>	
 				</view>
-				<view @tap="showEmotion(4)" :style="emotion==4?'background: #fff;':''" style="flex:1;height:100%;text-align: center;">
-					<image lazy-load src="../../../static/emotion/face03/face-lbl.gif" style="width:50upx;height:50upx;margin-top: 10upx;;"></image>
+
+
+				<view v-if="emotion==5">
+					<view style="display: flex;">
+						<view @tap="sendEmotion(4,0)" style="flex:1;text-align: center;"><image lazy-load src="../../../static/emotion/face04/0.gif" style="width:80upx;height:80upx;margin-top: 10upx;;"></image></view>
+						<view @tap="sendEmotion(4,1)" style="flex:1;text-align: center;"><image lazy-load src="../../../static/emotion/face04/1.gif" style="width:80upx;height:80upx;margin-top: 10upx;;"></image></view>
+						<view @tap="sendEmotion(4,2)" style="flex:1;text-align: center;"><image lazy-load src="../../../static/emotion/face04/2.gif" style="width:80upx;height:80upx;margin-top: 10upx;;"></image></view>
+						<view @tap="sendEmotion(4,3)" style="flex:1;text-align: center;"><image lazy-load src="../../../static/emotion/face04/3.gif" style="width:80upx;height:80upx;margin-top: 10upx;;"></image></view>
+						<view @tap="sendEmotion(4,4)" style="flex:1;text-align: center;"><image lazy-load src="../../../static/emotion/face04/4.gif" style="width:80upx;height:80upx;margin-top: 10upx;;"></image></view>
+						
+					</view>
+					<view style="display: flex;">
+						<view @tap="sendEmotion(4,5)" style="flex:1;text-align: center;"><image lazy-load src="../../../static/emotion/face04/5.gif" style="width:80upx;height:80upx;margin-top: 10upx;;"></image></view>
+						<view @tap="sendEmotion(4,6)" style="flex:1;text-align: center;"><image lazy-load src="../../../static/emotion/face04/6.gif" style="width:80upx;height:80upx;margin-top: 10upx;;"></image></view>
+						<view @tap="sendEmotion(4,7)" style="flex:1;text-align: center;"><image lazy-load src="../../../static/emotion/face04/7.gif" style="width:80upx;height:80upx;margin-top: 10upx;;"></image></view>
+						<view @tap="sendEmotion(4,8)" style="flex:1;text-align: center;"><image lazy-load src="../../../static/emotion/face04/8.gif" style="width:80upx;height:80upx;margin-top: 10upx;;"></image></view>
+						<view @tap="sendEmotion(4,9)" style="flex:1;text-align: center;"><image lazy-load src="../../../static/emotion/face04/9.gif" style="width:80upx;height:80upx;margin-top: 10upx;;"></image></view>
+					</view>
+					<view style="display: flex;">
+						<view @tap="sendEmotion(4,10)" style="flex:1;text-align: center;"><image lazy-load src="../../../static/emotion/face04/10.gif" style="width:80upx;height:80upx;margin-top: 10upx;;"></image></view>
+						<view @tap="sendEmotion(4,11)" style="flex:1;text-align: center;"><image lazy-load src="../../../static/emotion/face04/11.gif" style="width:80upx;height:80upx;margin-top: 10upx;;"></image></view>
+						<view @tap="sendEmotion(4,12)" style="flex:1;text-align: center;"><image lazy-load src="../../../static/emotion/face04/12.gif" style="width:80upx;height:80upx;margin-top: 10upx;;"></image></view>
+						<view @tap="sendEmotion(4,13)" style="flex:1;text-align: center;"><image lazy-load src="../../../static/emotion/face04/13.gif" style="width:80upx;height:80upx;margin-top: 10upx;;"></image></view>
+						<view @tap="sendEmotion(4,14)" style="flex:1;text-align: center;"><image lazy-load src="../../../static/emotion/face04/14.gif" style="width:80upx;height:80upx;margin-top: 10upx;;"></image></view>
+					</view>	
+					<view style="display: flex;">
+						<view @tap="sendEmotion(4,15)" style="flex:1;text-align: center;"><image lazy-load src="../../../static/emotion/face04/15.gif" style="width:80upx;height:80upx;margin-top: 10upx;;"></image></view>
+						<view  style="flex:1;text-align: center;"></view>
+						<view  style="flex:1;text-align: center;"></view>
+						<view  style="flex:1;text-align: center;"></view>
+						<view  style="flex:1;text-align: center;"></view>
+					</view>	
 				</view>
-				<view @tap="showEmotion(5)" :style="emotion==5?'background: #fff;':''" style="flex:1;height:100%;text-align: center;">
-					<image lazy-load src="../../../static/emotion/face04/face-lbl.gif" style="width:50upx;height:50upx;margin-top: 10upx;;"></image>
+
+				<view v-if="emotion==6">
+					<view style="display: flex;">
+						<view @tap="sendEmotion(5,0)" style="flex:1;text-align: center;"><image lazy-load src="../../../static/emotion/face05/0.gif" style="width:80upx;height:80upx;margin-top: 10upx;;"></image></view>
+						<view @tap="sendEmotion(5,1)" style="flex:1;text-align: center;"><image lazy-load src="../../../static/emotion/face05/1.gif" style="width:80upx;height:80upx;margin-top: 10upx;;"></image></view>
+						<view @tap="sendEmotion(5,2)" style="flex:1;text-align: center;"><image lazy-load src="../../../static/emotion/face05/2.gif" style="width:80upx;height:80upx;margin-top: 10upx;;"></image></view>
+						<view @tap="sendEmotion(5,3)" style="flex:1;text-align: center;"><image lazy-load src="../../../static/emotion/face05/3.gif" style="width:80upx;height:80upx;margin-top: 10upx;;"></image></view>
+						<view @tap="sendEmotion(5,4)" style="flex:1;text-align: center;"><image lazy-load src="../../../static/emotion/face05/4.gif" style="width:80upx;height:80upx;margin-top: 10upx;;"></image></view>
+						
+					</view>
+					<view style="display: flex;">
+						<view @tap="sendEmotion(5,5)" style="flex:1;text-align: center;"><image lazy-load src="../../../static/emotion/face05/5.gif" style="width:80upx;height:80upx;margin-top: 10upx;;"></image></view>
+						<view @tap="sendEmotion(5,6)" style="flex:1;text-align: center;"><image lazy-load src="../../../static/emotion/face05/6.gif" style="width:80upx;height:80upx;margin-top: 10upx;;"></image></view>
+						<view @tap="sendEmotion(5,7)" style="flex:1;text-align: center;"><image lazy-load src="../../../static/emotion/face05/7.gif" style="width:80upx;height:80upx;margin-top: 10upx;;"></image></view>
+						<view @tap="sendEmotion(5,8)" style="flex:1;text-align: center;"><image lazy-load src="../../../static/emotion/face05/8.gif" style="width:80upx;height:80upx;margin-top: 10upx;;"></image></view>
+						<view @tap="sendEmotion(5,9)" style="flex:1;text-align: center;"><image lazy-load src="../../../static/emotion/face05/9.gif" style="width:80upx;height:80upx;margin-top: 10upx;;"></image></view>
+					</view>
+					<view style="display: flex;">
+						<view @tap="sendEmotion(5,10)" style="flex:1;text-align: center;"><image lazy-load src="../../../static/emotion/face05/10.gif" style="width:80upx;height:80upx;margin-top: 10upx;;"></image></view>
+						<view @tap="sendEmotion(5,11)" style="flex:1;text-align: center;"><image lazy-load src="../../../static/emotion/face05/11.gif" style="width:80upx;height:80upx;margin-top: 10upx;;"></image></view>
+						<view @tap="sendEmotion(5,12)" style="flex:1;text-align: center;"><image lazy-load src="../../../static/emotion/face05/12.gif" style="width:80upx;height:80upx;margin-top: 10upx;;"></image></view>
+						<view @tap="sendEmotion(5,13)" style="flex:1;text-align: center;"><image lazy-load src="../../../static/emotion/face05/13.gif" style="width:80upx;height:80upx;margin-top: 10upx;;"></image></view>
+						<view @tap="sendEmotion(5,14)" style="flex:1;text-align: center;"><image lazy-load src="../../../static/emotion/face05/14.gif" style="width:80upx;height:80upx;margin-top: 10upx;;"></image></view>
+					</view>	
+					<view style="display: flex;">
+						<view @tap="sendEmotion(5,15)" style="flex:1;text-align: center;"><image lazy-load src="../../../static/emotion/face05/15.gif" style="width:80upx;height:80upx;margin-top: 10upx;;"></image></view>
+						<view  style="flex:1;text-align: center;"></view>
+						<view  style="flex:1;text-align: center;"></view>
+						<view  style="flex:1;text-align: center;"></view>
+						<view  style="flex:1;text-align: center;"></view>
+					</view>	
 				</view>
-				<view @tap="showEmotion(6)" :style="emotion==6?'background: #fff;':''" style="flex:1;height:100%;text-align: center;">
-					<image lazy-load src="../../../static/emotion/face05/face-lbl.gif" style="width:50upx;height:50upx;margin-top: 10upx;;"></image>
+				
+				
+				
+				<view v-if="emotion==7">
+					<view style="display: flex;">
+						<view @tap="sendEmotion(6,0)" style="flex:1;text-align: center;"><image lazy-load src="../../../static/emotion/face06/0.gif" style="width:80upx;height:80upx;margin-top: 10upx;;"></image></view>
+						<view @tap="sendEmotion(6,1)" style="flex:1;text-align: center;"><image lazy-load src="../../../static/emotion/face06/1.gif" style="width:80upx;height:80upx;margin-top: 10upx;;"></image></view>
+						<view @tap="sendEmotion(6,2)" style="flex:1;text-align: center;"><image lazy-load src="../../../static/emotion/face06/2.gif" style="width:80upx;height:80upx;margin-top: 10upx;;"></image></view>
+						<view @tap="sendEmotion(6,3)" style="flex:1;text-align: center;"><image lazy-load src="../../../static/emotion/face06/3.gif" style="width:80upx;height:80upx;margin-top: 10upx;;"></image></view>
+						<view @tap="sendEmotion(6,4)" style="flex:1;text-align: center;"><image lazy-load src="../../../static/emotion/face06/4.gif" style="width:80upx;height:80upx;margin-top: 10upx;;"></image></view>
+						
+					</view>
+					<view style="display: flex;">
+						<view @tap="sendEmotion(6,5)" style="flex:1;text-align: center;"><image lazy-load src="../../../static/emotion/face06/5.gif" style="width:80upx;height:80upx;margin-top: 10upx;;"></image></view>
+						<view @tap="sendEmotion(6,6)" style="flex:1;text-align: center;"><image lazy-load src="../../../static/emotion/face06/6.gif" style="width:80upx;height:80upx;margin-top: 10upx;;"></image></view>
+						<view @tap="sendEmotion(6,7)" style="flex:1;text-align: center;"><image lazy-load src="../../../static/emotion/face06/7.gif" style="width:80upx;height:80upx;margin-top: 10upx;;"></image></view>
+						<view @tap="sendEmotion(6,8)" style="flex:1;text-align: center;"><image lazy-load src="../../../static/emotion/face06/8.gif" style="width:80upx;height:80upx;margin-top: 10upx;;"></image></view>
+						<view @tap="sendEmotion(6,9)" style="flex:1;text-align: center;"><image lazy-load src="../../../static/emotion/face06/9.gif" style="width:80upx;height:80upx;margin-top: 10upx;;"></image></view>
+					</view>
+					<view style="display: flex;">
+						<view @tap="sendEmotion(6,10)" style="flex:1;text-align: center;"><image lazy-load src="../../../static/emotion/face06/10.gif" style="width:80upx;height:80upx;margin-top: 10upx;;"></image></view>
+						<view @tap="sendEmotion(6,11)" style="flex:1;text-align: center;"><image lazy-load src="../../../static/emotion/face06/11.gif" style="width:80upx;height:80upx;margin-top: 10upx;;"></image></view>
+						<view @tap="sendEmotion(6,12)" style="flex:1;text-align: center;"><image lazy-load src="../../../static/emotion/face06/12.gif" style="width:80upx;height:80upx;margin-top: 10upx;;"></image></view>
+						<view @tap="sendEmotion(6,13)" style="flex:1;text-align: center;"><image lazy-load src="../../../static/emotion/face06/13.gif" style="width:80upx;height:80upx;margin-top: 10upx;;"></image></view>
+						<view @tap="sendEmotion(6,14)" style="flex:1;text-align: center;"><image lazy-load src="../../../static/emotion/face06/14.gif" style="width:80upx;height:80upx;margin-top: 10upx;;"></image></view>
+					</view>	
+					<view style="display: flex;">
+						<view @tap="sendEmotion(6,15)" style="flex:1;text-align: center;"><image lazy-load src="../../../static/emotion/face06/15.gif" style="width:80upx;height:80upx;margin-top: 10upx;;"></image></view>
+						<view  style="flex:1;text-align: center;"></view>
+						<view  style="flex:1;text-align: center;"></view>
+						<view  style="flex:1;text-align: center;"></view>
+						<view  style="flex:1;text-align: center;"></view>
+					</view>	
 				</view>
-				<view @tap="showEmotion(7)" :style="emotion==7?'background: #fff;':''" style="flex:1;height:100%;text-align: center;">
-					<image lazy-load src="../../../static/emotion/face06/face-lbl.gif" style="width:50upx;height:50upx;margin-top: 10upx;;"></image>
+				
+				</scroll-view>
+				<view style="width:100%;height:80upx;background: #f6f6f6;border-top:1px solid #eee;bottom:0;position: fixed;display: flex;">
+					<view @tap="showEmotion(1)" :style="emotion==1?'background: #fff;':''" style="flex:1;height:100%;text-align: center;">
+						<image lazy-load src="../../../static/emotion/face00/face-lbl.gif" style="width:50upx;height:50upx;margin-top: 10upx;;"></image>
+					</view>
+					<view @tap="showEmotion(2)" :style="emotion==2?'background: #fff;':''" style="flex:1;height:100%;text-align: center;">
+						<image lazy-load src="../../../static/emotion/face01/face-lbl.png" style="width:50upx;height:50upx;margin-top: 10upx;;"></image>
+					</view>
+					<view @tap="showEmotion(3)" :style="emotion==3?'background: #fff;':''" style="flex:1;height:100%;text-align: center;">
+						<image lazy-load src="../../../static/emotion/face02/face-lbl.gif" style="width:50upx;height:50upx;margin-top: 10upx;;"></image>
+					</view>
+					<view @tap="showEmotion(4)" :style="emotion==4?'background: #fff;':''" style="flex:1;height:100%;text-align: center;">
+						<image lazy-load src="../../../static/emotion/face03/face-lbl.gif" style="width:50upx;height:50upx;margin-top: 10upx;;"></image>
+					</view>
+					<view @tap="showEmotion(5)" :style="emotion==5?'background: #fff;':''" style="flex:1;height:100%;text-align: center;">
+						<image lazy-load src="../../../static/emotion/face04/face-lbl.gif" style="width:50upx;height:50upx;margin-top: 10upx;;"></image>
+					</view>
+					<view @tap="showEmotion(6)" :style="emotion==6?'background: #fff;':''" style="flex:1;height:100%;text-align: center;">
+						<image lazy-load src="../../../static/emotion/face05/face-lbl.gif" style="width:50upx;height:50upx;margin-top: 10upx;;"></image>
+					</view>
+					<view @tap="showEmotion(7)" :style="emotion==7?'background: #fff;':''" style="flex:1;height:100%;text-align: center;">
+						<image lazy-load src="../../../static/emotion/face06/face-lbl.gif" style="width:50upx;height:50upx;margin-top: 10upx;;"></image>
+					</view>
 				</view>
 			</view>
-		</view>
-		
-		
-		<view v-show="showItem==2" class="cu-bar foot " style="box-shadow: none;-webkit-box-shadow: none;display: block;background: #fff;height:410upx; width: calc(80% - 54px);left: calc(20% + 54px);">
-				<scroll-view scroll-y class="indexes" style="height:410upx;padding-bottom:20upx;padding-top: 10upx;"
-				 :scroll-with-animation="true" :enable-back-to-top="true">
-					<view>
-						<view style="display: flex;">
-							<view @tap="ChooseImage()" style="flex:1;text-align: center;margin-top: 20upx;"><text style="font-size: 60upx;color:#3F92F8" class="iconfont icon-zhaopian-cuxiantiao-fill"></text><view style="font-size: 24upx;color: #8799a3;">照片</view></view>
-							<view @tap="ChooseVideo()" style="flex:1;text-align: center;margin-top: 20upx;"><text style="font-size: 60upx;color:#F39F90" class="iconfont icon-paishe"></text><view style="font-size: 24upx;color: #8799a3;">拍摄</view></view>
-							<!--
-							<view @tap="showLocation()" style="flex:1;text-align: center;margin-top: 20upx;"><text style="font-size: 60upx;color:#75BB6D" class="iconfont icon-weizhi-tianchong"></text><view style="font-size: 24upx;color: #8799a3;">位置</view></view>
-							-->
-							<!--							<view @tap="tongbuMsg()" style="flex:1;text-align: center;margin-top: 20upx;"><text style="font-size: 60upx;color:#75BB6D" class="iconfont icon-yuntongbu"></text><view style="font-size: 24upx;color: #8799a3;">消息同步</view></view>-->
-							<!--							<view @tap="goFavourite" style="flex:1;text-align: center;margin-top: 20upx;"><text style="font-size: 60upx;color:#23A2FB" class="iconfont icon-shoucang"></text><view style="font-size: 24upx;color: #8799a3;">收藏</view></view>-->
+			
+			
+			<view v-show="showItem==2" class="cu-bar foot " style="box-shadow: none;-webkit-box-shadow: none;display: block;background: #fff;height:410upx; width: calc(80% - 54px);left: calc(20% + 54px);">
+					<scroll-view scroll-y class="indexes" style="height:410upx;padding-bottom:20upx;padding-top: 10upx;"
+					 :scroll-with-animation="true" :enable-back-to-top="true">
+						<view>
+							<view style="display: flex;">
+								<view @tap="ChooseImage()" style="flex:1;text-align: center;margin-top: 20upx;"><text style="font-size: 60upx;color:#3F92F8" class="iconfont icon-zhaopian-cuxiantiao-fill"></text><view style="font-size: 24upx;color: #8799a3;">照片</view></view>
+								<view @tap="ChooseVideo()" style="flex:1;text-align: center;margin-top: 20upx;"><text style="font-size: 60upx;color:#F39F90" class="iconfont icon-paishe"></text><view style="font-size: 24upx;color: #8799a3;">拍摄</view></view>
+								<!--
+								<view @tap="showLocation()" style="flex:1;text-align: center;margin-top: 20upx;"><text style="font-size: 60upx;color:#75BB6D" class="iconfont icon-weizhi-tianchong"></text><view style="font-size: 24upx;color: #8799a3;">位置</view></view>
+								-->
+								<!--							<view @tap="tongbuMsg()" style="flex:1;text-align: center;margin-top: 20upx;"><text style="font-size: 60upx;color:#75BB6D" class="iconfont icon-yuntongbu"></text><view style="font-size: 24upx;color: #8799a3;">消息同步</view></view>-->
+								<!--							<view @tap="goFavourite" style="flex:1;text-align: center;margin-top: 20upx;"><text style="font-size: 60upx;color:#23A2FB" class="iconfont icon-shoucang"></text><view style="font-size: 24upx;color: #8799a3;">收藏</view></view>-->
 
 
-							<view @tap="sendCard()" style="flex:1;text-align: center;margin-top: 20upx;"><text style="font-size: 60upx;color:#FA9B4E" class="iconfont icon-mingpian2"></text><view style="font-size: 24upx;color: #8799a3;">名片</view></view>
-<!--							<view @tap="voiceCall()" style="flex:1;text-align: center;margin-top: 20upx;"><text style="font-size: 60upx;color:#FA9B4E" class="iconfont icon-yuyin"></text><view style="font-size: 24upx;color: #8799a3;">语音</view></view>-->
+								<view @tap="sendCard()" style="flex:1;text-align: center;margin-top: 20upx;"><text style="font-size: 60upx;color:#FA9B4E" class="iconfont icon-mingpian2"></text><view style="font-size: 24upx;color: #8799a3;">名片</view></view>
+	<!--							<view @tap="voiceCall()" style="flex:1;text-align: center;margin-top: 20upx;"><text style="font-size: 60upx;color:#FA9B4E" class="iconfont icon-yuyin"></text><view style="font-size: 24upx;color: #8799a3;">语音</view></view>-->
+							</view>
+							<!--						<view style="display: flex;margin-top: 40upx;">-->
+							<!--&lt;!&ndash; 							<view  @tap="sendRed()" style="flex:1;text-align: center;margin-top: 20upx;"><text style="font-size: 60upx;color:#FF524C" class="iconfont icon-lingquhongbao"></text><view style="font-size: 24upx;color: #8799a3;">发红包</view></view>-->
+							<!--							<view  @tap="myRedRecord()" style="flex:1;text-align: center;margin-top: 20upx;"><text style="font-size: 60upx;color:#FF524C" class="iconfont icon-hongbao1"></text><view style="font-size: 24upx;color: #8799a3;">我的红包</view></view>-->
+							<!--							<view @tap="goTransfer()" style="flex:1;text-align: center;margin-top: 20upx;"><text style="font-size: 60upx;color:#107FCB" class="iconfont icon-shenghuozhuanzhang"></text><view style="font-size: 24upx;color: #8799a3;">转账</view></view> &ndash;&gt;-->
+							<!--							<view @tap="sendCard()" style="flex:1;text-align: center;margin-top: 20upx;"><text style="font-size: 60upx;color:#FA9B4E" class="iconfont icon-mingpian2"></text><view style="font-size: 24upx;color: #8799a3;">名片</view></view>-->
+							<!--							<view @tap="voiceCall()" style="flex:1;text-align: center;margin-top: 20upx;"><text style="font-size: 60upx;color:#FA9B4E" class="iconfont icon-yuyin"></text><view style="font-size: 24upx;color: #8799a3;">语音</view></view>-->
+							<!--							<view style="flex:1;text-align: center;margin-top: 20upx;"><text style="font-size: 60upx;color:#FA9B4E" ></text><view style="font-size: 24upx;color: #8799a3;"></view></view>-->
+							<!--							<view style="flex:1;text-align: center;margin-top: 20upx;"><text style="font-size: 60upx;color:#FA9B4E" ></text><view style="font-size: 24upx;color: #8799a3;"></view></view>-->
+							<!--						</view>-->
 						</view>
-						<!--						<view style="display: flex;margin-top: 40upx;">-->
-						<!--&lt;!&ndash; 							<view  @tap="sendRed()" style="flex:1;text-align: center;margin-top: 20upx;"><text style="font-size: 60upx;color:#FF524C" class="iconfont icon-lingquhongbao"></text><view style="font-size: 24upx;color: #8799a3;">发红包</view></view>-->
-						<!--							<view  @tap="myRedRecord()" style="flex:1;text-align: center;margin-top: 20upx;"><text style="font-size: 60upx;color:#FF524C" class="iconfont icon-hongbao1"></text><view style="font-size: 24upx;color: #8799a3;">我的红包</view></view>-->
-						<!--							<view @tap="goTransfer()" style="flex:1;text-align: center;margin-top: 20upx;"><text style="font-size: 60upx;color:#107FCB" class="iconfont icon-shenghuozhuanzhang"></text><view style="font-size: 24upx;color: #8799a3;">转账</view></view> &ndash;&gt;-->
-						<!--							<view @tap="sendCard()" style="flex:1;text-align: center;margin-top: 20upx;"><text style="font-size: 60upx;color:#FA9B4E" class="iconfont icon-mingpian2"></text><view style="font-size: 24upx;color: #8799a3;">名片</view></view>-->
-						<!--							<view @tap="voiceCall()" style="flex:1;text-align: center;margin-top: 20upx;"><text style="font-size: 60upx;color:#FA9B4E" class="iconfont icon-yuyin"></text><view style="font-size: 24upx;color: #8799a3;">语音</view></view>-->
-						<!--							<view style="flex:1;text-align: center;margin-top: 20upx;"><text style="font-size: 60upx;color:#FA9B4E" ></text><view style="font-size: 24upx;color: #8799a3;"></view></view>-->
-						<!--							<view style="flex:1;text-align: center;margin-top: 20upx;"><text style="font-size: 60upx;color:#FA9B4E" ></text><view style="font-size: 24upx;color: #8799a3;"></view></view>-->
-						<!--						</view>-->
-					</view>
-				</scroll-view>
-		</view>
+					</scroll-view>
+			</view>
+			
 		
-	
-		<view @longpress="hidePop" class="shade" v-show="showShade" @tap="hidePop">
-				<view style="text-align: center;" class="pop" :style="popStyle" :class="{'show':showPop}">
-					<view v-for="(item,index) in popButton" :key="index" @tap="pickerMenu" :data-name="item" :data-index="index">
-					<text style="font-size:34upx;margin-right:16upx;" class="iconfont" :class="getPopButton(item)"></text>
-					{{item}}</view>
-				</view>
+			<view @longpress="hidePop" class="shade" v-show="showShade" @tap="hidePop">
+					<view style="text-align: center;" class="pop" :style="popStyle" :class="{'show':showPop}">
+						<view v-for="(item,index) in popButton" :key="index" @tap="pickerMenu" :data-name="item" :data-index="index">
+						<text style="font-size:34upx;margin-right:16upx;" class="iconfont" :class="getPopButton(item)"></text>
+						{{item}}</view>
+					</view>
+			</view>
+			<openRed @hide="hideOpenRed" @openRedDetail="openRedDetail" v-show="showOpenRed" ></openRed>
+			<video direction="0" @fullscreenchange="videoChangeFC" id="video_play"  loop="false" autoplay="true"  page-gesture="true" controls="false"  v-show="showVideo"  style="position: absolute;z-index: 99999999999999999999;top: 50%;
+						left: 50%;
+						width: 100%;
+						transform: translate(-50%,-50%);
+						text-align: center;"     :src="$store.state.img_url+videoSrc"></video>
 		</view>
-		<openRed @hide="hideOpenRed" @openRedDetail="openRedDetail" v-show="showOpenRed" ></openRed>
-		<video direction="0" @fullscreenchange="videoChangeFC" id="video_play"  loop="false" autoplay="true"  page-gesture="true" controls="false"  v-show="showVideo"  style="position: absolute;z-index: 99999999999999999999;top: 50%;
-					left: 50%;
-					width: 100%;
-					transform: translate(-50%,-50%);
-					text-align: center;"     :src="$store.state.img_url+videoSrc"></video>
-	</view>
 </template>
 
 <script>
@@ -1681,9 +1680,10 @@
 				})
 			},
 			goMgr(_id){
-				uni.navigateTo({
-					url:"/pages/chat/user/mgr?id="+_id
-				})
+				this.$emit('openModal', _id)
+				// uni.navigateTo({
+				// 	url:"/pages/chat/user/mgr?id="+_id
+				// })
 			},
 			GenerateUUID() {
 				var s = [];

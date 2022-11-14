@@ -20,7 +20,6 @@
 			<!--#ifdef APP-PLUS -->
 			<view v-show="showMenu" :style="true?'height: 380upx;':'height: 300upx;'" style="position: absolute;
 					width: 280upx;
-					
 					background: #4A484D;
 					top: 140upx;
 					left: 17%;
@@ -177,8 +176,12 @@
 				class="page" :class="modalName!=null?'show':''" :refresher-enabled="true"
 				:refresher-triggered="refresherTriggered" @refresherrefresh="refresherrefresh"
 				@refresherrestore="refresherrestore" @refresherabort="refresherabort">
-				<UserChat :msgToId="msgToId"></UserChat>
+				<UserChat :msgToId="msgToId" @openModal="openModal"></UserChat>
 			</scroll-view>
+		</view>
+		<view v-show="visiable" style="width: 100%; height: 100%;color:#fff;background-color: #0006; position: fixed;left: 0;top:0; z-index: 100000;">
+			<text @click="closeModal" class="cuIcon-close" style="font-size: 36px; cursor: pointer; position:absolute; top:15px; right: 15px"></text>
+		    <UserMgr :mgrId="mgrId"></UserMgr>
 		</view>
 	</view>
 </template>
@@ -194,7 +197,9 @@
 		data() {
 			return {
 				isGroupChat: false,
+				visiable: false,
 				msgToId: '',
+				mgrId: '',
 				ChatTypeId: 0,
 				refresherTriggered: false, //下拉刷新状态
 				_refresherTriggered: false, //防止异步操作
@@ -266,6 +271,13 @@
 			};
 		},
 		methods: {
+			closeModal() {
+				this.visiable = false;
+			},
+			openModal(_id) {
+				this.mgrId = _id;
+				this.visiable = true;
+			},
 			refresherrefresh() {
 				console.log('自定义下拉刷新被触发');
 				let _this = this;
