@@ -2002,9 +2002,13 @@
 				
 			},
 			goMgr(_id){
-				uni.navigateTo({
-					url:"/pages/chat/group/mgr?id="+_id
+				this.$emit('openModal', {
+					id: _id,
+					type: 'group'
 				})
+				// uni.navigateTo({
+				// 	url:"/pages/chat/group/mgr?id="+_id
+				// })
 			},
 			
 			GenerateUUID() {

@@ -28,6 +28,9 @@ Vue.component('groupSearch',groupSearch)
 import UserMgr from './pages/chat/user/mgr.vue'
 Vue.component('UserMgr',UserMgr)
 
+import GroupMgr from './pages/chat/group/mgr.vue'
+Vue.component('GroupMgr',GroupMgr)
+
 import faxian from './pages/faxian/index.vue'
 Vue.component('faxian',faxian)
 

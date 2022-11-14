@@ -1680,7 +1680,10 @@
 				})
 			},
 			goMgr(_id){
-				this.$emit('openModal', _id)
+				this.$emit('openModal', {
+					id: _id,
+					type: 'user'
+				})
 				// uni.navigateTo({
 				// 	url:"/pages/chat/user/mgr?id="+_id
 				// })

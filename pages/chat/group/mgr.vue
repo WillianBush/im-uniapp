@@ -1,8 +1,7 @@
 <!--群聊天页面，点击右上角设置-->
 <template>
-	<view v-if="$store.state.cur_chat_entity&&$store.state.cur_chat_entity.owner_UUID&&$store.state.cur_chat_entity.owner_UUID!=''" style="padding-bottom:60upx;">
-		<cu-custom bgColor="bg-blue"  :isBack="true" :nameToLeft="true"><block slot="backText"></block><block slot="content">群组信息</block><block slot="right">
-		</block></cu-custom>
+	<view v-if="$store.state.cur_chat_entity&&$store.state.cur_chat_entity.owner_UUID&&$store.state.cur_chat_entity.owner_UUID!=''" style="background: #fff;width: 80%;margin: 40px 0 0 12%">
+		<view style="height: 45px;line-height: 45px;text-align: center;background: #eee;color:#000">群组信息</view>
 		<view style="background: #fff;width: 96%;
     margin: auto auto;
     margin-top: 10px;" class="margin-top">
@@ -157,6 +156,12 @@ word-break:normal; " class="text-grey text-sm">{{$store.state.cur_chat_entity.de
 
 <script>
 	export default {
+		props: {
+			mgrId: {
+				type: String,
+				default: ''
+			}
+		},
 		data() {
 			return {
 				switchA:false,
@@ -168,52 +173,41 @@ word-break:normal; " class="text-grey text-sm">{{$store.state.cur_chat_entity.de
 				
 			}
 		},
-		onLoad(e) {
-			let _this = this;
-			this.id = e.id;
-			
-			this.switchC = this.$store.state.cur_chat_entity.stopSpeak==1
-			
-			let darao = uni.getStorageSync(this.id+"_darao");
-			if(darao&&darao!="") {
-				this.switchA = darao;
-			}
-			
-			let zhiding = uni.getStorageSync(this.id+"_zhiding");
-			if(zhiding&&zhiding!="") {
-				this.switchB = zhiding;
-			}
-			
-			_this.$http.post("/sysConfig/json/getShimingCfg",
-				{
-					header:{
-						//"x-access-uid":store.state.user.id
-						"x-access-client":_this.$clientType
-					}
-				}
-			).then(res=>{
-				if(res.data.code==200) {
-					console.log(res.data.body);
-					_this.$store.commit("setShimingCfg",res.data.body);
-				}
-			})
-			
-			// uni.request({
-			// 	method:"POST",
-			// 	url: this.$store.state.req_url + "/sysConfig/json/getShimingCfg",
-			// 	header:{
-			// 		"Content-Type":"application/x-www-form-urlencoded"
-			// 	},
-			// 	success(res) {
-			// 		if(res.data.code==200) {  
-			// 			console.log(res.data.body);
-			// 			_this.$store.commit("setShimingCfg",res.data.body);
-			// 		}
-			// 	}
-			// })
-			
+		watch: {
+		  mgrId: function(newVal,oldVal){
+			this.id = newVal;
+			this.onLoadMethod();
+		  },
 		},
 		methods: {
+			onLoadMethod() {
+				let _this = this;			
+				this.switchC = this.$store.state.cur_chat_entity.stopSpeak==1
+				
+				let darao = uni.getStorageSync(this.id+"_darao");
+				if(darao&&darao!="") {
+					this.switchA = darao;
+				}
+				
+				let zhiding = uni.getStorageSync(this.id+"_zhiding");
+				if(zhiding&&zhiding!="") {
+					this.switchB = zhiding;
+				}
+				
+				_this.$http.post("/sysConfig/json/getShimingCfg",
+					{
+						header:{
+							//"x-access-uid":store.state.user.id
+							"x-access-client":_this.$clientType
+						}
+					}
+				).then(res=>{
+					if(res.data.code==200) {
+						console.log(res.data.body);
+						_this.$store.commit("setShimingCfg",res.data.body);
+					}
+				})				
+			},
 			goUserDetail(_index){
 				let _this = this;
 				let arrs = _this.$store.state.cur_chat_entity.member_ids.split("#");
