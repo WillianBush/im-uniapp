@@ -34,6 +34,12 @@ Vue.component('GroupMgr',GroupMgr)
 import faxian from './pages/faxian/index.vue'
 Vue.component('faxian',faxian)
 
+import qunfa from './pages/qunfa/index.vue'
+Vue.component('qunfa',qunfa)
+
+import qunfaChat from './pages/qunfa/group/index.vue'
+Vue.component('qunfaChat',qunfaChat)
+
 import hotItem from './pages/hotItem/hotItem.vue'
 Vue.component('hotItem',hotItem)
 
