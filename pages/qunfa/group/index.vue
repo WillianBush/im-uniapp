@@ -2067,11 +2067,7 @@
 				
 			},
 			qunfaMsg(v) {
-				console.log('哎哟喂',v)
-			},
-			send(){
-				this.$emit('openModal');
-				return;
+				console.log('选择的群组',v)
 				let _this = this;
 				setTimeout(()=>{
 					if(this.isAltOrShiftEnter) return;
@@ -2084,17 +2080,9 @@
 					    fromUid:this.$store.state.user.id,
 						uuid:this.GenerateUUID(),
 					}
-					/**
-					uni.pageScrollTo({
-					    scrollTop: 9999999999,
-					    duration: 100
-					});
-					**/
 					if(this.txt.trim()=="") {
 						return;
 					}
-					
-					console.log(this.aite_map);
 					let aite = "";
 					for (var [key, value] of this.aite_map) {
 					  //console.log(key + ' = ' + value);
@@ -2106,19 +2094,20 @@
 					v.aite = aite;
 					console.log('topm', v)
 					this.$websocket.dispatch("WEBSOCKET_SEND", "{body:'"+JSON.stringify(v)+"',CMD:'GROUP_CHAT_SEND_TXT'}");
-					
 					this.$store.commit("setChat_my_loadding",true);
 					this.sendBaseDo(v);
-					
 					this.txt = "";
 					this.showjia = true;
 					this.sendCount = this.sendCount +1;
-					//this.clickChat();
 					setTimeout(function(){
 						_this.scrollToBottom(); 
 						_this.input_is_focus = true;
 					},300)
 				},100);
+				this.$emit('closeModal');
+			},
+			send(){
+				this.$emit('openModal');
 			},
 			sendEmotion(_a,_b){
 				let _this = this;

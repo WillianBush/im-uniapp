@@ -74,7 +74,7 @@
 			<scroll-view :scroll-y="modalName==null"
 				style="width: 100%"
 				class="page">
-				<qunfaChat :msgToId="msgToId" @openModal="openModal" ref="child"></qunfaChat>
+				<qunfaChat :msgToId="msgToId" @openModal="openModal" @closeModal="closeModal" ref="child"></qunfaChat>
 			</scroll-view>
 		</view>
 		<view v-show="visiable" style="width: 100%; height: 100%;color:#fff;background-color: #0006; position: fixed;left: 0;top:0; z-index: 10;">
@@ -214,8 +214,10 @@
 				// 如果选择的数组中有值，并且长度等于列表的长度，就是全选
 				if(this.checkedArr.length>0 && this.checkedArr.length==this.checkboxData.length){
 					this.allChecked=true;
+					this.selectText = '取消全选';
 				}else{
 					this.allChecked=false;
+					this.selectText = '全选';
 				}
 			},
 			allChoose(){
@@ -243,6 +245,14 @@
 				this.visiable = true;
 			},
 			confirmSend() {
+				if (!this.checkedArr.length) {
+					uni.showToast({
+					  title: "请至少选择一个群组",
+					  duration: 2000,
+					  icon: "none",
+					});
+					return;
+				}
 				this.$refs.child.qunfaMsg(this.checkedArr);
 			},
 			showMain() {
