@@ -2066,43 +2066,35 @@
 				},300)
 				
 			},
-			qunfaMsg(v) {
-				console.log('选择的群组',v)
+			qunfaMsg(dataArrays) {
+				console.log('选择的群组',dataArrays)
 				let _this = this;
 				setTimeout(()=>{
 					if(this.isAltOrShiftEnter) return;
 					this.input_is_focus = false;
-					if(this.stopSpeak==1) return;
-					if(!this.checkStopSpeak()) return;
-					let v = {
-						txt:this.txt.replace(/\n/g,"<br/>"),
-					    toGroupid:this.toid,
-					    fromUid:this.$store.state.user.id,
-						uuid:this.GenerateUUID(),
-					}
+					
 					if(this.txt.trim()=="") {
 						return;
 					}
-					let aite = "";
-					for (var [key, value] of this.aite_map) {
-					  //console.log(key + ' = ' + value);
-					  if(this.txt.indexOf(key)>=0) {
-						  aite+=(value+"#");
-					  }
-					}
-					this.aite_map.clear();
-					v.aite = aite;
-					console.log('topm', v)
-					this.$websocket.dispatch("WEBSOCKET_SEND", "{body:'"+JSON.stringify(v)+"',CMD:'GROUP_CHAT_SEND_TXT'}");
-					this.$store.commit("setChat_my_loadding",true);
-					this.sendBaseDo(v);
-					this.txt = "";
-					this.showjia = true;
-					this.sendCount = this.sendCount +1;
+					
+					dataArrays.forEach(item=>{
+						let v = {
+							txt:this.txt.replace(/\n/g,"<br/>"),
+							toUid:item, 
+							fromUid:this.$store.state.user.id,
+							uuid:this.GenerateUUID(),
+						};
+						this.$websocket.dispatch("WEBSOCKET_SEND", "{body:'"+JSON.stringify(v)+"',CMD:'USER_CHAT_SEND_TXT'}");
+						this.$store.commit("setChat_my_loadding",true); 
+						this.sendBaseDo(v);
+						this.showjia = true;
+						this.sendCount = this.sendCount +1;
+					});
 					setTimeout(function(){
 						_this.scrollToBottom(); 
 						_this.input_is_focus = true;
 					},300)
+					this.txt = "";
 				},100);
 				this.$emit('closeModal');
 			},
