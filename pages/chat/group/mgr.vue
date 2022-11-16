@@ -75,13 +75,13 @@
 		</view>
 	</view>
 	
-	<view v-if="$store.state.user.id==$store.state.cur_chat_entity.owner_UUID
+	<!-- <view v-if="$store.state.user.id==$store.state.cur_chat_entity.owner_UUID
 			||$store.state.cur_chat_entity.memberMgr_ids.indexOf($store.state.user.id)>=0"  class="cu-item  margin-top" >
 		<view class="content">
 			<text class="text-grey" style="color:#333">群组ID</text>
 			<text class="text-grey text-sm" style="float:right;color:#aaa;font-size: 26upx;">{{$store.state.cur_chat_entity.roomid}}</text>
 		</view>
-	</view>
+	</view> -->
 	
 	<view v-if="$store.state.user.id==$store.state.cur_chat_entity.owner_UUID
 		||$store.state.cur_chat_entity.memberMgr_ids.indexOf($store.state.user.id)>=0"  @tap="edit_pic()" class="cu-item arrow" >

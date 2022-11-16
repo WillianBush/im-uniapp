@@ -137,7 +137,7 @@
 									<text class="cuIcon-warnfill text-red text-xxl"></text>
 								</view>
 
-								<view v-if="item.bean.psr!='video'" @longpress="onLongPress($event,item.bean)" :class="[item.bean.psr=='uparse'?'':'content bg-green shadow']" :style="{backgroundColor:item.bean.psr=='uparse'? 'none':'#fff'}" style="color:#222;">
+								<view v-if="item.bean.psr!='video'" @contextmenu="clickRight($event, item.bean)" @longpress="onLongPress($event,item.bean)" :class="[item.bean.psr=='uparse'?'':'content bg-green shadow']" :style="{backgroundColor:item.bean.psr=='uparse'? 'none':'#fff'}" style="color:#222;">
 									<u-parse v-if="item.bean.psr=='uparse'" :content="item.bean.txt" @preview="preview" @navigate="navigate" ></u-parse>
 									<view @tap="clickVoice(item.bean.txt,index)" v-else-if="item.bean.psr=='voice'">
 										<text  v-show="selVoiceIndex != index"  style="float:left;width:100upx;font-size: 52upx;position: relative;top: 4upx;"  class="iconfont icon-yuyin1 text-xxl "></text>
@@ -162,7 +162,7 @@
 								{{item.bean.fromName}}
 								</view>
 
-								<view  @longpress="onLongPress($event,item.bean)"  :class="[item.bean.psr=='uparse'?'':'content shadow']" style="color:#222;">
+								<view  @contextmenu="clickRight($event, item.bean)" @longpress="onLongPress($event,item.bean)"  :class="[item.bean.psr=='uparse'?'':'content shadow']" style="color:#222;">
 									<u-parse v-if="item.bean.psr=='video'" :content="item.bean.txt" @preview="preview" @navigate="navigate" ></u-parse>
 									<u-parse v-else-if="item.bean.psr=='uparse'" :content="item.bean.txt" @preview="preview" @navigate="navigate" ></u-parse>
 									<view @tap="clickVoice(item.bean.txt,index)" v-else-if="item.bean.psr=='voice'">
@@ -363,7 +363,7 @@
 			<view style="cursor: pointer;position: absolute;top: 0; left: 110px;" class="action" @tap="showItemIndex(1)">
 				<text  class="cuIcon-emojifill text-grey" style="position: absolute;top: 0;left: 0px"></text>
 			</view>
-			<button  style="min-width: 50px;padding:0px!important" v-show="!showjia" @tap.stop="send()" class="cu-btn bg-green shadow">发送</button>
+			<button  style="min-width: 50px;padding:0px!important" v-show="!showjia" @tap.stop="send()"  class="cu-btn bg-green shadow">发送</button>
 			
 		</view>
 		
@@ -1048,11 +1048,15 @@
 			
 		},
 		mounted() {
+			document.oncontextmenu = function (e) { return false; }
 			// this.domHeight = document.documentElement.clientHeight
 			
 		},
 		
-		methods: { 
+		methods: {
+			clickRight(event, item) {
+				this.onLongPress(event, item)
+			},
 			onShowMethod() {
 				let _this = this;
 				uni.$off("aiteFn");
@@ -1579,13 +1583,9 @@
 					this.showPop = false;
 				}
 				this.popButton = this.popButtonStore;
-				//console.log(bean.uuid);
-				//console.log(bean.txt);
-				//console.log(bean);
 				this.temp_content = bean.oldTxt;
 				this.temp_uuid = bean.uuid;
 				this.temp_bean = bean;
-				//console.log(this.chatCfg);
 				let list = this.popButton.filter(item=>{
 					 if(item=="撤消"||item=="管理撤消") {
 						 return false;
@@ -1596,13 +1596,11 @@
 					 		 return false;
 					 	}
 					 }
-					 
 					 return true;
 				 })
 				this.popButton =list; 
 				if(bean.fromUid == this.$store.state.user.id) {
 					if(new Date().getTime() - bean.dateTime < this.chatCfg.chat_msg_undo_sec*1000 || this.chatCfg.chat_msg_undo_sec==0) {
-						
 					   this.popButton.push("撤消");
 					}
 				} 
@@ -1612,20 +1610,18 @@
 					this.popButton.push("管理撤消");
 				}	
 				
-				
-				
-				let [touches, style] = [e.touches[0], ""];
-			
+
+			   let style;
 				/* 因 非H5端不兼容 style 属性绑定 Object ，所以拼接字符 */
-				if (touches.clientY > (this.winSize.height / 2)) {
-					style = `bottom:${this.winSize.height-touches.clientY}px;`;
+				if (e.clientY > (this.winSize.height / 2)) {
+					style = `bottom:${this.winSize.height-e.clientY-15 }px;`;
 				} else {
-					style = `top:${touches.clientY}px;`;
+					style = `top:${e.clientY}px;`;
 				}
-				if (touches.clientX > (this.winSize.witdh / 2)) {
-					style += `right:${this.winSize.witdh-touches.clientX+15}px`;
+				if (e.clientX > (this.winSize.witdh / 2)) {
+					style += `right:${this.winSize.witdh-e.clientX+15}px`;
 				} else {
-					style += `left:${touches.clientX+15}px`;
+					style += `left:${e.clientX+15}px`;
 				}
 			
 				this.popStyle = style;
