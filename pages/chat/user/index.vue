@@ -981,53 +981,24 @@
 		onHide() {
 			uni.$off("scrollTopFn");
 		},
-		// onShow() {
-		// 	this.onShowMethod();
-		// },
-		// onLoad() {
-		// 	this.onLoadMethod();
-		// },
 		mounted() { 
 			 //this.domHeight = document.documentElement.clientHeight
 			 console.log('8888', this.toid)
 		},
 	
 		methods: {
-			sendPasteImg() {
-				_this.$http.post("/user/file/uploadB64Img",
-					{
-						base64: _this.qrcodeBase64
-					},
-					{
-						header:{
-							"x-access-uid": _this.$store.state.user.id,
-							"x-access-client":_this.$clientType
-						}
-					}
-					
-				).then(res=>{
-					let res_data = eval(res.data);
-					if (res_data.code == 200) {
-						let json = eval(res.data);
-						console.log('yyyy',json)
-						
-					}
-				})
-			},
 			paseteImg () {
 				var _this = this;
 				var imgReader = function( item ){
 				      var blob = item.getAsFile(), 
 				          reader = new FileReader(); 
 					  var img = new Image(); 
-				    console.log('blob',blob)
 				      reader.onload = function( e ){ 
-						  console.log('e',e)
 				        img.src = e.target.result;
 						_this.pasteImgUrl = e.target.result;
 						img.style.cssText = "width: 100px; height: 60px;position: absolute;top: 40px;"
 				  
-				        document.getElementById( 'testInput' ).appendChild( img ); 
+				        // document.getElementById( 'testInput' ).appendChild( img ); 
 						_this.$http.post("/user/file/uploadB64Img",
 							{
 								base64: e.target.result
@@ -1040,53 +1011,29 @@
 							}
 							
 						).then(res=>{
-							console.log('res666',res)
 							let res_data = eval(res.data);
 							if (res_data.code == 200) {
 								let json = eval(res.data);
-								console.log('yyyy',json)
+								let v = {
+									txt:json.msg,
+									toUid:_this.toid,
+									fromUid:_this.$store.state.user.id,
+									uuid:_this.GenerateUUID(),
+								}
+								_this.$websocket.dispatch("WEBSOCKET_SEND", "{body:'"+JSON.stringify(v)+"',CMD:'USER_CHAT_SEND_TXT'}");
+								let img = _this.$store.state.img_url+json.msg;
+								_this.temp_txt = _this.temp_txt + ("<img  style='max-width: 150px;max-height:150px;' class='face' src='"+img+"'>");
+								v.psr = "uparse";  
+								v.simple_content = "[图片]";
+								_this.sendBaseDo(v);
 								
-							}
+								setTimeout(function(){
+									_this.scrollToBottom();
+								},100)
+							 }
 						})
 				      }; 
 				      reader.readAsDataURL( blob ); 
-					  console.log('img.src',img.src)
-					  console.log('_this.pasteImgUrl',_this.pasteImgUrl)
-					  if (!img.src) return;
-					  
-					  // if(!img.src) return;
-					  // var uper = uni.uploadFile({
-					  // 	 // 需要上传的地址
-					  // 	 url:_this.$store.state.req_url+ '/user/file/upload',
-					  // 	 header:{
-					  // 		"x-access-uid":_this.$store.state.user.id
-					  // 	 },
-					  // 	 // filePath  需要上传的文件
-					  // 	 filePath: img.src,
-					  // 	 name: 'file',
-					  // 	 success(res1) {
-					  // 		 let json = eval("("+res1.data+")");
-					  // 		 // 显示上传信息
-					  // 		 if(json.code==200) {
-					  // 			let v = {
-					  // 				txt:json.msg,
-					  // 				toUid:_this.toid,
-					  // 				fromUid:_this.$store.state.user.id,
-					  // 				uuid:_this.GenerateUUID(),
-					  // 			}
-					  // 			_this.$websocket.dispatch("WEBSOCKET_SEND", "{body:'"+JSON.stringify(v)+"',CMD:'USER_CHAT_SEND_TXT'}");
-					  // 			let img = _this.$store.state.img_url+json.msg;
-					  // 			_this.temp_txt = _this.temp_txt + ("<img  style='max-width: 150px;max-height:150px;' class='face' src='"+img+"'>");
-					  // 			v.psr = "uparse";  
-					  // 			v.simple_content = "[图片]";
-					  // 			_this.sendBaseDo(v);
-					  			
-					  // 			setTimeout(function(){
-					  // 				_this.scrollToBottom();
-					  // 			},100)
-					  // 		 }
-					  // 	 }
-					  // });
 				    }; 
 				    document.getElementById( 'testInput' ).addEventListener( 'paste', function( e ){ 
 				      var clipboardData = e.clipboardData, 
