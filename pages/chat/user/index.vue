@@ -1079,9 +1079,11 @@
 						}
 				).then(res=>{
 					let res_data = eval(res.data);
+					console.log('userInfo33', res_data)
 					if(res_data.code==200) {
-						console.log('userInfo22', res_data.msg)
-						_this.toIP = res_data.msg;
+						console.log('userInfo22', res_data.body.ip+"===="+res_data.body.ipAddr)
+						_this.toIP = res_data.body.ip +"("+ res_data.body.ipAddr+")";
+						console.log('userInfo11', _this.toIP)
 					}
 				})
 
