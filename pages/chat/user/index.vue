@@ -306,7 +306,8 @@
 			<view class="cu-bar foot input" :style="[{bottom:InputBottom+'upx'}]" style="flex-direction: row; height:120px; width: calc(80% - 54px);left: calc(20% + 54px); background-color:#fff">
 
 				<!-- @focus="InputFocus" @blur="InputBlur"-->
-				<textarea 
+				<input 
+				id="testInput"
 				auto-height="true"
 				:show-confirm-bar="true" 
 				confirm-type="send" 
@@ -318,8 +319,9 @@
 				@focus="InputFocus" @blur="InputBlur" v-show="c_type==1" v-model="txt" 
 				@input="inputTxt()" class="solid-bottom" :adjust-position="true" :focus="input_is_focus" 
 				cursor-spacing="10"
+				placeholder="请输入信息"
 				style="height:120px !important;line-height:30px;width: 100%;"
-				></textarea>
+				></input>
 				<view @tap="ChooseImage()" style="cursor: pointer;position: absolute;top: 0; left: 0px;"><text style="font-size: 60upx;color:#3F92F8" class="iconfont icon-zhaopian-cuxiantiao-fill"></text></view>
 				<view @tap="ChooseVideo()" style="cursor: pointer;position: absolute;top: 0; left: 40px;"><text style="font-size: 60upx;color:#F39F90" class="iconfont icon-paishe"></text></view>
 				<view @tap="sendCard()" style="cursor: pointer;position: absolute;top: 0; left: 80px;"><text style="font-size: 60upx;color:#FA9B4E" class="iconfont icon-mingpian2"></text></view>
@@ -951,7 +953,8 @@
 				temp_bean:null,
 				showOpenRed:false,
 				showname:"",
-				toIP:""
+				toIP:"",
+				pasteImgUrl: ''
 			};
 		},
 		watch: {
@@ -990,8 +993,130 @@
 		},
 	
 		methods: {
+			sendPasteImg() {
+				_this.$http.post("/user/file/uploadB64Img",
+					{
+						base64: _this.qrcodeBase64
+					},
+					{
+						header:{
+							"x-access-uid": _this.$store.state.user.id,
+							"x-access-client":_this.$clientType
+						}
+					}
+					
+				).then(res=>{
+					let res_data = eval(res.data);
+					if (res_data.code == 200) {
+						let json = eval(res.data);
+						console.log('yyyy',json)
+						
+					}
+				})
+			},
+			paseteImg () {
+				var _this = this;
+				var imgReader = function( item ){
+				      var blob = item.getAsFile(), 
+				          reader = new FileReader(); 
+					  var img = new Image(); 
+				    console.log('blob',blob)
+				      reader.onload = function( e ){ 
+						  console.log('e',e)
+				        img.src = e.target.result;
+						_this.pasteImgUrl = e.target.result;
+						img.style.cssText = "width: 100px; height: 60px;position: absolute;top: 40px;"
+				  
+				        document.getElementById( 'testInput' ).appendChild( img ); 
+						_this.$http.post("/user/file/uploadB64Img",
+							{
+								base64: e.target.result
+							},
+							{
+								header:{
+									"x-access-uid": _this.$store.state.user.id,
+									"x-access-client":_this.$clientType
+								}
+							}
+							
+						).then(res=>{
+							console.log('res666',res)
+							let res_data = eval(res.data);
+							if (res_data.code == 200) {
+								let json = eval(res.data);
+								console.log('yyyy',json)
+								
+							}
+						})
+				      }; 
+				      reader.readAsDataURL( blob ); 
+					  console.log('img.src',img.src)
+					  console.log('_this.pasteImgUrl',_this.pasteImgUrl)
+					  if (!img.src) return;
+					  
+					  // if(!img.src) return;
+					  // var uper = uni.uploadFile({
+					  // 	 // 需要上传的地址
+					  // 	 url:_this.$store.state.req_url+ '/user/file/upload',
+					  // 	 header:{
+					  // 		"x-access-uid":_this.$store.state.user.id
+					  // 	 },
+					  // 	 // filePath  需要上传的文件
+					  // 	 filePath: img.src,
+					  // 	 name: 'file',
+					  // 	 success(res1) {
+					  // 		 let json = eval("("+res1.data+")");
+					  // 		 // 显示上传信息
+					  // 		 if(json.code==200) {
+					  // 			let v = {
+					  // 				txt:json.msg,
+					  // 				toUid:_this.toid,
+					  // 				fromUid:_this.$store.state.user.id,
+					  // 				uuid:_this.GenerateUUID(),
+					  // 			}
+					  // 			_this.$websocket.dispatch("WEBSOCKET_SEND", "{body:'"+JSON.stringify(v)+"',CMD:'USER_CHAT_SEND_TXT'}");
+					  // 			let img = _this.$store.state.img_url+json.msg;
+					  // 			_this.temp_txt = _this.temp_txt + ("<img  style='max-width: 150px;max-height:150px;' class='face' src='"+img+"'>");
+					  // 			v.psr = "uparse";  
+					  // 			v.simple_content = "[图片]";
+					  // 			_this.sendBaseDo(v);
+					  			
+					  // 			setTimeout(function(){
+					  // 				_this.scrollToBottom();
+					  // 			},100)
+					  // 		 }
+					  // 	 }
+					  // });
+				    }; 
+				    document.getElementById( 'testInput' ).addEventListener( 'paste', function( e ){ 
+				      var clipboardData = e.clipboardData, 
+				          i = 0, 
+				          items, item, types; 
+				  
+				      if( clipboardData ){ 
+				        items = clipboardData.items; 
+				  
+				        if( !items ){ 
+				          return; 
+				        } 
+				  
+				        item = items[0]; 
+				        types = clipboardData.types || []; 
+				  
+				        for( ; i < types.length; i++ ){ 
+				          if( types[i] === 'Files' ){ 
+				            item = items[i]; 
+				            break; 
+				          } 
+				        } 
+				  
+				        if( item && item.kind === 'file' && item.type.match(/^image\//i) ){ 
+				          imgReader( item ); 
+				        } 
+				      } 
+				    }); 
+			},
 			onShowMethod() {
-				console.log('6666')
 				let _this = this;
 				uni.$on("scrollTopFn",()=>{
 					console.log("触发了-scrollTopFn");
@@ -1028,6 +1153,7 @@
 			},
 			onLoadMethod (){
 			  console.log('77777')
+			  this.paseteImg();
 			  this.$store.commit("setCur_chat_msg_list",[]);
 			  this.$store.commit("setChat_my_loadding",false); 
 			  
@@ -1995,6 +2121,7 @@
 						}
 						
 						let arrs = res.tempFilePaths;
+						console.log('arrs',arrs)
 						_this.$store.commit("setChat_my_loadding",true); 
 						setTimeout(function(){
 							_this.scrollToBottom();
