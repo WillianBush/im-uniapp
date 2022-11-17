@@ -930,6 +930,11 @@
 	//const recorderManager = uni.getRecorderManager();
 	const innerAudioContext = uni.createInnerAudioContext();
 	//innerAudioContext.autoplay = true;
+	
+	//#ifdef H5
+	import h5Copy from '@/common/junyi-h5-copy.js'
+	//#endif
+	
 	export default {
 		name: 'GroupChat',
 		components: {

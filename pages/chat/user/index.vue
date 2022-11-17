@@ -198,7 +198,7 @@
 									</view>
 
 
-									<view  v-if="item.bean.psr!='video'" @longpress="onLongPress($event,item.bean)" :class="[item.bean.psr=='uparse'?'':'content bg-green shadow']" :style="{backgroundColor:item.bean.psr=='uparse'? 'none':'#fff'}" style="color:#222;">
+									<view  v-if="item.bean.psr!='video'" @contextmenu="clickRight($event, item.bean)" @longpress="onLongPress($event,item.bean)" :class="[item.bean.psr=='uparse'?'':'content bg-green shadow']" :style="{backgroundColor:item.bean.psr=='uparse'? 'none':'#fff'}" style="color:#222;">
 										<u-parse v-if="item.bean.psr=='uparse'" :content="item.bean.txt" @preview="preview" @navigate="navigate" ></u-parse>
 										<view @tap="clickVoice(item.bean.txt,index)" v-else-if="item.bean.psr=='voice'">
 											<text  v-show="selVoiceIndex != index"  style="text-align: right; float:right;width:100upx;font-size: 52upx;position: relative;top: 4upx;"  class="iconfont icon-yuyin1 text-xxl "></text>
@@ -217,7 +217,7 @@
 							<view v-else class="cu-item"  >
 								<view  @tap.stop="goUserDetail(item.bean.fromUid)" class="cu-avatar radius" :style="'background-image:url('+$store.state.img_url+item.bean.fromHeadpic+');'" ></view>
 								<view class="main">
-									<view @longpress="onLongPress($event,item.bean)"  :class="[item.bean.psr=='uparse'?'':'content shadow']" style="color:#222;">
+									<view @longpress="onLongPress($event,item.bean)"  @contextmenu="clickRight($event, item.bean)" :class="[item.bean.psr=='uparse'?'':'content shadow']" style="color:#222;">
 										<u-parse v-if="item.bean.psr=='video'" :content="item.bean.txt" @preview="preview" @navigate="navigate" ></u-parse>
 										<u-parse v-else-if="item.bean.psr=='uparse'" :content="item.bean.txt" @preview="preview" @navigate="navigate" ></u-parse>
 										<view @tap="clickVoice(item.bean.txt,index)" v-else-if="item.bean.psr=='voice'">
@@ -250,7 +250,7 @@
 									</view>
 
 
-									<view  v-if="item.bean.psr!='video'" @longpress="onLongPress($event,item.bean)" :class="[item.bean.psr=='uparse'?'':'content bg-green shadow']" :style="{backgroundColor:item.bean.psr=='uparse'? 'none':'#fff'}" style="color:#222;">
+									<view  v-if="item.bean.psr!='video'" @longpress="onLongPress($event,item.bean)" @contextmenu="clickRight($event, item.bean)" :class="[item.bean.psr=='uparse'?'':'content bg-green shadow']" :style="{backgroundColor:item.bean.psr=='uparse'? 'none':'#fff'}" style="color:#222;">
 
 										<!--因为视频在底层窗口的显示等级是最上层，所以无法嵌套在scroll里面滑动，这里用image 代替-->
 										<image @tap="clickVideo($store.state.img_url+item.bean.oldTxt)" v-if="item.bean.psr=='uparse' && item.bean.txt.indexOf(videoCheck) != -1" style="width:418upx;height:335upx;border-radius: 5px" src="../../../static/images/video.png"></image>
@@ -273,7 +273,7 @@
 							<view v-else class="cu-item"  >
 								<view  @tap.stop="goUserDetail(item.bean.fromUid)" class="cu-avatar radius" :style="'background-image:url('+$store.state.img_url+item.bean.fromHeadpic+');'" ></view>
 								<view class="main">
-									<view @longpress="onLongPress($event,item.bean)"  :class="[item.bean.psr=='uparse'?'':'content shadow']" style="color:#222;">
+									<view @longpress="onLongPress($event,item.bean)"  @contextmenu="clickRight($event, item.bean)" :class="[item.bean.psr=='uparse'?'':'content shadow']" style="color:#222;">
 										<!--因为视频在底层窗口的显示等级是最上层，所以无法嵌套在scroll里面滑动，这里用image 代替-->
 										<image @tap="clickVideo($store.state.img_url+item.bean.oldTxt)" v-if="item.bean.psr=='video' && item.bean.txt.indexOf(videoCheck) != -1" style="width:418upx;height:335upx;border-radius: 5px" src="../../../static/images/video.png"></image>
 										<u-parse v-else-if="item.bean.psr=='uparse'" :content="item.bean.txt" @preview="preview" @navigate="navigate" ></u-parse>
@@ -987,6 +987,9 @@
 		},
 	
 		methods: {
+			clickRight(event, item) {
+				this.onLongPress(event, item)
+			},
 			paseteImg () {
 				var _this = this;
 				var imgReader = function( item ){
@@ -1456,18 +1459,18 @@
 				
 				
 				
-				let [touches, style] = [e.touches[0], ""];
+				let style;
 			
 				/* 因 非H5端不兼容 style 属性绑定 Object ，所以拼接字符 */
-				if (touches.clientY > (this.winSize.height / 2)) {
-					style = `bottom:${this.winSize.height-touches.clientY}px;`;
+				if (e.clientY > (this.winSize.height / 2)) {
+					style = `bottom:${this.winSize.height-e.clientY-15}px;`;
 				} else {
-					style = `top:${touches.clientY}px;`;
+					style = `top:${e.clientY}px;`;
 				}
-				if (touches.clientX > (this.winSize.witdh / 2)) {
-					style += `right:${this.winSize.witdh-touches.clientX+15}px`;
+				if (e.clientX > (this.winSize.witdh / 2)) {
+					style += `right:${this.winSize.witdh-e.clientX+15}px`;
 				} else {
-					style += `left:${touches.clientX+15}px`;
+					style += `left:${e.clientX+15}px`;
 				}
 			
 				this.popStyle = style;
