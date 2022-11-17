@@ -79,7 +79,7 @@
 				class="page" :class="modalName!=null?'show':''" :refresher-enabled="true"
 				:refresher-triggered="refresherTriggered" @refresherrefresh="refresherrefresh"
 				@refresherrestore="refresherrestore" @refresherabort="refresherabort">
-				<GroupChat :msgToId="msgToId"></GroupChat>
+				<GroupChat :msgToId="msgToId" @openModal="openModal"></GroupChat>
 			</scroll-view>
 		</view>
 		<view v-show="msgToId && !isGroupChat" style="height: calc(100vh - 50upx);width: 80%; float: left; border-left: 1px solid #ddd">
@@ -88,8 +88,14 @@
 				class="page" :class="modalName!=null?'show':''" :refresher-enabled="true"
 				:refresher-triggered="refresherTriggered" @refresherrefresh="refresherrefresh"
 				@refresherrestore="refresherrestore" @refresherabort="refresherabort">
-				<UserChat :msgToId="msgToId"></UserChat>
+				<UserChat :msgToId="msgToId" @openModal="openModal"></UserChat>
 			</scroll-view>
+		</view>
+
+		<view v-show="visiable" style="width: 100%; height: 100%;color:#fff;background-color: #0006; position: fixed;left: 0;top:0; z-index: 10;">
+			<text @click="closeModal" class="cuIcon-close" style="font-size: 36px; cursor: pointer; position:absolute; top:15px; right: 15px"></text>
+			<UserMgr v-show="mgrType=='user'" :mgrId="mgrId"></UserMgr>
+			<GroupMgr v-show="mgrType=='group'" :mgrId="mgrId"></GroupMgr>
 		</view>
 	</view>
 </template>
@@ -118,6 +124,12 @@
 				ChatTypeId: 0,
 				PageCur: 'tongxunlu',
 				keyid: 0,
+				isGroupChat: false,
+				visiable: false,
+				msgToId: '',
+				mgrId: '',
+				mgrType: 'user',
+				ChatTypeId: 0,
 			};
 		},
 		mounted() {
@@ -188,6 +200,14 @@
 			
 		},
 		methods: {
+			closeModal() {
+				this.visiable = false;
+			},
+			openModal(obj) {
+				this.mgrId = obj.id;
+				this.mgrType = obj.type;
+				this.visiable = true;
+			},
 			showMain() {
 				this.PageCur = 'tongxunlu';
 			},
