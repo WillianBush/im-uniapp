@@ -9,11 +9,11 @@
 				<view class="cu-avatar radius margin-left" :style="'height:120upx;width:120upx;background-image:url('+$store.state.img_url+user.headpic+');'"></view>
 			</view>
 			<view  v-if="user.id!='-1'" style="margin-left: 20upx;">
-				<view style="margin:auto auto;font-size:34upx;margin-top:20upx;height:34upx;font-weight: 800;margin-left:20upx">{{user.nickName}}
+				<view @click="copy(user.nickName)" style="margin:auto auto;font-size:34upx;margin-top:20upx;height:34upx;font-weight: 800;margin-left:20upx">{{user.nickName}}
 				<text style="font-size:20upx;font-weight: 400;color:#999;" v-if="user.nickName_real&&user.nickName_real!=''">({{user.nickName_real}})</text>
 				</view>
 				
-				<view style="margin:auto auto;font-size:28upx;margin-top:26upx;height:34upx;margin-left:20upx;color:#777">ID号：{{user.memberId}}</view>
+				<view @click="copy(user.memberId)" style="margin:auto auto;font-size:28upx;margin-top:26upx;height:34upx;margin-left:20upx;color:#777">ID号：{{user.memberId}}</view>
 			</view>
 			<view  v-else style="margin-left: 20upx;line-height:190upx;">
 				<view style="margin:auto auto;font-size:34upx;height:34upx;font-weight: 800;margin-left:20upx">{{user.nickName}}</view>
@@ -142,6 +142,14 @@
 			})
 		},
 		methods: {
+			copy(value) {
+				uni.setClipboardData({
+					data: value,
+					success: function () {
+						console.log('success');  //调用方法成功
+					}
+				})
+			},
 			GroupStopSpeak(e) {
 				let _this = this;
 				this.groupStopSpeak = e.detail.value;
