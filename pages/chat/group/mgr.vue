@@ -166,6 +166,7 @@
 		<GroupAddMember v-show="PageCur=='add'" :keyid="randomKeyId" @goBack="showGroup"></GroupAddMember>
 	    <GroupSssList v-show="PageCur=='sss'" :keyid="randomKeyId" @goBack="showGroup"></GroupSssList>
 	    <UpdNotice v-show="PageCur=='notice'" @goBack="showGroup" :notice="$store.state.cur_chat_entity.descri"></UpdNotice>
+	    <MsgRecord v-show="PageCur=='record'" :keyid="randomKeyId" @goBack="showGroup"></MsgRecord>
 	</view>
 </template>
 
@@ -528,9 +529,11 @@
 			},
 
 			goMsgRecord() {
-				uni.navigateTo({
-					url: "/pages/chat/group/message_record"
-				})
+				this.PageCur = 'record';
+				this.randomKeyId = parseInt(Math.random()*100000000);
+				// uni.navigateTo({
+				// 	url: "/pages/chat/group/message_record"
+				// })
 			},
 			clearChatMsg() {
 				let _this = this;

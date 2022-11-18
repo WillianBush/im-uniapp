@@ -1,7 +1,9 @@
 <template>
 	<view>
-		<cu-custom bgColor="bg-blue"  :isBack="true" :nameToLeft="true"><block slot="backText"></block><block slot="content">历史聊天记录</block><block slot="right">
-		</block></cu-custom>
+		<view style="height: 45px;line-height: 45px;background: #eee;padding-left: 5px; color:#000">
+			<text class="cuIcon-back" @click="goback" style="float:left; margin:0 5px; cursor: pointer;"></text>
+			历史聊天记录
+		</view>
 		<view class="cu-chat">
 			<view v-if="list.length<=0" style="text-align: center;color:#aaa;margin-top:60upx;font-size: 28upx;">
 				暂无聊天记录
@@ -163,75 +165,7 @@
 						<view class="date "> {{item.bean.date}}</view>
 					</view>
 				</block>
-				
-				
 			</block>
-			<!--
-			<view class="cu-item self" > 
-				<view class="main">
-					<view class="content bg-green shadow">
-						<text>喵喵喵！喵喵喵！喵喵喵！喵喵！喵喵！！喵！喵喵喵！</text>
-					</view>
-				</view>
-				<view class="cu-avatar radius" style="background-image:url(https://ossweb-img.qq.com/images/lol/web201310/skin/big107000.jpg);"></view>
-				<view class="date">2018年3月23日 13:23</view>
-			</view>
-			
-			<view class="cu-info round">对方撤回一条消息!</view>
-			
-			<view class="cu-item" @tap="goUserDetail()">
-				<view class="cu-avatar radius" style="background-image:url(https://ossweb-img.qq.com/images/lol/web201310/skin/big143004.jpg);"></view>
-				<view class="main">
-					<view class="content shadow">
-						<text>喵喵喵！喵喵喵！</text>
-					</view>
-				</view>
-				<view class="date "> 13:23</view>
-			</view> 
-			
-			<view class="cu-info">
-				<text class="cuIcon-roundclosefill text-red "></text> 对方拒绝了你的消息
-			</view>
-			
-			<view class="cu-info">
-				对方开启了好友验证，你还不是他(她)的好友。请先发送好友验证请求，对方验证通过后，才能聊天。
-				<text class="text-blue">发送好友验证</text>
-			</view>
-			<view class="cu-item self">
-				<view class="main">
-					<image src="https://ossweb-img.qq.com/images/lol/web201310/skin/big10006.jpg" class="radius" mode="widthFix"></image>
-				</view>
-				<view class="cu-avatar radius" style="background-image:url(https://ossweb-img.qq.com/images/lol/web201310/skin/big107000.jpg);"></view>
-				<view class="date"> 13:23</view>
-			</view>
-			<view class="cu-item self">
-				<view class="main">
-					<view class="action text-bold text-grey">
-						3"
-					</view>
-					<view class="content shadow">
-						<text class="cuIcon-sound text-xxl padding-right-xl"> </text>
-					</view>
-				</view>
-				<view class="cu-avatar radius" style="background-image:url(https://ossweb-img.qq.com/images/lol/web201310/skin/big107000.jpg);"></view>
-				<view class="date">13:23</view>
-			</view>
-			
-			<view class="cu-item self">
-				<view class="main">
-					<view class="action">
-						<text class="cuIcon-locationfill text-orange text-xxl"></text>
-					</view>
-					<view class="content shadow">
-						喵星球，喵喵市
-					</view>
-				</view>
-				<view class="cu-avatar radius" style="background-image:url(https://ossweb-img.qq.com/images/lol/web201310/skin/big107000.jpg);"></view>
-				<view class="date">13:23</view>
-			</view>
-			-->
-			
-			
 		</view>
 
 	<openRed @hide="hideOpenRed" @openRedDetail="openRedDetail" v-show="showOpenRed" ></openRed>
@@ -248,6 +182,12 @@
 		components: {
 		    uParse,
 			openRed
+		},
+		props: {
+			keyid: {
+				type: Number,
+				default: 0
+			}
 		},
 		data() {
 			return {
@@ -306,26 +246,36 @@
 				stopSpeak:0,//1禁止发言
 			};
 		},
-		onLoad(option) {
-			let _this = this;
-			let user = uni.getStorageSync("USER");
-			let str = uni.getStorageSync(user.id+"#"+this.$store.state.cur_chat_entity.id+'_CHAT_MESSAGE');
-			if(str&&str!="") {
-				 var jsonObj = JSON.parse(str);
-				 _this.list = jsonObj;
-				 // if(jsonObj.length>50) {
-					// jsonObj.splice(0,jsonObj.length-50);
-				 //  }
+		watch: {
+			keyid: function(newVal, oldVal) {
+				console.log('----------------------newVal', newVal)
+				console.log('---------------------oldVal', oldVal)
+				this.initData();
 			}
+		},
+		onLoad(option) {
 			
-			setTimeout(()=>{
-				uni.pageScrollTo({
-				    scrollTop: 9999999999,
-				    duration: 0
-				});
-			},50)
 		},
 		methods: {
+			initData() {
+				let _this = this;
+				let user = uni.getStorageSync("USER");
+				let str = uni.getStorageSync(user.id+"#"+this.$store.state.cur_chat_entity.id+'_CHAT_MESSAGE');
+				if(str&&str!="") {
+					 var jsonObj = JSON.parse(str);
+					 _this.list = jsonObj;
+				}
+				
+				setTimeout(()=>{
+					uni.pageScrollTo({
+					    scrollTop: 9999999999,
+					    duration: 0
+					});
+				},50)
+			},
+			goback() {
+				this.$emit('goBack');
+			},
 			getPopButton(item) {
 				// popButton: ["复制", "转发", "收藏","删除","撤消"],
 				if(item=="复制") return "icon-fuzhi";

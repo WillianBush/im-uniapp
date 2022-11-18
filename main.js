@@ -40,6 +40,9 @@ Vue.component('GroupSssList',GroupSssList)
 import UpdNotice from './pages/chat/group/upd_notice.vue'
 Vue.component('UpdNotice',UpdNotice)
 
+import MsgRecord from './pages/chat/group/message_record.vue'
+Vue.component('MsgRecord',MsgRecord)
+
 import faxian from './pages/faxian/index.vue'
 Vue.component('faxian',faxian)
 
