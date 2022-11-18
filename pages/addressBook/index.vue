@@ -73,13 +73,13 @@
 		<view v-show="!msgToId" style="height: 100vh;width: 80%; float: left; border-left: 1px solid #ddd; background:#eee">
 			<img src="../../static/logo1.png" width="100px" height="100px" style="margin-top: calc(50vh - 50px);margin-left: calc(50% - 50px);"></img>
 		</view>
-		<view v-show="msgToId && isGroupChat" style="height: calc(100vh - 50upx);width: 80%; float: left; border-left: 1px solid #ddd">
+		<view v-show="isGroupChat" style="height: calc(100vh - 50upx);width: 80%; float: left; border-left: 1px solid #ddd">
 			<scroll-view :scroll-y="modalName==null"
 				style="width: 100%"
 				class="page" :class="modalName!=null?'show':''" :refresher-enabled="true"
 				:refresher-triggered="refresherTriggered" @refresherrefresh="refresherrefresh"
 				@refresherrestore="refresherrestore" @refresherabort="refresherabort">
-				<GroupChat :msgToId="msgToId" @openModal="openModal"></GroupChat>
+				<GroupChat :msgToGroupId="msgToGroupId" @openModal="openModal"></GroupChat>
 			</scroll-view>
 		</view>
 		<view v-show="msgToId && !isGroupChat" style="height: calc(100vh - 50upx);width: 80%; float: left; border-left: 1px solid #ddd">
@@ -127,6 +127,7 @@
 				isGroupChat: false,
 				visiable: false,
 				msgToId: '',
+				msgToGroupId: '',
 				mgrId: '',
 				mgrType: 'user',
 				ChatTypeId: 0,
@@ -214,7 +215,7 @@
 			goGroupChat(_id) {
 				console.log('tom wang 666',_id)
 				this.isGroupChat = true;
-				this.msgToId = _id;
+				this.msgToGroupId = _id;
 			},
 			goBlacklist() {
 				this.PageCur = 'heimingdan';

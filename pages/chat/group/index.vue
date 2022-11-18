@@ -945,7 +945,7 @@
 			openRed
 		},
 		props: {
-			msgToId: {
+			msgToGroupId: {
 				type: String,
 				default: ''
 			},
@@ -1022,7 +1022,7 @@
 			};
 		},
 		watch: {
-		  msgToId: function(newVal,oldVal){
+		  msgToGroupId: function(newVal,oldVal){
 			console.log('watchGroupMsgToId')
 			console.log('----------------------newVal',newVal)
 			console.log('---------------------oldVal',oldVal)
@@ -1113,7 +1113,9 @@
 				      }; 
 				      reader.readAsDataURL( blob ); 
 				    }; 
-				    document.getElementById( 'testInputg' ).addEventListener( 'paste', function( e ){ 
+					const targetEle = document.getElementById( 'testInputg' );
+					if (!targetEle) return;
+				    targetEle.addEventListener( 'paste', function( e ){ 
 				      var clipboardData = e.clipboardData, 
 				          i = 0, 
 				          items, item, types; 

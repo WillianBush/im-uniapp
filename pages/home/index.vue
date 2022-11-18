@@ -82,9 +82,7 @@
 
 
 			<scroll-view style="height: calc(100vh - 135px);width: 100%;" :scroll-y="modalName==null"
-				class="page" :class="modalName!=null?'show':''" :refresher-enabled="true"
-				:refresher-triggered="refresherTriggered" @refresherrefresh="refresherrefresh"
-				@refresherrestore="refresherrestore" @refresherabort="refresherabort">
+				class="page" :class="modalName!=null?'show':''">
 				<view class="cu-list menu-avatar">
 					<view style="text-align: center;background: #fff;height: 80px;line-height: 80px;color: #999;" v-if="$store.state.ar_list_show.length<=0">暂无聊天信息</view>
 					<view @tap="goChat(item)" class="cu-item" :class="modalName=='move-box-'+ index?'move-cur':''"
@@ -158,24 +156,20 @@
 				-->
 			</scroll-view>
 		</view>
-		<view v-show="!msgToId" style="height: 100vh;width: 80%; float: left; border-left: 1px solid #ddd; background:#eee">
+		<view v-show="!msgToId && !msgToGroupId" style="height: 100vh;width: 80%; float: left; border-left: 1px solid #ddd; background:#eee">
 			<img src="../../static/logo1.png" width="100px" height="100px" style="margin-top: calc(50vh - 50px);margin-left: calc(50% - 50px);"></img>
 		</view>
-		<view v-show="msgToId && isGroupChat" style="height: calc(100vh - 50upx);width: 80%; float: left; border-left: 1px solid #ddd">
+		<view v-show="isGroupChat" style="height: calc(100vh - 50upx);width: 80%; float: left; border-left: 1px solid #ddd">
 			<scroll-view :scroll-y="modalName==null"
 				style="width: 100%"
-				class="page" :class="modalName!=null?'show':''" :refresher-enabled="true"
-				:refresher-triggered="refresherTriggered" @refresherrefresh="refresherrefresh"
-				@refresherrestore="refresherrestore" @refresherabort="refresherabort">
-				<GroupChat :msgToId="msgToId" @openModal="openModal"></GroupChat>
+				class="page" :class="modalName!=null?'show':''">
+				<GroupChat :msgToGroupId="msgToGroupId" @openModal="openModal"></GroupChat>
 			</scroll-view>
 		</view>
 		<view v-show="msgToId && !isGroupChat" style="height: calc(100vh - 50upx);width: 80%; float: left; border-left: 1px solid #ddd">
 			<scroll-view :scroll-y="modalName==null"
 				style="width: 100%"
-				class="page" :class="modalName!=null?'show':''" :refresher-enabled="true"
-				:refresher-triggered="refresherTriggered" @refresherrefresh="refresherrefresh"
-				@refresherrestore="refresherrestore" @refresherabort="refresherabort">
+				class="page" :class="modalName!=null?'show':''">
 				<UserChat :msgToId="msgToId" @openModal="openModal"></UserChat>
 			</scroll-view>
 		</view>
@@ -200,9 +194,9 @@
 				isGroupChat: false,
 				visiable: false,
 				msgToId: '',
+				msgToGroupId: '',
 				mgrId: '',
 				mgrType: 'user',
-				ChatTypeId: 0,
 				refresherTriggered: false, //下拉刷新状态
 				_refresherTriggered: false, //防止异步操作
 				chatCfg: {},
@@ -728,22 +722,23 @@
 			},
 			goChat(item) {
 				console.log('tom', item.id)
-				this.msgToId = item.id;
+				
 				if (item.id == "-1") {
-					this.ChatTypeId = -1;
+					this.msgToId = item.id;
+					this.isGroupChat = false;
 					// uni.navigateTo({
 					// 	url: "/pages/chat/guang_fang_chat"
 					// })
 				} else {
 					if (item.typeid == "2") {
+						this.msgToId = item.id;
 						this.isGroupChat = false;
-						this.ChatTypeId = 2;
 						// uni.navigateTo({
 						// 	url: "/pages/chat/user/index?toid=" + item.id
 						// })
 					} else {
+						this.msgToGroupId = item.id;
 						this.isGroupChat = true;
-						this.ChatTypeId = 1;
 						// uni.navigateTo({
 						// 	url: "/pages/chat/group/index?toid=" + item.id
 						// })

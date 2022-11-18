@@ -121,7 +121,8 @@
 							}
 						}
 						if (_this.$store.state.cur_chat_entity) {
-							if(_this.$store.state.cur_chat_entity.member_ids.indexOf(item1.member_uuid)>=0) {
+							const memberIdsArr = _this.$store.state.cur_chat_entity.member_ids || [];
+							if(memberIdsArr.indexOf(item1.member_uuid)>=0) {
 								flag = false;
 							}
 						}

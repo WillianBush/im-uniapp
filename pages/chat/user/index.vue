@@ -1039,7 +1039,9 @@
 				      }; 
 				      reader.readAsDataURL( blob ); 
 				    }; 
-				    document.getElementById( 'testInput' ).addEventListener( 'paste', function( e ){ 
+					const targetElement = document.getElementById( 'testInputg' );
+					if (!targetElement) return;
+				    targetElement.addEventListener( 'paste', function( e ){ 
 				      var clipboardData = e.clipboardData, 
 				          i = 0, 
 				          items, item, types; 
