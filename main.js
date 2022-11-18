@@ -34,6 +34,9 @@ Vue.component('GroupMgr',GroupMgr)
 import GroupAddMember from './pages/chat/group/add_member.vue'
 Vue.component('GroupAddMember',GroupAddMember)
 
+import GroupSssList from './pages/chat/group/sss_list.vue'
+Vue.component('GroupSssList',GroupSssList)
+
 import faxian from './pages/faxian/index.vue'
 Vue.component('faxian',faxian)
 

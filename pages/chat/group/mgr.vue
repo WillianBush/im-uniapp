@@ -164,6 +164,7 @@
 			</view>
 		</view>
 		<GroupAddMember v-show="PageCur=='add'" :keyid="randomKeyId" @goBack="showGroup"></GroupAddMember>
+	    <GroupSssList v-show="PageCur=='sss'" :keyid="randomKeyId" @goBack="showGroup"></GroupSssList>
 	</view>
 </template>
 
@@ -264,9 +265,11 @@
 
 			},
 			goSssList() {
-				uni.navigateTo({
-					url: "/pages/chat/group/sss_list"
-				})
+				this.PageCur = 'sss';
+				this.randomKeyId = parseInt(Math.random()*100000000);
+				// uni.navigateTo({
+				// 	url: "/pages/chat/group/sss_list"
+				// })
 			},
 			goMgrset() {
 				uni.navigateTo({
