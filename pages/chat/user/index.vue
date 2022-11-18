@@ -1173,7 +1173,8 @@
 			  	}
 			  ).then(res=>{
 			  	let res_data = eval(res.data);
-			  	if(res_data.code==200) {  
+				let statusCode = res_data ? res_data.code : 0;
+			  	if(statusCode==200) {  
 			  		_this.entity = res_data.body;
 			  		_this.$store.commit("setCur_chat_entity",_this.entity);
 			  		//主要是为了让onshow检查是否已设置备注，如果已设置备注则不需要使用用户原昵称

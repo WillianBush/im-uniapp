@@ -120,8 +120,10 @@
 								return false;							 
 							}
 						}
-						if(_this.$store.state.cur_chat_entity.member_ids.indexOf(item1.member_uuid)>=0) {
-							flag = false;
+						if (_this.$store.state.cur_chat_entity) {
+							if(_this.$store.state.cur_chat_entity.member_ids.indexOf(item1.member_uuid)>=0) {
+								flag = false;
+							}
 						}
 						 return flag;
 					 })

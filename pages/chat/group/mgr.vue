@@ -165,6 +165,7 @@
 		</view>
 		<GroupAddMember v-show="PageCur=='add'" :keyid="randomKeyId" @goBack="showGroup"></GroupAddMember>
 	    <GroupSssList v-show="PageCur=='sss'" :keyid="randomKeyId" @goBack="showGroup"></GroupSssList>
+	    <UpdNotice v-show="PageCur=='notice'" @goBack="showGroup" :notice="$store.state.cur_chat_entity.descri"></UpdNotice>
 	</view>
 </template>
 
@@ -493,9 +494,10 @@
 				})
 			},
 			editGroupNotice() {
-				uni.navigateTo({
-					url: "/pages/chat/group/upd_notice"
-				})
+				this.PageCur = 'notice';
+				// uni.navigateTo({
+				// 	url: "/pages/chat/group/upd_notice"
+				// })
 			},
 			editGroupName() {
 				uni.navigateTo({
@@ -586,28 +588,6 @@
 						});
 					}
 				})
-
-				// uni.request({
-				// 	method:"POST",
-				// 	url: _this.$store.state.req_url + "/room/json/uStopSpeak/v1",
-				// 	data:{roomid:_this.$store.state.cur_chat_entity.id,stopSpeak:stopSpeak},
-				// 	header:{
-				// 		"Content-Type":"application/x-www-form-urlencoded",
-				// 		"x-access-uid":_this.$store.state.user.id
-				// 	},
-				// 	success(res) {
-				// 		let res_data = eval(res.data);
-				// 		if(res_data.code==200) {  
-				// 			_this.$store.state.cur_chat_entity.stopSpeak = stopSpeak;
-				// 		} else {
-				// 			uni.showToast({
-				// 			    title: res_data.msg,
-				// 			    duration: 2000
-				// 			});
-				// 		}
-				// 	}
-				// })
-
 
 			},
 			SwitchA(e) {
