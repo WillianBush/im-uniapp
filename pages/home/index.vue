@@ -3,7 +3,7 @@
 		<view @tap="hideShowMenu()" style="padding-top:50upx;background-color: #fff;width: 20%;float: left">
 			<view class="cu-bar bg-white solid-bottom">
 				<view class="action" style="font-size: 36upx;font-weight: 600;">
-					<text class="cuIcon-title text-orange "></text> 消息列表
+					<text class="cuIcon-title text-orange " style="color: green"></text> 消息列表
 				</view>
 				<text @tap.stop="showMenuFn()"
 					style="float:right;font-size:48upx;cursor: pointer;color:#333;margin-top:6upx;margin-right:40upx"

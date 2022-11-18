@@ -1001,10 +1001,10 @@
 						_this.pasteImgUrl = e.target.result;
 						img.style.cssText = "width: 100px; height: 60px;position: absolute;top: 40px;"
 				  
-				        // document.getElementById( 'testInput' ).appendChild( img ); 
+				        document.getElementById( 'testInput' ).appendChild( img ); 
 						_this.$http.post("/user/file/uploadB64Img",
 							{
-								base64: e.target.result
+								base64:encodeURI(e.target.result)
 							},
 							{
 								header:{
@@ -1032,6 +1032,7 @@
 								
 								setTimeout(function(){
 									_this.scrollToBottom();
+									document.getElementById( 'testInput' ).removeChild( img ); 
 								},100)
 							 }
 						})

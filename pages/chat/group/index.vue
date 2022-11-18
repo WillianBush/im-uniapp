@@ -345,7 +345,10 @@
 			<!-- @focus="InputFocus" @blur="InputBlur"-->
 			<input @keydown.enter="send" style="background: #eee!important;" disabled="true" placeholder="禁言" placeholder-style="text-align:center;background: #eee;" v-show="stopSpeak==1"  class="solid-bottom" :adjust-position="true" :focus="false" maxlength="300" cursor-spacing="10"
 			></input> 
-			<textarea style="height:30px !important;line-height:30px;width: 100%;"
+			<input 
+					id="testInputg"
+					placeholder="请输入信息"
+					style="height:30px !important;line-height:30px;width: 100%;"
 					  confirm-type="send"
 					  @confirm="send"
 					  confirm-hold="true"
@@ -356,7 +359,7 @@
 					  v-show="c_type==1&&stopSpeak==0"
 					  v-model="txt" @input="inputTxt"
 					  class="solid-bottom" :adjust-position="true" :focus="input_is_focus" maxlength="-1" cursor-spacing="10"
-			></textarea>
+			></input>
 			<view @tap="ChooseImage()" style="cursor: pointer;position: absolute;top: 0; left: 0px;"><text style="font-size: 60upx;color:#3F92F8" class="iconfont icon-zhaopian-cuxiantiao-fill"></text></view>
 			<view @tap="ChooseVideo()" style="cursor: pointer;position: absolute;top: 0; left: 40px;"><text style="font-size: 60upx;color:#F39F90" class="iconfont icon-paishe"></text></view>
 			<view @tap="sendCard()" style="cursor: pointer;position: absolute;top: 0; left: 80px;"><text style="font-size: 60upx;color:#FA9B4E" class="iconfont icon-mingpian2"></text></view>
@@ -1062,6 +1065,82 @@
 			clickRight(event, item) {
 				this.onLongPress(event, item)
 			},
+			paseteImg () {
+				var _this = this;
+				var imgReader = function( item ){
+				      var blob = item.getAsFile(), 
+				          reader = new FileReader(); 
+					  var img = new Image(); 
+				      reader.onload = function( e ){ 
+				        img.src = e.target.result;
+						_this.pasteImgUrl = e.target.result;
+						img.style.cssText = "width: 100px; height: 60px;position: absolute;top: -6px;"
+				  
+				        document.getElementById( 'testInputg' ).appendChild( img ); 
+						_this.$http.post("/user/file/uploadB64Img",
+							{
+								base64:encodeURI(e.target.result)
+							},
+							{
+								header:{
+									"x-access-uid": _this.$store.state.user.id,
+									"x-access-client":_this.$clientType
+								}
+							}
+							
+						).then(res=>{
+							let res_data = eval(res.data);
+							if (res_data.code == 200) {
+								let json = eval(res.data);
+								let v = {
+									txt:json.msg,
+									toGroupid:_this.toid,
+									fromUid:_this.$store.state.user.id,
+									uuid:_this.GenerateUUID(),
+								};
+								_this.$websocket.dispatch("WEBSOCKET_SEND", "{body:'"+JSON.stringify(v)+"',CMD:'GROUP_CHAT_SEND_TXT'}");
+								let img = _this.$store.state.img_url+json.msg;
+								_this.temp_txt = _this.temp_txt + ("<img  style='max-width: 150px;max-height:150px;' class='face' src='"+img+"'>");
+								v.psr = "uparse";  
+								v.simple_content = "[图片]";
+								_this.sendBaseDo(v);
+								setTimeout(function(){
+									_this.scrollToBottom();
+									document.getElementById( 'testInputg' ).removeChild( img ); 
+								},100)
+							 }
+						})
+				      }; 
+				      reader.readAsDataURL( blob ); 
+				    }; 
+				    document.getElementById( 'testInputg' ).addEventListener( 'paste', function( e ){ 
+				      var clipboardData = e.clipboardData, 
+				          i = 0, 
+				          items, item, types; 
+				  
+				      if( clipboardData ){ 
+				        items = clipboardData.items; 
+				  
+				        if( !items ){ 
+				          return; 
+				        } 
+				  
+				        item = items[0]; 
+				        types = clipboardData.types || []; 
+				  
+				        for( ; i < types.length; i++ ){ 
+				          if( types[i] === 'Files' ){ 
+				            item = items[i]; 
+				            break; 
+				          } 
+				        } 
+				  
+				        if( item && item.kind === 'file' && item.type.match(/^image\//i) ){ 
+				          imgReader( item ); 
+				        } 
+				      } 
+				    }); 
+			},
 			onShowMethod() {
 				let _this = this;
 				uni.$off("aiteFn");
@@ -1106,6 +1185,7 @@
 				});
 			},
 			onLoadMethod () {
+				this.paseteImg();
 				this.$store.commit("setCur_chat_msg_list",[]);
 				this.$store.commit("setChat_my_loadding",false); 
 				this.getWindowSize();
@@ -2165,36 +2245,23 @@
 					    fromUid:this.$store.state.user.id,
 						uuid:this.GenerateUUID(),
 					}
-					/**
-					uni.pageScrollTo({
-					    scrollTop: 9999999999,
-					    duration: 100
-					});
-					**/
 					if(this.txt.trim()=="") {
 						return;
 					}
-					
-					console.log(this.aite_map);
 					let aite = "";
 					for (var [key, value] of this.aite_map) {
-					  //console.log(key + ' = ' + value);
 					  if(this.txt.indexOf(key)>=0) {
 						  aite+=(value+"#");
 					  }
 					}
 					this.aite_map.clear();
 					v.aite = aite;
-					
 					this.$websocket.dispatch("WEBSOCKET_SEND", "{body:'"+JSON.stringify(v)+"',CMD:'GROUP_CHAT_SEND_TXT'}");
-					
 					this.$store.commit("setChat_my_loadding",true);
 					this.sendBaseDo(v);
-					
 					this.txt = "";
 					this.showjia = true;
 					this.sendCount = this.sendCount +1;
-					//this.clickChat();
 					setTimeout(function(){
 						_this.scrollToBottom(); 
 						_this.input_is_focus = true;
