@@ -1,10 +1,15 @@
 <template>
 	<view> 
-		<cu-custom bgColor="bg-blue" :isBack="true" :nameToLeft="true"><block slot="content">邀请群成员</block>
+		<view style="height: 45px;line-height: 45px;background: #eee;padding-left: 5px; color:#000">
+			<text class="cuIcon-back" @click="goback" style="float:left; margin:0 5px; cursor: pointer;"></text>
+			邀请群成员
+			<text @tap="tijiao()" style="float:right;font-size: 30upx;color: #000; margin-right: 10px;cursor: pointer;" class="lg text-gray ">邀请</text>
+		</view>
+		<!-- <cu-custom bgColor="bg-blue" :isBack="true" :nameToLeft="true"><block slot="content">邀请群成员</block>
 		<block slot="right">
 		<uni-text @tap="tijiao()" style="font-size: 22px;color: #fff;margin-right: 14px;font-size: 30upx;background: #58BB46;padding:10upx 40upx;border-radius: 6upx;" class="lg text-gray ">邀请</uni-text>
 		</block>
-		</cu-custom>
+		</cu-custom> -->
 		
 		
 		<view class="cu-bar bg-white search" >
@@ -27,7 +32,7 @@
 							<!--
 							<view class="cu-avatar round lg">{{item.h}}</view>
 							-->
-							<view class="cu-avatar round lg" :style="{'backgroundImage': 'url('+$store.state.img_url+ items.headpic +')' }"  style="width: 80upx;height: 80upx;background-size: 100% 100%;"></view>
+							<view class="cu-avatar round lg" :style="{'backgroundImage': 'url('+$store.state.img_url+ items.headpic +')' }"  style="width: 60upx;height: 60upx;background-size: 100% 100%;"></view>
 							<view class="content">
 								<view class="text-grey" style="float:left;">{{items.name}}</view>
 								<checkbox :checked="fid==items.member_uuid"  class='round blue '  :value="items.member_uuid"></checkbox>  
@@ -63,6 +68,12 @@
 
 <script>
 	export default {
+		props: {
+			keyid: {
+				type: Number,
+				default: 0
+			}
+		},
 		data() {
 			return {
 				StatusBar: this.StatusBar,
@@ -77,70 +88,17 @@
 				fid:""
 			};
 		},
+		watch: {
+			keyid: function(newVal, oldVal) {
+				console.log('----------------------newVal', newVal)
+				console.log('---------------------oldVal', oldVal)
+				this.initData();
+			}
+		},
 		onLoad(e) {
 			this.fid = e.fid;
 		},
 		mounted() {
-			let _this = this;
-			let user = uni.getStorageSync("USER");
-			/**
-			let list = [{}];
-			for (let i = 0; i < 26; i++) {
-				list[i] = {};
-				list[i].name = String.fromCharCode(65 + i);
-			}
-			this.list = list;
-			this.listCur = list[0];
-			**/
-			
-			if(this.$store.state.friend_list.length<=0) {
-				
-				_this.$http.post("/user/friend/list/v1",
-					{
-						header:{
-							"x-access-uid":user.id,
-							"x-access-client":_this.$clientType
-						}
-					}
-				).then(res=>{
-					let res_data = eval(res.data);
-					if(res_data.code==200) {  
-						_this.$store.commit("setFriend_list",res_data.body);
-						res_data.body.forEach(item=>{
-							let i = {};
-							i.name = item.h;
-							_this.list.push(i);
-						})
-						
-					}
-				})
-				
-				// uni.request({
-				// 	method:"POST",
-				// 	url: _this.$store.state.req_url + "/user/friend/list/v1",
-				// 	header:{
-				// 		"Content-Type":"application/x-www-form-urlencoded",
-				// 		"x-access-uid":user.id
-				// 	},
-				// 	success(res) {
-				// 		let res_data = eval(res.data);
-				// 		if(res_data.code==200) {  
-				// 			_this.$store.commit("setFriend_list",res_data.body);
-				// 			res_data.body.forEach(item=>{
-				// 				let i = {};
-				// 				i.name = item.h;
-				// 				_this.list.push(i);
-				// 			})
-							
-				// 		}
-				// 	}
-				// })
-			}
-				
-			
-				
-			
-			
 			
 		},
 		computed:{
@@ -194,6 +152,35 @@
 			
 		},
 		methods: {
+			initData() {
+				let _this = this;
+				let user = uni.getStorageSync("USER");		
+				if(this.$store.state.friend_list.length<=0) {
+					
+					_this.$http.post("/user/friend/list/v1",
+						{
+							header:{
+								"x-access-uid":user.id,
+								"x-access-client":_this.$clientType
+							}
+						}
+					).then(res=>{
+						let res_data = eval(res.data);
+						if(res_data.code==200) {  
+							_this.$store.commit("setFriend_list",res_data.body);
+							res_data.body.forEach(item=>{
+								let i = {};
+								i.name = item.h;
+								_this.list.push(i);
+							})
+							
+						}
+					})
+				}
+			},
+			goback () {
+				this.$emit('goBack');
+			},
 			tijiao(){
 				let _this = this;
 				let user = uni.getStorageSync("USER");
