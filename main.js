@@ -43,6 +43,9 @@ Vue.component('GroupDeleteMember',GroupDeleteMember)
 import GroupSssList from './pages/chat/group/sss_list.vue'
 Vue.component('GroupSssList',GroupSssList)
 
+import AddSssMemberList from './pages/chat/group/addSss_member_list'
+Vue.component('AddSssMemberList',AddSssMemberList)
+
 import UpdNotice from './pages/chat/group/upd_notice.vue'
 Vue.component('UpdNotice',UpdNotice)
 
