@@ -1,37 +1,40 @@
 <template>
 	<view>
-		<view style="height: 45px;line-height: 45px;background: #eee;padding-left: 5px; color:#000">
-			<text class="cuIcon-back" @click="goback" style="float:left; margin:0 5px; cursor: pointer;"></text>
-			群组成员({{list.length}}人)
-		</view>
-		
-		<view class="cu-bar bg-white search">
-			<view class="search-form round">
-				<text class="cuIcon-search"></text>
-				<input v-model="kw" @input="search_list()" type="text" placeholder="搜索" confirm-type="search"></input>
+		<view v-show="PageCur=='main'">
+			<view style="height: 45px;line-height: 45px;background: #eee;padding-left: 5px; color:#000">
+				<text class="cuIcon-back" @click="goback" style="float:left; margin:0 5px; cursor: pointer;"></text>
+				群组成员({{list.length}}人)
 			</view>
-			
-		</view>
-		
-		<view style="background: #fff;width: 96%;
-    margin: auto auto;
-    margin-top: 10px;" class="margin-top">
-	
-			
-			<view style=" width:100%">
-					<view   style="padding-top:30upx;padding-bottom:30upx;">
-						<view @tap="goUserDetail(item.id)" style="display: inline-block;width:20%;margin-bottom:20upx;text-align: center;" v-for="(item,index) in list1">
-							<view  class="cu-avatar round" :style="'height:100upx;width:100upx;background-image:url('+$store.state.img_url+item.headpic+');'"></view>
-							<view    style="margin:auto auto;color: #999;font-size:24upx;text-align: center;margin-top:8upx;overflow: hidden;height:68upx;width:100upx;word-wrap: break-word; word-break: normal">{{item.nickName}}</view>
-							
+
+			<view class="cu-bar bg-white search">
+				<view class="search-form round">
+					<text class="cuIcon-search"></text>
+					<input v-model="kw" @input="search_list()" type="text" placeholder="搜索" confirm-type="search"></input>
+				</view>
+
+			</view>
+
+			<view style="background: #fff;width: 96%;
+		margin: auto auto;
+		margin-top: 10px;" class="margin-top">
+
+
+				<view style=" width:100%">
+						<view   style="padding-top:30upx;padding-bottom:30upx;">
+							<view @tap="goUserDetail(item.id)" style="display: inline-block;width:20%;margin-bottom:20upx;text-align: center;" v-for="(item,index) in list1">
+								<view  class="cu-avatar round" :style="'height:100upx;width:100upx;background-image:url('+$store.state.img_url+item.headpic+');'"></view>
+								<view    style="margin:auto auto;color: #999;font-size:24upx;text-align: center;margin-top:8upx;overflow: hidden;height:68upx;width:100upx;word-wrap: break-word; word-break: normal">{{item.nickName}}</view>
+
+							</view>
 						</view>
-					</view>
+				</view>
+
+
 			</view>
-			
-			 
-		</view> 
-		
-	
+
+
+		</view>
+		<UserDetail ref="userdetail" v-show="PageCur=='user_detail'" :keyid="randomKeyId" @goBack="showGroup"></UserDetail>
 	</view>
 </template>
 
@@ -43,6 +46,8 @@
 				list:[],
 				list1:[],
 				kw:"",
+				PageCur: 'main',
+				randomKeyId: 0
 				
 			}
 		},
@@ -74,6 +79,9 @@
 			})
 		},
 		methods: {
+			showGroup() {
+				this.PageCur = 'main';
+			},
 			loadData(){
 				let _this = this;
 				let user = uni.getStorageSync("USER");
@@ -147,9 +155,15 @@
 						
 							
 						if(flag) {
-							uni.navigateTo({
-								url:"/pages/chat/user_detail?id="+_id+"&room_id="+_this.$store.state.cur_chat_entity.id
-							})
+							this.PageCur = 'user_detail';
+							this.randomKeyId = parseInt(Math.random()*100000000);
+
+							this.$refs.userdetail.loadData(_id, _this.$store.state.cur_chat_entity.id);//调用上面子类UserDetail里面的方法
+
+
+							// uni.navigateTo({
+							// 	url:"/pages/chat/user_detail?id="+_id+"&room_id="+_this.$store.state.cur_chat_entity.id
+							// })
 						}	
 						
 					}

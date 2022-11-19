@@ -40,11 +40,11 @@
 			</view>
 		</view>	
 		
-		<view v-else @tap="addFriend(id)" style="clear: both;" class="cu-list menu">
-			<view class="margin-top" style="text-align: center;background: #fff;height:100upx;line-height: 100upx;" >
-				<text style="color: #485D83;font-size: 30upx;font-weight: 800;margin-left: 10upx;">添加好友</text>
-			</view>
-		</view>	
+<!--		<view v-else @tap="addFriend(id)" style="clear: both;" class="cu-list menu">-->
+<!--			<view class="margin-top" style="text-align: center;background: #fff;height:100upx;line-height: 100upx;" >-->
+<!--				<text style="color: #485D83;font-size: 30upx;font-weight: 800;margin-left: 10upx;">添加好友</text>-->
+<!--			</view>-->
+<!--		</view>	-->
 	</block>	
 		
 	</view>
