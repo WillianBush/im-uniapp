@@ -49,6 +49,12 @@ Vue.component('MsgRecord',MsgRecord)
 import MgrSet from './pages/chat/group/mgrSet'
 Vue.component('MgrSet',MgrSet)
 
+import AddRoomMgr from './pages/chat/group/add_room_mgr'
+Vue.component('AddRoomMgr',AddRoomMgr)
+
+import RoomMgr from './pages/chat/group/room_mgr'
+Vue.component('RoomMgr',RoomMgr)
+
 import faxian from './pages/faxian/index.vue'
 Vue.component('faxian',faxian)
 

@@ -1,79 +1,84 @@
 <template>
-	<view v-if="$store.state.cur_chat_entity">
-			<view style="height: 45px;line-height: 45px;background: #eee;padding-left: 5px; color:#000">
-				<text class="cuIcon-back" @click="goback" style="float:left; margin:0 5px; cursor: pointer;"></text>
-				群设置
+	<view style="background: #eee;color:#000">
+		<view v-show="PageCur=='main'" v-if="$store.state.cur_chat_entity">
+				<view style="height: 45px;line-height: 45px;background: #eee;padding-left: 5px; color:#000">
+					<text class="cuIcon-back" @click="goback" style="float:left; margin:0 5px; cursor: pointer;"></text>
+					群设置
+				</view>
+
+			</block></cu-custom>
+			<view style="clear: both;   width: 96%;
+		margin: auto auto;
+		margin-top: 10px!important;" class="cu-list menu">
+
+			<view  class="cu-form-group">
+				<view class="title">群禁言</view>
+				<switch @change="SwitchC" :class="switchC?'checked':''" :checked="switchC?true:false"></switch>
 			</view>
 
-		</block></cu-custom>
-		<view style="clear: both;   width: 96%;
-    margin: auto auto;
-    margin-top: 10px!important;" class="cu-list menu">
-	
-	<view  class="cu-form-group">
-		<view class="title">群禁言</view>
-		<switch @change="SwitchC" :class="switchC?'checked':''" :checked="switchC?true:false"></switch>
-	</view>
-	
 
-			
-			<view class="cu-form-group margin-top">
-				<view class="title">允许群成员邀请好友入群</view>
-				<switch @change="SwitchA" :class="switchA?'checked':''" :checked="switchA?true:false"></switch>
-			</view>
-			<view class="cu-item cu-form-group">
-				<view class="title">群聊邀请进群审核验证</view>
-				<switch @change="SwitchB" :class="switchB?'checked':''" :checked="switchB?true:false"></switch>
-			</view>
-			
-			<view v-if="$store.state.user.id==$store.state.cur_chat_entity.owner_UUID" @tap="goAddRoomMgr()" class="cu-item cu-form-group  arrow" >
-				<view class="content">
-					<text class="text-grey" style="color:#333">添加群管理</text>
+
+				<view class="cu-form-group margin-top">
+					<view class="title">允许群成员邀请好友入群</view>
+					<switch @change="SwitchA" :class="switchA?'checked':''" :checked="switchA?true:false"></switch>
 				</view>
-			</view>
-			<view v-if="$store.state.user.id==$store.state.cur_chat_entity.owner_UUID" @tap="goRoomMgr()" class="cu-item cu-form-group arrow" >
-				<view class="content">
-					<text class="text-grey" style="color:#333">群管理列表</text>
+				<view class="cu-item cu-form-group">
+					<view class="title">群聊邀请进群审核验证</view>
+					<switch @change="SwitchB" :class="switchB?'checked':''" :checked="switchB?true:false"></switch>
 				</view>
-			</view>
-			
-			
-			<view v-if="$store.state.user.id==$store.state.cur_chat_entity.owner_UUID" class="cu-item margin-top" style="" @tap="dissolveGroup()" >
-				<view class="content" style="text-align: center;">
-					<text class="text-grey" style="color:#FF2442;">解散群组</text>
-				</view>
-			</view>
-			
-			<view v-if="$store.state.user.id==$store.state.cur_chat_entity.owner_UUID" class="cu-item margin-top" style="margin-bottom: 80upx;" @tap="showModal()" >
-				<view class="content" style="text-align: center;">
-					<text class="text-grey" style="color:#FF2442;">转让群组</text>
-				</view>
-			</view>
-			
-			
-			
-		</view>	
-		
-		<view class="cu-modal " :class="showTransferGroupModal?'show':''" >
-			<view class="cu-dialog">
-				<view class="cu-bar bg-white justify-end">
-					<view class="content">转让群组</view>
-					<view class="action" @tap="hideModal">
-						<text class="cuIcon-close text-red"></text>
+
+				<view v-if="$store.state.user.id==$store.state.cur_chat_entity.owner_UUID" @tap="goAddRoomMgr()" class="cu-item cu-form-group  arrow" >
+					<view class="content">
+						<text class="text-grey" style="color:#333">添加群管理</text>
 					</view>
 				</view>
-				<view class="padding-xl">
-					<view class="cu-form-group">
-						<input v-model="to_member_id" placeholder="请填写转入用户ID" name="input"></input>
+				<view v-if="$store.state.user.id==$store.state.cur_chat_entity.owner_UUID" @tap="goRoomMgr()" class="cu-item cu-form-group arrow" >
+					<view class="content">
+						<text class="text-grey" style="color:#333">群管理列表</text>
 					</view>
 				</view>
-				<view class="cu-bar bg-white">
-					<view class="action margin-0 flex-sub text-green solid-left" @tap="hideModal">取消</view>
-					<view class="action margin-0 flex-sub  solid-left" @tap="transferGroup">转让</view>
+
+
+				<view v-if="$store.state.user.id==$store.state.cur_chat_entity.owner_UUID" class="cu-item margin-top" style="" @tap="dissolveGroup()" >
+					<view class="content" style="text-align: center;">
+						<text class="text-grey" style="color:#FF2442;">解散群组</text>
+					</view>
+				</view>
+
+				<view v-if="$store.state.user.id==$store.state.cur_chat_entity.owner_UUID" class="cu-item margin-top" style="margin-bottom: 80upx;" @tap="showModal()" >
+					<view class="content" style="text-align: center;">
+						<text class="text-grey" style="color:#FF2442;">转让群组</text>
+					</view>
+				</view>
+
+
+
+			</view>
+
+			<view class="cu-modal " :class="showTransferGroupModal?'show':''" >
+				<view class="cu-dialog">
+					<view class="cu-bar bg-white justify-end">
+						<view class="content">转让群组</view>
+						<view class="action" @tap="hideModal">
+							<text class="cuIcon-close text-red"></text>
+						</view>
+					</view>
+					<view class="padding-xl">
+						<view class="cu-form-group">
+							<input v-model="to_member_id" placeholder="请填写转入用户ID" name="input"></input>
+						</view>
+					</view>
+					<view class="cu-bar bg-white">
+						<view class="action margin-0 flex-sub text-green solid-left" @tap="hideModal">取消</view>
+						<view class="action margin-0 flex-sub  solid-left" @tap="transferGroup">转让</view>
+					</view>
 				</view>
 			</view>
+
+
 		</view>
-		
+		<AddRoomMgr v-show="PageCur=='add_room_mgr'" :keyid="randomKeyId" @goBack="showGroup"></AddRoomMgr>
+		<RoomMgr v-show="PageCur=='room_mgr'" :keyid="randomKeyId" @goBack="showGroup"></RoomMgr>
 	</view>
 </template>
 
@@ -87,6 +92,8 @@
 				id:"",
 				showTransferGroupModal:false,
 				to_member_id:"",
+				PageCur: 'main',
+				randomKeyId: 0
 				
 			}
 		},
@@ -117,18 +124,27 @@
 			
 		},
 		methods: {
+			showGroup() {
+				this.PageCur = 'main';
+			},
 			goback () {
 				this.$emit('goBack');
 			},
 			goAddRoomMgr() {
-				uni.navigateTo({
-					url:"/pages/chat/group/add_room_mgr"
-				})
+				this.PageCur = 'add_room_mgr';
+				this.randomKeyId = parseInt(Math.random()*100000000);
+
+				// uni.navigateTo({
+				// 	url:"/pages/chat/group/add_room_mgr"
+				// })
 			},
 			goRoomMgr() {
-				uni.navigateTo({
-					url:"/pages/chat/group/room_mgr"
-				})
+				this.PageCur = 'room_mgr';
+				this.randomKeyId = parseInt(Math.random()*100000000);
+
+				// uni.navigateTo({
+				// 	url:"/pages/chat/group/room_mgr"
+				// })
 			},
 			yaoqi(){
 				uni.navigateTo({

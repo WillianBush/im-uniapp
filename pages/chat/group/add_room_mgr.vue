@@ -1,6 +1,9 @@
 <template>
-	<view> 
-		<cu-custom bgColor="bg-blue" :isBack="true" :nameToLeft="true"><block slot="content">设置群管理</block>
+	<view>
+			<view style="height: 45px;line-height: 45px;background: #eee;padding-left: 5px; color:#000">
+				<text class="cuIcon-back" @click="goback" style="float:left; margin:0 5px; cursor: pointer;"></text>
+				设置群管理
+			</view>
 		<block slot="right">
 		<text @tap="tijiao()" style="font-size: 22px;color: #fff;margin-right: 14px;font-size: 30upx;background: #58BB46;padding:10upx 40upx;border-radius: 6upx;" class="lg text-gray ">邀请</text>
 		</block>
@@ -134,6 +137,9 @@
 			
 		},
 		methods: {
+			goback () {
+				this.$emit('goBack');
+			},
 			tijiao(){
 				let _this = this;
 				let user = uni.getStorageSync("USER");
