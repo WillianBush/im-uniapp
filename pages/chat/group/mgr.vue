@@ -163,6 +163,7 @@
 		<MgrSet v-show="PageCur=='setting'" :keyid="randomKeyId" @goBack="showGroup"></MgrSet>
 		<UpdName v-show="PageCur=='upd_name'" :keyid="randomKeyId" @goBack="showGroup"></UpdName>
 		<UpdPic v-show="PageCur=='upd_pic'" :keyid="randomKeyId" @goBack="showGroup"></UpdPic>
+		<MemberList ref="memberlist" v-show="PageCur=='member_list'" :keyid="randomKeyId" @goBack="showGroup"></MemberList>
 
 	</view>
 </template>
@@ -530,9 +531,14 @@
 				})
 			},
 			lookMemberList() {
-				uni.navigateTo({
-					url: "/pages/chat/group/member_list"
-				})
+				this.PageCur = 'member_list';
+				this.randomKeyId = parseInt(Math.random()*100000000);
+
+				this.$refs.memberlist.loadData();//调用上面子类MemberList里面的方法
+
+				// uni.navigateTo({
+				// 	url: "/pages/chat/group/member_list"
+				// })
 			},
 
 			goMsgRecord() {

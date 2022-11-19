@@ -1,7 +1,9 @@
 <template>
 	<view>
-		<cu-custom bgColor="bg-blue"  :isBack="true" :nameToLeft="true"><block slot="backText"></block><block slot="content">群组成员({{list.length}}人)</block><block slot="right">
-		</block></cu-custom>
+		<view style="height: 45px;line-height: 45px;background: #eee;padding-left: 5px; color:#000">
+			<text class="cuIcon-back" @click="goback" style="float:left; margin:0 5px; cursor: pointer;"></text>
+			群组成员({{list.length}}人)
+		</view>
 		
 		<view class="cu-bar bg-white search">
 			<view class="search-form round">
@@ -70,33 +72,38 @@
 					 _this.list1 = _this.list;
 				}
 			})
-			
-		
-			// uni.request({
-			// 	method:"POST",
-			// 	url: _this.$store.state.req_url + "/room/json/getMemberList",
-			// 	data:{roomid:_this.$store.state.cur_chat_entity.id},
-			// 	header:{
-			// 		"Content-Type":"application/x-www-form-urlencoded",
-			// 		"x-access-uid":_this.$store.state.user.id
-			// 	},
-			// 	success(res) {
-			// 		let res_data = eval(res.data);
-			// 		if(res_data.code==200) {  
-			// 			_this.list = res_data.body;
-			// 			_this.list.forEach((item1)=>{
-			// 				let s = uni.getStorageSync(item1.id+"_NOTE");
-			// 				if(s&&s!="") {
-			// 					item1.nickName=s;
-			// 				}
-			// 			 })
-			// 			 _this.list1 = _this.list;
-			// 		}
-			// 	}
-			// })
-			
 		},
 		methods: {
+			loadData(){
+				let _this = this;
+				let user = uni.getStorageSync("USER");
+
+
+				_this.$http.post("/room/json/getMemberList",
+						{roomid:_this.$store.state.cur_chat_entity.id},
+						{
+							header:{
+								"x-access-uid":_this.$store.state.user.id,
+								"x-access-client":_this.$clientType
+							}
+						}
+				).then(res=>{
+					let res_data = eval(res.data);
+					if(res_data.code==200) {
+						_this.list = res_data.body;
+						_this.list.forEach((item1)=>{
+							let s = uni.getStorageSync(item1.id+"_NOTE");
+							if(s&&s!="") {
+								item1.nickName=s;
+							}
+						})
+						_this.list1 = _this.list;
+					}
+				})
+			},
+			goback () {
+				this.$emit('goBack');
+			},
 			search_list(){
 				let _this = this;
 				this.list1 = this.list;
@@ -186,7 +193,9 @@
 				
 				
 			}
-		}
+		},
+		computed: {},
+		watch: {},
 	}
 </script>
 
