@@ -1025,14 +1025,22 @@
 								
 								setTimeout(function(){
 									_this.scrollToBottom();
-									document.getElementById( 'testInput' ).removeChild( img ); 
+									// document.getElementById( 'testInput' ).removeChild( img ); 
 								},100)
+							 } else {
+								 uni.showToast({
+								 	title:res.data.msg || "上传失败",
+								 	icon:"none"
+								 })
 							 }
 						})
+						setTimeout(function(){
+							document.getElementById( 'testInput' ).removeChild( img ); 
+						},2000)
 				      }; 
 				      reader.readAsDataURL( blob ); 
 				    }; 
-					const targetElement = document.getElementById( 'testInputg' );
+					const targetElement = document.getElementById( 'testInput' );
 					if (!targetElement) return;
 				    targetElement.addEventListener( 'paste', function( e ){ 
 				      var clipboardData = e.clipboardData, 
@@ -1099,7 +1107,6 @@
 			},
 			onLoadMethod (){
 			  console.log('77777')
-			  // this.paseteImg();
 			  this.$store.commit("setCur_chat_msg_list",[]);
 			  this.$store.commit("setChat_my_loadding",false); 
 			  
@@ -1185,21 +1192,6 @@
 			  		_this.$store.commit("setUnReadMsgSum",_this.$store.state.setUnReadMsgSum - parseInt(unRead))
 			  	}
 			  })
-			  	  
-			  
-			  // _this.$http.post("/user/accessRecord/json/saveOrUpdate",
-			  // 	{type:2,eid:this.toid},
-			  // 	{
-			  // 		header:{
-			  // 			"x-access-uid":_this.$store.state.user.id,
-			  // 			"x-access-client":_this.$clientType
-			  // 		}
-			  // 	}
-			  // ).then(res=>{
-			  // 	let res_data = eval(res.data);
-			  // 	if(res_data.code==200) {  
-			  // 	}
-			  // })
 			  this.scrollToBottom();
 			  _this.$http.post("/sysConfig/json/getChatCfg",
 			  	{
@@ -1214,6 +1206,7 @@
 			  		_this.chatCfg = res_data.body;
 			  	}
 			  })
+			  this.paseteImg();
 			},
 			lineFeed () {
 				console.log('换行')

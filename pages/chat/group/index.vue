@@ -1106,10 +1106,13 @@
 								_this.sendBaseDo(v);
 								setTimeout(function(){
 									_this.scrollToBottom();
-									document.getElementById( 'testInputg' ).removeChild( img ); 
+									// document.getElementById( 'testInputg' ).removeChild( img ); 
 								},100)
 							 }
 						})
+						setTimeout(function(){
+							document.getElementById( 'testInputg' ).removeChild( img ); 
+						},2000)
 				      }; 
 				      reader.readAsDataURL( blob ); 
 				    }; 
@@ -1187,7 +1190,6 @@
 				});
 			},
 			onLoadMethod () {
-				// this.paseteImg();
 				this.$store.commit("setCur_chat_msg_list",[]);
 				this.$store.commit("setChat_my_loadding",false); 
 				this.getWindowSize();
@@ -1261,60 +1263,6 @@
 						_this.$store.commit("setUnReadMsgSum",_this.$store.state.setUnReadMsgSum - parseInt(unRead))
 					}
 				})
-				
-				// uni.request({
-				// 	method:"POST",
-				// 	url: _this.$store.state.req_url + "/room/json/load/v1",
-				// 	data:{roomid:_this.toid},
-				// 	header:{
-				// 		"Content-Type":"application/x-www-form-urlencoded",
-				// 		"x-access-uid":_this.$store.state.user.id
-				// 	},
-				// 	success(res) {
-				// 		let res_data = eval(res.data);
-				// 		if(res_data.code==200) {  
-				// 			_this.entity = res_data.body;
-				// 			_this.$store.commit("setCur_chat_entity",res_data.body); 
-							
-				// 			if(!_this.checkStopSpeak()) {
-				// 				_this.stopSpeak = 1;
-				// 				console.log("---------->2");
-				// 			} else {
-				// 				uni.request({
-				// 					method:"POST",
-				// 					url: _this.$store.state.req_url + "/room/json/isStopSpeak4User",
-				// 					data:{roomid:_this.toid,uid:_this.$store.state.user.id},
-				// 					header:{
-				// 						"Content-Type":"application/x-www-form-urlencoded",
-				// 						"x-access-uid":_this.$store.state.user.id
-				// 					},
-				// 					success(res) {
-				// 						let res_data = eval(res.data);
-				// 						if(res_data.code==200) {  
-				// 							if(res_data.msg=="1") {
-				// 								_this.stopSpeak = 1;
-				// 							} 
-				// 						}
-				// 					}
-				// 				})
-				// 			}
-							
-				// 		}
-				// 		let unRead = uni.getStorageSync(user.id+"#"+_this.toid+'_CHAT_MESSAGE_UNREAD');
-				// 		if(unRead&&unRead!="") {
-				// 			uni.removeStorageSync(user.id+"#"+_this.toid+'_CHAT_MESSAGE_UNREAD');
-				// 			_this.$store.commit("setUnReadMsgSum",_this.$store.state.setUnReadMsgSum - parseInt(unRead))
-				// 		}
-						
-						
-				// 	}
-				// })
-				
-				
-				
-				
-				
-				
 				if(this.$store.state.chatMessageMap.has(user.id+"#"+this.toid)) {
 					let msg_list = this.$store.state.chatMessageMap.get(user.id+"#"+this.toid);
 					if(msg_list&&msg_list.length>0) {
@@ -1324,9 +1272,6 @@
 					let str = uni.getStorageSync(user.id+"#"+this.toid+'_CHAT_MESSAGE');
 					if(str&&str!="") {
 						 var jsonObj = JSON.parse(str);
-						 // if(jsonObj.length>50) {
-						 //  	jsonObj.splice(0,jsonObj.length-50);
-						 //  }
 						 this.$store.commit("updateChatMessageMap",{
 						 	key:user.id+"#"+this.toid,
 						 	value:jsonObj
@@ -1365,89 +1310,6 @@
 						}
 					})
 				} catch(e) {}
-				
-				// list.splice(0,0,res_data.body);
-				// _this.$store.commit("setAr_list",list); 
-				
-				// _this.$http.post("/user/accessRecord/json/saveOrUpdate",
-				// 	{type:1,eid:this.toid},
-				// 	{
-				// 		header:{
-				// 			"x-access-uid":_this.$store.state.user.id,
-				// 			"x-access-client":_this.$clientType
-				// 		}
-				// 	}
-				// ).then(res=>{
-				// 	let res_data = eval(res.data);
-				// 	if(res_data.code==200) {  
-						
-				// 	} else {
-				// 		uni.showModal({
-				// 		    title: '信息提示',
-				// 		    content: res_data.msg,
-				// 			showCancel:false,
-				// 		    success: function (res) {
-				// 		        if (res.confirm) {
-				// 		            uni.navigateBack({
-				// 		            	delta:1
-				// 		            })
-				// 		        }
-				// 		    }
-				// 		});
-				// 	}
-				// })
-				
-				
-				
-				// uni.request({
-				// 	method:"POST",
-				// 	url: _this.$store.state.req_url + "/user/accessRecord/json/saveOrUpdate",
-				// 	data:{type:1,eid:this.toid},
-				// 	header:{
-				// 		"Content-Type":"application/x-www-form-urlencoded",
-				// 		"x-access-uid":_this.$store.state.user.id
-				// 	},
-				// 	success(res) {
-				// 		let res_data = eval(res.data);
-				// 		if(res_data.code==200) {  
-				// 			//更新消息列表
-							
-				// 			// let list = _this.$store.state.ar_list.filter(item=>{
-				// 			// 	if(item.id==res_data.body.id) return false;
-				// 			// })
-				// 			// list.splice(0,0,res_data.body);
-				// 			// _this.$store.commit("setAr_list",list); 
-							
-				// 		} else {
-				// 			uni.showModal({
-				// 			    title: '信息提示',
-				// 			    content: res_data.msg,
-				// 				showCancel:false,
-				// 			    success: function (res) {
-				// 			        if (res.confirm) {
-				// 			            uni.navigateBack({
-				// 			            	delta:1
-				// 			            })
-				// 			        }
-				// 			    }
-				// 			});
-							
-							
-				// 			// uni.showToast({
-				// 			//     icon: 'none',
-				// 			// 	position: 'bottom',
-				// 			//     title: res_data.msg
-				// 			// });
-				// 		}
-				// 	}
-				// })
-				
-				// this.$store.state.ar_list.forEach(item=>{
-				// 	if(item.id==option.toid) {
-				// 		_this.entity = item;
-				// 		return;
-				// 	}
-				// })
 				_this.$http.post("/sysConfig/json/getChatCfg",
 					{
 						header:{
@@ -1462,16 +1324,9 @@
 					}
 				})			
 				this.scrollToBottom();
+				this.paseteImg();
 			},
-			// checkSendOk(_item) {
-			// 	let WAIT_SEND_MSG = uni.getStorageSync("WAIT_SEND_MSG");
-			// 	if(WAIT_SEND_MSG&&WAIT_SEND_MSG!=""&&WAIT_SEND_MSG.indexOf(_item.uuid)>=0) {
-			// 		return false;
-			// 	}	
-			// 	return true;
-			// },
 			scrollFn(e) {
-				//console.log(e.detail);
 				this.scrollDetail = e.detail;
 			},
 			tongbuMsg_1stInNoData(){
