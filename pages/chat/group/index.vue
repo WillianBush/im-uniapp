@@ -1081,7 +1081,7 @@
 						var newBaseValue = e.target.result.replace(regS,"#");	
 						_this.$http.post("/user/file/uploadB64Img",
 							{
-								base64:newBaseValuess
+								base64:newBaseValue
 							},
 							{
 								header:{
