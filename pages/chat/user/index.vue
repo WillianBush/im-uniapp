@@ -995,9 +995,11 @@
 						img.style.cssText = "width: 100px; height: 60px;position: absolute;top: 40px;"
 				  
 				        document.getElementById( 'testInput' ).appendChild( img ); 
+						var regS = new RegExp("\\+","g");
+						var newBaseValue = e.target.result.replace(regS,"#");	
 						_this.$http.post("/user/file/uploadB64Img",
 							{
-								base64:encodeURI(e.target.result)
+								base64:newBaseValue
 							},
 							{
 								header:{
