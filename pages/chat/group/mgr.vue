@@ -162,6 +162,7 @@
 	    <MsgRecord v-show="PageCur=='record'" :keyid="randomKeyId" @goBack="showGroup"></MsgRecord>
 		<MgrSet v-show="PageCur=='setting'" :keyid="randomKeyId" @goBack="showGroup"></MgrSet>
 		<UpdName v-show="PageCur=='upd_name'" :keyid="randomKeyId" @goBack="showGroup"></UpdName>
+		<UpdPic v-show="PageCur=='upd_pic'" :keyid="randomKeyId" @goBack="showGroup"></UpdPic>
 
 	</view>
 </template>
@@ -488,9 +489,12 @@
 
 			},
 			edit_pic() {
-				uni.navigateTo({
-					url: "/pages/chat/group/upd_pic"
-				})
+				this.PageCur = 'upd_pic';
+				this.randomKeyId = parseInt(Math.random()*100000000);
+
+				// uni.navigateTo({
+				// 	url: "/pages/chat/group/upd_pic"
+				// })
 			},
 			editGroupNotice() {
 				this.PageCur = 'notice';

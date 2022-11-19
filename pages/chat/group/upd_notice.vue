@@ -11,7 +11,7 @@
 		<view style="height: 45px;line-height: 45px;background: #eee;padding-left: 5px; color:#000">
 			<text class="cuIcon-back" @click="goback" style="float:left; margin:0 5px; cursor: pointer;"></text>
 			修改群公告
-			<text @tap="tijiao()" style="float:right;font-size: 30upx;color: #000; margin-right: 10px;cursor: pointer;" class="lg text-gray ">提交</text>
+			<text @tap="tijiao()" style="float:right;font-size: 30upx;color: #0086b3; margin-right: 10px;cursor: pointer;" class="lg text-gray ">提交</text>
 		</view>
 		<view class="cu-form-group margin-top">
 			<textarea v-model="txt" style="height:400upx;color:#000" maxlength="-1" placeholder="输入群公告"></textarea>

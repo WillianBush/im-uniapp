@@ -1,18 +1,17 @@
 <template>
 	<view style="height: 100vh;background-color: #fff;">
-		<cu-custom bgColor="bg-blue"  :isBack="true" :nameToLeft="true"><block slot="backText"></block><block slot="content">修改群头像</block><block slot="right">
-		</block></cu-custom>
-		
+			<view style="height: 45px;line-height: 45px;background: #eee;padding-left: 5px; color:#000">
+				<text class="cuIcon-back" @click="goback" style="float:left; margin:0 5px; cursor: pointer;"></text>
+				修改群头像
+			</view>
+
 		<view  style="
-		text-align: center;height:400upx;background-color: #fff;padding-top:60upx;">
+		text-align: center;height:400upx;background-color: #fff;padding-top:60upx;margin-bottom: 20px">
 				<view  class="cu-avatar round lg" :style="'margin:auto auto;width:160upx;height:160upx;background-image: url('+$store.state.img_url+$store.state.cur_chat_entity.img+');'"></view>
 				<view style="margin-top: 50upx;"><button @tap="ChooseImage()" class="cu-btn round bg-green shadow">更换群头像</button></view>
 				<view style="margin-top: 40upx;"><button @tap="clearImage()" class="cu-btn round bg-red shadow">使用默认头像</button></view>
 			</view>
-	
-			
-			
-		</view>	
+
 	</view>
 </template>
 
@@ -27,6 +26,9 @@
 			
 		},
 		methods: {
+			goback () {
+				this.$emit('goBack');
+			},
 			clearImage() {
 				let _this = this;
 				

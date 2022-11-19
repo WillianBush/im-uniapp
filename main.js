@@ -58,6 +58,9 @@ Vue.component('RoomMgr',RoomMgr)
 import UpdName from './pages/chat/group/upd_name'
 Vue.component('UpdName',UpdName)
 
+import UpdPic from './pages/chat/group/upd_pic'
+Vue.component('UpdPic',UpdPic)
+
 import faxian from './pages/faxian/index.vue'
 Vue.component('faxian',faxian)
 
