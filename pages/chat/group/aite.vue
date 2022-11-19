@@ -1,9 +1,11 @@
 <template>
-	<view> 
-		<cu-custom bgColor="bg-blue" :isBack="true" :nameToLeft="true"><block slot="content">选择@群成员</block>
-		</cu-custom>
+	<view style="background: #fff;width: 80%;margin: 40px 0 0 12%"> 
+		<!-- <cu-custom bgColor="bg-blue" :isBack="true" :nameToLeft="true"><block slot="content">选择@群成员</block>
+		</cu-custom> -->
 		
-		
+		<view style="height: 45px;line-height: 45px;background: #eee;padding-left: 5px; color:#000">
+			选择@群成员
+		</view>
 		<view class="cu-bar bg-white search" >
 			<view class="search-form round">
 				<text class="cuIcon-search"></text>
@@ -27,7 +29,7 @@
 			<block v-for="(item,index) in member_list" :key="index">
 				<view class="cu-list menu-avatar no-padding" style="    margin-top: 0upx;">
 					<view @tap="selMember(item)"  class="cu-item" >
-						<view class="cu-avatar round lg" :style="{'backgroundImage': 'url('+$store.state.img_url+ item.headpic +')' }"  style="width: 80upx;height: 80upx;background-size: 100% 100%;"></view>
+						<view class="cu-avatar round lg" :style="{'backgroundImage': 'url('+$store.state.img_url+ item.headpic +')' }"  style="width: 60upx;height: 60upx;background-size: 100% 100%;"></view>
 						<view class="content">
 							<view class="text-grey" style="float:left;">{{item.nickName}}</view>
 						</view>
@@ -48,6 +50,12 @@
 <script>
 	import neilModal from '@/components/neil-modal/neil-modal.vue';
 	export default {
+		props: {
+			roomid: {
+				type: String,
+				default: ''
+			}
+		},
 		data() {
 			return {
 				StatusBar: this.StatusBar,
@@ -59,41 +67,16 @@
 				kw:"",
 				kw1:"",
 				ids:[],
-				roomid:"",
 				show:false,
 				selFriendBean:{},
 			};
 		},
-		onLoad(e) {
-			let _this = this;
-			if(e.roomid&&e.roomid!="") {
-				this.roomid = e.roomid;
-				
-				_this.$http.post("/room/json/getMemberList",
-					{roomid:_this.roomid},
-					{
-						header:{
-							"x-access-uid":_this.$store.state.user.id,
-							"x-access-client":_this.$clientType
-						}
-					}
-				).then(res=>{
-					let res_data = eval(res.data);
-					if(res_data.code==200) {  
-						let list = res_data.body;
-						list.forEach((item1)=>{
-							let s = uni.getStorageSync(item1.id+"_NOTE");
-							if(s&&s!="") {
-								item1.nickName=s;
-							}
-						 })
-						 _this.list = list;
-						
-					}
-				})
-				
+		watch: {
+			roomid: function(newVal, oldVal) {
+				console.log('----------------------newVal', newVal)
+				console.log('---------------------oldVal', oldVal)
+				this.initData();
 			}
-			
 		},
 		computed:{
 			member_list() {
@@ -119,9 +102,37 @@
 			
 		},
 		methods: {
+			initData(){
+				let _this = this;
+				if(_this.roomid&&_this.roomid!="") {					
+					_this.$http.post("/room/json/getMemberList",
+						{roomid:_this.roomid},
+						{
+							header:{
+								"x-access-uid":_this.$store.state.user.id,
+								"x-access-client":_this.$clientType
+							}
+						}
+					).then(res=>{
+						let res_data = eval(res.data);
+						if(res_data.code==200) {  
+							let list = res_data.body;
+							list.forEach((item1)=>{
+								let s = uni.getStorageSync(item1.id+"_NOTE");
+								if(s&&s!="") {
+									item1.nickName=s;
+								}
+							 })
+							 _this.list = list;
+							
+						}
+					})
+				}
+			},
 			selMember(item) {
 				uni.$emit("aiteFn",item);
-				uni.navigateBack();
+				this.$emit("closeModal");
+				// uni.navigateBack();
 			},
 			search() {
 				this.kw = this.kw1;
@@ -134,13 +145,10 @@
 	uni-checkbox{
 		float:right;
 	}
-		  
-	
-
 	.indexes {
 		position: relative;
 	}
-
+ 
 	.indexBar {
 		position: fixed;
 		right: 0px;
@@ -206,5 +214,8 @@
 	}
 	.text-grey {
 		color:#333
+	}
+	.cu-list .cu-item{
+		cursor: pointer;
 	}
 </style>

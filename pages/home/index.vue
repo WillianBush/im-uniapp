@@ -163,7 +163,7 @@
 			<scroll-view :scroll-y="modalName==null"
 				style="width: 100%"
 				class="page" :class="modalName!=null?'show':''">
-				<GroupChat :msgToGroupId="msgToGroupId" @openModal="openModal"></GroupChat>
+				<GroupChat :msgToGroupId="msgToGroupId" @openModal="openModal" @openAtModal="openAtModal"></GroupChat>
 			</scroll-view>
 		</view>
 		<view v-show="msgToId && !isGroupChat" style="height: calc(100vh - 50upx);width: 80%; float: left; border-left: 1px solid #ddd">
@@ -177,6 +177,7 @@
 			<text @click="closeModal" class="cuIcon-close" style="font-size: 36px; cursor: pointer; position:absolute; top:15px; right: 15px"></text>
 		    <UserMgr v-show="mgrType=='user'" :mgrId="mgrId"></UserMgr>
 			<GroupMgr v-show="mgrType=='group'" :mgrId="mgrId"></GroupMgr>
+			<Aite v-show="mgrType=='at'" :roomid="roomid" @closeModal="closeModal"></Aite>
 		</view>
 	</view>
 </template>
@@ -264,6 +265,7 @@
 				kw: "",
 				list: [],
 				super_user: 0,
+				roomid: ''
 			};
 		},
 		onLoad: function (option) { //option为object类型，会序列化上个页面传递的参数
@@ -300,7 +302,13 @@
 				this.mgrType = obj.type;
 				this.visiable = true;
 			},
-			refresherrefresh() {
+			openAtModal(id){
+				console.log('top',id)
+				this.visiable = true;
+				this.mgrType = 'at';
+				this.roomid = id;
+			},
+ 			refresherrefresh() {
 				console.log('自定义下拉刷新被触发');
 				let _this = this;
 				if (_this._refresherTriggered) {

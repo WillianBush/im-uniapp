@@ -1855,9 +1855,10 @@
 				}
 				
 				if(e.target.value.indexOf("@")>=0&&e.target.value.lastIndexOf("@")==e.target.value.length-1) {
-					uni.navigateTo({
-						url:"/pages/chat/group/aite?roomid="+_this.entity.id
-					})
+					this.$emit('openAtModal',_this.entity.id);
+					// uni.navigateTo({
+					// 	url:"/pages/chat/group/aite?roomid="+_this.entity.id
+					// })
 				}
 				
 			},
@@ -1898,46 +1899,7 @@
 						}	
 						
 					}
-				})
-				
-				
-				// uni.request({
-				// 	method:"POST",
-				// 	url: this.$store.state.req_url + "/sysConfig/json/getRoomCfg",
-				// 	header:{
-				// 		"Content-Type":"application/x-www-form-urlencoded"
-				// 	},
-				// 	success(res) {
-				// 		let res_data = eval(res.data);
-				// 		if(res_data.code==200) {  
-				// 			console.log(_this.entity);
-				// 			let flag = false;
-				// 			//哪个角色可查看群成员详细 0全体 1仅群主 2群主和群管理员
-				// 			if(res_data.body.lookGroupMemberDetailForRole==0) {
-				// 				flag = true;
-				// 			} else if(res_data.body.lookGroupMemberDetailForRole==1) {
-				// 				if(_this.$store.state.user.id==_this.entity.owner_UUID) {
-				// 					flag = true;
-				// 				}
-				// 			}  else if(res_data.body.lookGroupMemberDetailForRole==2) {
-				// 				if(_this.$store.state.user.id==_this.entity.owner_UUID
-				// 					||_this.$store.state.cur_chat_entity.memberMgr_ids.indexOf(_this.$store.state.user.id)>=0) {
-				// 					flag = true;
-				// 				}
-				// 			}
-							
-								
-				// 			if(flag) {
-				// 				uni.navigateTo({
-				// 					url:"/pages/chat/user_detail?id="+_id+"&room_id="+_this.entity.id
-				// 				})
-				// 			}	
-							
-				// 		}
-				// 	}
-				// })
-				
-				
+				})		
 			},
 			goMgr(_id){
 				this.$emit('openModal', {

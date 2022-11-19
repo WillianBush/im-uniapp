@@ -31,6 +31,9 @@ Vue.component('UserMgr',UserMgr)
 import GroupMgr from './pages/chat/group/mgr.vue'
 Vue.component('GroupMgr',GroupMgr)
 
+import Aite from './pages/chat/group/aite.vue'
+Vue.component('Aite',Aite)
+
 import GroupAddMember from './pages/chat/group/add_member.vue'
 Vue.component('GroupAddMember',GroupAddMember)
 
