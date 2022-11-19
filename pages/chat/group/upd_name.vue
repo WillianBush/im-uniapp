@@ -1,18 +1,21 @@
 <template>
 	<view>
-		<cu-custom bgColor="bg-blue"  :isBack="true" :nameToLeft="true"><block slot="backText"></block><block slot="content">修改群昵称</block><block slot="right">
-			<uni-text @tap="tijiao()" style="font-size: 22px;color: #fff;margin-right: 14px;font-size: 30upx;" class="lg text-gray ">提交</uni-text>
-		</block></cu-custom>
+		<view style="height: 45px;line-height: 45px;background: #eee;padding-left: 5px; color:#000">
+			<text class="cuIcon-back" @click="goback" style="float:left; margin:0 5px; cursor: pointer;"></text>
+			修改群昵称
+			<text @tap="tijiao()" style="float:right;font-size: 30upx;color: #0086b3; margin-right: 10px;cursor: pointer;" class="lg text-gray ">提交</text>
+		</view>
 		
 		<view class="cu-form-group margin-top" style="
 		margin: auto auto;
-		margin-top: 15px;">
-				<input  maxlength="-1" v-model="txt" placeholder="请输入昵称"/>
+		margin-top: 15px;
+		height: 200px">
+				<input  style="
+		height: 35px;background: #cce6ff;padding-left: 10px" maxlength="-1" v-model="txt" placeholder="请输入昵称"/>
 			</view>
 	
 			
-			
-		</view>	
+
 	</view>
 </template>
 
@@ -27,6 +30,9 @@
 			
 		},
 		methods: {
+			goback () {
+				this.$emit('goBack');
+			},
 			tijiao() {
 				let _this = this;
 				let user = this.$store.state.user;

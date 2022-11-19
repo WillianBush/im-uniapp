@@ -81,14 +81,6 @@
 							style="float:right;color:#aaa;font-size: 26upx;">{{$store.state.cur_chat_entity.name}}</text>
 					</view>
 				</view>
-
-				<view v-else class="cu-item margin-top">
-					<view class="content">
-						<text class="text-grey" style="color:#333">群组名称</text>
-						<text class="text-grey text-sm"
-							style="float:right;color:#aaa;font-size: 26upx;">{{$store.state.cur_chat_entity.name}}</text>
-					</view>
-				</view>
 				<view v-if="$store.state.user.id==$store.state.cur_chat_entity.owner_UUID
 			||$store.state.cur_chat_entity.memberMgr_ids.indexOf($store.state.user.id)>=0" @tap="edit_pic()"
 					class="cu-item arrow">
@@ -169,6 +161,7 @@
 	    <UpdNotice v-show="PageCur=='notice'" @goBack="showGroup" :notice="$store.state.cur_chat_entity.descri"></UpdNotice>
 	    <MsgRecord v-show="PageCur=='record'" :keyid="randomKeyId" @goBack="showGroup"></MsgRecord>
 		<MgrSet v-show="PageCur=='setting'" :keyid="randomKeyId" @goBack="showGroup"></MgrSet>
+		<UpdName v-show="PageCur=='upd_name'" :keyid="randomKeyId" @goBack="showGroup"></UpdName>
 
 	</view>
 </template>
@@ -506,9 +499,12 @@
 				// })
 			},
 			editGroupName() {
-				uni.navigateTo({
-					url: "/pages/chat/group/upd_name"
-				})
+				this.PageCur = 'upd_name';
+				this.randomKeyId = parseInt(Math.random()*100000000);
+
+				// uni.navigateTo({
+				// 	url: "/pages/chat/group/upd_name"
+				// })
 			},
 			goAddMember() {
 				this.PageCur = 'add';
