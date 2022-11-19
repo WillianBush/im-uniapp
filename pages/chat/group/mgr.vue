@@ -168,6 +168,8 @@
 	    <GroupSssList v-show="PageCur=='sss'" :keyid="randomKeyId" @goBack="showGroup"></GroupSssList>
 	    <UpdNotice v-show="PageCur=='notice'" @goBack="showGroup" :notice="$store.state.cur_chat_entity.descri"></UpdNotice>
 	    <MsgRecord v-show="PageCur=='record'" :keyid="randomKeyId" @goBack="showGroup"></MsgRecord>
+		<MgrSet v-show="PageCur=='setting'" :keyid="randomKeyId" @goBack="showGroup"></MgrSet>
+
 	</view>
 </template>
 
@@ -275,9 +277,11 @@
 				// })
 			},
 			goMgrset() {
-				uni.navigateTo({
-					url: "/pages/chat/group/mgrSet"
-				})
+				this.PageCur = 'setting';
+				this.randomKeyId = parseInt(Math.random()*100000000);
+				// uni.navigateTo({
+				// 	url: "/pages/chat/group/mgrSet"
+				// })
 			},
 			yaoqi() {
 				uni.navigateTo({

@@ -46,6 +46,9 @@ Vue.component('UpdNotice',UpdNotice)
 import MsgRecord from './pages/chat/group/message_record.vue'
 Vue.component('MsgRecord',MsgRecord)
 
+import MgrSet from './pages/chat/group/mgrSet'
+Vue.component('MgrSet',MgrSet)
+
 import faxian from './pages/faxian/index.vue'
 Vue.component('faxian',faxian)
 
