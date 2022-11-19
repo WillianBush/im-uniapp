@@ -965,14 +965,7 @@
 			this.toid = newVal;
 			this.onShowMethod();
 			this.onLoadMethod();
-		  },
-		 //  ChatTypeId: function(newVal,oldVal){
-			// console.log('watchUserChatTypeId')
-			// console.log('newType',newVal)
-			// console.log('oldType',oldVal)
-			// this.onShowMethod();
-			// this.onLoadMethod();
-		 //  },
+		  }
 		},
 		onBackPress() {
 			this.$store.commit("setCur_chat_entity",null); 
@@ -1106,7 +1099,7 @@
 			},
 			onLoadMethod (){
 			  console.log('77777')
-			  this.paseteImg();
+			  // this.paseteImg();
 			  this.$store.commit("setCur_chat_msg_list",[]);
 			  this.$store.commit("setChat_my_loadding",false); 
 			  

@@ -1187,7 +1187,7 @@
 				});
 			},
 			onLoadMethod () {
-				this.paseteImg();
+				// this.paseteImg();
 				this.$store.commit("setCur_chat_msg_list",[]);
 				this.$store.commit("setChat_my_loadding",false); 
 				this.getWindowSize();
