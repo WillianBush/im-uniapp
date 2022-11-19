@@ -148,7 +148,7 @@
 					</view>
 				</view>
 
-				<view v-if="$store.state.user.id!=$store.state.cur_chat_entity.owner_UUID" class="cu-item margin-top arrow"
+				<view v-if="false" class="cu-item margin-top arrow"
 					@tap="tousu()">
 					<view class="content">
 						<text class="text-grey" style="color:#333">投诉此群</text>
@@ -164,6 +164,7 @@
 			</view>
 		</view>
 		<GroupAddMember v-show="PageCur=='add'" :keyid="randomKeyId" @goBack="showGroup"></GroupAddMember>
+		<GroupDeleteMember v-show="PageCur=='delete'" :keyid="randomKeyId" @goBack="showGroup"></GroupDeleteMember>
 	    <GroupSssList v-show="PageCur=='sss'" :keyid="randomKeyId" @goBack="showGroup"></GroupSssList>
 	    <UpdNotice v-show="PageCur=='notice'" @goBack="showGroup" :notice="$store.state.cur_chat_entity.descri"></UpdNotice>
 	    <MsgRecord v-show="PageCur=='record'" :keyid="randomKeyId" @goBack="showGroup"></MsgRecord>
@@ -513,9 +514,11 @@
 				// })
 			},
 			goRemoveMember() {
-				uni.navigateTo({
-					url: "/pages/chat/group/member_list_remove"
-				})
+				this.PageCur = 'delete';
+				this.randomKeyId = parseInt(Math.random()*100000000);
+				// uni.navigateTo({
+				// 	url: "/pages/chat/group/member_list_remove"
+				// })
 			},
 			lookNotShimingMemberList() {
 				uni.navigateTo({

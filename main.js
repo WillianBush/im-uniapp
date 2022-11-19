@@ -34,6 +34,9 @@ Vue.component('GroupMgr',GroupMgr)
 import GroupAddMember from './pages/chat/group/add_member.vue'
 Vue.component('GroupAddMember',GroupAddMember)
 
+import GroupDeleteMember from './pages/chat/group/member_list_remove'
+Vue.component('GroupDeleteMember',GroupDeleteMember)
+
 import GroupSssList from './pages/chat/group/sss_list.vue'
 Vue.component('GroupSssList',GroupSssList)
 

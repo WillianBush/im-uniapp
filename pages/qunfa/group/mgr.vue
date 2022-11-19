@@ -92,7 +92,7 @@
 		</view>
 	</view>
 	
-	<view @tap="goQrcode"  class="cu-item arrow" >
+	<view v-if="false" @tap="goQrcode"  class="cu-item arrow" >
 		<view class="content">
 			<text class="text-grey" style="color:#333">群二维码</text>
 			<text style="color:#666;font-size:22px;float: right; position: relative; right: -20upx;" class="lg text-gray cuIcon-qr_code"><span></span></text>
@@ -138,7 +138,7 @@ word-break:normal; " class="text-grey text-sm">{{$store.state.cur_chat_entity.de
 				</view>
 			</view>
 			
-			<view v-if="$store.state.user.id!=$store.state.cur_chat_entity.owner_UUID" class="cu-item margin-top arrow" @tap="tousu()" >
+			<view v-if="false" class="cu-item margin-top arrow" @tap="tousu()" >
 				<view class="content">
 					<text class="text-grey" style="color:#333">投诉此群</text>
 				</view>
