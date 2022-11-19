@@ -1,48 +1,51 @@
 <template>
 	<view>
-		<!-- <cu-custom bgColor="bg-blue"  :isBack="true" :nameToLeft="true"><block slot="backText"></block><block slot="content">成员禁言管理</block><block slot="right">
-		<text @tap="addSss()" style="font-size: 22px;color: #fff;margin-right: 14px;font-size: 30upx;padding:10upx 40upx;border-radius: 6upx;" class="lg text-gray ">添加禁言</text>
-		</block></cu-custom> -->
-		<view style="height: 45px;line-height: 45px;background: #eee;padding-left: 5px; color:#000">
-			<text class="cuIcon-back" @click="goback" style="float:left; margin:0 5px; cursor: pointer;"></text>
-			成员禁言管理
-			<text @tap="addSss()" style="float:right;font-size: 30upx;color: #000; margin-right: 10px;cursor: pointer;"
-				class="lg text-gray ">添加禁言</text>
-		</view>
-		<view style="background: #fff;width: 96%;
-    margin: auto auto;
-    margin-top: 10px;" class="margin-top">
+		<view v-show="PageCur=='main'">
+			<!-- <cu-custom bgColor="bg-blue"  :isBack="true" :nameToLeft="true"><block slot="backText"></block><block slot="content">成员禁言管理</block><block slot="right">
+			<text @tap="addSss()" style="font-size: 22px;color: #fff;margin-right: 14px;font-size: 30upx;padding:10upx 40upx;border-radius: 6upx;" class="lg text-gray ">添加禁言</text>
+			</block></cu-custom> -->
+			<view style="height: 45px;line-height: 45px;background: #eee;padding-left: 5px; color:#000">
+				<text class="cuIcon-back" @click="goback" style="float:left; margin:0 5px; cursor: pointer;"></text>
+				成员禁言管理
+				<text @tap="addSss()" style="float:right;font-size: 30upx;color: #0086b3; margin-right: 10px;cursor: pointer;"
+					class="lg text-gray ">添加禁言</text>
+			</view>
+			<view style="background: #fff;width: 96%;
+		margin: auto auto;
+		margin-top: 10px;" class="margin-top">
 
-			<view class="cu-bar bg-white search">
-				<view class="search-form round">
-					<text class="cuIcon-search"></text>
-					<input v-model="kw" @input="search_list()" type="text" placeholder="搜索"
-						confirm-type="search"></input>
+				<view class="cu-bar bg-white search">
+					<view class="search-form round">
+						<text class="cuIcon-search"></text>
+						<input v-model="kw" @input="search_list()" type="text" placeholder="搜索"
+							confirm-type="search"></input>
+					</view>
+
 				</view>
 
-			</view>
-
-			<view style=" width:100%">
-				<view style="padding-top:30upx;padding-bottom:30upx;">
-					<view v-if="item.id!=$store.state.user.id"
-						style="display: inline-block;width:25%;margin-bottom:30upx;text-align: center;"
-						v-for="(item,index) in list1">
-						<view @tap="goUserDetail(item.id)" class="cu-avatar round"
-							:style="'height:100upx;width:100upx;background-image:url('+$store.state.img_url+item.headpic+');'">
+				<view style=" width:100%">
+					<view style="padding-top:30upx;padding-bottom:30upx;">
+						<view v-if="item.id!=$store.state.user.id"
+							style="display: inline-block;width:25%;margin-bottom:30upx;text-align: center;"
+							v-for="(item,index) in list1">
+							<view @tap="goUserDetail(item.id)" class="cu-avatar round"
+								:style="'height:100upx;width:100upx;background-image:url('+$store.state.img_url+item.headpic+');'">
+							</view>
+							<view @tap="goUserDetail(item.id)"
+								style="margin:auto auto;color: #999;font-size:24upx;text-align: center;margin-top:8upx;overflow: hidden;height:68upx;width:100upx;word-wrap: break-word; word-break: normal">
+								{{item.nickName}}</view>
+							<button @tap="removeMember(item.id)" style="margin-top:0upx"
+								class="cu-btn round bg-red shadow">移除</button>
 						</view>
-						<view @tap="goUserDetail(item.id)"
-							style="margin:auto auto;color: #999;font-size:24upx;text-align: center;margin-top:8upx;overflow: hidden;height:68upx;width:100upx;word-wrap: break-word; word-break: normal">
-							{{item.nickName}}</view>
-						<button @tap="removeMember(item.id)" style="margin-top:0upx"
-							class="cu-btn round bg-red shadow">移除</button>
-					</view>
-					<view v-if="list.length<=0" style="text-align: center;color:#aaa">
-						<uni-view class="padding">暂无禁言成员</uni-view>
-					</view>
+						<view v-if="list.length<=0" style="text-align: center;color:#aaa">
+							<uni-view class="padding">暂无禁言成员</uni-view>
+						</view>
 
+					</view>
 				</view>
 			</view>
 		</view>
+		<AddSssMemberList ref="addSssMemberList" v-show="PageCur=='addSss_member_list'" :keyid="randomKeyId" @goBack="showGroup"></AddSssMemberList>
 	</view>
 </template>
 
@@ -60,6 +63,8 @@
 				list: [],
 				list1: [],
 				kw: "",
+				PageCur: 'main',
+				randomKeyId: 0
 			}
 		},
 		watch: {
@@ -73,6 +78,9 @@
 			
 		},
 		methods: {
+			showGroup() {
+				this.PageCur = 'main';
+			},
 			goback () {
 				this.$emit('goBack');
 			},
@@ -106,9 +114,15 @@
 				})
 			},
 			addSss() {
-				uni.navigateTo({
-					url: "/pages/chat/group/addSss_member_list?room_id=" + this.$store.state.cur_chat_entity.id
-				})
+				this.PageCur = 'addSss_member_list';
+				this.randomKeyId = parseInt(Math.random()*100000000);
+
+				this.$refs.addSssMemberList.loadData();//调用上面子类UserDetail里面的方法
+
+
+				// uni.navigateTo({
+				// 	url: "/pages/chat/group/addSss_member_list?room_id=" + this.$store.state.cur_chat_entity.id
+				// })
 			},
 			search_list() {
 				let _this = this;
