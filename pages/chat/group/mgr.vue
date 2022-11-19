@@ -164,6 +164,7 @@
 		<UpdName v-show="PageCur=='upd_name'" :keyid="randomKeyId" @goBack="showGroup"></UpdName>
 		<UpdPic v-show="PageCur=='upd_pic'" :keyid="randomKeyId" @goBack="showGroup"></UpdPic>
 		<MemberList ref="memberlist" v-show="PageCur=='member_list'" :keyid="randomKeyId" @goBack="showGroup"></MemberList>
+		<UserDetail ref="userdetail" v-show="PageCur=='user_detail'" :keyid="randomKeyId" @goBack="showGroup"></UserDetail>
 
 	</view>
 </template>
@@ -254,10 +255,14 @@
 
 
 						if (flag) {
-							uni.navigateTo({
-								url: "/pages/chat/user_detail?id=" + _id + "&room_id=" + _this.$store.state
-									.cur_chat_entity.id
-							})
+							this.PageCur = 'user_detail';
+							this.randomKeyId = parseInt(Math.random()*100000000);
+
+							this.$refs.userdetail.loadData(_id, _this.$store.state.cur_chat_entity.id);//调用上面子类UserDetail里面的方法
+							// uni.navigateTo({
+							// 	url: "/pages/chat/user_detail?id=" + _id + "&room_id=" + _this.$store.state
+							// 		.cur_chat_entity.id
+							// })
 						}
 
 					}

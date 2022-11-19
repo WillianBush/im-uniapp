@@ -266,6 +266,31 @@
 				super_user: 0,
 			};
 		},
+		onLoad: function (option) { //option为object类型，会序列化上个页面传递的参数
+			let id = option.id;
+			let typeid = option.typeid;
+			if (id == "-1") {
+				this.msgToId = id;
+				this.isGroupChat = false;
+				// uni.navigateTo({
+				// 	url: "/pages/chat/guang_fang_chat"
+				// })
+			} else {
+				if (typeid == "2") {
+					this.msgToId = id;
+					this.isGroupChat = false;
+					// uni.navigateTo({
+					// 	url: "/pages/chat/user/index?toid=" + item.id
+					// })
+				} else {
+					this.msgToGroupId = id;
+					this.isGroupChat = true;
+					// uni.navigateTo({
+					// 	url: "/pages/chat/group/index?toid=" + item.id
+					// })
+				}
+			}
+		},
 		methods: {
 			closeModal() {
 				this.visiable = false;

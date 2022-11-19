@@ -1,9 +1,14 @@
 <template>
 	<view>
-		<cu-custom bgColor="bg-white"  :isBack="true" :nameToLeft="true"><block slot="backText"></block><block slot="content"></block><block v-if="isMyFri" slot="right">
+		<!--<cu-custom bgColor="bg-white"  :isBack="true" :nameToLeft="true"><block slot="backText"></block><block slot="content"></block><block v-if="isMyFri" slot="right">
 			<text @tap="goMgr(user.id)" style="font-size: 48upx;color: #555;margin-right: 14px;" class="lg text-gray cuIcon-more"><span></span></text>
-		</block></cu-custom>
-		
+		</block></cu-custom>-->
+
+		<view style="height: 45px;line-height: 45px;background: #eee;padding-left: 5px; color:#000">
+			<text class="cuIcon-back" @click="goback" style="float:left; margin:0 5px; cursor: pointer;"></text>
+		</view>
+
+
 		<view style="background: #fff;display: flex;height:220upx" >
 			<view style="width:150upx;padding-top:30upx;padding-bottom:30upx;margin-left: 10upx;">
 				<view class="cu-avatar radius margin-left" :style="'height:120upx;width:120upx;background-image:url('+$store.state.img_url+user.headpic+');'"></view>
@@ -28,14 +33,14 @@
 		</view>
 		
 	<block v-if="user.id!=$store.state.user.id">
-		<view v-if="isMyFri" @tap="goChat(user.id)" style="clear: both;" class="cu-list menu">
+		<view v-if="isMyFri" @tap="goChat(id)" style="clear: both;" class="cu-list menu">
 			<view class="margin-top" style="text-align: center;background: #fff;height:100upx;line-height: 100upx;" >
 				<text style="color: #485D83;font-size: 50upx;position: relative;top:6upx;" class="iconfont icon-icon--"></text>
 				<text style="color: #485D83;font-size: 30upx;font-weight: 800;margin-left: 10upx;">发消息</text>
 			</view>
 		</view>	
 		
-		<view v-else @tap="addFriend(user.id)" style="clear: both;" class="cu-list menu">
+		<view v-else @tap="addFriend(id)" style="clear: both;" class="cu-list menu">
 			<view class="margin-top" style="text-align: center;background: #fff;height:100upx;line-height: 100upx;" >
 				<text style="color: #485D83;font-size: 30upx;font-weight: 800;margin-left: 10upx;">添加好友</text>
 			</view>
@@ -142,6 +147,82 @@
 			})
 		},
 		methods: {
+			goback () {
+				this.$emit('goBack');
+			},
+			loadData(id,room_id){
+				console.log("aaaaaaccccccc","1112223333")
+				this.id = id;
+				this.room_id = room_id;
+
+				let _this = this;
+				if(room_id && room_id!=undefined) {
+
+
+					_this.$http.post("/room/json/isStopSpeak4User",
+							{roomid:_this.room_id,uid:_this.id},
+							{
+								header:{
+									"x-access-uid":_this.$store.state.user.id,
+									"x-access-client":_this.$clientType
+								}
+							}
+					).then(res=>{
+						let res_data = eval(res.data);
+						if(res_data.code==200) {
+							if(res_data.msg=="0") {
+								_this.groupStopSpeak = false;
+							} else {
+								_this.groupStopSpeak = true;
+							}
+						} else {
+							uni.showToast({
+								title: res_data.msg,
+								duration: 2000
+							});
+						}
+					});
+				}
+
+
+				_this.$http.post("/user/json/loadById/v1",
+						{id:this.id},
+						{
+							header:{
+								//"x-access-uid":_this.$store.state.user.id
+								"x-access-client":_this.$clientType
+							}
+						}
+				).then(res=>{
+					let res_data = eval(res.data);
+					if(res_data.code==200) {
+						_this.user = res_data.body;
+						let s = uni.getStorageSync(_this.user.id+"_NOTE");
+						if(s&&s!="") {
+							_this.user.nickName_real = _this.user.nickName;
+							_this.user.nickName=s;
+						}
+					}
+				})
+
+				_this.$http.post("/user/friend/isMyFri/v1",
+						{uid:this.id},
+						{
+							header:{
+								"x-access-uid":_this.$store.state.user.id,
+								"x-access-client":_this.$clientType
+							}
+						}
+				).then(res=>{
+					let res_data = eval(res.data);
+					if(res_data.code==200) {
+						if(res_data.msg=="1") {
+							_this.isMyFri = true;
+						}
+					}
+				})
+
+			},
 			copy(value) {
 				uni.setClipboardData({
 					data: value,
@@ -207,7 +288,7 @@
 			},
 			goChat(_id) {
 				uni.navigateTo({
-					url:"/pages/chat/user/index?toid="+_id
+					url:"/pages/home/index?id="+_id+"&typeid=2"
 				})
 			}
 			

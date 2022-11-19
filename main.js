@@ -61,6 +61,9 @@ Vue.component('UpdName',UpdName)
 import UpdPic from './pages/chat/group/upd_pic'
 Vue.component('UpdPic',UpdPic)
 
+import UserDetail from './pages/chat/user_detail'
+Vue.component('UserDetail',UserDetail)
+
 import MemberList from './pages/chat/group/member_list'
 Vue.component('MemberList',MemberList)
 
