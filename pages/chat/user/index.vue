@@ -974,6 +974,7 @@
 			this.toid = newVal;
 			this.onShowMethod();
 			this.onLoadMethod();
+			this.loadOrRefreshDate();
 		  }
 		},
 		onBackPress() {
@@ -992,6 +993,41 @@
 		},
 	
 		methods: {
+			loadOrRefreshDate(){
+				var _this = this;
+				console.log("去除小红点",_this.entity)
+
+				_this.$http.post("/user/json/loadById/v1",
+						{id:_this.toid},
+						{
+							header:{
+								"x-access-uid":_this.$store.state.user.id,
+								"x-access-client":_this.$clientType
+							}
+						}
+				).then(res=>{
+					let res_data = eval(res.data);
+					let statusCode = res_data ? res_data.code : 0;
+					if(statusCode==200) {
+						_this.entity = res_data.body;
+						_this.$store.commit("setCur_chat_entity",_this.entity);
+
+						let unRead = uni.getStorageSync(_this.$store+"#"+_this.toid+'_CHAT_MESSAGE_UNREAD');
+						if(unRead&&unRead!="") {
+							// uni.removeStorageSync(_this.$store.state.user.id+"#"+_this.toid+'_CHAT_MESSAGE_UNREAD');
+							_this.$store.commit("setUnReadMsgSum",_this.$store.state.setUnReadMsgSum - parseInt(unRead))
+						}
+						console.log("去除小红点3",_this.$store.state.ar_list_show)
+						_this.$store.state.ar_list_show.forEach(item=>{
+							if(item.id==_this.entity.id) {
+								console.log("去除小红点","进来了")
+								item.unread = 0;
+								return;
+							}
+						})
+					}
+				})
+			},
 			closePickureDialog() {
 				this.showPickureDialog = false;
 			},
