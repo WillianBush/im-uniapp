@@ -33,7 +33,8 @@ const state = {
 	chat_my_loadding:false,   
 	faxian_site_list:[],//发现自定义站点  
 	hotItem:{},//底部热门导航
-	shimingCfg:{},//实名配置 
+	shimingCfg:{},//实名配置
+	currentPicLookUrl:"",
 	footerViewHeight:0,//footer高度 当H5时才有并效
 	hotItem_webView_show:false,//为了解决切换导航时web_view的隐藏问题
 	/**当flex: 0时是为了可以切换导航,flex: 1时显示web_view,因为此时web_view才有宽度和高度**/

@@ -1,5 +1,6 @@
 <template>
-		<view  ref="topVew"  :style="chatCfg.chatBackgroundImage&&chatCfg.chatBackgroundImage!=''?'background-image: url('+$store.state.img_url+chatCfg.chatBackgroundImage+')':''" style="background-size: 100%;min-height: 100vh;" > 
+	<view>
+		<view  ref="topVew"  :style="chatCfg.chatBackgroundImage&&chatCfg.chatBackgroundImage!=''?'background-image: url('+$store.state.img_url+chatCfg.chatBackgroundImage+')':''" style="background-size: 100%;min-height: 100vh;" >
 			<cu-custom backUrl="/pages/index/index" bgColor="bg-blue"  :isBack="true" :nameToLeft="true"><block slot="backText"></block><block slot="content">
 			<view class="cu-avatar radius" style="margin-right: 5px; border-radius: 50%" :style="'background-image:url('+$store.state.img_url+friendPic+');'"></view>
 			{{showname}} <text v-if="chatCfg.showUserOnline==1">{{entity.online==0?' (离线)':' (在线)'}}</text>
@@ -199,7 +200,7 @@
 
 
 									<view  v-if="item.bean.psr!='video'" @contextmenu="clickRight($event, item.bean)" @longpress="onLongPress($event,item.bean)" :class="[item.bean.psr=='uparse'?'':'content bg-green shadow']" :style="{backgroundColor:item.bean.psr=='uparse'? 'none':'#fff'}" style="color:#222;">
-										<u-parse v-if="item.bean.psr=='uparse'" :content="item.bean.txt" @preview="preview" @navigate="navigate" ></u-parse>
+										<u-parse v-if="item.bean.psr=='uparse'" :content="item.bean.txt" @preview="preview" @navigate="navigate" @moreBtn="publicmoreUrl"></u-parse>
 										<view @tap="clickVoice(item.bean.txt,index)" v-else-if="item.bean.psr=='voice'">
 											<text  v-show="selVoiceIndex != index"  style="text-align: right; float:right;width:100upx;font-size: 52upx;position: relative;top: 4upx;"  class="iconfont icon-yuyin1 text-xxl "></text>
 											<text  v-show="selVoiceIndex != index"  style="float:right;font-size: 26upx;position: relative;top: 4upx;">{{item.bean.sub_txt}}"</text>
@@ -861,6 +862,13 @@
 						transform: translate(-50%,-50%);
 						text-align: center;"     :src="$store.state.img_url+videoSrc"></video>
 		</view>
+
+
+		<view v-show="showPickureDialog" class="chlidCenter" style="width: 100%; height: 100%;color:#fff;background-color: #0006; position: fixed;left: 0;top:0; z-index: 10;">
+			<text @click="closePickureDialog" class="cuIcon-close" style="font-size: 36px; cursor: pointer; position:absolute; top:15px; right: 15px"></text>
+			<PicLook></PicLook>
+		</view>
+	</view>
 </template>
 
 <script>
@@ -954,7 +962,8 @@
 				showOpenRed:false,
 				showname:"",
 				toIP:"",
-				pasteImgUrl: ''
+				pasteImgUrl: '',
+				showPickureDialog: false
 			};
 		},
 		watch: {
@@ -977,9 +986,15 @@
 		mounted() { 
 			 //this.domHeight = document.documentElement.clientHeight
 			 console.log('8888', this.toid)
+			uni.$on("showPicDialog",(rel)=>{
+				this.showPickureDialog = true;
+			})
 		},
 	
 		methods: {
+			closePickureDialog() {
+				this.showPickureDialog = false;
+			},
 			clickRight(event, item) {
 				this.onLongPress(event, item)
 			},
@@ -2480,6 +2495,12 @@
 						width: 100%;
 					}
 				}
+	 .chlidCenter{
+		 display: flex;
+		 flex-direction: column;
+		 align-items: center;//水平居中
+		 justify-content: center;//垂直居中
+	 }
 	 .cu-bar.input {
 	 		background-color: #F5F5F5;
 	 }

@@ -5,6 +5,10 @@
 			"style": {}
 		},
 		{
+			"path": "pages/other/pictureLook",
+			"style": {}
+		},
+		{
 			"path": "pages/index/index",
 			"style": {}
 		},{ 

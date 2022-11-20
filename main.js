@@ -64,6 +64,9 @@ Vue.component('RoomMgr',RoomMgr)
 import UpdName from './pages/chat/group/upd_name'
 Vue.component('UpdName',UpdName)
 
+import PicLook from './pages/other/pictureLook'
+Vue.component('PicLook',PicLook)
+
 import UpdPic from './pages/chat/group/upd_pic'
 Vue.component('UpdPic',UpdPic)
 

@@ -48,10 +48,12 @@ export default {
 	},
 	imgPreview(src) {
       var newSrc = this.deal(src);
-	  wx.previewImage({
-	    urls: [newSrc],
-	    current: newSrc
-	  });
+	  // wx.previewImage({
+	  //   urls: [newSrc],
+	  //   current: newSrc
+	  // });
+        this.$store.state.currentPicLookUrl = newSrc;
+        uni.$emit("showPicDialog","我是全局事件订阅的传值")
 	},
     wxParseImgTap(e) {
       if (!this.preview) return;
