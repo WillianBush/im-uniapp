@@ -362,8 +362,8 @@
 			></input>
 			<view @tap="ChooseImage()" style="cursor: pointer;position: absolute;top: 0; left: 0px;"><text style="font-size: 60upx;color:#3F92F8" class="iconfont icon-zhaopian-cuxiantiao-fill"></text></view>
 			<view @tap="ChooseVideo()" style="cursor: pointer;position: absolute;top: 0; left: 40px;"><text style="font-size: 60upx;color:#F39F90" class="iconfont icon-paishe"></text></view>
-			<view @tap="sendCard()" style="cursor: pointer;position: absolute;top: 0; left: 80px;"><text style="font-size: 60upx;color:#FA9B4E" class="iconfont icon-mingpian2"></text></view>
-			<view style="cursor: pointer;position: absolute;top: 0; left: 110px;" class="action" @tap="showItemIndex(1)">
+			<view v-if="false" @tap="sendCard()" style="cursor: pointer;position: absolute;top: 0; left: 80px;"><text style="font-size: 60upx;color:#FA9B4E" class="iconfont icon-mingpian2"></text></view>
+			<view style="cursor: pointer;position: absolute;top: 0; left: 70px;" class="action" @tap="showItemIndex(1)">
 				<text  class="cuIcon-emojifill text-grey" style="position: absolute;top: 0;left: 0px"></text>
 			</view>
 			<button  style="min-width: 50px;padding:0px!important" v-show="!showjia" @tap.stop="send()"  class="cu-btn bg-green shadow">发送</button>
