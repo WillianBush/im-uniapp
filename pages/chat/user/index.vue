@@ -996,10 +996,11 @@
 				  
 				        document.getElementById( 'testInput' ).appendChild( img ); 
 						var regS = new RegExp("\\+","g");
-						var newBaseValue = e.target.result.replace(regS,"#");	
+						var newBaseValue = e.target.result.replace(regS,"#");
+						var newValue2 = newBaseValue.replace(/\//g, '*');
 						_this.$http.post("/user/file/uploadB64Img",
 							{
-								base64:newBaseValue
+								base64:newValue2
 							},
 							{
 								header:{

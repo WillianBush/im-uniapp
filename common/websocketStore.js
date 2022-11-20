@@ -1349,7 +1349,8 @@ export default new Vuex.Store({
 			// let user = uni.getStorageSync("USER");
 			// if(user) {
 			// 	p+=("=!@#&="+user.id+"#"+Vue.prototype.$clientType+"#"+store.state.app_uuid);
-			// }		
+			// }
+			if (!state.socketTask) return;
 			state.socketTask.send({
 				data: p, 
 				
