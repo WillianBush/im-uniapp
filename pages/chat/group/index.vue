@@ -1079,10 +1079,9 @@
 				        document.getElementById( 'testInputg' ).appendChild( img ); 
 						var regS = new RegExp("\\+","g");
 						var newBaseValue = e.target.result.replace(regS,"#");	
-						var newValue2 = newBaseValue.replace(/\//g, '*');
 						_this.$http.post("/user/file/uploadB64Img",
 							{
-								base64:newValue2
+								base64:newBaseValue
 							},
 							{
 								header:{
@@ -1121,32 +1120,33 @@
 				    }; 
 					const targetEle = document.getElementById( 'testInputg' );
 					if (!targetEle) return;
-				    targetEle.addEventListener( 'paste', function( e ){ 
-				      var clipboardData = e.clipboardData, 
-				          i = 0, 
-				          items, item, types; 
-				  
-				      if( clipboardData ){ 
-				        items = clipboardData.items; 
-				  
-				        if( !items ){ 
-				          return; 
-				        } 
-				  
-				        item = items[0]; 
-				        types = clipboardData.types || []; 
-				  
-				        for( ; i < types.length; i++ ){ 
-				          if( types[i] === 'Files' ){ 
-				            item = items[i]; 
-				            break; 
-				          } 
-				        } 
-				  
-				        if( item && item.kind === 'file' && item.type.match(/^image\//i) ){ 
-				          imgReader( item ); 
-				        } 
-				      } 
+				    targetEle.addEventListener( 'paste', function( e ){
+				    	console.log("aaaaaabbbbccccc",e)
+				      var clipboardData = e.clipboardData,
+				          i = 0,
+				          items, item, types;
+
+				      if( clipboardData ){
+				        items = clipboardData.items;
+
+				        if( !items ){
+				          return;
+				        }
+
+				        item = items[0];
+				        types = clipboardData.types || [];
+
+				        for( ; i < types.length; i++ ){
+				          if( types[i] === 'Files' ){
+				            item = items[i];
+				            break;
+				          }
+				        }
+
+				        if( item && item.kind === 'file' && item.type.match(/^image\//i) ){
+				          imgReader( item );
+				        }
+				      }
 				    }); 
 			},
 			onShowMethod() {

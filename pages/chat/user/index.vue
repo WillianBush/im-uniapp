@@ -1004,7 +1004,8 @@
 				      var blob = item.getAsFile(), 
 				          reader = new FileReader(); 
 					  var img = new Image(); 
-				      reader.onload = function( e ){ 
+				      reader.onload = function( e ){
+				      	console.log("123321123321",e)
 				        img.src = e.target.result;
 						_this.pasteImgUrl = e.target.result;
 						img.style.cssText = "width: 100px; height: 60px;position: absolute;top: 40px;"
@@ -1012,10 +1013,9 @@
 				        document.getElementById( 'testInput' ).appendChild( img ); 
 						var regS = new RegExp("\\+","g");
 						var newBaseValue = e.target.result.replace(regS,"#");
-						var newValue2 = newBaseValue.replace(/\//g, '*');
 						_this.$http.post("/user/file/uploadB64Img",
 							{
-								base64:newValue2
+								base64:newBaseValue
 							},
 							{
 								header:{
@@ -1060,7 +1060,8 @@
 				    }; 
 					const targetElement = document.getElementById( 'testInput' );
 					if (!targetElement) return;
-				    targetElement.addEventListener( 'paste', function( e ){ 
+				    targetElement.addEventListener( 'paste', function( e ){
+						console.log("aaaaaabbbbccccc2",e)
 				      var clipboardData = e.clipboardData, 
 				          i = 0, 
 				          items, item, types; 
