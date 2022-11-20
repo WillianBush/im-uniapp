@@ -1129,10 +1129,9 @@
 				      if( clipboardData ){
 				        items = clipboardData.items;
 
-				        if( !items ){
+				        if( !items || items.length ==0 ){
 				          return;
 				        }
-
 				        item = items[0];
 				        types = clipboardData.types || [];
 
