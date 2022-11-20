@@ -1,6 +1,6 @@
 <template>
-    <view class="chlidCenter" style="background: #eee;color:#000">
-        <image :src="$store.state.currentPicLookUrl" mode="aspectFill" @load="loadImage"></image>
+    <view class="chlidCenter" style="background: #eee;color:#000;" >
+        <image :src="$store.state.currentPicLookUrl" mode="aspectFit" @load="loadImage" style="width: 1200px;height: 700px"></image>
     </view>
 </template>
 
