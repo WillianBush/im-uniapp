@@ -9,9 +9,12 @@
 			<view class="cu-bar bg-white search">
 				<view class="search-form round">
 					<text class="cuIcon-search"></text>
-					<input v-model="kw" @input="search_list()" type="text" placeholder="搜索" confirm-type="search"></input>
+					<input v-model="kw" type="text" placeholder="搜索" confirm-type="search"></input>
 				</view>
 
+				<view class="action">
+					<button @tap="search()" style="background: #FFAA01;"   class="cu-btn bg-gradual-green shadow-blur round">搜索</button>
+				</view>
 			</view>
 
 			<view style="background: #fff;width: 96%;
@@ -79,6 +82,9 @@
 			})
 		},
 		methods: {
+			search(){
+				this.search_list();
+			},
 			showGroup() {
 				this.PageCur = 'main';
 			},
