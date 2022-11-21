@@ -134,7 +134,7 @@
         "router" : {
             "base" : "/"
         },
-        "title" : "约伴APP",
+        "title" : "触感APP",
         "optimization" : {
             "treeShaking" : {
                 "enable" : true
