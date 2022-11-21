@@ -1,7 +1,7 @@
 {
-    "name" : "约伴",
-    "appid" : "__UNI__3464A7A",
-    "description" : "约伴",
+    "name" : "触感",
+    "appid" : "__UNI__GD0C4D81",
+    "description" : "触感",
     "versionName" : "1.0.7",
     "versionCode" : 8,
     "transformPx" : false,
@@ -155,5 +155,6 @@
             },
             "port" : 8080
         }
-    }
+    },
+    "fallbackLocale" : "zh-Hans"
 }
