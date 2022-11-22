@@ -1,8 +1,10 @@
 import Vue from 'vue'
 import App from './App'
-import 'ant-design-vue/dist/antd.css';
+import ElementUI from 'element-ui'
+import 'element-ui/lib/theme-chalk/index.css'
 import home from './pages/home/index.vue'
 Vue.component('home',home)
+
 
 import addressBook from './pages/addressBook/index.vue'
 Vue.component('addressBook',addressBook)
@@ -472,8 +474,8 @@ Vue.prototype.$clientType = "H5"
 //that.$websocket.dispatch("WEBSOCKET_SEND", "测试一下");
 //
 
+Vue.use(ElementUI)
 Vue.config.productionTip = false
-
 App.mpType = 'app'
 
 const app = new Vue({
