@@ -190,9 +190,9 @@
             initNetBind(_this);
 
 			this.$store.state.appShow = true;
-			setTimeout(()=>{
-			 	_this.$websocket.dispatch('WEBSOCKET_INIT');
-			},500);
+			// setTimeout(()=>{
+			//  	_this.$websocket.dispatch('WEBSOCKET_INIT');
+			// },500);
 
 
 			if(_checkLink) {
@@ -588,7 +588,6 @@
 					if(!flag) flag_false_count++;
 					if(flag_false_count>=2) flag = true;
 					if(flag) {
-					console.log("app.vue->10秒检查");
 
 						flag = false;
 						let user = uni.getStorageSync("USER");

@@ -1,12 +1,12 @@
 <template>
 	<view>
-		<cu-custom bgColor="bg-blue" :isBack="true" :nameToLeft="true">
-			<block slot="backText"></block>
-			<block slot="content">我的二维码名片</block>
-			<block slot="right">
-				<uni-text @tap="share" style="font-size: 22px;color: #fff;margin-right: 14px;" class="lg text-gray cuIcon-more"><span></span></uni-text>
-			</block>
-		</cu-custom>
+<!--		<cu-custom bgColor="bg-blue" :isBack="true" :nameToLeft="true">-->
+<!--			<block slot="backText"></block>-->
+<!--			<block slot="content">我的二维码名片</block>-->
+<!--			<block slot="right">-->
+<!--				<uni-text @tap="share" style="font-size: 22px;color: #fff;margin-right: 14px;" class="lg text-gray cuIcon-more"><span></span></uni-text>-->
+<!--			</block>-->
+<!--		</cu-custom>-->
 
 		<view style="
 		margin: auto auto;
@@ -29,9 +29,6 @@
     font-size: 26upx;">可点击右上角进行二维码分享或保存</view>
 		</view>
 
-
-
-	</view>
 	</view>
 </template>
 
@@ -126,12 +123,12 @@
 								url: _this.$store.state.img_url + json.msg,
 								success: (res) => {
 									if (res.statusCode === 200) {
-										
+
 										uni.saveImageToPhotosAlbum({
 											filePath: res.tempFilePath,
 											success: function() {
 												//保存成功后删除临时图片
-												
+
 												_this.$http.post("/user/file/delB64Img",
 													{
 														path: json.msg
@@ -142,11 +139,11 @@
 														}
 													}
 												).then(res=>{
-													
+
 												})
-												
+
 												// uni.request({
-												// 	data: {  
+												// 	data: {
 												// 		path: json.msg
 												// 	},
 												// 	header: {
@@ -174,10 +171,10 @@
 								}
 							})
 						}
-					
+
 					}
 				})
-				
+
 				// uni.request({
 				// 	method: "POST",
 				// 	url: _this.$store.state.req_url + "/user/file/uploadB64Img",
@@ -201,13 +198,13 @@
 				// 					url: _this.$store.state.img_url + json.msg,
 				// 					success: (res) => {
 				// 						if (res.statusCode === 200) {
-											
+
 				// 							uni.saveImageToPhotosAlbum({
 				// 								filePath: res.tempFilePath,
 				// 								success: function() {
 				// 									//保存成功后删除临时图片
 				// 									uni.request({
-				// 										data: {  
+				// 										data: {
 				// 											path: json.msg
 				// 										},
 				// 										header: {

@@ -14,31 +14,31 @@
 				</view>
 				<scroll-view scroll-y class="indexes" :scroll-into-view="'indexes-'+ listCurID" :style="[{height:'calc(100vh - 100upx - 100upx - 150upx)'}]"
 				 :scroll-with-animation="true" :enable-back-to-top="true">
-				 
+
 				 <view style="margin-top:10px;" class="cu-list menu"
 				  :class="[true?'sm-border':'',false?'card-menu margin-top':'']">
 					<view @tap="goNewFriends()" class="cu-item" :class="true?'arrow':''">
-						<view class="content"> 
-							<text style="float:left;color:#FCBF00;font-size:50upx" class="iconfont icon-tianjiahaoyou"></text>	
+						<view class="content">
+							<text style="float:left;color:#FCBF00;font-size:50upx" class="iconfont icon-tianjiahaoyou"></text>
 							<text class="text-grey" style="float:left;margin-left: 10px;">新的朋友</text>
 							<view v-if="$store.state.unDoFriendAddCount>0" style="top: 38upx;right: 72upx" class="cu-tag badge">{{$store.state.unDoFriendAddCount}}</view>
-						</view> 
-					</view>  
+						</view>
+					</view>
 					<view @tap="goMyGroup()" class="cu-item" :class="true?'arrow':''">
-						<view class="content"> 
-							<text style="color:#009FE8;font-size:50upx" class="iconfont icon-qunzhong"></text>	
+						<view class="content">
+							<text style="color:#009FE8;font-size:50upx" class="iconfont icon-qunzhong"></text>
 							<text class="text-grey" style="margin-left: 10px;">群聊</text>
 							<view v-if="$store.state.unDoRoomAddCount>0" style="top: 38upx;right: 72upx" class="cu-tag badge">{{$store.state.unDoRoomAddCount}}</view>
 						</view>
 					</view>
 					<view @tap="goBlacklist()" class="cu-item" :class="true?'arrow':''">
 						<view class="content">
-							<text style="color:#999;font-size:50upx" class="iconfont icon-heimingdan"></text>	
+							<text style="color:#999;font-size:50upx" class="iconfont icon-heimingdan"></text>
 							<text class="text-grey" style="margin-left: 10px;">黑名单</text>
 						</view>
 					</view>
-				</view>	
-				 
+				</view>
+
 					<block v-for="(item,index) in friend_list" :key="index">
 						<view :class="'indexItem-' + item.h" :id="'indexes-' + item.h" :data-index="item.h">
 							<view class="padding">{{item.h}}</view>
@@ -103,7 +103,7 @@
 <script>
 	import UserChat from '@/pages/chat/user/index.vue';
 	import GroupChat from '@/pages/chat/group/index.vue';
-	
+
 	export default {
 		components:{
 			UserChat,
@@ -114,6 +114,8 @@
 				StatusBar: this.StatusBar,
 				CustomBar: this.CustomBar,
 				hidden: true,
+				modalName: null,
+				refresherTriggered: true,
 				listCurID: '',
 				list: [],
 				listCur: '',
@@ -144,10 +146,10 @@
 							"x-access-client":_this.$clientType
 						}
 					}
-					
+
 				).then(res=>{
 					let res_data = eval(res.data);
-					if(res_data.code==200) {  
+					if(res_data.code==200) {
 						_this.$store.commit("setFriend_list",res_data.body);
 						res_data.body.forEach(item=>{
 							let i = {};
@@ -157,7 +159,7 @@
 					}
 				});
 			}
-			
+
 		},
 		computed:{
 			friend_list() {
@@ -183,13 +185,13 @@
 					let i = {};
 					i.name = item.h;
 					_this.list.push(i);
-					
+
 				})
-				
+
 				return nlist;
 			}
 		},
-		
+
 		onReady() {
 			let that = this;
 			uni.createSelectorQuery().select('.indexBar-box').boundingClientRect(function(res) {
@@ -198,9 +200,34 @@
 			uni.createSelectorQuery().select('.indexes').boundingClientRect(function(res) {
 				that.barTop = res.top
 			}).exec();
-			
+
 		},
 		methods: {
+			refresherrestore() {
+				console.log('自定义下拉刷新被复位');
+				let _this = this;
+				_this.refresherTriggered = false;
+				_this._refresherTriggered = false;
+			},
+			refresherrefresh() {
+				console.log('自定义下拉刷新被触发');
+				let _this = this;
+				if (_this._refresherTriggered) {
+					return;
+				}
+				_this._refresherTriggered = true;
+				//界面下拉触发，triggered可能不是true，要设为true
+				if (!_this.refresherTriggered) {
+					_this.refresherTriggered = true;
+				}
+				this.loadStoreData();
+			},
+			refresherabort() {
+				console.log('自定义下拉刷新被中止    ');
+				let _this = this;
+				_this.refresherTriggered = false;
+				_this._refresherTriggered = false;
+			},
 			closeModal() {
 				this.visiable = false;
 			},

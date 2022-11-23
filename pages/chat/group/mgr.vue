@@ -649,6 +649,6 @@
 
 <style>
  .cu-list .cu-item{
-	cursor: pointer; 
+	cursor: pointer;
  }
 </style>

@@ -120,7 +120,6 @@ export function bindHttp(){
 
 	//刷新user
 	let user = uni.getStorageSync("USER");
-	console.log("--------->"+user);
 	if(user) {
 		console.log(".......");
 		//更新一下user
@@ -134,8 +133,6 @@ export function bindHttp(){
 			console.log(res.data);
 			let res_data = eval(res.data);
 			if(res_data.code==200) {
-				console.log("99999999999999");
-				console.log(res_data.body);
 				store.commit("setUser",res_data.body)
 				uni.setStorageSync("USER",res_data.body);
 				store.commit("setUnDoFriendAddCount",res_data.body.unDoFriendAddCount);

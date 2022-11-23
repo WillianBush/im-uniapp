@@ -5,14 +5,14 @@
 		<view style="background: #fff;width: 96%;
     margin: auto auto;
     margin-top: 10px;" class="margin-top">
-	
+
 	<view class="cu-bar bg-white search">
 		<view class="search-form round">
 			<text class="cuIcon-search"></text>
 			<input v-model="kw" @input="search_list()" type="text" placeholder="搜索" confirm-type="search"></input>
 		</view>
-		 
-	</view> 
+
+	</view>
 			<view style=" width:100%">
 					<view   style="padding-top:30upx;padding-bottom:30upx;">
 						<view  style="display: inline-block;width:25%;margin-bottom:30upx;text-align: center;" v-for="(item,index) in list1">
@@ -23,14 +23,14 @@
 						<view v-if="list1.length<=0" style="text-align: center;color:#aaa">
 							<uni-view  class="padding">暂无客服信息</uni-view>
 						</view>
-						
+
 					</view>
 			</view>
-			
-			 
-		</view> 
-		
-	
+
+
+		</view>
+
+
 	</view>
 </template>
 
@@ -47,7 +47,7 @@
 		onLoad() {
 			let _this = this;
 			let user = uni.getStorageSync("USER");
-			
+
 			_this.$http.post("/kefu/list",
 				{
 					header:{
@@ -57,7 +57,7 @@
 				}
 			).then(res=>{
 				let res_data = eval(res.data);
-				if(res_data.code==200) {  
+				if(res_data.code==200) {
 					_this.list = res_data.body;
 					let temp = _this.list.filter((item1)=>{
 						let s = uni.getStorageSync(item1.id+"_NOTE");
@@ -69,8 +69,8 @@
 					 _this.list1 = temp;
 				}
 			})
-			
-			
+
+
 		},
 		methods: {
 			goChat(item) {

@@ -10,7 +10,7 @@
     color: #fff;
     text-align: center;
     font-size: 24upx;opacity: .92;" v-show="isCloseNet()">网络已断开，请检查网络稳定性</view>
-		
+
 		<home ref="homeRef" v-show="PageCur=='home'"></home>
 		<addressBook v-show="PageCur=='addressBook'"></addressBook>
 		<!-- <hotItem v-if="PageCur=='hotItem'&&$store.state.hotItem.show_type==1"></hotItem> -->
@@ -79,7 +79,7 @@
 				<view class='cuIcon-cu-image'></view>
 			</view>
 		</view>
-		
+
 		<block v-if="$store.state.signInCnf">
 			<view class="cu-modal" style="    z-index: 999999999;" :class="showSignIn?'show':''">
 				<view class="cu-dialog" style="width:600upx;" >
@@ -114,7 +114,7 @@
 		},
 		onLoad() {
 			let _this = this;
-			
+
 		},
 		methods: {
 			goSignIn() {
@@ -128,11 +128,11 @@
 			NavChange: function(e) {
 				let _this = this;
 				let user = uni.getStorageSync("USER");
-				
+
 				console.log(this.hot_wv);
 				if(this.hot_wv) {
 					this.hot_wv.hide();
-				}	
+				}
 				if(e.currentTarget.dataset.cur=="hotItem") {
 					this.randomid = parseInt(Math.random()*100000000);
 						// uni.navigateTo({
@@ -140,7 +140,7 @@
 						// })
 						// return;
 				} else if(e.currentTarget.dataset.cur=="mine") {
-					
+
 					_this.$http.post("/sysConfig/json/getShimingCfg",
 						{
 							header:{
@@ -155,9 +155,9 @@
 					})
 				} else {
 					if(e.currentTarget.dataset.cur=="addressBook") {
-						
+
 						if(!this.$store.state.friend_list||this.$store.state.friend_list.length<=0) {
-							
+
 							_this.$http.post("/user/friend/list/v1",
 								{
 									header:{
@@ -167,7 +167,7 @@
 								}
 							).then(res=>{
 								let res_data = eval(res.data);
-								if(res_data.code==200) {  
+								if(res_data.code==200) {
 									_this.$store.commit("setFriend_list",res_data.body);
 									_this.$store.state.friend_list.forEach((item)=>{
 										item.list.forEach((item1)=>{
@@ -177,7 +177,7 @@
 											}
 										 })
 									 })
-									
+
 								}
 							})
 						} else {
@@ -190,24 +190,24 @@
 								 })
 							 })
 						}
-					}						
-				} 	
-				
+					}
+				}
+
 				// #ifdef H5
-				
+
 				if(e.currentTarget.dataset.cur=="hotItem") {
 					console.log("11");
 					_this.$store.commit("setHotItem_webView_show",true);
 				} else {
 					console.log("22");
 					_this.$store.commit("setHotItem_webView_show",false);
-				}	
+				}
 				// #endif
-				
+
 				setTimeout(function(){
 					_this.PageCur = e.currentTarget.dataset.cur;
 					if(_this.PageCur=="faxian") {
-						
+
 						_this.$http.post("/fxs/json/getList",
 							{
 								header:{
@@ -217,14 +217,16 @@
 							}
 						).then(res=>{
 							_this.$store.commit("setFaxian_site_list",res.data.body);
-						})	
-					} 
+						})
+					}
 				},50)
 
 			},
 			isCloseNet() {
-				if(!this.$websocket.state.is_open_socket&&this.$websocket.state.continueCloseCount > 10) {
-					return true;
+				if(this.$websocket){  //2022/11/23修正控制台报错
+					if(!this.$websocket.state.is_open_socket&&this.$websocket.state.continueCloseCount > 10) {
+						return true;
+					}
 				}
 				return false;
 			}
@@ -234,16 +236,14 @@
 			let _this = this;
 			//清除当前窗口数据
 			this.$store.commit("setCur_chat_entity",null);
-			this.$store.commit("setCur_chat_msg_list",[]); 
+			this.$store.commit("setCur_chat_msg_list",[]);
 		},
 		mounted() {
-			
+
 			let _this = this;
-			// console.log("111111111111111111111111111");
 			//清除当前窗口数据
 			this.$store.commit("setCur_chat_entity",null);
-			this.$store.commit("setCur_chat_msg_list",[]); 
-			
+			this.$store.commit("setCur_chat_msg_list",[]);
 			// setTimeout(function(){
 			// 	let pagearr = getCurrentPages();//获取应用页面栈
 			// 	let currentPage = pagearr[pagearr.length - 1];//获取当前页面信息
@@ -265,7 +265,7 @@
 					}
 				).then(res=>{
 					let res_data = eval(res.data);
-					if(res_data.code==200) {  
+					if(res_data.code==200) {
 						_this.$store.commit("setImgDomain",res_data.msg);
 					} else {
 						uni.showToast({
@@ -276,7 +276,7 @@
 					}
 				})
 			}
-			
+
 			if (!_this.$store.state.isEmployee) {
 				_this.$http.post("/user/employeeDefaultMessage/json/isEmployee",
 					{
@@ -309,7 +309,7 @@
 				_this.$store.commit("setHotItem",res.data.body);
 			})
 
-			
+
 			// uni.request({
 			// 	method:"POST",
 			// 	url: _this.$store.state.req_url + "/sysConfig/json/getFooterHotItem",
@@ -321,13 +321,13 @@
 			// 		console.log(res.data.body);
 			// 		_this.$store.commit("setHotItem",res.data.body);
 			// 	}
-			// });	
-			
+			// });
+
 			if(!this.$store.state.user) {
 				let user = uni.getStorageSync("USER");
-				
+
 				if(user) {
-					
+
 					//因为是从缓存拿出来的，需要执行一次更新
 					_this.$http.post("/user/json/load/v1",
 						{
@@ -338,10 +338,10 @@
 						}
 					).then(res=>{
 						let res_data = eval(res.data);
-						if(res_data.code==200) {  
+						if(res_data.code==200) {
 							_this.$store.commit("setUser",res_data.body)
 							uni.setStorageSync("USER",res_data.body);
-							
+
 							// 保存clientid到服务器，最好延迟一下获取信息否则有时会获取不到
 							// #ifdef APP-PLUS
 							setTimeout(function(){
@@ -357,10 +357,10 @@
 								_this.$websocket.dispatch("WEBSOCKET_SEND", "{body:'"+JSON.stringify(pushUser)+"',CMD:'APP_PUSH_USER_INFO'}");
 							},1000);
 							// #endif
-							
+
 						}
 					})
-					
+
 					// uni.request({
 					// 	method:"POST",
 					// 	url: _this.$store.state.req_url + "/user/json/load/v1",
@@ -370,7 +370,7 @@
 					// 	},
 					// 	success(res) {
 					// 		let res_data = eval(res.data);
-					// 		if(res_data.code==200) {  
+					// 		if(res_data.code==200) {
 					// 			_this.$store.commit("setUser",res_data.body)
 					// 			uni.setStorageSync("USER",res_data.body);
 					// 			let v = {
@@ -388,7 +388,7 @@
 					// 			_this.$websocket.dispatch('WEBSOCKET_SEND', "{body:'"+JSON.stringify(v)+"',CMD:'PUTSESSION'}");
 					// 			// #endif
 					// 			//_this.$websocket.dispatch("WEBSOCKET_SEND", "{body:'"+res_data.body.id+"',CMD:'PUTSESSION'}");
-								
+
 					// 			// 保存clientid到服务器，最好延迟一下获取信息否则有时会获取不到
 					// 			// #ifdef APP-PLUS
 					// 			// setTimeout(function(){
@@ -404,18 +404,18 @@
 					// 			// 	_this.$websocket.dispatch("WEBSOCKET_SEND", "{body:'"+JSON.stringify(pushUser)+"',CMD:'APP_PUSH_USER_INFO'}");
 					// 			// },1000);
 					// 			// #endif
-								
+
 					// 		}
 					// 	}
 					// })
-					
-					
+
+
 				} else {
 					uni.reLaunch({
 						url:"pages/login/login"
 					})
 				}
-				
+
 			}
 		},
 		onBackPress() {
@@ -443,5 +443,5 @@
 
 <style scoped>
 uni-web-view {
-		  z-index: 0!important; 
+		  z-index: 0!important;
 	}

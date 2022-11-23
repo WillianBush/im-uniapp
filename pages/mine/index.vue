@@ -1,5 +1,30 @@
 <template>
 	<view style="background-color: #fff;">
+		<el-dialog
+				title="提示"
+				width="30%"
+				:visible.sync="qrShow">
+			<view style="
+		margin: auto auto;
+		margin-top: 15px;width:90%;height:920upx;border-radius: 12px;background-color: #fff;padding-top: 40upx;;">
+				<view style="width: 90%;height:120upx;margin:auto auto;">
+					<text class="cu-avatar round lg" :style="'width:110upx;height:110upx;float: left;background-image: url('+$store.state.img_url+$store.state.user.headpic+');'"></text>
+					<text style="    float: left;
+    font-size: 36upx;
+    line-height: 120upx;
+    margin-left: 28upx;
+    font-weight: 600;">{{$store.state.user.nickName}}</text>
+				</view>
+				<view style="width: 84%;margin:auto auto;margin-top:40upx;" :style="'height:'+code_height+'px'" class="qrcode_view">
+					<canvas class="canvas-hide" canvas-id="qrcode1" style="width: 100%;height:100%" />
+					<image style="width: 100%;height: 100%;" :src="qrcodeBase64"></image>
+				</view>
+				<view style="text-align: center;
+    margin-top: 50upx;
+    color: #777;
+    font-size: 26upx;">可点击右上角进行二维码分享或保存</view>
+			</view>
+		</el-dialog>
 		<scroll-view style="height: calc(100vh - 100upx);" class="page" >
 			<view class="bg-blue" >
 				<view @tap="goUserInfo()" style="width:100%;height:340upx;padding-top:130upx">
@@ -17,25 +42,25 @@
 					<block v-if="$store.state.signInCnf">
 						<view v-if="$store.state.signInCnf.useSignIn==1" @tap="goSignIn" style="    position: absolute;top: 14px;right: 20px;">
 							<text class="iconfont icon-qiandao" style="color: #fff;    font-size: 56upx;"></text>
-						</view>	
+						</view>
 					</block>
 
 				</view>
-  
- 
-  
+
+
+
 				<view style="border-top-left-radius: 20px;border-top-right-radius: 20px;margin-top:10px;background: #F1F1F1;" class="cu-list menu"
 				 :class="[true?'sm-border':'',false?'card-menu margin-top':'']">
-				 
+
 					<view v-show="false" @tap="goWallet()" class="cu-item" :class="true?'arrow':''">
 						<view class="content">
-							
+
 							<!--<view  style="float:left;width: 44upx;height: 44upx;background-image: url(../../static/tb/qianbao.png);background-size: 100% 100%;"></view>-->
 							<text style="color:#EC3A4E" class="iconfont icon-qianbao"></text>
 							<text class="text-black" style="margin-left: 10px;">我的钱包</text>
 						</view>
 					</view>
-					
+
 					<view v-if="$store.state.shimingCfg.shiming==1"  @tap="goShiming()" class="cu-item" :class="true?'arrow':''">
 						<view class="content">
 							<!--
@@ -44,8 +69,8 @@
 							<text style="color:#EF4023;font-size:44upx" class="iconfont icon-shimingrenzheng"></text>
 							<text class="text-black" style="margin-left: 10px;">实名认证</text>
 						</view>
-					</view> 
-				
+					</view>
+
 					<view  v-show="false" @tap="goBill()" class="cu-item" :class="true?'arrow':''">
 						<view class="content">
 							<!--
@@ -66,7 +91,7 @@
 							</view>
 						</view>
 					</view>
-					
+
 					<view  @tap="goFavourite()" class="cu-item" :class="true?'arrow':''">
 						<view class="content">
 							<text style="color:#FF99BB;font-size:44upx" class="iconfont icon-shoucang"></text>
@@ -74,7 +99,7 @@
 						</view>
 					</view>
 
-					
+
 					<!-- <view @tap="goUserInfo()" class="cu-item t1" style="border:0px;" :class="true?'arrow':''">
 						<view class="content">
 							<text style="color:#F5BC50;font-size:46upx" class="iconfont icon-shezhi"></text>
@@ -82,10 +107,10 @@
 						</view>
 					</view> -->
 					<view @tap="goQrcode"  class="cu-item arrow" >
-						<view class="content"> 
+						<view class="content">
 						<text style="color:#F5BC50;font-size:46upx;float: left; position: relative; left: -6px;" class="lg  cuIcon-qr_code"><span></span></text>
 							<text class="text-black" style="margin-left: -6px;" >二维码</text>
-							
+
 						</view>
 					</view>
 
@@ -114,10 +139,10 @@
 							<text class="text-black" style="margin-left: 10px;">检查更新</text>
 							<text class="text-grey" style="float:right;font-size: 26upx;color: #bbb;">当前版本：{{$store.state.SYS_VERSION}}</text>
 						</view>
-					</view> 
-					
+					</view>
+
 					<view class="cu-item" @tap="logout()" >
-						<view class="content"> 
+						<view class="content">
 						<!--
 							<view  style="float:left;width: 44upx;height: 44upx;background-image: url(../../static/tb/logout.png);background-size: 100% 100%;"></view>
 						-->
@@ -203,12 +228,52 @@
 </template>
 
 <script>
+	import uQRCode from '@/common/uqrcode.js'
 	export default {
+		data() {
+			return {
+				qrShow : false,
+				code_height: 0,
+				qrcodeBase64: ""
+			}
+		},
+		onLoad(e) {
+			let _this = this;
+			let user = this.$store.state.user;
+			console.log('seeee')
+			console.log('seeee===>',user)
+			this.$nextTick(() => {
+				let code_width = 0;
+				uni.getSystemInfo({
+					success: function(res) { // res - 各种参数
+						let obj = uni.createSelectorQuery().select('.qrcode_view')
+						obj.boundingClientRect(function(data) { // data - 各种参数
+							//console.log(data)
+							code_width = data.width;
+							_this.code_height = code_width;
+							uQRCode.make({
+								canvasId: 'qrcode1',
+								componentInstance: _this,
+								text: '#member#'+_this.$store.state.user.id+"#",
+								size: code_width,
+								margin: 0,
+								backgroundColor: '#ffffff',
+								foregroundColor: '#000000',
+								fileType: 'jpg',
+								correctLevel: uQRCode.errorCorrectLevel.H
+							}).then(res => {
+								//console.log(res)
+								_this.qrcodeBase64 = res;
+							})
+
+						}).exec()
+					}
+				})
+			})
+		},
 		async mounted() {
 			await this.$onLaunched;
 			let _this = this;
-			console.log("abc22222", "2222222")
-			console.log("abc333333", _this.$store.state.isEmployee)
 
 			setTimeout(()=>{
 				if (_this.$store.state.isEmployee) {
@@ -216,12 +281,92 @@
 				}
 			},1000);
 
+
 		},
 		methods:{
+			share() {
+				let _this = this;
+				let user = uni.getStorageSync("USER");
+				uni.showActionSheet({
+					itemList: ['发送给朋友', '保存二维图'],
+					success: function(res) {
+						if (res.tapIndex == 0) {
+							_this.$store.state.temp.base64 = _this.qrcodeBase64;
+							uni.navigateTo({
+								url:"/pages/mine/user_info/qrcodeSendToFriend"
+							})
+						} else if (res.tapIndex == 1) {
+							_this.saveEwm();
+						}
+					},
+					fail: function(res) {
+						console.log("按取消");
+						//console.log(res.errMsg);
+					}
+				});
+			},
+			saveEwm: function(e) {
+				let _this = this;
+				_this.$http.post("/user/file/uploadB64Img",
+						{
+							base64: _this.qrcodeBase64
+						},
+						{
+							header:{
+								"x-access-uid": _this.$store.state.user.id,
+								"x-access-client":_this.$clientType
+							}
+						}
+				).then(res=>{
+					let res_data = eval(res.data);
+					if (res_data.code == 200) {
+						let json = eval(res.data);
+						if (json.code == 200) {
+							uni.downloadFile({
+								url: _this.$store.state.img_url + json.msg,
+								success: (res) => {
+									if (res.statusCode === 200) {
+
+										uni.saveImageToPhotosAlbum({
+											filePath: res.tempFilePath,
+											success: function() {
+												//保存成功后删除临时图片
+
+												_this.$http.post("/user/file/delB64Img",
+														{
+															path: json.msg
+														},
+														{
+															header:{
+																"x-access-uid": _this.$store.state.user.id
+															}
+														}
+												).then(res=>{
+
+												})
+												uni.showToast({
+													title: "保存成功",
+													icon: "none"
+												});
+											},
+											fail: function() {
+												uni.showToast({
+													title: "保存失败， 请稍后重试",
+													icon: "none"
+												});
+											}
+										});
+									}
+								}
+							})
+						}
+
+					}
+				})},
 			goSignIn(){
 				uni.navigateTo({
 					url:"/pages/mine/signIn"
-				}) 
+				})
 			},
 			checkUpdate(){
 				let _this = this;
@@ -230,12 +375,12 @@
 			goShiming() {
 				uni.navigateTo({
 					url:"/pages/mine/shiming"
-				}) 
+				})
 			},
 			goFavourite() {
 				uni.navigateTo({
 					url:"/pages/mine/favourite_list"
-				}) 
+				})
 			},
 			isOpenRefresh(e){
 				let _this = this;
@@ -244,12 +389,12 @@
 			goBill() {
 				uni.navigateTo({
 					url:"/pages/mine/wallet/bill"
-				}) 
+				})
 			},
 			goQrcode() {
-				uni.navigateTo({
-					url:"/pages/mine/user_info/qrCode"
-				})
+
+				this.qrShow = true
+
 			},
 			goWallet(){
 				uni.navigateTo({
@@ -312,7 +457,7 @@
 				// 	},
 				// 	success(res) {
 				// 		let res_data = eval(res.data);
-				// 		if(res_data.code==200) {  
+				// 		if(res_data.code==200) {
 				// 			//uni.clearStorageSync();
 				// 			uni.removeStorageSync("USER");
 				// 			_this.$store.commit("clearData");
@@ -322,8 +467,8 @@
 				// 		}
 				// 	}
 				// })
-				
-				
+
+
 			},
 			getGreetingMsg(_this) {
 				let user = this.$store.state.user;
@@ -359,8 +504,18 @@
 	.iconfont{
 		font-size: 38upx;
 	}
-		
+
 	.t1:after {
 		border:0px!important;
-	} 
+	}
+	.canvas-hide {
+		/* 1 */
+		position: fixed;
+		right: 100vw;
+		bottom: 100vh;
+		/* 2 */
+		z-index: -9999;
+		/* 3 */
+		opacity: 0;
+	}
 </style>

@@ -24,7 +24,6 @@ const config = {
         url: config.requestUrl[i],
         success: (response) => {
 
-          console.log('res_N1--'+"11111")
           //todo 测试
           // config.baseUrl.pro = response.data.data.path;
           let res_data = eval(response.data);
@@ -33,7 +32,6 @@ const config = {
           config.websocketDomains.url = res_data.websocketDomains;
           config.RemoteIpInited = true;
 
-          console.log('res_N11111--'+res_data.websocketDomains)
           //更新domain
           store.commit("setImgDomain",res_data.mediaDomains);
           store.commit("setReqDomain",res_data.httpDomains);
