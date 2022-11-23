@@ -237,41 +237,11 @@
 				qrcodeBase64: ""
 			}
 		},
-		onLoad(e) {
-			let _this = this;
-			let user = this.$store.state.user;
-			this.$nextTick(() => {
-				let code_width = 0;
-				console.log('nextttick')
-				uni.getSystemInfo({
-					success: function(res) { // res - 各种参数
-						let obj = uni.createSelectorQuery().select('.qrcode_view')
-						obj.boundingClientRect(function(data) { // data - 各种参数
-							//console.log(data)
-							code_width = data.width;
-							_this.code_height = code_width;
-							uQRCode.make({
-								canvasId: 'qrcode1',
-								componentInstance: _this,
-								text: '#member#'+_this.$store.state.user.id+"#",
-								size: code_width,
-								margin: 0,
-								backgroundColor: '#ffffff',
-								foregroundColor: '#000000',
-								fileType: 'jpg',
-								correctLevel: uQRCode.errorCorrectLevel.H
-							}).then(res => {
-								//console.log(res)
-								_this.qrcodeBase64 = res;
-							})
-
-						}).exec()
-					}
-				})
-			})
+		created(){
 		},
 		async mounted() {
 			await this.$onLaunched;
+
 			let _this = this;
 			setTimeout(()=>{
 				if (_this.$store.state.isEmployee) {
@@ -282,6 +252,33 @@
 
 		},
 		methods:{
+			getQr(){
+				let _this = this;
+				let user = this.$store.state.user;
+					uni.getSystemInfo({
+						success: function(res) { // res - 各种参数
+							let obj = uni.createSelectorQuery().select('.qrcode_view')
+							obj.boundingClientRect(function(data) { // data - 各种参数
+								_this.code_height = data.width;
+								uQRCode.make({
+									canvasId: 'qrcode1',
+									componentInstance: _this,
+									text: '#member#'+_this.$store.state.user.id+"#",
+									size: _this.code_height,
+									margin: 0,
+									backgroundColor: '#ffffff',
+									foregroundColor: '#000000',
+									fileType: 'jpg',
+									correctLevel: uQRCode.errorCorrectLevel.H
+								}).then(res => {
+									//console.log(res)
+									_this.qrcodeBase64 = res;
+								})
+
+							}).exec()
+						}
+					})
+			},
 			share() {
 				let _this = this;
 				let user = uni.getStorageSync("USER");
@@ -390,8 +387,11 @@
 				})
 			},
 			goQrcode() {
-
 				this.qrShow = true
+				this.$nextTick(() => {
+					this.getQr()
+				})
+
 
 			},
 			goWallet(){

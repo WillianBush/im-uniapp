@@ -48,6 +48,7 @@
 				let code_width = 0;
 				uni.getSystemInfo({
 					success: function(res) { // res - 各种参数
+						console.log('seeee=>',res)
 						let obj = uni.createSelectorQuery().select('.qrcode_view')
 						obj.boundingClientRect(function(data) { // data - 各种参数
 							//console.log(data)
