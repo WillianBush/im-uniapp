@@ -1,8 +1,8 @@
 <template>
 	<view>
-		<cu-custom bgColor="bg-blue" :isBack="false"><block slot="content">发现</block></cu-custom>
-
-		
+			<div class="top-bar">
+				<p>发现</p>
+			</div>
 		<view style="background-color: #fff;">
 			<!-- #ifndef H5 -->
 			<view class="cu-bar bg-white margin-top "  @tap="saoma()" style="border-bottom: 1px solid #eee;">
@@ -15,8 +15,54 @@
 			</view>
 			<!--#endif-->
 		</view>
+		<el-dialog
+				width="30%"
+				:visible.sync="noticeShow">
+			<view style="background-color: #fff;height: 100vh;"  v-if="!isContent"
+				  v-loading="loading">
+
+				<view v-if="list.length>0" class="cu-timeline margin-top" >
+					<block  v-for="item in list">
+						<view class="cu-time">{{item.dateStr}}</view>
+						<view v-for="item1 in item.list" class="cu-item" @tap="getNoticeDetail(item1)">
+							<view class="content">
+								<view class="cu-capsule radius">
+									<view class="cu-tag bg-cyan">{{item1.amOrPm}}</view>
+									<view class="cu-tag line-cyan">{{item1.timeStr}}</view>
+								</view>
+								<view class="margin-top">{{item1.title}}</view>
+							</view>
+						</view>
+					</block>
+				</view>
+				<view v-else class="cu-timeline " style="    text-align: center;
+    color: #888;margin-top:100upx;" >
+					暂无公告信息
+				</view>
+			</view>
+			<view style="background-color: #fff;height: 100vh;" v-if="isContent"
+				  v-loading="loading">
+				<div class="left-icon" @click="isContent = false">
+					<image style="width:10px;height:16px;float:left;margin-top:3px"  src="@/static/images/back.png"></image>
+					<span style="margin-left:10px;color:black;font-size:16px">返回</span>
+				</div>
+				<view class="cu-card article " style="padding-top:30upx;" >
+					<view class="cu-item shadow">
+						<view class="title"><view style=" text-align: center;line-height: 46upx;font-size: 36upx;">{{bean.title}}</view></view>
+						<view style="    text-align: center;
+    margin-top: 34upx;
+    font-size: 30upx;"  class="text-gray text-df">{{bean.createDate}}</view>
+						<view class="content" style="margin-top:52upx;">
+							<view class="desc">
+								<rich-text class="text-content" style="font-size:30upx" :nodes="bean.content"></rich-text>
+							</view>
+						</view>
+					</view>
+				</view>
+			</view>
+		</el-dialog>
 		<view style="background-color: #fff;" class="margin-top">
-			<view class="cu-bar bg-white" style="clear:both;border-bottom: 1px solid #eee;"  @tap="notice()">
+			<view class="cu-bar bg-white" style="clear:both;border-bottom: 1px solid #eee;"  @tap="getNotices()">
 				<view class="action">
 						<text style="color:#59AAFF;font-size:48upx" class="iconfont icon-gonggao1"></text>
 						<text style="color:#222;margin-left:10px">公告</text>
@@ -29,9 +75,9 @@
 						<text style="color:#222;margin-left:10px">联系客服</text>
 				</view>
 			</view>
-			
-			
-		</view>	
+
+
+		</view>
 		<view style="background-color: #fff;" class="margin-top">
 			<block v-for="item in $store.state.faxian_site_list" >
 				<view  class="cu-bar bg-white " style="clear: both;border-bottom: 1px solid #eee;"  @tap="goSite(item)">
@@ -58,9 +104,9 @@
 				</view>
 			</view> -->
 
-		</view>	
-		
-		
+		</view>
+
+
 		<view class="cu-modal" :class="isShowModal?'show':''">
 			<view class="cu-dialog">
 				<view class="cu-bar bg-white justify-end">
@@ -74,7 +120,7 @@
 				</view>
 			</view>
 		</view>
-		
+
 	</view>
 </template>
 
@@ -82,13 +128,62 @@
 	export default {
 		data(){
 			return{
-				isShowModal:false
+				isShowModal:false,
+				noticeShow:false,
+				isContent:false,
+				loading:false,
+				list:[],
+				bean:{}
 			}
 		},
 		methods:{
-			notice(){
-				uni.navigateTo({ 
-					url:"/pages/faxian/notice/index"
+			getNoticeDetail(e){
+
+				this.loading = true
+				this.isContent = true
+				let _this = this;
+				let user = uni.getStorageSync("USER");
+
+				_this.$http.post("/notice/detail",
+						{id:e.id},
+						{
+							header:{
+								"x-access-uid":_this.$store.state.user.id,
+								"x-access-client":_this.$clientType
+							}
+						}
+				).then(res=>{
+					this.loading = false
+					let res_data = eval(res.data);
+					if(res_data.code==200) {
+						_this.bean = res_data.body;
+					}
+				})
+			},
+			getNotices(){
+				this.loading = true
+				this.noticeShow = true
+				let _this = this;
+				let user = uni.getStorageSync("USER");
+
+				_this.$http.post("/notice/list",
+						{
+							header:{
+								"x-access-uid":_this.$store.state.user.id,
+								"x-access-client":_this.$clientType
+							}
+						}
+				).then(res=>{
+					this.loading = false
+					let res_data = eval(res.data);
+					if(res_data.code==200) {
+						_this.list = res_data.body;
+					}
+				})
+			},
+			detail(item) {
+				uni.navigateTo({
+					url:"/pages/faxian/notice/detail?id="+item.id
 				})
 			},
 			kefu(){
@@ -111,7 +206,7 @@
 				        console.log('条码内容：' + res.result);
 						if(res.result.indexOf("#group#")==0) {
 							let roomid = res.result.split("#")[2];
-							
+
 							_this.$http.post("/room/json/isRoomMember",
 								{
 									roomid:roomid
@@ -124,7 +219,7 @@
 								}
 							).then(res=>{
 								let res_data = eval(res.data);
-								if(res_data.code==200) { 
+								if(res_data.code==200) {
 									if(res_data.msg=="1") {
 										uni.navigateTo({
 											url:"/pages/chat/group/index?toid="+roomid
@@ -141,7 +236,7 @@
 									});
 								}
 							})
-							
+
 							// uni.request({
 							// 	method:"POST",
 							// 	url: _this.$store.state.req_url + "/room/json/isRoomMember",
@@ -155,7 +250,7 @@
 							// 	success(res) {
 							// 		console.log(res.data);
 							// 		let res_data = eval(res.data);
-							// 		if(res_data.code==200) { 
+							// 		if(res_data.code==200) {
 							// 			if(res_data.msg=="1") {
 							// 				uni.navigateTo({
 							// 					url:"/pages/chat/group/index?toid="+roomid
@@ -180,11 +275,11 @@
 								console.log("进来这里");
 								uni.navigateTo({
 									url:"/pages/index/index"
-								}) 
+								})
 								return;
 							}
-							
-							
+
+
 							_this.$http.post("/user/friend/isMyFri/v1",
 								{
 									uid:member_id
@@ -198,7 +293,7 @@
 							).then(res=>{
 								console.log(res.data);
 								let res_data = eval(res.data);
-								if(res_data.code==200) { 
+								if(res_data.code==200) {
 									if(res_data.msg=="1") {
 										uni.navigateTo({
 											url:"/pages/chat/user/index?toid="+member_id
@@ -215,7 +310,7 @@
 									});
 								}
 							})
-							
+
 							// uni.request({
 							// 	method:"POST",
 							// 	url: _this.$store.state.req_url + "/user/friend/isMyFri/v1",
@@ -229,7 +324,7 @@
 							// 	success(res) {
 							// 		console.log(res.data);
 							// 		let res_data = eval(res.data);
-							// 		if(res_data.code==200) { 
+							// 		if(res_data.code==200) {
 							// 			if(res_data.msg=="1") {
 							// 				uni.navigateTo({
 							// 					url:"/pages/chat/user/index?toid="+member_id
@@ -255,9 +350,9 @@
 							uni.navigateTo({
 								url:"/pages/faxian/txtContent/txtContent?txt="+res.result
 							})
-						}	
-						
-						
+						}
+
+
 				    }
 				});
 			},
@@ -279,11 +374,11 @@
 			showModal() {
 				this.isShowModal = true;
 			},
-				
+
 			hideModal() {
 				this.isShowModal = false;
 			}
-			
+
 		}
 	}
 </script>
@@ -291,5 +386,23 @@
 <style scoped>
 	.margin-top {
 		margin-top:10px
+	}
+	.top-bar{
+		background-color: rgb(238, 238, 238);
+		width: 100%;
+		color: rgb(0, 0, 0);
+		border-bottom: 1px solid rgb(189, 186, 186);
+		height: 45px;
+		text-align: center;
+		line-height: 45px;
+		padding-top: 0px;
+	}
+
+	.left-icon{
+		display: block;
+		margin-top: 23px;
+		margin-bottom:10px;
+		cursor: pointer;
+		margin-left: 15px;
 	}
 </style>
