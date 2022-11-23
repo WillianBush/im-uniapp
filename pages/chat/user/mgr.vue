@@ -6,8 +6,8 @@
 			<view>
 
 				<view class="cu-chat">
-					<div class="left-icon">
-						<image style="width:10px;height:16px;float:left;margin-top:3px" @click="logShow = false" src="@/static/images/back.png"></image>
+					<div class="left-icon" @click="logShow = false">
+						<image style="width:10px;height:16px;float:left;margin-top:3px"  src="@/static/images/back.png"></image>
 						<span style="margin-left:10px;color:black;font-size:16px">返回</span>
 					</div>
 					<view v-if="list.length<=0" style="text-align: center;color:#aaa;margin-top:60upx;font-size: 28upx;">
@@ -257,7 +257,7 @@
 		</view>
 
 
-	<view style="background: #fff;width: 80%;margin: 40px 0 0 12%" >
+	<view style="background: #fff;width: 80%;margin: 40px 0 0 12%" v-show="!notesShow && !logShow">
 		<view style="height: 45px;line-height: 45px;text-align: center;background: #eee;color:#000">设置</view>
 
 
