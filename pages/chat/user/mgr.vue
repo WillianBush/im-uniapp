@@ -2,7 +2,7 @@
 <template>
 	<div>
 
-		<view style="position:relative;background: #fff;width: 80%;margin: 40px 0 0 12%;height:600px;overflow: scroll" v-if="logShow">
+		<view style="position:relative;background: #fff;width: 80%;margin: 40px 0 0 12%;height:600px;overflow: scroll" v-show="logShow">
 			<view>
 
 				<view class="cu-chat">
@@ -242,8 +242,22 @@
 			</view>
 		</view>
 
+		<view style="position:relative;background: #fff;width: 40%;margin: 40px 0 0 27%;height:600px;overflow: scroll;text-align: center" v-show="notesShow">
+			<image style="width:10px;height:16px;position:absolute;left:3%;top:5%;cursor:pointer" @click="notesShow = false" src="@/static/images/back.png"></image>
 
-	<view style="background: #fff;width: 80%;margin: 40px 0 0 12%" v-if="!logShow">
+			<view class="cu-form-group margin-top" style="
+		margin: auto auto;
+		margin-top: 70px;">
+				<input  maxlength="-1" v-model="notes" placeholder="请输入备注"/>
+			</view>
+			<view style="margin-top:20upx;color:#999;font-size:26upx">原昵称：{{$store.state.cur_chat_entity.nickName}}</view>
+			<el-button type="primary" @tap="notesSubmits()" size="mini" style="font-size: 22px;margin-top:60px;color: #fff;margin-right: 14px;font-size: 30upx;" class="lg text-gray ">提交</el-button>
+
+
+		</view>
+
+
+	<view style="background: #fff;width: 80%;margin: 40px 0 0 12%" >
 		<view style="height: 45px;line-height: 45px;text-align: center;background: #eee;color:#000">设置</view>
 
 
@@ -263,7 +277,7 @@
 		<view style="clear: both;  width: 96%;
     margin: auto auto;
     margin-top: 10px!important;" class="cu-list menu">
-		<view @tap="editNote()" class="cu-item arrow" >
+		<view @tap="getNotes()" class="cu-item arrow" >
 			<view class="content">
 				<text class="text-grey" style="color:#333;float:left;">备注</text>
 				<text class="text-grey text-sm" style="float:right;color:#aaa;font-size: 26upx;">{{user_note}}</text>
@@ -329,6 +343,8 @@
 		data() {
 			return {
 
+				notes:"",
+				id:"",
 				list:[],
 				player:null,
 				selVoiceIndex:-1,
@@ -381,6 +397,7 @@
 				chatCfg:{},
 				temp_bean:null,
 				showOpenRed:false,
+				notesShow:false,
 				showname:"",
 				//以上聊天记录内容状态
 
@@ -405,6 +422,32 @@
 		},
 		methods: {
 
+			//以下备注方法
+			getNotes(){
+				this.notesShow = true
+				let s = uni.getStorageSync(this.id+"_NOTE");
+				if(s&&s!="") {
+					this.notes = s;
+				} else {
+					this.notes = this.$store.state.cur_chat_entity.nickName;
+				}
+			},
+			notesSubmits() {
+				let _this = this;
+				let user = this.$store.state.user;
+				uni.setStorageSync(this.id+"_NOTE",this.notes);
+				let list = this.$store.state.ar_list;
+				list.forEach(item=>{
+					if(item.id==_this.id) {
+						item.title = _this.notes;
+					}
+				})
+				this.$store.commit("setAr_list",list);
+				uni.showToast({
+					title: '设置成功',
+					duration: 2000
+				});
+			},
 			//聊天记录方法
 			getLogs(){ //获取聊天记录方法
 				this.logShow = true
