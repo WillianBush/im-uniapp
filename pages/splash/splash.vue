@@ -79,7 +79,6 @@
             init(){
                 let _this = this;
                 setTimeout(function () {
-                    console.log('Splash Show--')
                     //这里的主要目的是为了，更新好友在线的状态，因为当处于appHide的时候。程序没有通知到位的情况下需要更新消息列表
                     let user = uni.getStorageSync("USER");
                     if (user) {

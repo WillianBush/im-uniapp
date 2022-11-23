@@ -17,17 +17,17 @@
 					v-model="passData"
 					type="password"
 					maxlength="25"
-					placeholder="密码" 
+					placeholder="密码"
 				></wInput>
 			</view>
-			<wButton 
+			<wButton
 				class="wbutton"
 				text="登 录"
-				:rotate="isRotate" 
+				:rotate="isRotate"
 				@click="startLogin"
 			></wButton>
-			
-			<!-- 其他登录 
+
+			<!-- 其他登录
 			<view class="other_login cuIcon">
 				<view class="login_icon">
 					<view class="cuIcon-weixin" @tap="login_weixin"></view>
@@ -45,7 +45,7 @@
     margin: auto auto;
     margin-top: 25px;    display: block;">
 				<navigator v-if="false" vstyle="float:left;" url="forget" open-type="navigate">找回密码</navigator>
-				
+
 				<navigator  style="float:right;" url="register" open-type="navigate">注册账号</navigator>
 			</view>
 		</view>
@@ -56,7 +56,7 @@
 	var _this;
 	import wInput from '../../components/user/watch-login/watch-input.vue' //input
 	import wButton from '../../components/user/watch-login/watch-button.vue' //button
-	
+
 	export default {
 		data() {
 			return {
@@ -90,7 +90,7 @@
 		// 			},
 		// 			success(res) {
 		// 				let res_data = eval(res.data);
-		// 				if(res_data.code==200) {  
+		// 				if(res_data.code==200) {
 		// 					store.commit("setUser",res_data.body)
 		// 					uni.setStorageSync("USER",res_data.body);
 		// 					store.commit("setUnDoFriendAddCount",res_data.body.unDoFriendAddCount);
@@ -98,8 +98,8 @@
 		// 				}
 		// 			}
 		// 		})
-				
-		// 	} 
+
+		// 	}
 		// },
 		methods: {
 			// 32位随机数
@@ -163,9 +163,9 @@
 		            });
 		            return;
 		        }
-				
+
 				console.log("登录成功")
-				
+
 				_this.isRotate=true
 				// setTimeout(function(){
 				// 	_this.isRotate=false
@@ -200,9 +200,9 @@
 						}
 					}
 				).then(res=>{
-					_this.isRotate=false; 
+					_this.isRotate=false;
 					let res_data = eval(res.data);
-					if(res_data.code==200) {  
+					if(res_data.code==200) {
 						_this.$store.commit("setUser",res_data.body)
 						uni.setStorageSync("USER",res_data.body);
 						_this.$store.commit("setUnDoFriendAddCount",res_data.body.unDoFriendAddCount);
@@ -213,7 +213,7 @@
 							user_id:res_data.body.id,
 							app_uuid:_this.$store.state.app_uuid,
 						}
-						
+
 						v.client = _this.$clientType;
 						v.user_id = v.user_id+"#"+v.client;
 						setTimeout(function(){
@@ -237,8 +237,8 @@
 							_this.$websocket.dispatch("WEBSOCKET_SEND", "{body:'"+JSON.stringify(pushUser)+"',CMD:'APP_PUSH_USER_INFO'}");
 						},1000);
 						// #endif
-						
-						
+
+
 						// if(this.$store.state.ar_list.length==0) {
 						_this.$http.post("/user/employeeDefaultMessage/json/isEmployee",
 								{
@@ -249,10 +249,8 @@
 								}
 						).then(res=>{
 							let res_data = eval(res.data);
-							console.log("tttttttttt,,,,",res_data.msg === 'Yes')
 							if(res_data.status=="success") {
 								_this.$store.state.isEmployee = (res_data.msg === 'Yes');
-								console.log("tttttttttt,,,,2",_this.$store.state.isEmployee)
 							} else {
 								uni.showToast({
 									icon: 'none',
@@ -261,7 +259,7 @@
 								});
 							}
 						})
-							
+
 							this.$http.post("/user/accessRecord/json/list",
 								{
 									account:_this.phoneData,
@@ -275,15 +273,15 @@
 								}
 							).then(res_1=>{
 								let res_data_1 = eval(res_1.data);
-								if(res_data_1.code==200) {  
+								if(res_data_1.code==200) {
 									let unreadSum = 0;
 									res_data_1.body.forEach(item=>{
-										
+
 										let s = uni.getStorageSync(item.id+"_NOTE");
 										if(s&&s!="") {
 											item.title = s;
 										}
-										
+
 										let last_txt = uni.getStorageSync(res_data.body.id+"#"+item.id+'_CHAT_MESSAGE_LASTCONTENT');
 										if(last_txt.indexOf("<img")>=0) {
 											item.content = "[图片]";
@@ -294,12 +292,12 @@
 										}  else {
 											item.content = last_txt;
 										}
-										
+
 										let aite_count = uni.getStorageSync(item.id+"#AITE_COUNT");
 										if(aite_count&&aite_count!="") {
 											item.aiteCount = parseInt(aite_count);
-										}	
-										
+										}
+
 										let unRead = uni.getStorageSync(res_data.body.id+"#"+item.id+'_CHAT_MESSAGE_UNREAD');
 										if(unRead&&unRead!="") {
 											unreadSum+=parseInt(unRead);
@@ -307,12 +305,12 @@
 										} else {
 											item.unread = 0;
 										}
-										
+
 										let zhiding = uni.getStorageSync(item.id+"_zhiding");
 										if(zhiding) {
 											item.top = 0;
 										}
-										
+
 									});
 									let list = res_data_1.body;
 									list.sort(function(a,b){
@@ -322,16 +320,16 @@
 											return a.top - b.top;
 										}
 									})
-									
-									
-									
-									
-									
+
+
+
+
+
 									_this.$store.commit("setAr_list",list)
 									_this.$store.commit("setUnReadMsgSum",unreadSum)
-									
+
 									//_this.$store.commit("setAr_list_show",list)
-									
+
 								} else {
 									uni.showToast({
 										icon: 'none',
@@ -339,7 +337,7 @@
 									});
 								}
 							})
-							
+
 							// uni.request({
 							// 	method:"POST",
 							// 	url: _this.$store.state.req_url + "/user/accessRecord/json/list",
@@ -349,15 +347,15 @@
 							// 	},
 							// 	success(res_1) {
 							// 		let res_data_1 = eval(res_1.data);
-							// 		if(res_data_1.code==200) {  
+							// 		if(res_data_1.code==200) {
 							// 			let unreadSum = 0;
 							// 			res_data_1.body.forEach(item=>{
-											
+
 							// 				let s = uni.getStorageSync(item.id+"_NOTE");
 							// 				if(s&&s!="") {
 							// 					item.title = s;
 							// 				}
-											
+
 							// 				let last_txt = uni.getStorageSync(res_data.body.id+"#"+item.id+'_CHAT_MESSAGE_LASTCONTENT');
 							// 				if(last_txt.indexOf("<img")>=0) {
 							// 					item.content = "[图片]";
@@ -368,8 +366,8 @@
 							// 				}  else {
 							// 					item.content = last_txt;
 							// 				}
-											
-											
+
+
 							// 				let unRead = uni.getStorageSync(res_data.body.id+"#"+item.id+'_CHAT_MESSAGE_UNREAD');
 							// 				if(unRead&&unRead!="") {
 							// 					unreadSum+=parseInt(unRead);
@@ -377,12 +375,12 @@
 							// 				} else {
 							// 					item.unread = 0;
 							// 				}
-											
+
 							// 				let zhiding = uni.getStorageSync(item.id+"_zhiding");
 							// 				if(zhiding) {
 							// 					item.top = 0;
 							// 				}
-											
+
 							// 			});
 							// 			let list = res_data_1.body;
 							// 			list.sort(function(a,b){
@@ -392,16 +390,16 @@
 							// 					return a.top - b.top;
 							// 				}
 							// 			})
-										
-										
-										
-										
-										
+
+
+
+
+
 							// 			_this.$store.commit("setAr_list",list)
 							// 			_this.$store.commit("setUnReadMsgSum",unreadSum)
-										
+
 							// 			//_this.$store.commit("setAr_list_show",list)
-										
+
 							// 		} else {
 							// 			uni.showToast({
 							// 				icon: 'none',
@@ -411,10 +409,10 @@
 							// 	}
 							// })
 						// }
-						
-						
+
+
 						uni.redirectTo({
-							url:"/pages/index/index"  
+							url:"/pages/index/index"
 						})
 					} else {
 						uni.showToast({
@@ -431,7 +429,7 @@
 				// 		"Content-Type":"application/x-www-form-urlencoded"
 				// 	},
 				// 	success(res) {
-						
+
 				// 	}
 				// })
 				// getLogin()
@@ -470,7 +468,7 @@
 				// }).catch(err => {
 				// 	uni.hideLoading();
 				// })
-				
+
 		    }
 			,
 			login_weixin() {
@@ -503,7 +501,7 @@
 			// #ifdef APP-PLUS
 				 plus.runtime.quit();//APP直接退出
 			// #endif
-			
+
 			//H5并不支持浏览器返回按钮
 			// #ifdef H5
 				uni.redirectTo({

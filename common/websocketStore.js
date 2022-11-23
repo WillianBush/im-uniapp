@@ -474,9 +474,7 @@ export default new Vuex.Store({
 						console.log("----------------------->777777777777777777");
 						store.state.temp.bean = data.body;
 					}
-					console.log("----------------------->8888888888888888");
 					if(store.state.cur_chat_entity&&data.body.chatid==store.state.cur_chat_entity.id) {
-						console.log("----------------------->99999999999999999");
 						try{
 							store.state.cur_chat_msg_list.forEach(item=>{
 								if(item.bean&&item.bean.uuid&&item.bean.uuid == data.body.redUUID) {

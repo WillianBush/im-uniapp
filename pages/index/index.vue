@@ -232,7 +232,6 @@
 			}
 		},
 		onShow() {
-			console.log('Inedx Show--')
 			let _this = this;
 			//清除当前窗口数据
 			this.$store.commit("setCur_chat_entity",null);

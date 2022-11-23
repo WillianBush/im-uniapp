@@ -180,7 +180,6 @@
 		onLoad(e) {
 		},
 		onShow: function(e) {
-			console.log('App Show--')
 			let _this = this;
 			// if(e.query.t&&e.query.t=="pc") {
 			// 	uni.removeStorageSync("USER");

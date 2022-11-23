@@ -240,10 +240,9 @@
 		onLoad(e) {
 			let _this = this;
 			let user = this.$store.state.user;
-			console.log('seeee')
-			console.log('seeee===>',user)
 			this.$nextTick(() => {
 				let code_width = 0;
+				console.log('nextttick')
 				uni.getSystemInfo({
 					success: function(res) { // res - 各种参数
 						let obj = uni.createSelectorQuery().select('.qrcode_view')
@@ -274,7 +273,6 @@
 		async mounted() {
 			await this.$onLaunched;
 			let _this = this;
-
 			setTimeout(()=>{
 				if (_this.$store.state.isEmployee) {
 					_this.getGreetingMsg(_this);

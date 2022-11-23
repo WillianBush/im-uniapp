@@ -983,7 +983,6 @@
 		},
 		mounted() {
 			 //this.domHeight = document.documentElement.clientHeight
-			 console.log('8888', this.toid)
 			uni.$on("showPicDialog",(rel)=>{
 				this.showPickureDialog = true;
 			})

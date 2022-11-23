@@ -121,7 +121,6 @@ export function bindHttp(){
 	//刷新user
 	let user = uni.getStorageSync("USER");
 	if(user) {
-		console.log(".......");
 		//更新一下user
 		http.post("/user/json/load/v1",
 			{
