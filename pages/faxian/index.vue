@@ -46,6 +46,12 @@
 
 			</view>
 		</el-dialog>
+		<el-dialog
+				width="30%"
+				:visible.sync="urlShow">
+				<iframe :src="url" width="100%" height="600px">
+				</iframe>
+		</el-dialog>
 
 		<el-dialog
 				width="30%"
@@ -160,10 +166,18 @@
 	export default {
 		data(){
 			return{
+				siteName:"",
+				url:"",
+				webviewStyles: {
+					progress: {
+						color: '#FF3333'
+					}
+				},
 				id:"",
 				serviceList:[],
 				serviceList1:[],
 				kw:"",
+				urlShow:false,
 				serviceShow:false,
 				isShowModal:false,
 				noticeShow:false,
@@ -174,6 +188,35 @@
 			}
 		},
 		methods:{
+			//以下获取链接相关
+			goSite(e) {
+				// uni.navigateTo({
+				// 	url:"/pages/faxian/site/site?url="+encodeURIComponent(e.url)+"&name="+e.name
+				// })
+				// return
+				this.urlShow = true
+				this.$nextTick(() => {
+				let  _this = this;
+				this.url = decodeURIComponent(e.url);
+				if(e.name&&e.name!="") {
+					this.siteName = e.name;
+				} else {
+					this.siteName = this.url;
+				}
+				let currentWebview = this.$scope.$getAppWebview();
+				let mv = plus.webview.create(this.url, "custom-webview", {
+					plusrequire: "none", //禁止远程网页使用plus的API，有些使用mui制作的网页可能会监听plus.key，造成关闭页面混乱，可以通过这种方式禁止
+					'uni-app': 'none', //不加载uni-app渲染层框架，避免样式冲突
+					top: _this.CustomBar ,//放置在titleNView下方。如果还想在webview上方加个地址栏的什么的，可以继续降低TOP值
+					height: uni.getSystemInfoSync().screenHeight- _this.CustomBar,
+					zindex:1
+				})
+				//此对象相当于html5plus里的plus.webview.currentWebview()。在uni-app里vue页面直接使用plus.webview.currentWebview()无效，非v3编译模式使用this.$mp.page.$getAppWebview()
+				//一定要append到当前的页面里！！！才能跟随当前页面一起做动画，一起关闭
+				currentWebview.append(mv);
+			},)
+			},
+
 			//以下客服相关
 			getService(){
 				this.serviceShow = true
@@ -442,11 +485,7 @@
 				    }
 				});
 			},
-			goSite(item) {
-				uni.navigateTo({
-					url:"/pages/faxian/site/site?url="+encodeURIComponent(item.url)+"&name="+item.name
-				})
-			},
+
 			goSite1() {
 				uni.navigateTo({
 					url:"/pages/faxian/site/site?url="+encodeURIComponent("https://www.baidu.com/")+"&name=百度一下"
@@ -490,5 +529,12 @@
 		margin-bottom:10px;
 		cursor: pointer;
 		margin-left: 15px;
+	}
+	.floatwindow{
+		text-align: center;
+		margin: auto;
+		width: 100%;
+		position: fixed;
+		z-index: 999;
 	}
 </style>
