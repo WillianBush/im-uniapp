@@ -1,19 +1,15 @@
 <template>
 	<view>
-		<cu-custom bgColor="bg-blue"  :isBack="true" :nameToLeft="true"><block slot="backText"></block><block slot="content">修改昵称</block><block slot="right">
-			<uni-text @tap="tijiao()" style="font-size: 22px;color: #fff;margin-right: 14px;font-size: 30upx;" class="lg text-gray ">提交</uni-text>
-		</block></cu-custom>
-		
+
+
 		<view class="cu-form-group margin-top" style="
 		margin: auto auto;
 		margin-top: 15px;">
 				<input  maxlength="-1" v-model="txt" placeholder="请输入昵称"/>
 			</view>
-	
-			
-			
-		</view>	
-	</view>
+
+
+		</view>
 </template>
 
 <script>
@@ -24,13 +20,13 @@
 			}
 		},
 		onLoad(e) {
-			
+
 		},
 		methods: {
 			tijiao() {
 				let _this = this;
 				let user = this.$store.state.user;
-				
+
 				_this.$http.post("/user/json/updateNickName",
 					{
 						nickName:this.txt,
@@ -44,7 +40,7 @@
 					}
 				).then(res=>{
 					let res_data = eval(res.data);
-					if(res_data.code==200) {  
+					if(res_data.code==200) {
 						uni.showToast({
 						    icon: 'success',
 							position: 'bottom',
@@ -59,7 +55,7 @@
 						});
 					}
 				})
-				
+
 				// uni.request({
 				// 	method:"POST",
 				// 	url: _this.$store.state.req_url + "/user/json/updateNickName",
@@ -73,7 +69,7 @@
 				// 	},
 				// 	success(res) {
 				// 		let res_data = eval(res.data);
-				// 		if(res_data.code==200) {  
+				// 		if(res_data.code==200) {
 				// 			uni.showToast({
 				// 			    icon: 'success',
 				// 				position: 'bottom',
@@ -90,8 +86,8 @@
 				// 	}
 				// })
 			}
-		
-			
+
+
 		}
 	}
 </script>

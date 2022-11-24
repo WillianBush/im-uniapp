@@ -1,21 +1,18 @@
 <template>
 	<view>
-		<cu-custom bgColor="bg-blue" :isBack="true" :nameToLeft="true">
-			<block slot="backText"></block>
-			<block slot="content">修改手机号</block>
-			<block slot="right">
-				<uni-text @tap="tijiao()" style="font-size: 22px;color: #fff;margin-right: 14px;font-size: 30upx;"
-					class="lg text-gray ">提交</uni-text>
-			</block>
-		</cu-custom>
 
-		<view class="cu-form-group margin-top" style="
+
+		<div  style="
 		margin: auto auto;
 		margin-top: 15px;">
-			<input maxlength="11" v-model="txt" placeholder="请输入手机号" />
-		</view>
+			<div>
+				<el-input maxlength="11" v-model="txt" placeholder="请输入手机号" />
+			</div>
+			<div style="margin-top:30px;text-align: center">
+				<el-button type="primary" style="width:130px" @tap="tijiao()" >提交</el-button>
+			</div>
+		</div>
 
-	</view>
 	</view>
 </template>
 

@@ -96,6 +96,9 @@ Vue.component('mine',mine)
 import cuCustom from './colorui/components/cu-custom.vue'
 Vue.component('cu-custom',cuCustom)
 
+import headbar from './components/headbar.vue'
+Vue.component('headbar',headbar)
+
 import number_jpan from './components/numberJpan/numberJpan.vue'
 Vue.component('number-jpan',number_jpan)
 

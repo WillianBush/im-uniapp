@@ -1,36 +1,31 @@
 <template>
 	<view class="forget" style="background: #fff;height:100vh">
-		
+
 		<view class="content">
-			<view @tap="back" style="position: relative;
-			top: 14px;
-			left: 14px;
-			color: #666; font-size: 32upx;   ">
-				<text style="font-size: 40upx;" class="lg text-gray cuIcon-back"></text>
-				</view>
 			<!-- 主体 -->
 			<view class="main" style="margin-top:40upx; align-items: center;">
 				<view class="tips">若你忘记了密码，可在此重置新密码。</view>
-				<wInput
+				<el-input
 					v-model="oldPassData"
 					type="text"
 					maxlength="25"
 					placeholder="请输入当前密码"
-				></wInput>
-				<wInput
+					style="margin-top:30px;margin-bottom:30px"
+				></el-input>
+				<el-input
 					v-model="passData"
 					type="password"
 					maxlength="25"
 					placeholder="请输入新密码"
 					isShowPass
-				></wInput>
+				></el-input>
 
 			</view>
-			
-			<wButton 
+
+			<wButton
 				class="wbutton"
 				text="重置密码"
-				:rotate="isRotate" 
+				:rotate="isRotate"
 				@click.native="startRePass()"
 			></wButton>
 
@@ -80,7 +75,7 @@
 					position: 'bottom',
 				    title: '模拟倒计时触发'
 				});
-				
+
 				setTimeout(function(){
 					_this.$refs.runCode.$emit('runCode',0); //假装模拟下需要 终止倒计时
 				},3000)
@@ -108,7 +103,7 @@
 			        });
 			        return false;
 			    }
-				
+
 				_this.isRotate=true
 
 				this.$http.post("/user/json/repwd",

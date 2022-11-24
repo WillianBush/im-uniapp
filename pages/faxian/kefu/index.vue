@@ -15,12 +15,12 @@
 	</view>
 			<view style=" width:100%">
 					<view   style="padding-top:30upx;padding-bottom:30upx;">
-						<view  style="display: inline-block;width:25%;margin-bottom:30upx;text-align: center;" v-for="(item,index) in list1">
+						<view  style="display: inline-block;width:25%;margin-bottom:30upx;text-align: center;" v-for="(item,index) in serviceList1">
 							<view class="cu-avatar round" :style="'height:100upx;width:100upx;background-image:url('+$store.state.img_url+item.headpic+');'"></view>
 							<view  style="margin:auto auto;color: #999;font-size:24upx;text-align: center;margin-top:8upx;overflow: hidden;height:68upx;width:100upx;word-wrap: break-word; word-break: normal">{{item.nickName}}</view>
 							<button  @tap="goChat(item)"  style="margin-top:0upx"  class="cu-btn round bg-red shadow">咨询</button>
 						</view>
-						<view v-if="list1.length<=0" style="text-align: center;color:#aaa">
+						<view v-if="serviceList1.length<=0" style="text-align: center;color:#aaa">
 							<uni-view  class="padding">暂无客服信息</uni-view>
 						</view>
 
@@ -39,8 +39,8 @@
 		data() {
 			return {
 				id:"",
-				list:[],
-				list1:[],
+				serviceList:[],
+				serviceList1:[],
 				kw:"",
 			}
 		},
@@ -58,15 +58,15 @@
 			).then(res=>{
 				let res_data = eval(res.data);
 				if(res_data.code==200) {
-					_this.list = res_data.body;
-					let temp = _this.list.filter((item1)=>{
+					_this.serviceList = res_data.body;
+					let temp = _this.serviceList.filter((item1)=>{
 						let s = uni.getStorageSync(item1.id+"_NOTE");
 						if(s&&s!="") {
 							item1.nickName=s;
 						}
 						return true;
 					 })
-					 _this.list1 = temp;
+					 _this.serviceList1 = temp;
 				}
 			})
 
@@ -88,9 +88,9 @@
 			},
 			search_list(){
 				let _this = this;
-				this.list1 = this.list;
+				this.serviceList1 = this.serviceList;
 				if(this.kw.trim()!="") {
-					this.list1 = this.list1.filter((item)=>{
+					this.serviceList1 = this.serviceList1.filter((item)=>{
 						 if(item.nickName.indexOf(_this.kw.trim())>=0) {
 							 return true;
 						 }

@@ -2,6 +2,7 @@
 	<view style="background-color: #fff;">
 		<el-dialog
 				width="30%"
+				:title="'我的二维码名片'"
 				:visible.sync="qrShow">
 			<view style="
 		margin: auto auto;
@@ -27,6 +28,7 @@
 
 		<el-dialog
 				width="30%"
+				:title="'我的收藏'"
 				:visible.sync="collectShow">
 			<view @tap="clickChat">
 
