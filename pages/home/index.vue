@@ -1,6 +1,6 @@
 <template>
 	<view>
-		<view @tap="hideShowMenu()" style="padding-top:50upx;background-color: #fff;width: 20%;float: left">
+		<view @tap="hideShowMenu()"  style="padding-top:50upx;background-color: #fff;width: 20%;float: left">
 			<view class="cu-bar bg-white solid-bottom">
 				<view class="action" style="font-size: 36upx;font-weight: 600;">
 					<text class="cuIcon-title text-orange " style="color: green"></text> 消息列表
@@ -159,23 +159,23 @@
 		<view v-show="!msgToId && !msgToGroupId" style="height: 100vh;width: 80%; float: left; border-left: 1px solid #ddd; background:#eee">
 			<img src="../../static/logo1.png" width="100px" height="100px" style="margin-top: calc(50vh - 50px);margin-left: calc(50% - 50px);"></img>
 		</view>
-		<view v-show="isGroupChat" style="height: calc(100vh - 50upx);width: 80%; float: left; border-left: 1px solid #ddd">
+		<view v-if="isGroupChat" style="height: calc(100vh - 50upx);width: 80%; float: left; border-left: 1px solid #ddd">
 			<scroll-view :scroll-y="modalName==null"
 				style="width: 100%"
 				class="page" :class="modalName!=null?'show':''">
-				<GroupChat :msgToGroupId="msgToGroupId" @openModal="openModal" @openAtModal="openAtModal"></GroupChat>
+				<GroupChat :msgToGroupId="msgToGroupId" :isongoing="isongoing"  @openModal="openModal" @openAtModal="openAtModal"></GroupChat>
 			</scroll-view>
 		</view>
-		<view v-show="msgToId && !isGroupChat" style="height: calc(100vh - 50upx);width: 80%; float: left; border-left: 1px solid #ddd">
+		<view v-if="msgToId && !isGroupChat" style="height: calc(100vh - 50upx);width: 80%; float: left; border-left: 1px solid #ddd">
 			<scroll-view :scroll-y="modalName==null"
 				style="width: 100%"
 				class="page" :class="modalName!=null?'show':''">
-				<UserChat :msgToId="msgToId" @openModal="openModal"></UserChat>
+				<UserChat :msgToId="msgToId" :isongoing="isongoing"  @openModal="openModal"></UserChat>
 			</scroll-view>
 		</view>
 		<view v-show="visiable" style="width: 100%; height: 100%;color:#fff;background-color: #0006; position: fixed;left: 0;top:0; z-index: 10;">
 			<text @click="closeModal" class="cuIcon-close" style="font-size: 36px; cursor: pointer; position:absolute; top:15px; right: 15px"></text>
-		    <UserMgr v-show="mgrType=='user'" :mgrId="mgrId"></UserMgr>
+		    <UserMgr v-show="mgrType=='user'"  :mgrId="mgrId"></UserMgr>
 			<GroupMgr v-show="mgrType=='group'" :mgrId="mgrId"></GroupMgr>
 			<Aite v-show="mgrType=='at'" :roomid="roomid" @closeModal="closeModal"></Aite>
 		</view>
@@ -183,6 +183,7 @@
 </template>
 
 <script>
+	import { Loading } from 'element-ui';
 	import UserChat from '@/pages/chat/user/index.vue';
 	import GroupChat from '@/pages/chat/group/index.vue';
 	export default {
@@ -193,6 +194,7 @@
 		data() {
 			return {
 				isGroupChat: false,
+				isongoing: false,
 				visiable: false,
 				msgToId: '',
 				msgToGroupId: '',
@@ -759,19 +761,28 @@
 				if (item.id == "-1") {
 					this.msgToId = item.id;
 					this.isGroupChat = false;
+					this.isongoing = true
 					// uni.navigateTo({
 					// 	url: "/pages/chat/guang_fang_chat"
 					// })
 				} else {
 					if (item.typeid == "2") {
-						this.msgToId = item.id;
 						this.isGroupChat = false;
+						this.$nextTick(() => {
+							this.msgToId = item.id;
+
+							this.isongoing = true
+						})
 						// uni.navigateTo({
 						// 	url: "/pages/chat/user/index?toid=" + item.id
 						// })
 					} else {
-						this.msgToGroupId = item.id;
 						this.isGroupChat = true;
+						this.$nextTick(() => {
+							this.msgToGroupId = item.id;
+
+							this.isongoing = true
+						})
 						// uni.navigateTo({
 						// 	url: "/pages/chat/group/index?toid=" + item.id
 						// })

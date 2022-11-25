@@ -1,5 +1,5 @@
 <template>
-	<view>
+	<view v-loading="ongoing">
 		<view  ref="topVew"  :style="chatCfg.chatBackgroundImage&&chatCfg.chatBackgroundImage!=''?'background-image: url('+$store.state.img_url+chatCfg.chatBackgroundImage+')':''" style="background-size: 100%;min-height: 100vh;" >
 			<cu-custom backUrl="/pages/index/index" bgColor="bg-blue"  :isBack="true" :nameToLeft="true"><block slot="backText"></block><block slot="content">
 			<view class="cu-avatar radius" style="margin-right: 5px; border-radius: 50%" :style="'background-image:url('+$store.state.img_url+friendPic+');'"></view>
@@ -893,6 +893,11 @@
 				type: String,
 				default: ''
 			},
+			isongoing: {
+				type: Boolean,
+				default: false
+			},
+
 			// ChatTypeId: {
 			// 	type: Number,
 			// 	default: 0
@@ -901,6 +906,7 @@
 		data() {
 			return {
 				videoCheck:"<video",
+				ongoing:true,
 				showVideo:false,
 				videoSrc:"",
 				scrollDetail:{},
@@ -965,6 +971,11 @@
 				showPickureDialog: false
 			};
 		},
+		beforeDestroy() {
+			this.showname = '';
+			this.entity = {};
+			this.ongoing = true
+		},
 		watch: {
 		  msgToId: function(newVal,oldVal){
 			this.toid = newVal;
@@ -977,9 +988,7 @@
 			this.$store.commit("setCur_chat_entity",null);
 			this.$store.commit("setCur_chat_msg_list",[]);
 		},
-		onHide() {
-			uni.$off("scrollTopFn");
-		},
+
 		mounted() {
 			 //this.domHeight = document.documentElement.clientHeight
 			uni.$on("showPicDialog",(rel)=>{
@@ -1145,7 +1154,6 @@
 				});
 
 				let s = uni.getStorageSync(this.toid+"_NOTE");
-				console.log('fuck', this.toid, s)
 				if(s&&s!="") {
 					this.showname = s;
 				}
@@ -1156,10 +1164,9 @@
 				this.$websocket.dispatch("WEBSOCKET_SEND", "{body:'"+JSON.stringify(v)+"',CMD:'CHAT_MSG_READED'}");
 			},
 			onLoadMethod (){
-			  console.log('77777')
 			  this.$store.commit("setCur_chat_msg_list",[]);
 			  this.$store.commit("setChat_my_loadding",false);
-
+			  this.ongoing = true
 			  // #ifndef H5
 			  //录音开始事件
 			  this.RECORDER.onStart((e)=>{
@@ -1229,6 +1236,8 @@
 				let statusCode = res_data ? res_data.code : 0;
 			  	if(statusCode==200) {
 			  		_this.entity = res_data.body;
+					console.log('getin?')
+					this.ongoing = false
 			  		_this.$store.commit("setCur_chat_entity",_this.entity);
 			  		//主要是为了让onshow检查是否已设置备注，如果已设置备注则不需要使用用户原昵称
 			  		setTimeout(function(){
