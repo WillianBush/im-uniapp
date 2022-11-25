@@ -1,5 +1,5 @@
 <template>
-	<view v-loading="ongoing" ref="topVew" v-if="$store.state.cur_chat_entity"   :style="chatCfg.chatBackgroundImage&&chatCfg.chatBackgroundImage!=''?'background-image: url('+$store.state.img_url+chatCfg.chatBackgroundImage+')':''" style="background-size: 100%;min-height: 100vh;" >
+	<view ref="topVew" v-if="$store.state.cur_chat_entity"   :style="chatCfg.chatBackgroundImage&&chatCfg.chatBackgroundImage!=''?'background-image: url('+$store.state.img_url+chatCfg.chatBackgroundImage+')':''" style="background-size: 100%;min-height: 100vh;" >
 		<cu-custom backUrl="/pages/index/index" bgColor="bg-blue"  :isBack="true" :nameToLeft="false">
 			<block slot="backText">
 				<view class="cu-avatar radius" style="margin-right: 5px; border-radius: 50%" :style="'background-image:url('+$store.state.img_url+friendPic+');'"></view>
@@ -949,10 +949,6 @@
 				type: String,
 				default: ''
 			},
-			isongoing: {
-				type: Boolean,
-				default: false
-			},
 			// ChatTypeId: {
 			// 	type: Number,
 			// 	default: 0
@@ -961,7 +957,6 @@
 		data() {
 			return {
 				videoCheck:"<video",
-				ongoing:true,
 				showVideo:false,
 				videoSrc:"",
 				scrollDetail:{},
@@ -1026,11 +1021,6 @@
 				viewId:"",
 			};
 		},
-		beforeDestroy() {
-			this.showname = '';
-			this.entity = {};
-			this.ongoing = true
-		},
 		watch: {
 		  msgToGroupId: function(newVal,oldVal){
 			console.log('watchGroupMsgToId')
@@ -1052,7 +1042,9 @@
 			this.$store.commit("setCur_chat_entity",{});
 			this.$store.commit("setCur_chat_msg_list",[]);
 		},
-
+		onHide() {
+			uni.$off("scrollTopFn");
+		},
 		// onShow() {
 		// 	this.onShowMethod();
 		// },
@@ -1129,6 +1121,7 @@
 					const targetEle = document.getElementById( 'testInputg' );
 					if (!targetEle) return;
 				    targetEle.addEventListener( 'paste', function( e ){
+				    	console.log("aaaaaabbbbccccc",e)
 				      var clipboardData = e.clipboardData,
 				          i = 0,
 				          items, item, types;
@@ -1201,7 +1194,6 @@
 			onLoadMethod () {
 				this.$store.commit("setCur_chat_msg_list",[]);
 				this.$store.commit("setChat_my_loadding",false);
-				this.ongoing = true
 				this.getWindowSize();
 				// #ifndef H5
 				//录音开始事件
@@ -1230,6 +1222,7 @@
 						_this.entity = res_data.body;
 						_this.friendPic = res_data.body.img;
 						_this.$store.commit("setCur_chat_entity",res_data.body);
+
 						if(!_this.checkStopSpeak()) {
 							_this.stopSpeak = 1;
 						} else {
@@ -1873,6 +1866,7 @@
 			},
 			goUserDetail(_id){
 				let _this = this;
+
 				_this.$http.post("/sysConfig/json/getRoomCfg",
 					{
 						header:{
@@ -1883,8 +1877,7 @@
 				).then(res=>{
 					let res_data = eval(res.data);
 					if(res_data.code==200) {
-						console.log('really?');
-						this.ongoing = false
+						console.log(_this.entity);
 						let flag = false;
 						//哪个角色可查看群成员详细 0全体 1仅群主 2群主和群管理员
 						if(res_data.body.lookGroupMemberDetailForRole==0) {
