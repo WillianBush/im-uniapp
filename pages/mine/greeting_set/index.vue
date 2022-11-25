@@ -1,14 +1,14 @@
 <template>
 	<view>
-		<cu-custom bgColor="bg-blue" :isBack="true" :nameToLeft="true">
-			<block slot="backText"></block>
-			<block slot="content">设置问候语</block>
-			<block slot="right">
-				<uni-text @tap="tijiao()" style="font-size: 22px;color: #fff;margin-right: 14px;font-size: 30upx;"
-					class="lg text-gray ">提交</uni-text>
-			</block>
-		</cu-custom>
-
+<!--		<cu-custom bgColor="bg-blue" :isBack="true" :nameToLeft="true">-->
+<!--			<block slot="backText"></block>-->
+<!--			<block slot="content">设置问候语</block>-->
+<!--			<block slot="right">-->
+<!--				<uni-text @tap="tijiao()" style="font-size: 22px;color: #fff;margin-right: 14px;font-size: 30upx;"-->
+<!--					class="lg text-gray ">提交</uni-text>-->
+<!--			</block>-->
+<!--		</cu-custom>-->
+		<headbar :title="'设置问候语'" :isback="true"></headbar>
 		<view style="margin-top:10px;" class="cu-list menu"
 			:class="[true?'sm-border':'',false?'card-menu margin-top':'']">
 
@@ -38,7 +38,7 @@
 					</view>
 				</view>
 			</view>
-			
+
 			<view class="cu-item cu-item1" :class="false?'arrow':''"
 				style="background: #fff;display: flex;height:160upx;margin-bottom:20upx;">
 				<view class="content">
@@ -51,7 +51,7 @@
 					</view>
 				</view>
 			</view>
-			
+
 			<view class="cu-item cu-item1" :class="false?'arrow':''"
 				style="background: #fff;display: flex;height:160upx;margin-bottom:20upx;">
 				<view class="content">
@@ -64,7 +64,7 @@
 					</view>
 				</view>
 			</view>
-			
+
 			<view class="cu-item cu-item1" :class="false?'arrow':''"
 				style="background: #fff;display: flex;height:160upx;margin-bottom:20upx;">
 				<view class="content">
@@ -77,30 +77,32 @@
 					</view>
 				</view>
 			</view>
-			
+
 			<view style="margin-top: 15px;">
 				<text style="margin-left: 15px;color: #666">问候语1</text>
 				<view class="cu-form-group" style="margin: auto auto; margin-top: 5px;">
 					<input maxlength="-1" v-model="txt_1" placeholder="问候语1" />
 				</view>
 			</view>
-			
+
 			<view style="margin-top: 15px;">
 				<text style="margin-left: 15px;color: #666">问候语2</text>
 				<view class="cu-form-group" style="margin: auto auto; margin-top: 5px;">
 					<input maxlength="-1" v-model="txt_2" placeholder="问候语2" />
 				</view>
 			</view>
-			
+
 			<view style="margin-top: 15px;">
 				<text style="margin-left: 15px;color: #666">问候语3</text>
 				<view class="cu-form-group" style="margin: auto auto; margin-top: 5px;">
 					<input maxlength="-1" v-model="txt_3" placeholder="问候语3" />
 				</view>
 			</view>
-			
+
 		</view>
-	</view>
+		<div style="margin:20px 0px;text-align: center">
+			<el-button type="primary" style="width:130px">提交修正</el-button>
+		</div>
 	</view>
 </template>
 
@@ -163,7 +165,7 @@
 					}
 				).then(res=>{
 					let res_data = eval(res.data);
-					if(res_data.code==200) {  
+					if(res_data.code==200) {
 						uni.showToast({
 						    icon: 'success',
 							position: 'bottom',
