@@ -313,7 +313,6 @@
 				:show-confirm-bar="true"
 				confirm-type="send"
 				@confirm="send"
-
 				@keydown.shift.enter="altOrShiftEnter"
 				@keydown.alt.enter="altOrShiftEnter"
 				@keyup.ctrl.enter="lineFeed()"

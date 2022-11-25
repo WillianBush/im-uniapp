@@ -351,7 +351,7 @@
 					style="height:30px !important;line-height:30px;width: 100%;"
 					  confirm-type="send"
 					  @confirm="send"
-					  confirm-hold="true"
+
 					  @keydown.shift.enter="altOrShiftEnter"
 					  @keydown.alt.enter="altOrShiftEnter"
 					  @focus="InputFocus"
