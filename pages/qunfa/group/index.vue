@@ -1,10 +1,10 @@
 <template>
-	<view ref="topVew" v-if="$store.state.cur_chat_entity"   :style="chatCfg.chatBackgroundImage&&chatCfg.chatBackgroundImage!=''?'background-image: url('+$store.state.img_url+chatCfg.chatBackgroundImage+')':''" style="background-size: 100%;min-height: 100vh;" > 
+	<view ref="topVew" v-if="$store.state.cur_chat_entity"   :style="chatCfg.chatBackgroundImage&&chatCfg.chatBackgroundImage!=''?'background-image: url('+$store.state.img_url+chatCfg.chatBackgroundImage+')':''" style="background-size: 100%;min-height: 100vh;" >
 		<view style="height: 45px;line-height: 45px;border-bottom: 1px solid #bdbaba; background: #eee;padding-left: 20px">
-			<text style="color:#009FE8;font-size:50upx; margin-right: 8px" class="iconfont icon-qunzhong"></text>	
+			<text style="color:#009FE8;font-size:50upx; margin-right: 8px" class="iconfont icon-qunzhong"></text>
 			群发所有好友
 		</view>
-		<scroll-view @scroll="scrollFn" :scroll-into-view="viewId" :scroll-top="scrollTop" scroll-y="true"    ref="chatVew" @tap="clickChat()"  class="cu-chat" style="background: #eee;" :style="'height: calc(100vh - '+CustomBar+'px - 60px - '+(120+InputBottom)+'upx)'" >	
+		<scroll-view @scroll="scrollFn" :scroll-into-view="viewId" :scroll-top="scrollTop" scroll-y="true"    ref="chatVew" @tap="clickChat()"  class="cu-chat" style="background: #eee;" :style="'height: calc(100vh - '+CustomBar+'px - 60px - '+(120+InputBottom)+'upx)'" >
 			<block  v-for="(item,index) in $store.state.cur_chat_msg_list">
 				<block v-if="item.opt&&item.opt=='undo'">
 					<!-- <view v-if="item.opt_uid==$store.state.user.id"  class="cu-info round">撤回一条消息</view>
@@ -68,16 +68,16 @@
 								</view>
 								<view class="date "> {{item.bean.date}}</view>
 							</view>
-							
-							
-				</block>	
+
+
+				</block>
 				<block v-else-if="item.type=='USER_RED'">
 							<view   v-if="item.bean.fromUid==$store.state.user.id" class="cu-item self" >
 								<view class="main">
 									<view :style="redOpened4My(item.bean)?'opacity: .6;':''" @tap="clickHongbao(item.bean)" style="background-color: #FF3A36;width:380upx;height:150upx;border-radius: 6px;">
 										<view style="float:left;height:150upx;">
 											<view style="float: left;margin-top: 40upx;margin-left: 20upx;">
-												<text   class="iconfont icon-lingquhongbao" style="font-size: 64upx; color: #FCBF00;"><span></span></text>	
+												<text   class="iconfont icon-lingquhongbao" style="font-size: 64upx; color: #FCBF00;"><span></span></text>
 											</view>
 											<view style="float:left;">
 												<view style="text-align: left; color: #f6f6f6; margin-top: 52upx; margin-left: 20upx;font-size: 28upx;
@@ -96,7 +96,7 @@
 									<view :style="redOpened4My(item.bean)?'opacity: .6;':''" @tap="clickHongbao(item.bean)" style="background-color: #FF3A36;width:380upx;height:150upx;border-radius: 6px;">
 										<view style="float:left;height:150upx;">
 											<view style="float: left;margin-top: 40upx;margin-left: 20upx;">
-												<text   class="iconfont icon-lingquhongbao" style="font-size: 64upx; color: #FCBF00;"><span></span></text>	
+												<text   class="iconfont icon-lingquhongbao" style="font-size: 64upx; color: #FCBF00;"><span></span></text>
 											</view>
 											<view style="float:left;">
 												<view style="text-align: left; color: #f6f6f6; margin-top: 52upx; margin-left: 20upx;font-size: 28upx;
@@ -107,9 +107,9 @@
 								</view>
 								<view class="date "> {{item.bean.date}}</view>
 							</view>
-							
-							
-				</block>	
+
+
+				</block>
 				<block v-else>
 					<!--视频在移动端的底层窗口渲染层级在最上层，但是H5不是，这里做了两套处理-->
 					<!--#ifdef H5-->
@@ -215,25 +215,25 @@
 					</view>
 					<!--#endif-->
 				</block>
-				
-				
+
+
 			</block>
-			
+
 			<view  class="cu-item self" v-show="$store.state.chat_my_loadding" >
 					<view class="main">
 						<view style="background-color: #F1F1F1;" class="cu-load load-cuIcon loading"></view>
 					</view>
 					<view class="cu-avatar radius" :style="'background-image:url('+$store.state.img_url+$store.state.user.headpic+');'"></view>
 			</view>
-			
+
 			<view v-show="$store.state.cur_chat_entity.stopSpeak&&$store.state.cur_chat_entity.stopSpeak==1" class="cu-info">
 				<text class="cuIcon-roundclosefill text-red " style="margin-right: 8upx;"></text> 全员禁言中
 			</view>
 		</scroll-view>
-		
-		
+
+
 		<view  v-if="$store.state.cur_chat_aiteToMyList.length>0" class="cu-info" :style="'bottom:'+(130+InputBottom)+'upx'" style="    position: absolute;
-		
+
 		right: 40upx;
 		background: #fff;
 		color: #09BB07;
@@ -243,22 +243,22 @@
 					<text @tap="clickAite(item)" v-for="item in $store.state.cur_chat_aiteToMyList">{{item.fromName}} </text> 提到了你
 					<text @tap.stop="clearAiteToMy" class="cuIcon-close text-red " style="margin-left: 16upx;"></text>
 		</view>
-		
+
 		<view class="cu-bar foot input" :style="[{bottom:InputBottom+'upx'}]" style="flex-direction: row;height:120px; width: calc(100% - 66px);left: 66px;background-color: #fff;">
 			<!-- #ifndef H5 -->
 			<view @tap="selType(2)" v-show="c_type==1"  class="action">
-				<text class="cuIcon-sound text-grey"></text> 
-			</view> 
+				<text class="cuIcon-sound text-grey"></text>
+			</view>
 			<view @tap="selType(1)" v-show="c_type==2"   class="action">
-				<text class="cuIcon-keyboard text-grey"></text> 
+				<text class="cuIcon-keyboard text-grey"></text>
 			</view>
 			<!-- #endif -->
-			
-			
+
+
 
 			<!-- @focus="InputFocus" @blur="InputBlur"-->
 			<input @keydown.enter="send" style="background: #eee!important;" disabled="true" placeholder="禁言" placeholder-style="text-align:center;background: #eee;" v-show="stopSpeak==1"  class="solid-bottom" :adjust-position="true" :focus="false" maxlength="300" cursor-spacing="10"
-			></input> 
+			></input>
 			<textarea style="height:30px !important;line-height:30px;width: 100%;"
 					  confirm-type="send"
 					  @confirm="send"
@@ -279,10 +279,10 @@
 				<text  class="cuIcon-emojifill text-grey" style="position: absolute;top: 0;left: 0px"></text>
 			</view>
 			<button  style="min-width: 50px;padding:0px!important" v-show="!showjia" @tap.stop="send()" class="cu-btn bg-green shadow">群发</button>
-			
+
 		</view>
-		
-		
+
+
 		<view v-show="showItem==1" class="cu-bar foot " style="box-shadow: none;-webkit-box-shadow: none;display: block;background: #fff;height:330upx;margin-bottom:80upx;width: calc(80% - 54px);left: calc(20% + 54px);">
 			<scroll-view scroll-y class="indexes" style="height:330upx;padding-bottom:20upx;padding-top: 10upx;"
 			 :scroll-with-animation="true" :enable-back-to-top="true">
@@ -306,7 +306,7 @@
 		<view @tap="sendEmotion(0,13)" style="flex:1;text-align: center;"><image lazy-load src="../../../static/emotion/face00/13.gif" style="width:50upx;height:50upx;margin-top: 10upx;;"></image></view>
 		<view @tap="sendEmotion(0,14)" style="flex:1;text-align: center;"><image lazy-load src="../../../static/emotion/face00/14.gif" style="width:50upx;height:50upx;margin-top: 10upx;;"></image></view>
 		<view @tap="sendEmotion(0,15)" style="flex:1;text-align: center;"><image lazy-load src="../../../static/emotion/face00/15.gif" style="width:50upx;height:50upx;margin-top: 10upx;;"></image></view>
-		
+
 	</view>
 	<view style="display: flex;">
 		<view @tap="sendEmotion(0,16)" style="flex:1;text-align: center;"><image lazy-load src="../../../static/emotion/face00/16.gif" style="width:50upx;height:50upx;margin-top: 10upx;;"></image></view>
@@ -317,7 +317,7 @@
 		<view @tap="sendEmotion(0,21)" style="flex:1;text-align: center;"><image lazy-load src="../../../static/emotion/face00/21.gif" style="width:50upx;height:50upx;margin-top: 10upx;;"></image></view>
 		<view @tap="sendEmotion(0,22)" style="flex:1;text-align: center;"><image lazy-load src="../../../static/emotion/face00/22.gif" style="width:50upx;height:50upx;margin-top: 10upx;;"></image></view>
 		<view @tap="sendEmotion(0,23)" style="flex:1;text-align: center;"><image lazy-load src="../../../static/emotion/face00/23.gif" style="width:50upx;height:50upx;margin-top: 10upx;;"></image></view>
-		
+
 	</view>
 	<view style="display: flex;">
 		<view @tap="sendEmotion(0,24)" style="flex:1;text-align: center;"><image lazy-load src="../../../static/emotion/face00/24.gif" style="width:50upx;height:50upx;margin-top: 10upx;;"></image></view>
@@ -338,7 +338,7 @@
 		<view @tap="sendEmotion(0,37)" style="flex:1;text-align: center;"><image lazy-load src="../../../static/emotion/face00/37.gif" style="width:50upx;height:50upx;margin-top: 10upx;;"></image></view>
 		<view @tap="sendEmotion(0,38)" style="flex:1;text-align: center;"><image lazy-load src="../../../static/emotion/face00/38.gif" style="width:50upx;height:50upx;margin-top: 10upx;;"></image></view>
 		<view @tap="sendEmotion(0,39)" style="flex:1;text-align: center;"><image lazy-load src="../../../static/emotion/face00/39.gif" style="width:50upx;height:50upx;margin-top: 10upx;;"></image></view>
-	</view>	
+	</view>
 	<view style="display: flex;">
 		<view @tap="sendEmotion(0,40)" style="flex:1;text-align: center;"><image lazy-load src="../../../static/emotion/face00/40.gif" style="width:50upx;height:50upx;margin-top: 10upx;;"></image></view>
 		<view @tap="sendEmotion(0,41)" style="flex:1;text-align: center;"><image lazy-load src="../../../static/emotion/face00/41.gif" style="width:50upx;height:50upx;margin-top: 10upx;;"></image></view>
@@ -348,7 +348,7 @@
 		<view @tap="sendEmotion(0,45)" style="flex:1;text-align: center;"><image lazy-load src="../../../static/emotion/face00/45.gif" style="width:50upx;height:50upx;margin-top: 10upx;;"></image></view>
 		<view @tap="sendEmotion(0,46)" style="flex:1;text-align: center;"><image lazy-load src="../../../static/emotion/face00/46.gif" style="width:50upx;height:50upx;margin-top: 10upx;;"></image></view>
 		<view @tap="sendEmotion(0,47)" style="flex:1;text-align: center;"><image lazy-load src="../../../static/emotion/face00/47.gif" style="width:50upx;height:50upx;margin-top: 10upx;;"></image></view>
-	</view>	
+	</view>
 	<view style="display: flex;">
 		<view @tap="sendEmotion(0,48)" style="flex:1;text-align: center;"><image lazy-load src="../../../static/emotion/face00/48.gif" style="width:50upx;height:50upx;margin-top: 10upx;;"></image></view>
 		<view @tap="sendEmotion(0,49)" style="flex:1;text-align: center;"><image lazy-load src="../../../static/emotion/face00/49.gif" style="width:50upx;height:50upx;margin-top: 10upx;;"></image></view>
@@ -451,7 +451,7 @@
 		<view @tap="sendEmotion(1,13)" style="flex:1;text-align: center;"><image lazy-load src="../../../static/emotion/face01/13.png" style="width:50upx;height:50upx;margin-top: 10upx;;"></image></view>
 		<view @tap="sendEmotion(1,14)" style="flex:1;text-align: center;"><image lazy-load src="../../../static/emotion/face01/14.png" style="width:50upx;height:50upx;margin-top: 10upx;;"></image></view>
 		<view @tap="sendEmotion(1,15)" style="flex:1;text-align: center;"><image lazy-load src="../../../static/emotion/face01/15.png" style="width:50upx;height:50upx;margin-top: 10upx;;"></image></view>
-		
+
 	</view>
 	<view style="display: flex;">
 		<view @tap="sendEmotion(1,16)" style="flex:1;text-align: center;"><image lazy-load src="../../../static/emotion/face01/16.png" style="width:50upx;height:50upx;margin-top: 10upx;;"></image></view>
@@ -462,7 +462,7 @@
 		<view @tap="sendEmotion(1,21)" style="flex:1;text-align: center;"><image lazy-load src="../../../static/emotion/face01/21.png" style="width:50upx;height:50upx;margin-top: 10upx;;"></image></view>
 		<view @tap="sendEmotion(1,22)" style="flex:1;text-align: center;"><image lazy-load src="../../../static/emotion/face01/22.png" style="width:50upx;height:50upx;margin-top: 10upx;;"></image></view>
 		<view @tap="sendEmotion(1,23)" style="flex:1;text-align: center;"><image lazy-load src="../../../static/emotion/face01/23.png" style="width:50upx;height:50upx;margin-top: 10upx;;"></image></view>
-		
+
 	</view>
 	<view style="display: flex;">
 		<view @tap="sendEmotion(1,24)" style="flex:1;text-align: center;"><image lazy-load src="../../../static/emotion/face01/24.png" style="width:50upx;height:50upx;margin-top: 10upx;;"></image></view>
@@ -483,7 +483,7 @@
 		<view @tap="sendEmotion(1,37)" style="flex:1;text-align: center;"><image lazy-load src="../../../static/emotion/face01/37.png" style="width:50upx;height:50upx;margin-top: 10upx;;"></image></view>
 		<view @tap="sendEmotion(1,38)" style="flex:1;text-align: center;"><image lazy-load src="../../../static/emotion/face01/38.png" style="width:50upx;height:50upx;margin-top: 10upx;;"></image></view>
 		<view @tap="sendEmotion(1,39)" style="flex:1;text-align: center;"><image lazy-load src="../../../static/emotion/face01/39.png" style="width:50upx;height:50upx;margin-top: 10upx;;"></image></view>
-	</view>	
+	</view>
 	<view style="display: flex;">
 		<view @tap="sendEmotion(1,40)" style="flex:1;text-align: center;"><image lazy-load src="../../../static/emotion/face01/40.png" style="width:50upx;height:50upx;margin-top: 10upx;;"></image></view>
 		<view @tap="sendEmotion(1,41)" style="flex:1;text-align: center;"><image lazy-load src="../../../static/emotion/face01/41.png" style="width:50upx;height:50upx;margin-top: 10upx;;"></image></view>
@@ -493,7 +493,7 @@
 		<view @tap="sendEmotion(1,45)" style="flex:1;text-align: center;"><image lazy-load src="../../../static/emotion/face01/45.png" style="width:50upx;height:50upx;margin-top: 10upx;;"></image></view>
 		<view @tap="sendEmotion(1,46)" style="flex:1;text-align: center;"><image lazy-load src="../../../static/emotion/face01/46.png" style="width:50upx;height:50upx;margin-top: 10upx;;"></image></view>
 		<view @tap="sendEmotion(1,47)" style="flex:1;text-align: center;"><image lazy-load src="../../../static/emotion/face01/47.png" style="width:50upx;height:50upx;margin-top: 10upx;;"></image></view>
-	</view>	
+	</view>
 	<view style="display: flex;">
 		<view @tap="sendEmotion(1,48)" style="flex:1;text-align: center;"><image lazy-load src="../../../static/emotion/face01/48.png" style="width:50upx;height:50upx;margin-top: 10upx;;"></image></view>
 		<view @tap="sendEmotion(1,49)" style="flex:1;text-align: center;"><image lazy-load src="../../../static/emotion/face01/49.png" style="width:50upx;height:50upx;margin-top: 10upx;;"></image></view>
@@ -575,8 +575,8 @@
 		<view  style="flex:1;text-align: center;"></view>
 	</view>
 </view>
-			
-			
+
+
 			<view v-if="emotion==3">
 				<view style="display: flex;">
 					<view @tap="sendEmotion(2,0)" style="flex:1;text-align: center;"><image lazy-load src="../../../static/emotion/face02/0.gif" style="width:80upx;height:80upx;margin-top: 10upx;;"></image></view>
@@ -584,7 +584,7 @@
 					<view @tap="sendEmotion(2,2)" style="flex:1;text-align: center;"><image lazy-load src="../../../static/emotion/face02/2.gif" style="width:80upx;height:80upx;margin-top: 10upx;;"></image></view>
 					<view @tap="sendEmotion(2,3)" style="flex:1;text-align: center;"><image lazy-load src="../../../static/emotion/face02/3.gif" style="width:80upx;height:80upx;margin-top: 10upx;;"></image></view>
 					<view @tap="sendEmotion(2,4)" style="flex:1;text-align: center;"><image lazy-load src="../../../static/emotion/face02/4.gif" style="width:80upx;height:80upx;margin-top: 10upx;;"></image></view>
-					
+
 				</view>
 				<view style="display: flex;">
 					<view @tap="sendEmotion(2,5)" style="flex:1;text-align: center;"><image lazy-load src="../../../static/emotion/face02/5.gif" style="width:80upx;height:80upx;margin-top: 10upx;;"></image></view>
@@ -599,16 +599,16 @@
 					<view @tap="sendEmotion(2,12)" style="flex:1;text-align: center;"><image lazy-load src="../../../static/emotion/face02/12.gif" style="width:80upx;height:80upx;margin-top: 10upx;;"></image></view>
 					<view @tap="sendEmotion(2,13)" style="flex:1;text-align: center;"><image lazy-load src="../../../static/emotion/face02/13.gif" style="width:80upx;height:80upx;margin-top: 10upx;;"></image></view>
 					<view @tap="sendEmotion(2,14)" style="flex:1;text-align: center;"><image lazy-load src="../../../static/emotion/face02/14.gif" style="width:80upx;height:80upx;margin-top: 10upx;;"></image></view>
-				</view>	
+				</view>
 				<view style="display: flex;">
 					<view @tap="sendEmotion(2,15)" style="flex:1;text-align: center;"><image lazy-load src="../../../static/emotion/face02/15.gif" style="width:80upx;height:80upx;margin-top: 10upx;;"></image></view>
 					<view  style="flex:1;text-align: center;"></view>
 					<view  style="flex:1;text-align: center;"></view>
 					<view  style="flex:1;text-align: center;"></view>
 					<view  style="flex:1;text-align: center;"></view>
-				</view>	
+				</view>
 			</view>
-			
+
 			<view v-if="emotion==4">
 				<view style="display: flex;">
 					<view @tap="sendEmotion(3,0)" style="flex:1;text-align: center;"><image lazy-load src="../../../static/emotion/face03/0.gif" style="width:80upx;height:80upx;margin-top: 10upx;;"></image></view>
@@ -616,7 +616,7 @@
 					<view @tap="sendEmotion(3,2)" style="flex:1;text-align: center;"><image lazy-load src="../../../static/emotion/face03/2.gif" style="width:80upx;height:80upx;margin-top: 10upx;;"></image></view>
 					<view @tap="sendEmotion(3,3)" style="flex:1;text-align: center;"><image lazy-load src="../../../static/emotion/face03/3.gif" style="width:80upx;height:80upx;margin-top: 10upx;;"></image></view>
 					<view @tap="sendEmotion(3,4)" style="flex:1;text-align: center;"><image lazy-load src="../../../static/emotion/face03/4.gif" style="width:80upx;height:80upx;margin-top: 10upx;;"></image></view>
-					
+
 				</view>
 				<view style="display: flex;">
 					<view @tap="sendEmotion(3,5)" style="flex:1;text-align: center;"><image lazy-load src="../../../static/emotion/face03/5.gif" style="width:80upx;height:80upx;margin-top: 10upx;;"></image></view>
@@ -631,14 +631,14 @@
 					<view @tap="sendEmotion(3,12)" style="flex:1;text-align: center;"><image lazy-load src="../../../static/emotion/face03/12.gif" style="width:80upx;height:80upx;margin-top: 10upx;;"></image></view>
 					<view @tap="sendEmotion(3,13)" style="flex:1;text-align: center;"><image lazy-load src="../../../static/emotion/face03/13.gif" style="width:80upx;height:80upx;margin-top: 10upx;;"></image></view>
 					<view @tap="sendEmotion(3,14)" style="flex:1;text-align: center;"><image lazy-load src="../../../static/emotion/face03/14.gif" style="width:80upx;height:80upx;margin-top: 10upx;;"></image></view>
-				</view>	
+				</view>
 				<view style="display: flex;">
 					<view @tap="sendEmotion(3,15)" style="flex:1;text-align: center;"><image lazy-load src="../../../static/emotion/face03/15.gif" style="width:80upx;height:80upx;margin-top: 10upx;;"></image></view>
 					<view  style="flex:1;text-align: center;"></view>
 					<view  style="flex:1;text-align: center;"></view>
 					<view  style="flex:1;text-align: center;"></view>
 					<view  style="flex:1;text-align: center;"></view>
-				</view>	
+				</view>
 			</view>
 
 
@@ -649,7 +649,7 @@
 					<view @tap="sendEmotion(4,2)" style="flex:1;text-align: center;"><image lazy-load src="../../../static/emotion/face04/2.gif" style="width:80upx;height:80upx;margin-top: 10upx;;"></image></view>
 					<view @tap="sendEmotion(4,3)" style="flex:1;text-align: center;"><image lazy-load src="../../../static/emotion/face04/3.gif" style="width:80upx;height:80upx;margin-top: 10upx;;"></image></view>
 					<view @tap="sendEmotion(4,4)" style="flex:1;text-align: center;"><image lazy-load src="../../../static/emotion/face04/4.gif" style="width:80upx;height:80upx;margin-top: 10upx;;"></image></view>
-					
+
 				</view>
 				<view style="display: flex;">
 					<view @tap="sendEmotion(4,5)" style="flex:1;text-align: center;"><image lazy-load src="../../../static/emotion/face04/5.gif" style="width:80upx;height:80upx;margin-top: 10upx;;"></image></view>
@@ -664,14 +664,14 @@
 					<view @tap="sendEmotion(4,12)" style="flex:1;text-align: center;"><image lazy-load src="../../../static/emotion/face04/12.gif" style="width:80upx;height:80upx;margin-top: 10upx;;"></image></view>
 					<view @tap="sendEmotion(4,13)" style="flex:1;text-align: center;"><image lazy-load src="../../../static/emotion/face04/13.gif" style="width:80upx;height:80upx;margin-top: 10upx;;"></image></view>
 					<view @tap="sendEmotion(4,14)" style="flex:1;text-align: center;"><image lazy-load src="../../../static/emotion/face04/14.gif" style="width:80upx;height:80upx;margin-top: 10upx;;"></image></view>
-				</view>	
+				</view>
 				<view style="display: flex;">
 					<view @tap="sendEmotion(4,15)" style="flex:1;text-align: center;"><image lazy-load src="../../../static/emotion/face04/15.gif" style="width:80upx;height:80upx;margin-top: 10upx;;"></image></view>
 					<view  style="flex:1;text-align: center;"></view>
 					<view  style="flex:1;text-align: center;"></view>
 					<view  style="flex:1;text-align: center;"></view>
 					<view  style="flex:1;text-align: center;"></view>
-				</view>	
+				</view>
 			</view>
 
 			<view v-if="emotion==6">
@@ -681,7 +681,7 @@
 					<view @tap="sendEmotion(5,2)" style="flex:1;text-align: center;"><image lazy-load src="../../../static/emotion/face05/2.gif" style="width:80upx;height:80upx;margin-top: 10upx;;"></image></view>
 					<view @tap="sendEmotion(5,3)" style="flex:1;text-align: center;"><image lazy-load src="../../../static/emotion/face05/3.gif" style="width:80upx;height:80upx;margin-top: 10upx;;"></image></view>
 					<view @tap="sendEmotion(5,4)" style="flex:1;text-align: center;"><image lazy-load src="../../../static/emotion/face05/4.gif" style="width:80upx;height:80upx;margin-top: 10upx;;"></image></view>
-					
+
 				</view>
 				<view style="display: flex;">
 					<view @tap="sendEmotion(5,5)" style="flex:1;text-align: center;"><image lazy-load src="../../../static/emotion/face05/5.gif" style="width:80upx;height:80upx;margin-top: 10upx;;"></image></view>
@@ -696,18 +696,18 @@
 					<view @tap="sendEmotion(5,12)" style="flex:1;text-align: center;"><image lazy-load src="../../../static/emotion/face05/12.gif" style="width:80upx;height:80upx;margin-top: 10upx;;"></image></view>
 					<view @tap="sendEmotion(5,13)" style="flex:1;text-align: center;"><image lazy-load src="../../../static/emotion/face05/13.gif" style="width:80upx;height:80upx;margin-top: 10upx;;"></image></view>
 					<view @tap="sendEmotion(5,14)" style="flex:1;text-align: center;"><image lazy-load src="../../../static/emotion/face05/14.gif" style="width:80upx;height:80upx;margin-top: 10upx;;"></image></view>
-				</view>	
+				</view>
 				<view style="display: flex;">
 					<view @tap="sendEmotion(5,15)" style="flex:1;text-align: center;"><image lazy-load src="../../../static/emotion/face05/15.gif" style="width:80upx;height:80upx;margin-top: 10upx;;"></image></view>
 					<view  style="flex:1;text-align: center;"></view>
 					<view  style="flex:1;text-align: center;"></view>
 					<view  style="flex:1;text-align: center;"></view>
 					<view  style="flex:1;text-align: center;"></view>
-				</view>	
+				</view>
 			</view>
-			
-			
-			
+
+
+
 			<view v-if="emotion==7">
 				<view style="display: flex;">
 					<view @tap="sendEmotion(6,0)" style="flex:1;text-align: center;"><image lazy-load src="../../../static/emotion/face06/0.gif" style="width:80upx;height:80upx;margin-top: 10upx;;"></image></view>
@@ -715,7 +715,7 @@
 					<view @tap="sendEmotion(6,2)" style="flex:1;text-align: center;"><image lazy-load src="../../../static/emotion/face06/2.gif" style="width:80upx;height:80upx;margin-top: 10upx;;"></image></view>
 					<view @tap="sendEmotion(6,3)" style="flex:1;text-align: center;"><image lazy-load src="../../../static/emotion/face06/3.gif" style="width:80upx;height:80upx;margin-top: 10upx;;"></image></view>
 					<view @tap="sendEmotion(6,4)" style="flex:1;text-align: center;"><image lazy-load src="../../../static/emotion/face06/4.gif" style="width:80upx;height:80upx;margin-top: 10upx;;"></image></view>
-					
+
 				</view>
 				<view style="display: flex;">
 					<view @tap="sendEmotion(6,5)" style="flex:1;text-align: center;"><image lazy-load src="../../../static/emotion/face06/5.gif" style="width:80upx;height:80upx;margin-top: 10upx;;"></image></view>
@@ -730,16 +730,16 @@
 					<view @tap="sendEmotion(6,12)" style="flex:1;text-align: center;"><image lazy-load src="../../../static/emotion/face06/12.gif" style="width:80upx;height:80upx;margin-top: 10upx;;"></image></view>
 					<view @tap="sendEmotion(6,13)" style="flex:1;text-align: center;"><image lazy-load src="../../../static/emotion/face06/13.gif" style="width:80upx;height:80upx;margin-top: 10upx;;"></image></view>
 					<view @tap="sendEmotion(6,14)" style="flex:1;text-align: center;"><image lazy-load src="../../../static/emotion/face06/14.gif" style="width:80upx;height:80upx;margin-top: 10upx;;"></image></view>
-				</view>	
+				</view>
 				<view style="display: flex;">
 					<view @tap="sendEmotion(6,15)" style="flex:1;text-align: center;"><image lazy-load src="../../../static/emotion/face06/15.gif" style="width:80upx;height:80upx;margin-top: 10upx;;"></image></view>
 					<view  style="flex:1;text-align: center;"></view>
 					<view  style="flex:1;text-align: center;"></view>
 					<view  style="flex:1;text-align: center;"></view>
 					<view  style="flex:1;text-align: center;"></view>
-				</view>	
+				</view>
 			</view>
-			
+
 			</scroll-view>
 			<view style="width:100%;height:80upx;background: #f6f6f6;border-top:1px solid #eee;bottom:0;position: fixed;display: flex;">
 				<view @tap="showEmotion(1)" :style="emotion==1?'background: #fff;':''" style="flex:1;height:100%;text-align: center;">
@@ -765,8 +765,8 @@
 				</view>
 			</view>
 		</view>
-		
-		
+
+
 		<view v-show="showItem==2" class="cu-bar foot " style="box-shadow: none;-webkit-box-shadow: none;display: block;background: #fff;height:410upx;width: calc(80% - 54px);left: calc(20% + 54px);">
 				<scroll-view scroll-y class="indexes" style="height:410upx;padding-bottom:20upx;padding-top: 10upx;"
 				 :scroll-with-animation="true" :enable-back-to-top="true">
@@ -819,7 +819,7 @@
 						<!--						</view>-->
 					</view>
 				</scroll-view>
-		</view>		
+		</view>
 
 	<view @longpress="hidePop" class="shade" v-show="showShade" @tap="hidePop">
 			<view style="text-align: center;" class="pop" :style="popStyle" :class="{'show':showPop}">
@@ -827,15 +827,15 @@
 				<text v-if="item!='管理撤消'" style="font-size:34upx;margin-right:16upx;" class="iconfont" :class="getPopButton(item)"></text>
 				{{item}}</view>
 			</view>
-	</view>	
-		
+	</view>
+
 		<openRed @hide="hideOpenRed" @openRedDetail="openRedDetail" v-show="showOpenRed" ></openRed>
 		<video direction="0" @fullscreenchange="videoChangeFC" id="video_play"  loop="false" autoplay="true"  page-gesture="true" controls="false"  v-show="showVideo"  style="position: absolute;z-index: 99999999999999999999;top: 50%;
 					left: 50%;
 					width: 100%;
 					transform: translate(-50%,-50%);
-					text-align: center;"     :src="$store.state.img_url+videoSrc"></video> 
- 
+					text-align: center;"     :src="$store.state.img_url+videoSrc"></video>
+
 	</view>
 </template>
 
@@ -891,7 +891,7 @@
 					mitemHeight: 0
 				},
 				sendCount:0,//这里为了。第一次发送需要延迟拉下拉
-				
+
 				RECORDER:uni.getRecorderManager(),
 				AUDIO:uni.createInnerAudioContext(),
 				recordTimer:null,
@@ -946,28 +946,26 @@
 		 //  },
 		},
 		onBackPress() {
-			this.$store.commit("setCur_chat_entity",{}); 
-			this.$store.commit("setCur_chat_msg_list",[]); 
+			this.$store.commit("setCur_chat_entity",{});
+			this.$store.commit("setCur_chat_msg_list",[]);
 		},
-		onHide() {
-			uni.$off("scrollTopFn");
-		},
+
 		// onShow() {
 		// 	this.onShowMethod();
 		// },
 		// onLoad() {
 		// 	this.onLoadMethod();
 		// },
-			
+
 		computed:{
-			
+
 		},
 		mounted() {
 			// this.domHeight = document.documentElement.clientHeight
-			
+
 		},
-		
-		methods: { 
+
+		methods: {
 			onShowMethod() {
 				let _this = this;
 				uni.$off("aiteFn");
@@ -986,8 +984,8 @@
 						},500)
 						//#endif
 					}
-				});  
-				
+				});
+
 				uni.$on("aiteFn",(item)=>{
 					let _this = this;
 					setTimeout(()=>{
@@ -999,7 +997,7 @@
 							this.txt = this.txt + item.nickName+" ";
 							_this.aite_map.set("@"+item.nickName,item.id);
 						}
-						
+
 						setTimeout(()=>{
 							_this.input_focus = true;
 							if(_this.txt.trim()=="") {
@@ -1008,12 +1006,12 @@
 								_this.showjia = false;
 							}
 						},200)
-					},200);	
+					},200);
 				});
 			},
 			onLoadMethod () {
 				this.$store.commit("setCur_chat_msg_list",[]);
-				this.$store.commit("setChat_my_loadding",false); 
+				this.$store.commit("setChat_my_loadding",false);
 				this.getWindowSize();
 				// #ifndef H5
 				//录音开始事件
@@ -1025,7 +1023,7 @@
 					this.recordEnd(e);
 				})
 				// #endif
-				
+
 				let _this = this;
 				let user = uni.getStorageSync("USER");
 				_this.$http.post("/room/json/load/v1",
@@ -1038,15 +1036,15 @@
 					}
 				).then(res=>{
 					let res_data = eval(res.data);
-					if(res_data.code==200) {  
+					if(res_data.code==200) {
 						_this.entity = res_data.body;
 						_this.friendPic = res_data.body.img;
-						_this.$store.commit("setCur_chat_entity",res_data.body); 
-						
+						_this.$store.commit("setCur_chat_entity",res_data.body);
+
 						if(!_this.checkStopSpeak()) {
 							_this.stopSpeak = 1;
 						} else {
-							
+
 							_this.$http.post("/room/json/isStopSpeak4User",
 								{roomid:_this.toid,uid:_this.$store.state.user.id},
 								{
@@ -1057,14 +1055,14 @@
 								}
 							).then(res=>{
 								let res_data = eval(res.data);
-								if(res_data.code==200) {  
+								if(res_data.code==200) {
 									if(res_data.msg=="1") {
 										_this.stopSpeak = 1;
-									} 
+									}
 								}
 							})
 						}
-					} else {  
+					} else {
 						uni.showModal({
 						    title: '信息提示',
 						    content: res_data.msg,
@@ -1077,7 +1075,7 @@
 						        }
 						    }
 						});
-						return; 
+						return;
 					}
 					let unRead = uni.getStorageSync(user.id+"#"+_this.toid+'_CHAT_MESSAGE_UNREAD');
 					if(unRead&&unRead!="") {
@@ -1085,7 +1083,7 @@
 						_this.$store.commit("setUnReadMsgSum",_this.$store.state.setUnReadMsgSum - parseInt(unRead))
 					}
 				})
-				
+
 				// uni.request({
 				// 	method:"POST",
 				// 	url: _this.$store.state.req_url + "/room/json/load/v1",
@@ -1096,10 +1094,10 @@
 				// 	},
 				// 	success(res) {
 				// 		let res_data = eval(res.data);
-				// 		if(res_data.code==200) {  
+				// 		if(res_data.code==200) {
 				// 			_this.entity = res_data.body;
-				// 			_this.$store.commit("setCur_chat_entity",res_data.body); 
-							
+				// 			_this.$store.commit("setCur_chat_entity",res_data.body);
+
 				// 			if(!_this.checkStopSpeak()) {
 				// 				_this.stopSpeak = 1;
 				// 				console.log("---------->2");
@@ -1114,35 +1112,35 @@
 				// 					},
 				// 					success(res) {
 				// 						let res_data = eval(res.data);
-				// 						if(res_data.code==200) {  
+				// 						if(res_data.code==200) {
 				// 							if(res_data.msg=="1") {
 				// 								_this.stopSpeak = 1;
-				// 							} 
+				// 							}
 				// 						}
 				// 					}
 				// 				})
 				// 			}
-							
+
 				// 		}
 				// 		let unRead = uni.getStorageSync(user.id+"#"+_this.toid+'_CHAT_MESSAGE_UNREAD');
 				// 		if(unRead&&unRead!="") {
 				// 			uni.removeStorageSync(user.id+"#"+_this.toid+'_CHAT_MESSAGE_UNREAD');
 				// 			_this.$store.commit("setUnReadMsgSum",_this.$store.state.setUnReadMsgSum - parseInt(unRead))
 				// 		}
-						
-						
+
+
 				// 	}
 				// })
-				
-				
-				
-				
-				
-				
+
+
+
+
+
+
 				if(this.$store.state.chatMessageMap.has(user.id+"#"+this.toid)) {
 					let msg_list = this.$store.state.chatMessageMap.get(user.id+"#"+this.toid);
 					if(msg_list&&msg_list.length>0) {
-						this.$store.commit("setCur_chat_msg_list",msg_list); 
+						this.$store.commit("setCur_chat_msg_list",msg_list);
 					}
 				} else {
 					let str = uni.getStorageSync(user.id+"#"+this.toid+'_CHAT_MESSAGE');
@@ -1161,10 +1159,10 @@
 						//this.tongbuMsg_1stInNoData();
 					}
 				}
-				
+
 				try {
-					
-					
+
+
 					let str = uni.getStorageSync(this.toid+'#AITE_LIST');
 					if(str&&str!="") {
 						let list = JSON.parse(str);
@@ -1173,13 +1171,13 @@
 							if(s.indexOf(item.fromuid)<0) {
 								s+=(item.fromuid+"#");
 								return true;
-							} 
+							}
 							return false;
 						});
 						//this.aiteToMyList = list;
-						_this.$store.commit("setCur_chat_aiteToMyList",list); 
+						_this.$store.commit("setCur_chat_aiteToMyList",list);
 					}
-					
+
 					_this.$store.state.ar_list.forEach(item=>{
 						if(item.id==_this.toid) {
 							item.aiteCount=0;
@@ -1189,10 +1187,10 @@
 						}
 					})
 				} catch(e) {}
-				
+
 				// list.splice(0,0,res_data.body);
-				// _this.$store.commit("setAr_list",list); 
-				
+				// _this.$store.commit("setAr_list",list);
+
 				// _this.$http.post("/user/accessRecord/json/saveOrUpdate",
 				// 	{type:1,eid:this.toid},
 				// 	{
@@ -1203,8 +1201,8 @@
 				// 	}
 				// ).then(res=>{
 				// 	let res_data = eval(res.data);
-				// 	if(res_data.code==200) {  
-						
+				// 	if(res_data.code==200) {
+
 				// 	} else {
 				// 		uni.showModal({
 				// 		    title: '信息提示',
@@ -1220,9 +1218,9 @@
 				// 		});
 				// 	}
 				// })
-				
-				
-				
+
+
+
 				// uni.request({
 				// 	method:"POST",
 				// 	url: _this.$store.state.req_url + "/user/accessRecord/json/saveOrUpdate",
@@ -1233,15 +1231,15 @@
 				// 	},
 				// 	success(res) {
 				// 		let res_data = eval(res.data);
-				// 		if(res_data.code==200) {  
+				// 		if(res_data.code==200) {
 				// 			//更新消息列表
-							
+
 				// 			// let list = _this.$store.state.ar_list.filter(item=>{
 				// 			// 	if(item.id==res_data.body.id) return false;
 				// 			// })
 				// 			// list.splice(0,0,res_data.body);
-				// 			// _this.$store.commit("setAr_list",list); 
-							
+				// 			// _this.$store.commit("setAr_list",list);
+
 				// 		} else {
 				// 			uni.showModal({
 				// 			    title: '信息提示',
@@ -1255,8 +1253,8 @@
 				// 			        }
 				// 			    }
 				// 			});
-							
-							
+
+
 				// 			// uni.showToast({
 				// 			//     icon: 'none',
 				// 			// 	position: 'bottom',
@@ -1265,7 +1263,7 @@
 				// 		}
 				// 	}
 				// })
-				
+
 				// this.$store.state.ar_list.forEach(item=>{
 				// 	if(item.id==option.toid) {
 				// 		_this.entity = item;
@@ -1281,17 +1279,17 @@
 					}
 				).then(res=>{
 					let res_data = eval(res.data);
-					if(res_data.code==200) {  
+					if(res_data.code==200) {
 						_this.chatCfg = res_data.body;
 					}
-				})			
+				})
 				this.scrollToBottom();
 			},
 			// checkSendOk(_item) {
 			// 	let WAIT_SEND_MSG = uni.getStorageSync("WAIT_SEND_MSG");
 			// 	if(WAIT_SEND_MSG&&WAIT_SEND_MSG!=""&&WAIT_SEND_MSG.indexOf(_item.uuid)>=0) {
 			// 		return false;
-			// 	}	
+			// 	}
 			// 	return true;
 			// },
 			scrollFn(e) {
@@ -1300,7 +1298,7 @@
 			},
 			tongbuMsg_1stInNoData(){
 				let _this = this;
-				uni.showLoading() 
+				uni.showLoading()
 				_this.$http.post("/chat_msg/syncMsgData",
 					{
 						chatid:_this.toid
@@ -1313,29 +1311,29 @@
 					}
 				).then(res=>{
 					let res_data = eval(res.data);
-					if(res_data.code==201) {  
+					if(res_data.code==201) {
 						//没缓存数据，把加载取消
 						setTimeout(()=>{
 							uni.hideLoading();
 						},400);
-					} else if(res_data.code==200) {  
+					} else if(res_data.code==200) {
 						setTimeout(()=>{
 							uni.hideLoading();
-						},400);	
-						
-					}	
+						},400);
+
+					}
 				})
 			},
 			tongbuMsg(){
 				let _this = this;
-				
+
 				_this.$store.state.chatMessageMap.delete(_this.$store.state.user.id+"#"+_this.toid);
 				uni.removeStorageSync(_this.$store.state.user.id+"#"+_this.toid+'_CHAT_MESSAGE');
 				_this.$store.commit("setCur_chat_msg_list",[]);
 				uni.removeStorageSync(_this.$store.state.user.id+"#"+_this.toid+'_CHAT_MESSAGE_LASTCONTENT');
 				uni.removeStorageSync(_this.$store.state.user.id+"#"+_this.toid+'_CHAT_MESSAGE_UNREAD');
-				
-				uni.showLoading() 
+
+				uni.showLoading()
 				_this.$http.post("/chat_msg/syncMsgData",
 					{
 						chatid:_this.toid
@@ -1348,7 +1346,7 @@
 					}
 				).then(res=>{
 					let res_data = eval(res.data);
-					if(res_data.code==201) {  
+					if(res_data.code==201) {
 						//没缓存数据，把加载取消
 						setTimeout(()=>{
 							uni.hideLoading();
@@ -1356,30 +1354,30 @@
 								title:"没有云端数据",
 								icon:"none"
 							})
-							
+
 						},400);
-					} else if(res_data.code==200) {  
+					} else if(res_data.code==200) {
 						setTimeout(()=>{
 							uni.hideLoading();
 							uni.showToast({
 								title:"同步成功",
 								icon:"none"
 							})
-						},400);	
-						
-					}	
+						},400);
+
+					}
 				})
 			},
 			clickAite(item) {
 				//console.log(this.$refs["chatVew"]);
 				//console.log("item.msgUuid:"+item.msgUuid);
 				this.viewId = item.msgUuid;
-				
+
 				//this.$refs["chatVew"].scrollIntoView = item.msgUuid;
-				this.$store.commit("setCur_chat_aiteToMyList",[]); 
+				this.$store.commit("setCur_chat_aiteToMyList",[]);
 			},
 			clearAiteToMy(){
-				this.$store.commit("setCur_chat_aiteToMyList",[]); 
+				this.$store.commit("setCur_chat_aiteToMyList",[]);
 			},
 			redOpened4My(_red) {
 				if(_red&&_red.opener_ids&&_red.opener_ids.indexOf(this.$store.state.user.id)>=0) {
@@ -1417,7 +1415,7 @@
 				this.showPop = false;
 				this.showItem = 0;
 				this.InputBottom=0;
-				
+
 				uni.navigateTo({
 					url:"/pages/chat/card/sendCard"
 				})
@@ -1435,7 +1433,7 @@
 			clickHongbao(bean) {
 				let _this = this;
 				let user = uni.getStorageSync("USER");
-				 
+
 				let str = uni.getStorageSync(user.id+'_RED_MUST_UPDATE_MAP');
 				if(str&&str!="") {
 					var arrs = JSON.parse(str);
@@ -1443,7 +1441,7 @@
 					if(arrs[bean.redUUID]) {
 						bean = arrs[bean.redUUID];
 					}
-				} 
+				}
 				this.temp_bean = bean;
 				this.showOpenRed = true;
 				this.$store.state.temp.bean = this.temp_bean;
@@ -1485,7 +1483,7 @@
 				item.nickName = bean.fromName;
 				this.txt = this.txt + "@";
 				uni.$emit("aiteFn",item);
-				
+
 			},
 			/* 长按监听 */
 			onLongPress(e,bean) {
@@ -1511,26 +1509,26 @@
 					 		 return false;
 					 	}
 					 }
-					 
+
 					 return true;
 				 })
-				this.popButton =list; 
+				this.popButton =list;
 				if(bean.fromUid == this.$store.state.user.id) {
 					if(new Date().getTime() - bean.dateTime < this.chatCfg.chat_msg_undo_sec*1000 || this.chatCfg.chat_msg_undo_sec==0) {
-						
+
 					   this.popButton.push("撤消");
 					}
-				} 
-				
+				}
+
 				if(this.$store.state.user.id==this.entity.owner_UUID
 					||this.$store.state.cur_chat_entity.memberMgr_ids.indexOf(this.$store.state.user.id)>=0) {
 					this.popButton.push("管理撤消");
-				}	
-				
-				
-				
+				}
+
+
+
 				let [touches, style] = [e.touches[0], ""];
-			
+
 				/* 因 非H5端不兼容 style 属性绑定 Object ，所以拼接字符 */
 				if (touches.clientY > (this.winSize.height / 2)) {
 					style = `bottom:${this.winSize.height-touches.clientY}px;`;
@@ -1542,7 +1540,7 @@
 				} else {
 					style += `left:${touches.clientX+15}px`;
 				}
-			
+
 				this.popStyle = style;
 				//this.pickerUserIndex = Number(index);
 				this.showShade = true;
@@ -1571,7 +1569,7 @@
 					if(_this.temp_content.indexOf("images")>=0) {
 						uni.showToast({
 							title: '复制仅限于文本或表情',
-							icon: "none", 
+							icon: "none",
 						});
 						_this.temp_content = "";
 						return;
@@ -1619,7 +1617,7 @@
 							key:user.id+"#"+_this.toid,
 							value:list
 						});
-						
+
 						let str = uni.getStorageSync(user.id+"#"+_this.toid+'_CHAT_MESSAGE');
 						if(str&&str!="") {
 							 let jsonObj = JSON.parse(str);
@@ -1649,11 +1647,11 @@
 								 	}
 								 })
 							 }
-							 
+
 						}
-												 
-												 
-												 
+
+
+
 					}
 				} else if(name=='管理撤消') {
 					let v = {};
@@ -1672,17 +1670,17 @@
 					}
 					_this.$websocket.dispatch("WEBSOCKET_SEND", "{body:'"+JSON.stringify(v)+"',CMD:'CHAT_MSG_UNDO'}");
 				} else if(name=='收藏') {
-					
+
 					if(_this.temp_content.indexOf("voice")>=0) {
 						uni.showToast({
 							title: '语音无法收藏',
-							icon: "none", 
+							icon: "none",
 						});
 						_this.temp_content = "";
 						return;
 					}
 					_this.temp_bean.fromName = _this.entity.name;
-					
+
 					_this.$http.post("/user/favourite/json/add",
 						{
 							jsonstr:JSON.stringify(_this.temp_bean)
@@ -1695,15 +1693,15 @@
 						}
 					).then(res=>{
 						let res_data = eval(res.data);
-						if(res_data.code==200) {  
+						if(res_data.code==200) {
 							uni.showToast({
 								title: '收藏成功',
-								icon: "success", 
+								icon: "success",
 							});
 						}
 					})
-					
-					
+
+
 					// uni.request({
 					// 	method:"POST",
 					// 	url: _this.$store.state.req_url + "/user/favourite/json/add",
@@ -1716,17 +1714,17 @@
 					// 	},
 					// 	success(res) {
 					// 		let res_data = eval(res.data);
-					// 		if(res_data.code==200) {  
+					// 		if(res_data.code==200) {
 					// 			uni.showToast({
 					// 				title: '收藏成功',
-					// 				icon: "success", 
+					// 				icon: "success",
 					// 			});
 					// 		}
 					// 	}
 					// })
-					
-				}	
-			/** 
+
+				}
+			/**
 				uni.showToast({
 					title: `第${this.pickerUserIndex+1}个用户,第${index+1}个按钮`,
 					icon: "none",
@@ -1734,7 +1732,7 @@
 					duration: 600
 				});
 			**、
-				/* 
+				/*
 				 因为隐藏弹窗方法中会将当前选择的用户下标还原为-1,
 				 如果行的菜单方法存在异步情况，请在隐藏之前将该值保存，或通过参数传入异步函数中
 				 */
@@ -1746,7 +1744,7 @@
 				if (this.showShade) {
 					return;
 				}
-			
+
 				console.log("列表触摸事件触发")
 			},
 			selType(_t) {
@@ -1754,7 +1752,7 @@
 				this.c_type = _t;
 				this.showjia = true;
 				this.txt = "";
-				 
+
 				this.showPop = false;
 				this.showItem = 0;
 				this.InputBottom=0;
@@ -1830,17 +1828,17 @@
 				} else {
 					this.showjia = false;
 				}
-				
+
 				if(e.target.value.indexOf("@")>=0&&e.target.value.lastIndexOf("@")==e.target.value.length-1) {
 					uni.navigateTo({
 						url:"/pages/chat/group/aite?roomid="+_this.entity.id
 					})
 				}
-				
+
 			},
 			goUserDetail(_id){
 				let _this = this;
-				
+
 				_this.$http.post("/sysConfig/json/getRoomCfg",
 					{
 						header:{
@@ -1850,7 +1848,7 @@
 					}
 				).then(res=>{
 					let res_data = eval(res.data);
-					if(res_data.code==200) {  
+					if(res_data.code==200) {
 						console.log(_this.entity);
 						let flag = false;
 						//哪个角色可查看群成员详细 0全体 1仅群主 2群主和群管理员
@@ -1866,18 +1864,18 @@
 								flag = true;
 							}
 						}
-						
-							
+
+
 						if(flag) {
 							uni.navigateTo({
 								url:"/pages/chat/user_detail?id="+_id+"&room_id="+_this.entity.id
 							})
-						}	
-						
+						}
+
 					}
 				})
-				
-				
+
+
 				// uni.request({
 				// 	method:"POST",
 				// 	url: this.$store.state.req_url + "/sysConfig/json/getRoomCfg",
@@ -1886,7 +1884,7 @@
 				// 	},
 				// 	success(res) {
 				// 		let res_data = eval(res.data);
-				// 		if(res_data.code==200) {  
+				// 		if(res_data.code==200) {
 				// 			console.log(_this.entity);
 				// 			let flag = false;
 				// 			//哪个角色可查看群成员详细 0全体 1仅群主 2群主和群管理员
@@ -1902,19 +1900,19 @@
 				// 					flag = true;
 				// 				}
 				// 			}
-							
-								
+
+
 				// 			if(flag) {
 				// 				uni.navigateTo({
 				// 					url:"/pages/chat/user_detail?id="+_id+"&room_id="+_this.entity.id
 				// 				})
-				// 			}	
-							
+				// 			}
+
 				// 		}
 				// 	}
 				// })
-				
-				
+
+
 			},
 			goMgr(_id){
 				this.$emit('openModal', {
@@ -1925,7 +1923,7 @@
 				// 	url:"/pages/chat/group/mgr?id="+_id
 				// })
 			},
-			
+
 			GenerateUUID() {
 				var s = [];
 				var hexDigits = "0123456789abcdef";
@@ -1935,7 +1933,7 @@
 				s[14] = "4"; // bits 12-15 of the time_hi_and_version field to 0010
 				s[19] = hexDigits.substr((s[19] & 0x3) | 0x8, 1); // bits 6-7 of the clock_seq_hi_and_reserved to 01
 				s[8] = s[13] = s[18] = s[23] = "-";
-			
+
 				var uuid = s.join("");
 				return "a"+uuid;
 			},
@@ -1957,7 +1955,7 @@
 			        };
 			    };
 			    return fmt;
-			}, 
+			},
 			sendBaseDo(v) {
 				v.fromHeadpic = this.$store.state.user.headpic;
 				let date = new Date();
@@ -1971,7 +1969,7 @@
 					v.txt = this.temp_txt;
 					this.temp_txt = "";
 				}
-				
+
 				if(this.temp_map.size>0) {
 					this.temp_map.forEach((value, key, map)=>{
 						while(v.txt.indexOf(key)>=0) {
@@ -1979,8 +1977,8 @@
 						}
 					})
 				}
-				
-				
+
+
 				//去除视频上传和图片上传 纯文件内容才检测URL
 				if(v.txt.indexOf("/chat_video")<0&&v.txt.indexOf("/chat_img")<0) {
 					let hasUrl = false;
@@ -1994,15 +1992,15 @@
 						v.txt = formatTxtContent;
 						v.psr = "uparse";
 					}
-				}	
-				
+				}
+
 				let msgbean = {
 					chatType:"1",
 					chatid:this.toid,
 					type:"USER_TXT",
 					bean:v
-				}  
-				
+				}
+
 				let list = [msgbean];
 				let str = uni.getStorageSync(this.$store.state.user.id+"#"+msgbean.chatid+'_CHAT_MESSAGE');
 				if(str&&str!="") {
@@ -2019,7 +2017,7 @@
 						key:this.$store.state.user.id+"#"+msgbean.chatid,
 						value:jsonObj
 					});
-						
+
 					if(this.$store.state.cur_chat_entity&&this.$store.state.cur_chat_entity.id==v.toGroupid) {
 						this.$store.commit("setCur_chat_msg_list",jsonObj);
 					}
@@ -2035,9 +2033,9 @@
 					}
 					// uni.setStorageSync(this.$store.state.user.id+"#"+msgbean.chatid+'_CHAT_MESSAGE_LASTCONTENT',"");
 				}
-				this.$store.commit("setChat_my_loadding",false); 
+				this.$store.commit("setChat_my_loadding",false);
 			},
-		
+
 			checkStopSpeak() {
 				let _this = this;
 				let memberIds = _this.$store.state.cur_chat_entity ? _this.$store.state.cur_chat_entity.memberMgr_ids : [];
@@ -2046,7 +2044,7 @@
 					|| memberIds.indexOf(_this.$store.state.user.id)>=0) {
 					return true;
 				}
-				
+
 				if(this.entity.stopSpeak&&this.entity.stopSpeak==1) {
 					// uni.showToast({
 					//     icon: 'none',
@@ -2058,13 +2056,13 @@
 			},
 			altOrShiftEnter(){
 				this.input_is_focus = false;
-				this.txt += '\n'; 
+				this.txt += '\n';
 				this.isAltOrShiftEnter = true;
 				setTimeout(()=>{
 					this.input_is_focus = true;
 					this.isAltOrShiftEnter = false;
 				},300)
-				
+
 			},
 			qunfaMsg(dataArrays) {
 				console.log('选择的群组',dataArrays)
@@ -2072,26 +2070,26 @@
 				setTimeout(()=>{
 					if(this.isAltOrShiftEnter) return;
 					this.input_is_focus = false;
-					
+
 					if(this.txt.trim()=="") {
 						return;
 					}
-					
+
 					dataArrays.forEach(item=>{
 						let v = {
 							txt:this.txt.replace(/\n/g,"<br/>"),
-							toUid:item, 
+							toUid:item,
 							fromUid:this.$store.state.user.id,
 							uuid:this.GenerateUUID(),
 						};
 						this.$websocket.dispatch("WEBSOCKET_SEND", "{body:'"+JSON.stringify(v)+"',CMD:'USER_CHAT_SEND_TXT'}");
-						this.$store.commit("setChat_my_loadding",true); 
+						this.$store.commit("setChat_my_loadding",true);
 						this.sendBaseDo(v);
 						this.showjia = true;
 						this.sendCount = this.sendCount +1;
 					});
 					setTimeout(function(){
-						_this.scrollToBottom(); 
+						_this.scrollToBottom();
 						_this.input_is_focus = true;
 					},300)
 					this.txt = "";
@@ -2109,25 +2107,25 @@
 				if(_a==1) f = ".png";
 				let img = this.$store.state.img_url+"/img/emotion/face"+(_a<10?"0"+_a:_a)+"/"+_b+f;
 				//this.temp_txt = this.temp_txt + ("<img  style='max-width: 100px;' class='face' src='"+img+"'>");
-				let s = "";	
+				let s = "";
 				if(_a==0) {
 					s = "<img  style='max-width: 24px;max-height:24px;' class='face face1' src='"+img+"'>";
 				} else if(_a==1) {
 					s = "<img style='max-width: 100px;max-height:100px;' class='face face2' src='"+img+"'>";
 				} else {
-					s = "<img  style='max-width: 150px;max-height:150px;' class='face face3' src='"+img+"'>";	
-				}	
-				
+					s = "<img  style='max-width: 150px;max-height:150px;' class='face face3' src='"+img+"'>";
+				}
+
 				if(!this.temp_map.has("[f"+_a+"#"+_b+"]")) {
 					this.temp_map.set("[f"+_a+"#"+_b+"]",s)
-				} 
+				}
 				this.showjia = false;
 				// let v = {
 				// 	txt:"[f"+_a+"#"+_b+"]",
 				//     toGroupid:this.toid,
 				//     fromUid:this.$store.state.user.id
 				// }
-				
+
 				// this.$websocket.dispatch("WEBSOCKET_SEND", "{body:'"+JSON.stringify(v)+"',CMD:'GROUP_CHAT_SEND_TXT'}");
 				// this.txt = "";
 				// this.showjia = true;
@@ -2138,7 +2136,7 @@
 			   var that = this
 			   setTimeout(function() {  // 加上延时会使页面看起来更流畅
 					 // that.domHeight=document.documentElement.clientHeight;
-					 document.body.scrollTop = document.body.scrollHeight; 
+					 document.body.scrollTop = document.body.scrollHeight;
 				},500)
 			},
 			InputBlur(e) {
@@ -2146,10 +2144,10 @@
 				 var that = this
 				setTimeout(function() {  // 加上延时会使页面看起来更流畅
 					 // that.domHeight=document.documentElement.clientHeight;
-					 document.body.scrollTop = document.body.scrollHeight; 
+					 document.body.scrollTop = document.body.scrollHeight;
 				},500)
 			},
-			
+
 			ChooseVideo() {
 				if(this.stopSpeak==1) return;
 				if(!this.checkStopSpeak()) return;
@@ -2193,7 +2191,7 @@
 									_this.$websocket.dispatch("WEBSOCKET_SEND", "{body:'"+JSON.stringify(v)+"',CMD:'GROUP_CHAT_SEND_TXT'}");
 									let videoSrc = _this.$store.state.img_url+json.msg;
 									_this.temp_txt = _this.temp_txt + ("<video  style='max-width: 150px;max-height:150px;' class='face' src='"+videoSrc+"'>");
-									v.psr = "video";  
+									v.psr = "video";
 									v.simple_content = "[视频]";
 									_this.sendBaseDo(v);
 									setTimeout(function(){
@@ -2202,12 +2200,12 @@
 								 }
 							 }
 						});
-						 
-						 
+
+
 					}
 				});
 			},
-			
+
 			ChooseImage() {
 				if(this.stopSpeak==1) return;
 				if(!this.checkStopSpeak()) return;
@@ -2217,7 +2215,7 @@
 					sizeType: [ 'compressed'], //可以指定是原图还是压缩图，默认二者都有
 					sourceType: ['album','camera'], //从相册选择
 					success: (res) => {
-						
+
 						//大于3M。则报
 						if(res.tempFiles[0].size>1024*3072) {
 							uni.showToast({
@@ -2226,9 +2224,9 @@
 							});
 							return;
 						}
-						
+
 						let arrs = res.tempFilePaths;
-						_this.$store.commit("setChat_my_loadding",true); 
+						_this.$store.commit("setChat_my_loadding",true);
 						setTimeout(function(){
 							_this.scrollToBottom();
 						},100)
@@ -2253,13 +2251,13 @@
 											uuid:_this.GenerateUUID(),
 										}
 										_this.$websocket.dispatch("WEBSOCKET_SEND", "{body:'"+JSON.stringify(v)+"',CMD:'GROUP_CHAT_SEND_TXT'}");
-										
+
 										let img = _this.$store.state.img_url+json.msg;
 										_this.temp_txt = _this.temp_txt + ("<img  style='max-width: 150px;max-height:150px;' class='face' src='"+img+"'>");
-										v.psr = "uparse";  
+										v.psr = "uparse";
 										v.simple_content = "[图片]";
 										_this.sendBaseDo(v);
-										
+
 										setTimeout(function(){
 											_this.scrollToBottom();
 										},100)
@@ -2282,14 +2280,14 @@
 				// this.initPoint.identifier = e.touches[0].identifier;
 				this.RECORDER.start({format:"mp3"});//录音开始,
 			},
-			
+
 			//录音开始UI效果
 			recordBegin(e){
 				//this.recording = true;
 				//this.='  结束';
 				uni.showToast({
 				    title: '正在录音',
-				    image: '../../../static/luyin.png', 
+				    image: '../../../static/luyin.png',
 					duration: 60000
 				});
 				this.recordLength = 0;
@@ -2320,7 +2318,7 @@
 				console.log("----------------------1");
 				let _this = this;
 				let user = uni.getStorageSync("USER");
-				
+
 				clearInterval(this.recordTimer);
 				// if(!this.willStop){
 				// 	console.log("e: " + JSON.stringify(e));
@@ -2352,7 +2350,7 @@
 				setTimeout(()=>{
 					_this.scrollTop = 99999999+Math.random();
 				},100)
-				
+
 				// var uper = uni.uploadFile({
 				// 		 // 需要上传的地址
 				// 		 url:_this.$store.state.req_url+ '/user/file/uploadVoice',
@@ -2376,30 +2374,30 @@
 				// 			 }
 				// 		 }
 				// });
-				
-				
+
+
 			},
-			
-			
-			
-			
+
+
+
+
 			startRecord() {
 			  uni.showToast({
 			      title: '正在录音',
-			      image: '../../../static/luyin.png', 
+			      image: '../../../static/luyin.png',
 			  	duration: 60000
 			  });
-			  this.RECORDER.start({  
-				  format: 'mp3'  
-			  });  
-			  
+			  this.RECORDER.start({
+				  format: 'mp3'
+			  });
+
 			},
-			
+
 			endRecord() {
 				let _this = this;
-			 
+
 				uni.hideToast();
-			   this.RECORDER.stop();  
+			   this.RECORDER.stop();
 			},
 			videoChangeFC(e) {
 				if(!e.detail.fullScreen) {
@@ -2418,21 +2416,21 @@
 //                 this.videoContext = uni.createVideoContext('video_play');
                 // 进入全屏状态
                 //this.videoContext.requestFullScreen();
-				
+
 				// let player;
 				// if(!player){
-				//     player = plus.video.createVideoPlayer('videoplayer', {  
-				//         src:_vpath,  
-				//         width: '100%',  
-				//         height: '100%',  
-				//         position: 'static'  
-				//     });  
-				//     plus.webview.currentWebview().append(player);  
-				//     console.log("url:"+url)  
-				//     player.addEventListener('ended', function(){  
-				//         mui.back();  
-				//     }, false);  
-				// } 
+				//     player = plus.video.createVideoPlayer('videoplayer', {
+				//         src:_vpath,
+				//         width: '100%',
+				//         height: '100%',
+				//         position: 'static'
+				//     });
+				//     plus.webview.currentWebview().append(player);
+				//     console.log("url:"+url)
+				//     player.addEventListener('ended', function(){
+				//         mui.back();
+				//     }, false);
+				// }
 			},
 			clickVoice(_vpath,_index) {
 				let _this = this;
@@ -2447,7 +2445,7 @@
 				//_vpath = "http://39.98.129.168:8080/images/upload/chat/voice/277c7e2561ff45d5b54e0760ae3b039b.amr";
 				var src = _this.$store.state.img_url + _vpath;
 				console.log(src);
-				this.selVoiceIndex = _index; 
+				this.selVoiceIndex = _index;
 				//this.voicePath = _vpath;
 				this.player = uni.createInnerAudioContext();
 				this.player.src = src; //音频地址
@@ -2458,9 +2456,9 @@
 				this.player.onStop(() => {
 				  console.log('停止播放');
 				  _this.selVoiceIndex = -1;
-				}); 
-				
-				this.player.play(); 
+				});
+
+				this.player.play();
 			},
 			scrollToBottom: function () {
 				let _this = this;
@@ -2476,15 +2474,15 @@
 							setTimeout(()=>{
 								_this.scrollToBottom();
 							},100);
-							
+
 						}
 				})
-				
+
 			},
-			/**  
-			 * 录音语音文件转base64字符串  
-			 * @param {Object} path  
-			 */  
+			/**
+			 * 录音语音文件转base64字符串
+			 * @param {Object} path
+			 */
 			Audio2dataURL(path,timeStr) {
 				let _this = this;
 				let user = uni.getStorageSync("USER");
@@ -2529,11 +2527,11 @@
 
 
 			},
-			
-			
-			
-			
-								
+
+
+
+
+
 		}
 	}
 </script>
@@ -2552,7 +2550,7 @@
 	 		 height: 72upx;
 	 		 min-height: 72upx;
 	 }
-	 /* 列式弹性盒子 */ 
+	 /* 列式弹性盒子 */
 	 	 .flex_col {
 	 	 	display: flex;
 	 	 	flex-direction: row;
@@ -2561,7 +2559,7 @@
 	 	 	align-items: center;
 	 	 	align-content: center;
 	 	 }
-	 	 
+
 	 	 /* 弹性盒子弹性容器 */
 	 	 .flex_col .flex_grow {
 	 	 	width: 0;
@@ -2569,19 +2567,19 @@
 	 	 	-ms-flex-positive: 1;
 	 	 	flex-grow: 1;
 	 	 }
-	 	 
+
 	 	 .flex_row .flex_grow {
 	 	 	-webkit-box-flex: 1;
 	 	 	-ms-flex-positive: 1;
 	 	 	flex-grow: 1;
 	 	 }
-	 	 
+
 	 	 /* 弹性盒子允许换行 */
 	 	 .flex_col.flex_wrap {
 	 	 	-ms-flex-wrap: wrap;
 	 	 	flex-wrap: wrap;
 	 	 }
-	 	 
+
 	 	 /* 列表 */
 	 	 .list {
 	 	 	background-color: #fff;
@@ -2589,37 +2587,37 @@
 	 	 	color: #333;
 	 	 	user-select: none;
 	 	 	touch-callout: none;
-	 	 
+
 	 	 	&>view {
 	 	 		padding: 24upx 30upx;
 	 	 		position: relative;
-	 	 
+
 	 	 		&:active,
 	 	 		&.active {
 	 	 			background-color: #f3f3f3;
 	 	 		}
-	 	 
+
 	 	 		image {
 	 	 			height: 80upx;
 	 	 			width: 80upx;
 	 	 			border-radius: 4px;
 	 	 			margin-right: 20upx;
 	 	 		}
-	 	 
+
 	 	 		&>view {
 	 	 			line-height: 40upx;
-	 	 
+
 	 	 			.time,
 	 	 			.info {
 	 	 				color: #999;
 	 	 				font-size: 24upx;
 	 	 			}
-	 	 
+
 	 	 			.time {
 	 	 				width: 150upx;
 	 	 				text-align: right;
 	 	 			}
-	 	 
+
 	 	 			.info {
 	 	 				overflow: hidden;
 	 	 				text-overflow: ellipsis;
@@ -2627,10 +2625,10 @@
 	 	 			}
 	 	 		}
 	 	 	}
-	 	 
+
 	 	 	&>view:not(:first-child) {
 	 	 		margin-top: 1px;
-	 	 
+
 	 	 		&::after {
 	 	 			content: '';
 	 	 			display: block;
@@ -2644,7 +2642,7 @@
 	 	 		}
 	 	 	}
 	 	 }
-	 	 
+
 	 	 /* 遮罩 */
 	 	 .shade {
 	 	 	position: fixed;
@@ -2654,7 +2652,7 @@
 	 	 	//bottom: 0;
 	 	 	//left: 0;
 	 	 	-webkit-touch-callout: none;
-	 	 
+
 	 	 	.pop {
 	 	 		position: fixed;
 	 	 		z-index: 101;
@@ -2675,7 +2673,7 @@
 	 	 		&.show {
 	 	 			transform: scale(1, 1);
 	 	 		}
-	 	 
+
 	 	 		&>view {
 	 	 			padding: 0 20upx;
 	 	 			overflow: hidden;
@@ -2683,7 +2681,7 @@
 	 	 			white-space: nowrap;
 	 	 			user-select: none;
 	 	 			-webkit-touch-callout: none;
-	 	 
+
 	 	 			&:active {
 	 	 				background-color: #f3f3f3;
 	 	 			}
@@ -2692,7 +2690,7 @@
 	 	 }
 
 
- 	uni-page-body{height:100%}	 
+ 	uni-page-body{height:100%}
 	.cu-chat .cu-info {
 		display: table;
 	}

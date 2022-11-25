@@ -755,7 +755,7 @@
 			},
 			goChat(item) {
 				console.log('tom', item.id)
-				
+
 				if (item.id == "-1") {
 					this.msgToId = item.id;
 					this.isGroupChat = false;
