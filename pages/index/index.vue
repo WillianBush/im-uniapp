@@ -135,6 +135,7 @@
 				}
 				if(e.currentTarget.dataset.cur=="hotItem") {
 					this.randomid = parseInt(Math.random()*100000000);
+					this.$store.state.cur_chat_msg_list = [];
 						// uni.navigateTo({
 						// 	url:"/pages/hotItem/hotItem_app"
 						// })

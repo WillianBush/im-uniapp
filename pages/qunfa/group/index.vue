@@ -161,59 +161,6 @@
 						</view>
 					<!--#endif-->
 
-					<!--#ifdef APP-PLUS-->
-					<!--发送者-->
-					<view :id="item.bean.uuid"  v-if="item.bean.fromUid==$store.state.user.id" class="cu-item self" >
-						<view class="main">
-							<view v-if="$store.state.WAIT_SEND_MSG.indexOf(item.bean.uuid)>=0" class="action text-grey">
-								<text class="cuIcon-warnfill text-red text-xxl"></text>
-							</view>
-
-							<view v-if="item.bean.psr!='video'" @longpress="onLongPress($event,item.bean)" :class="[item.bean.psr=='uparse'?'':'content bg-green shadow']" :style="{backgroundColor:item.bean.psr=='uparse'? 'none':'#fff'}" style="color:#222;">
-								<!--因为视频在底层窗口的显示等级是最上层，所以无法嵌套在scroll里面滑动，这里用image 代替-->
-								<image @tap="clickVideo($store.state.img_url+item.bean.oldTxt)" v-if="item.bean.psr=='uparse' && item.bean.txt.indexOf(videoCheck) != -1" style="width:418upx;height:335upx;border-radius: 5px" src="../../../static/images/video.png"></image>
-
-								<u-parse v-else-if="item.bean.psr=='uparse' && item.bean.txt.indexOf(verdeoCheck) == -1" :content="item.bean.txt" @preview="preview" @navigate="navigate" ></u-parse>
-								<view @tap="clickVoice(item.bean.txt,index)" v-else-if="item.bean.psr=='voice'">
-									<text  v-show="selVoiceIndex != index"  style="float:left;width:100upx;font-size: 52upx;position: relative;top: 4upx;"  class="iconfont icon-yuyin1 text-xxl "></text>
-									<text  v-show="selVoiceIndex != index"  style="float:left;font-size: 26upx;position: relative;top: 4upx;">{{item.bean.sub_txt}}"</text>
-									<text  v-show="selVoiceIndex == index"   style="float:left;width:100upx;font-size: 52upx;position: relative;text-align: left;top:0;line-height: 38upx;"  class="iconfont cu-load load-cuIcon loading text-xxl "></text>
-									<text  v-show="selVoiceIndex == index"  style="float:left;font-size: 26upx;position: relative;top: 6upx;">{{item.bean.sub_txt}}"</text>
-								</view>
-								<rich-text style="max-width:440upx" v-else   :nodes="item.bean.txt"></rich-text>
-							</view>
-						</view>
-						<view v-if="item.bean.psr!='video'" class="cu-avatar radius" :style="'background-image:url('+$store.state.img_url+item.bean.fromHeadpic+');'"></view>
-						<view v-if="item.bean.psr!='video'" class="date">{{item.bean.date}}</view>
-					</view>
-
-					<!--接收着-->
-					<view v-else class="cu-item"  :id="item.bean.uuid">
-						<view @longpress="onLongPress1($event,item.bean)" @tap.stop="goUserDetail(item.bean.fromUid)" class="cu-avatar radius" :style="'background-image:url('+$store.state.img_url+item.bean.fromHeadpic+');'" ></view>
-						<view class="main" style="display: block!important;">
-							<view style="height: 40upx;font-size: 12px;color: #8799a3;">
-								<text style="color:#FFB502;margin-right:6upx;    font-size: 36upx;" v-if="item.bean.fromUid==$store.state.cur_chat_entity.owner_UUID" class="iconfont icon-tianchongxing-"></text>
-								<text style="color:#FF4633;margin-right:6upx;    font-size: 28upx;" v-if="$store.state.cur_chat_entity.memberMgr_ids&&$store.state.cur_chat_entity.memberMgr_ids.indexOf(item.bean.fromUid)>=0" class="iconfont icon-maozi"></text>
-								{{item.bean.fromName}}
-							</view>
-
-							<view  @longpress="onLongPress($event,item.bean)"  :class="[item.bean.psr=='uparse'?'':'content shadow']" style="color:#222;">
-								<!--因为视频在底层窗口的显示等级是最上层，所以无法嵌套在scroll里面滑动，这里用image 代替-->
-								<image @tap="clickVideo($store.state.img_url+item.bean.oldTxt)" v-if="item.bean.psr=='video' && item.bean.txt.indexOf(videoCheck) != -1" style="width:418upx;height:335upx;border-radius: 5px" src="../../../static/images/video.png"></image>
-
-								<u-parse v-else-if="item.bean.psr=='uparse'" :content="item.bean.txt" @preview="preview" @navigate="navigate" ></u-parse>
-								<view @tap="clickVoice(item.bean.txt,index)" v-else-if="item.bean.psr=='voice'">
-									<text  v-show="selVoiceIndex != index"  style="text-align: right; float:right;width:100upx;font-size: 52upx;position: relative;top: 4upx;"  class="iconfont icon-yuyin1 text-xxl "></text>
-									<text  v-show="selVoiceIndex != index"  style="float:right;font-size: 26upx;position: relative;top: 4upx;">{{item.bean.sub_txt}}"</text>
-									<text  v-show="selVoiceIndex == index"   style="text-align: right;float:right;width:100upx;font-size: 52upx;position: relative;top:0;line-height: 38upx;"  class="iconfont cu-load load-cuIcon loading text-xxl "></text>
-									<text  v-show="selVoiceIndex == index"  style="float:right;font-size: 26upx;position: relative;top: 6upx;">{{item.bean.sub_txt}}"</text>
-								</view>
-								<rich-text style="max-width:440upx" v-else   :nodes="item.bean.txt"></rich-text>
-							</view>
-						</view>
-						<view class="date "> {{item.bean.date}}</view>
-					</view>
-					<!--#endif-->
 				</block>
 
 
@@ -930,6 +877,7 @@
 		},
 		watch: {
 		  msgToId: function(newVal,oldVal){
+
 			console.log('watchGroupMsgToId')
 			console.log('----------------------newVal',newVal)
 			console.log('---------------------oldVal',oldVal)
@@ -1326,7 +1274,7 @@
 			},
 			tongbuMsg(){
 				let _this = this;
-
+				console.log('同步了？')
 				_this.$store.state.chatMessageMap.delete(_this.$store.state.user.id+"#"+_this.toid);
 				uni.removeStorageSync(_this.$store.state.user.id+"#"+_this.toid+'_CHAT_MESSAGE');
 				_this.$store.commit("setCur_chat_msg_list",[]);
