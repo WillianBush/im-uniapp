@@ -1,5 +1,5 @@
 <template>
-	<view>
+	<view >
 		<view @tap="hideShowMenu()" style="padding-top:50upx;background-color: #fff;width: 20%;float: left">
 			<view class="cu-bar bg-white solid-bottom">
 				<view class="action" style="font-size: 36upx;font-weight: 600;">
@@ -17,38 +17,6 @@
 				</view>
 
 			</view>
-			<!--#ifdef APP-PLUS -->
-			<view v-show="showMenu" :style="true?'height: 380upx;':'height: 300upx;'" style="position: absolute;
-					width: 280upx;
-					background: #4A484D;
-					top: 140upx;
-					left: 17%;
-					z-index: 9999;
-					border-radius: 12upx;
-					color: #fff;
-					padding: 20upx;">
-				<view @tap.stop="saoma()" style="float:left;width:98%;padding-bottom:10upx;"><text
-						style="float:left;font-size:46upx;margin-top:6upx;margin-left:10upx"
-						class="iconfont icon-saoyisao"></text><text
-						style="float:left;margin-top:10upx;margin-left:20upx;font-size: 28upx;">扫 一 扫</text></view>
-				<view @tap.stop="createGroup()" style="border-top:1px solid #777;float:left;width:98%;padding-top:10upx;">
-					<text style="float:left;font-size:46upx;margin-top:6upx;margin-left:10upx"
-						class="iconfont icon-liaotian1"></text><text
-						style="float:left;margin-top:10upx;margin-left:20upx;font-size: 28upx;">发起群聊</text></view>
-				<view @tap.stop="addFriend()" style="border-top:1px solid #777;float:left;width:98%;padding-top:10upx;">
-					<text style="float:left;font-size:46upx;margin-top:6upx;margin-left:10upx"
-						class="iconfont icon-tianjiahaoyou1"></text><text
-						style="float:left;margin-top:10upx;margin-left:20upx;font-size: 28upx;">添加好友</text></view>
-				<view @tap.stop="searchGroup()" style="border-top:1px solid #777;float:left;width:98%;padding-top:10upx;">
-					<text style="float:left;font-size:46upx;margin-top:6upx;margin-left:10upx"
-						class="iconfont icon-chazhao"></text><text
-						style="float:left;margin-top:10upx;margin-left:20upx;font-size: 28upx;">查找群组</text></view>
-				<view @tap.stop="searchUser" style="border-top:1px solid #777;float:left;width:98%;padding-top:10upx;"><text
-						style="float:left;font-size:44upx;margin-top:6upx;margin-left:10upx"
-						class="iconfont icon-zuoce-tongxun-gaoliang"></text><text
-						style="float:left;margin-top:10upx;margin-left:20upx;font-size: 28upx;">超级通讯</text></view>
-			</view>
-			<!--#endif -->
 			<!--#ifdef H5 -->
 			<view v-show="showMenu" :style="super_user==1?'height: 330upx;':'height: 250upx;'" style="position: absolute;
 					width: 280upx;
@@ -159,14 +127,14 @@
 		<view v-show="!msgToId && !msgToGroupId" style="height: 100vh;width: 80%; float: left; border-left: 1px solid #ddd; background:#eee">
 			<img src="../../static/logo1.png" width="100px" height="100px" style="margin-top: calc(50vh - 50px);margin-left: calc(50% - 50px);"></img>
 		</view>
-		<view v-show="isGroupChat" style="height: calc(100vh - 50upx);width: 80%; float: left; border-left: 1px solid #ddd">
+		<view v-loading="ongoing" v-show="isGroupChat" style="height: calc(100vh - 50upx);width: 80%; float: left; border-left: 1px solid #ddd">
 			<scroll-view :scroll-y="modalName==null"
 				style="width: 100%"
 				class="page" :class="modalName!=null?'show':''">
 				<GroupChat :msgToGroupId="msgToGroupId" @openModal="openModal" @openAtModal="openAtModal"></GroupChat>
 			</scroll-view>
 		</view>
-		<view v-show="msgToId && !isGroupChat" style="height: calc(100vh - 50upx);width: 80%; float: left; border-left: 1px solid #ddd">
+		<view  v-loading="ongoing"  v-show="msgToId && !isGroupChat" style="height: calc(100vh - 50upx);width: 80%; float: left; border-left: 1px solid #ddd">
 			<scroll-view :scroll-y="modalName==null"
 				style="width: 100%"
 				class="page" :class="modalName!=null?'show':''">
@@ -192,6 +160,7 @@
 		},
 		data() {
 			return {
+				ongoing: false,
 				isGroupChat: false,
 				visiable: false,
 				msgToId: '',
@@ -755,7 +724,10 @@
 			},
 			goChat(item) {
 				console.log('tom', item.id)
-
+				this.ongoing = true
+						setTimeout(()=>{
+						this.ongoing = false
+						},1000);
 				if (item.id == "-1") {
 					this.msgToId = item.id;
 					this.isGroupChat = false;
