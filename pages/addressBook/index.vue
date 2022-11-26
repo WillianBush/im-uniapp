@@ -2,7 +2,7 @@
 	<view>
 		<view  style="width:20%; float: left">
 			<view v-show="PageCur=='tongxunlu'">
-				<view style="height: 45px;line-height: 45px;text-align: center;background: #eee;">通讯录({{memberList.length}})人</view>
+				<view style="height: 45px;line-height: 45px;text-align: center;background: #eee;">通讯录()人</view>
 				<view class="cu-bar bg-white search" >
 					<view class="search-form round">
 						<text class="cuIcon-search"></text>
@@ -13,31 +13,31 @@
 					</view>
 				</view>
 				<scroll-view scroll-y class="indexes" :scroll-into-view="'indexes-'+ listCurID" :style="[{height:'calc(100vh - 100upx - 100upx - 150upx)'}]"
-				 :scroll-with-animation="true" :enable-back-to-top="true">
+							 :scroll-with-animation="true" :enable-back-to-top="true">
 
-				 <view style="margin-top:10px;" class="cu-list menu"
-				  :class="[true?'sm-border':'',false?'card-menu margin-top':'']">
-					<view @tap="goNewFriends()" class="cu-item" :class="true?'arrow':''">
-						<view class="content">
-							<text style="float:left;color:#FCBF00;font-size:50upx" class="iconfont icon-tianjiahaoyou"></text>
-							<text class="text-grey" style="float:left;margin-left: 10px;">新的朋友</text>
-							<view v-if="$store.state.unDoFriendAddCount>0" style="top: 38upx;right: 72upx" class="cu-tag badge">{{$store.state.unDoFriendAddCount}}</view>
+					<view style="margin-top:10px;" class="cu-list menu"
+						  :class="[true?'sm-border':'',false?'card-menu margin-top':'']">
+						<view @tap="goNewFriends()" class="cu-item" :class="true?'arrow':''">
+							<view class="content">
+								<text style="float:left;color:#FCBF00;font-size:50upx" class="iconfont icon-tianjiahaoyou"></text>
+								<text class="text-grey" style="float:left;margin-left: 10px;">新的朋友</text>
+								<view v-if="$store.state.unDoFriendAddCount>0" style="top: 38upx;right: 72upx" class="cu-tag badge">{{$store.state.unDoFriendAddCount}}</view>
+							</view>
+						</view>
+						<view @tap="goMyGroup()" class="cu-item" :class="true?'arrow':''">
+							<view class="content">
+								<text style="color:#009FE8;font-size:50upx" class="iconfont icon-qunzhong"></text>
+								<text class="text-grey" style="margin-left: 10px;">群聊</text>
+								<view v-if="$store.state.unDoRoomAddCount>0" style="top: 38upx;right: 72upx" class="cu-tag badge">{{$store.state.unDoRoomAddCount}}</view>
+							</view>
+						</view>
+						<view @tap="goBlacklist()" class="cu-item" :class="true?'arrow':''">
+							<view class="content">
+								<text style="color:#999;font-size:50upx" class="iconfont icon-heimingdan"></text>
+								<text class="text-grey" style="margin-left: 10px;">黑名单</text>
+							</view>
 						</view>
 					</view>
-					<view @tap="goMyGroup()" class="cu-item" :class="true?'arrow':''">
-						<view class="content">
-							<text style="color:#009FE8;font-size:50upx" class="iconfont icon-qunzhong"></text>
-							<text class="text-grey" style="margin-left: 10px;">群聊</text>
-							<view v-if="$store.state.unDoRoomAddCount>0" style="top: 38upx;right: 72upx" class="cu-tag badge">{{$store.state.unDoRoomAddCount}}</view>
-						</view>
-					</view>
-					<view @tap="goBlacklist()" class="cu-item" :class="true?'arrow':''">
-						<view class="content">
-							<text style="color:#999;font-size:50upx" class="iconfont icon-heimingdan"></text>
-							<text class="text-grey" style="margin-left: 10px;">黑名单</text>
-						</view>
-					</view>
-				</view>
 
 					<block v-for="(item,index) in friend_list" :key="index">
 						<view :class="'indexItem-' + item.h" :id="'indexes-' + item.h" :data-index="item.h">
@@ -66,7 +66,7 @@
 					{{listCur}}
 				</view>
 			</view>
-		    <newFriendList v-show="PageCur=='xinpengyou'" :keyid="keyid" @goBack="showMain"></newFriendList>
+			<newFriendList v-show="PageCur=='xinpengyou'" :keyid="keyid" @goBack="showMain"></newFriendList>
 			<blackList v-show="PageCur=='heimingdan'" :keyid="keyid" @goBack="showMain"></blackList>
 			<qunliao v-show="PageCur=='qunliao'" :keyid="keyid" @goBack="showMain" @goGroupChat="goGroupChat"></qunliao>
 		</view>
@@ -75,19 +75,19 @@
 		</view>
 		<view v-show="isGroupChat" style="height: calc(100vh - 50upx);width: 80%; float: left; border-left: 1px solid #ddd">
 			<scroll-view :scroll-y="modalName==null"
-				style="width: 100%"
-				class="page" :class="modalName!=null?'show':''" :refresher-enabled="true"
-				:refresher-triggered="refresherTriggered" @refresherrefresh="refresherrefresh"
-				@refresherrestore="refresherrestore" @refresherabort="refresherabort">
+						 style="width: 100%"
+						 class="page" :class="modalName!=null?'show':''" :refresher-enabled="true"
+						 :refresher-triggered="refresherTriggered" @refresherrefresh="refresherrefresh"
+						 @refresherrestore="refresherrestore" @refresherabort="refresherabort">
 				<GroupChat :msgToGroupId="msgToGroupId" @openModal="openModal"></GroupChat>
 			</scroll-view>
 		</view>
 		<view v-show="msgToId && !isGroupChat" style="height: calc(100vh - 50upx);width: 80%; float: left; border-left: 1px solid #ddd">
 			<scroll-view :scroll-y="modalName==null"
-				style="width: 100%"
-				class="page" :class="modalName!=null?'show':''" :refresher-enabled="true"
-				:refresher-triggered="refresherTriggered" @refresherrefresh="refresherrefresh"
-				@refresherrestore="refresherrestore" @refresherabort="refresherabort">
+						 style="width: 100%"
+						 class="page" :class="modalName!=null?'show':''" :refresher-enabled="true"
+						 :refresher-triggered="refresherTriggered" @refresherrefresh="refresherrefresh"
+						 @refresherrestore="refresherrestore" @refresherabort="refresherabort">
 				<UserChat :msgToId="msgToId" @openModal="openModal"></UserChat>
 			</scroll-view>
 		</view>
@@ -117,7 +117,7 @@
 				modalName: null,
 				refresherTriggered: true,
 				listCurID: '',
-				memberList: [], //会员列表
+				memberList: [],
 				list: [],
 				listCur: '',
 				kw:"",
@@ -141,19 +141,19 @@
 			let user = uni.getStorageSync("USER");
 			if(this.$store.state.friend_list.length<=0) {
 				_this.$http.post("/user/friend/list/v1",
-					{
-						header:{
-							"x-access-uid":user.id,
-							"x-access-client":_this.$clientType
+						{
+							header:{
+								"x-access-uid":user.id,
+								"x-access-client":_this.$clientType
+							}
 						}
-					}
 
 				).then(res=>{
 					let res_data = eval(res.data);
 					res.data.body.forEach((item, index) => {
 						this.memberList.push(item.list)
 					})
-
+					console.log('checkout->',this.memberList)
 					if(res_data.code==200) {
 						_this.$store.commit("setFriend_list",res_data.body);
 						res_data.body.forEach(item=>{
@@ -175,12 +175,12 @@
 					nlist = nlist.filter((item)=>{
 						let flag = false;
 						item.list.filter((item1)=>{
-							 if(item1.name.indexOf(_this.kw.trim())>=0) {
-								 flag = true;
-								 return true;
-							 }
-							 return false;
-						 })
+							if(item1.name.indexOf(_this.kw.trim())>=0) {
+								flag = true;
+								return true;
+							}
+							return false;
+						})
 						return flag;
 					});
 				}
@@ -258,9 +258,9 @@
 			},
 			showMsg() {
 				uni.showToast({
-				    icon: 'none',
+					icon: 'none',
 					position: 'bottom',
-				    title: "功能未开启"
+					title: "功能未开启"
 				});
 			},
 			goUserDetail(_id){
@@ -299,8 +299,8 @@
 			//滑动选择Item
 			tMove(e) {
 				let y = e.touches[0].clientY,
-					offsettop = this.boxTop,
-					that = this;
+						offsettop = this.boxTop,
+						that = this;
 				//判断选择区域,只有在选择区才会生效
 				if (y > offsettop) {
 					let num = parseInt((y - offsettop) / 20);
