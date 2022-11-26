@@ -2,7 +2,7 @@
 	<view>
 		<view  style="width:20%; float: left">
 			<view v-show="PageCur=='tongxunlu'">
-				<view style="height: 45px;line-height: 45px;text-align: center;background: #eee;">通讯录</view>
+				<view style="height: 45px;line-height: 45px;text-align: center;background: #eee;">通讯录({{memberList.length}})人</view>
 				<view class="cu-bar bg-white search" >
 					<view class="search-form round">
 						<text class="cuIcon-search"></text>
@@ -117,6 +117,7 @@
 				modalName: null,
 				refresherTriggered: true,
 				listCurID: '',
+				memberList: [], //会员列表
 				list: [],
 				listCur: '',
 				kw:"",
@@ -149,6 +150,10 @@
 
 				).then(res=>{
 					let res_data = eval(res.data);
+					res.data.body.forEach((item, index) => {
+						this.memberList.push(item.list)
+					})
+
 					if(res_data.code==200) {
 						_this.$store.commit("setFriend_list",res_data.body);
 						res_data.body.forEach(item=>{
