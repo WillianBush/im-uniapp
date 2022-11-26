@@ -9,8 +9,8 @@
 				<text class="cuIcon-search"></text>
 				<input v-model="kw1"  type="text" placeholder="输入搜索的关键词" confirm-type="search"></input>
 			</view>
-			<view class="action">
-				<button style="background: #FFAA01;"  @tap="search()"  class="cu-btn bg-gradual-green shadow-blur round">搜索</button>
+			<view  @tap="search()" class="action">
+				<button style="background: #FFAA01;" class="cu-btn bg-gradual-green shadow-blur round">搜索</button>
 			</view>
 		</view>
 		<scroll-view scroll-y class="indexes" :scroll-into-view="'indexes-'+ listCurID" :style="[{height:'calc(100vh - 100upx - 100upx - 100upx)'}]"
@@ -43,7 +43,7 @@
 				暂无好友
 			</view>
 		</scroll-view>
-		<view style="bottom:50upx" class="indexBar" :style="[{height:'calc(100vh - ' + CustomBar + 'px - 50px)'}]">
+		<view style="bottom:25upx" class="indexBar" :style="[{height:'calc(100vh - ' + CustomBar + 'px - 50px)'}]">
 			<view class="indexBar-box" @touchstart="tStart" @touchend="tEnd" @touchmove.stop="tMove">
 				<view class="indexBar-item" v-for="(item,index) in list" :key="index" :id="index" @touchstart="getCur" @touchend="setCur"> {{item.name}}</view>
 			</view>
@@ -361,6 +361,7 @@
 			},
 		
 			search() {
+				console.log("点击了")
 				this.kw = this.kw1;
 			},
 			//获取文字信息

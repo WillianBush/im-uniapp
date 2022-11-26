@@ -897,7 +897,7 @@
 							<!--							<view @tap="goFavourite" style="flex:1;text-align: center;margin-top: 20upx;"><text style="font-size: 60upx;color:#23A2FB" class="iconfont icon-shoucang"></text><view style="font-size: 24upx;color: #8799a3;">收藏</view></view>-->
 
 
-							<view @tap="sendCard()" style="flex:1;text-align: center;margin-top: 20upx;"><text style="font-size: 60upx;color:#FA9B4E" class="iconfont icon-mingpian2"></text><view style="font-size: 24upx;color: #8799a3;">名片</view></view>
+							<view v-if="false" @tap="sendCard()" style="flex:1;text-align: center;margin-top: 20upx;"><text style="font-size: 60upx;color:#FA9B4E" class="iconfont icon-mingpian2"></text><view style="font-size: 24upx;color: #8799a3;">名片</view></view>
 <!--							<view @tap="voiceCall()" style="flex:1;text-align: center;margin-top: 20upx;"><text style="font-size: 60upx;color:#FA9B4E" class="iconfont icon-yuyin"></text><view style="font-size: 24upx;color: #8799a3;">语音</view></view>-->
 						</view>
 						<!--						<view style="display: flex;margin-top: 40upx;">-->
@@ -2426,21 +2426,21 @@
 				if(!this.checkStopSpeak()) return;
 				let _this = this;
 				uni.chooseImage({
-					count: 4, //默认9
+					count: 9, //默认9
 					sizeType: [ 'compressed'], //可以指定是原图还是压缩图，默认二者都有
 					sourceType: ['album','camera'], //从相册选择
 					success: (res) => {
 						
 						//大于3M。则报
-						if(res.tempFiles[0].size>1024*3072) {
-							uni.showToast({
-							   icon: 'none',
-							   title: "图片大小不能高于3M"
-							});
-							return;
-						}
-						
-						let arrs = res.tempFilePaths;
+						// if(res.tempFiles[0].size>1024*3072) {
+						// 	uni.showToast({
+						// 	   icon: 'none',
+						// 	   title: "图片大小不能高于3M"
+						// 	});
+						// 	return;
+						// }
+
+						let arrs = res.tempFiles;
 						_this.$store.commit("setChat_my_loadding",true); 
 						setTimeout(function(){
 							_this.scrollToBottom();
@@ -2453,7 +2453,7 @@
 									"x-access-uid":_this.$store.state.user.id
 								 },
 								 // filePath  需要上传的文件
-								 filePath: item,
+								 filePath: item.path,
 								 name: 'file',
 								 success(res1) {
 									 let json = eval("("+res1.data+")");

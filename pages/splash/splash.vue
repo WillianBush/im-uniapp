@@ -1,6 +1,6 @@
 <template>
     <view class="start-wrap">
-        <image class="start-img" src="/static/setup-chugan.jpg" mode="aspectFill" @load="loadImage"></image>
+        <image class="start-img" src="/static/splash.png" mode="aspectFill" @load="loadImage"></image>
         <view class="wraper-row" @click="jump">{{count}}跳过</view>
         <updatepage ref="updatepage"></updatepage>
     </view>

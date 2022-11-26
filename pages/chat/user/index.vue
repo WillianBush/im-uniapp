@@ -2161,21 +2161,21 @@
 				console.log("上传文件");
 				let _this = this;
 				uni.chooseImage({
-					count: 4, //默认9
+					count: 9, //默认9
 					sizeType: ['compressed'], //可以指定是原图还是压缩图，默认二者都有
 					sourceType: ['album','camera'], //从相册选择
 					success: (res) => {
 						console.log('res', res)
 						//大于2M。则报
-						if(res.tempFiles[0].size>1024*2048) {
-							uni.showToast({
-							   icon: 'none',
-							   title: "图片大小不能高于2M"
-							});
-							return;
-						}
+						// if(res.tempFiles[0].size>1024*2048) {
+						// 	uni.showToast({
+						// 	   icon: 'none',
+						// 	   title: "图片大小不能高于2M"
+						// 	});
+						// 	return;
+						// }
 						
-						let arrs = res.tempFilePaths;
+						let arrs = res.tempFiles;
 						_this.$store.commit("setChat_my_loadding",true); 
 						setTimeout(function(){
 							_this.scrollToBottom();
@@ -2188,7 +2188,7 @@
 									"x-access-uid":_this.$store.state.user.id
 								 },
 								 // filePath  需要上传的文件
-								 filePath: item,
+								 filePath: item.path,
 								 name: 'file',
 								 success(res1) {
 									 let json = eval("("+res1.data+")");

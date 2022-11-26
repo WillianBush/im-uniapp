@@ -3,227 +3,235 @@
 		<cu-custom bgColor="bg-blue"  :isBack="true" :nameToLeft="true"><block slot="backText"></block><block slot="content">历史聊天记录</block><block slot="right">
 		</block></cu-custom>
 		<view class="cu-chat">
-			<view v-if="list.length<=0" style="text-align: center;color:#aaa;margin-top:60upx;font-size: 28upx;">
+			<view v-if="allList.length<=0" style="text-align: center;color:#aaa;margin-top:60upx;font-size: 28upx;">
 				暂无聊天记录
 			</view>
-			<block  v-for="(item,index) in $store.state.cur_chat_msg_list">
-				<block v-if="item.opt&&item.opt=='undo'">
-					<!-- <view v-if="item.opt_uid==$store.state.user.id"  class="cu-info round">撤回一条消息</view>
-					<view v-else  class="cu-info round">对方撤回一条消息</view> -->
-					<view style="display: none"></view>
-				</block>
-				<block v-else-if="item.type=='SYS_TXT'">
-					<view   class="cu-info round">
-						<rich-text  :nodes="item.bean.txt"></rich-text>
-					</view>
-				</block>
-					 
-					<block v-else-if="item.type=='USER_CARD'">
-								<view   v-if="item.bean.fromUid==$store.state.user.id" class="cu-item self" >
+
+			<scroll-view   :scroll-y="true"
+						   :refresher-enabled="true"
+						   :refresher-triggered="refresherTriggered"
+						   @refresherrefresh="refresherrefresh"
+						   @refresherrestore="refresherrestore"
+						   @refresherabort="refresherabort"
+						   @scrolltolower="scrollLower">
+				<block  v-for="(item,index) in allList">
+					<block v-if="item.opt&&item.opt=='undo'">
+						<!-- <view v-if="item.opt_uid==$store.state.user.id"  class="cu-info round">撤回一条消息</view>
+						<view v-else  class="cu-info round">对方撤回一条消息</view> -->
+						<view style="display: none"></view>
+					</block>
+					<block v-else-if="item.type=='SYS_TXT'">
+						<view   class="cu-info round">
+							<rich-text  :nodes="item.txt"></rich-text>
+						</view>
+					</block>
+
+						<block v-else-if="item.type=='USER_CARD'">
+									<view   v-if="item.fromUid==$store.state.user.id" class="cu-item self" >
+										<view class="main">
+											<view   @tap="clickCard(item)"  style="border: 1px solid #eee;background-color: #fff;width:400upx;height:180upx;border-radius: 6px;">
+												<view style="    height: 130upx;
+														border-bottom: 1px solid #eee;
+														width: 90%;
+														margin: auto auto;display: flex;">
+													<view style="width:90upx;margin-top: 26upx;width: 80upx;height: 80upx;" class="cu-avatar radius" :style="'background-image:url('+$store.state.img_url+item.mheadpic+');'" ></view>
+													<view style="width: 240upx;;margin-top: 30upx;margin-left: 12upx; text-align: left;">
+														<view style="overflow: hidden;word-break: keep-all;text-overflow: ellipsis;">{{item.mname}}</view>
+														<view style="color: #bbb;font-size: 24upx; margin-top: 8upx;">ID：{{item.mid}}</view>
+													</view>
+												</view>
+												<view style="    height: 50upx;
+														line-height: 50upx;
+														text-align: left;
+														font-size: 23upx;
+														padding-left: 20upx;
+														color: #777;">个人名片</view>
+											</view>
+										</view>
+										<view class="cu-avatar radius" :style="'background-image:url('+$store.state.img_url+item.fromHeadpic+');'"></view>
+										<view class="date">{{item.date}}</view>
+									</view>
+									<view  v-else class="cu-item"  >
+										<view @tap.stop="goUserDetail(item.fromUid)" class="cu-avatar radius" :style="'background-image:url('+$store.state.img_url+item.fromHeadpic+');'" ></view>
+										<view class="main">
+											<view   @tap="clickCard(item)"  style="border: 1px solid #eee;background-color: #fff;width:400upx;height:180upx;border-radius: 6px;">
+												<view style="    height: 130upx;
+														border-bottom: 1px solid #eee;
+														width: 90%;
+														margin: auto auto;display: flex;">
+													<view style="width:90upx;margin-top: 26upx;width: 80upx;height: 80upx;" class="cu-avatar radius" :style="'background-image:url('+$store.state.img_url+item.mheadpic+');'" ></view>
+													<view style="width: 240upx;;margin-top: 30upx;margin-left: 12upx; text-align: left;">
+														<view style="overflow: hidden;word-break: keep-all;text-overflow: ellipsis;">{{item.mname}}</view>
+														<view style="color: #bbb;font-size: 24upx; margin-top: 8upx;">ID：{{item.mid}}</view>
+													</view>
+												</view>
+												<view style="    height: 50upx;
+														line-height: 50upx;
+														text-align: left;
+														font-size: 23upx;
+														padding-left: 20upx;
+														color: #777;">个人名片</view>
+											</view>
+										</view>
+										<view class="date "> {{item.date}}</view>
+									</view>
+
+						</block>
+
+					<block v-else-if="item.type=='USER_TRANSFER'" >
+								<view   v-if="item.fromUid==$store.state.user.id" class="cu-item self" >
 									<view class="main">
-										<view   @tap="clickCard(item.bean)"  style="border: 1px solid #eee;background-color: #fff;width:400upx;height:180upx;border-radius: 6px;">
-											<view style="    height: 130upx;
-													border-bottom: 1px solid #eee;
-													width: 90%;
-													margin: auto auto;display: flex;">
-												<view style="width:90upx;margin-top: 26upx;width: 80upx;height: 80upx;" class="cu-avatar radius" :style="'background-image:url('+$store.state.img_url+item.bean.mheadpic+');'" ></view>
-												<view style="width: 240upx;;margin-top: 30upx;margin-left: 12upx; text-align: left;">
-													<view style="overflow: hidden;word-break: keep-all;text-overflow: ellipsis;">{{item.bean.mname}}</view>
-													<view style="color: #bbb;font-size: 24upx; margin-top: 8upx;">ID：{{item.bean.mid}}</view>
+										<view :style="item.status&&item.status==1?'opacity: .6;':''"  @tap="clickTransfer(item)"  style="background-color: #FC9105;width:380upx;height:150upx;border-radius: 6px;">
+											<view style="float:left;height:150upx;">
+												<view style="float: left;margin-top: 40upx;margin-left: 20upx;">
+													<text :class="item.status&&item.status==1?'icon-chenggong1':'icon-zhuanzhang'"   class="iconfont " style="font-size: 68upx; color: #f6f6f6;"><span></span></text>
+												</view>
+												<view style="float:left;">
+
+													<view v-if="item.status&&item.status==1"  style="text-align: left; color: #f6f6f6; margin-top: 30upx; margin-left: 20upx;font-size: 28upx;
+													overflow: hidden;width: 250upx;height: 44upx;">已收款</view>
+													<view v-else-if="item.status&&item.status==2"  style="text-align: left; color: #f6f6f6; margin-top: 30upx; margin-left: 20upx;font-size: 28upx;
+													overflow: hidden;width: 250upx;height: 44upx;">转账已过期</view>
+													<view v-else style="text-align: left; color: #f6f6f6; margin-top: 30upx; margin-left: 20upx;font-size: 28upx;
+													overflow: hidden;width: 250upx;height: 44upx; word-break: keep-all;text-overflow: ellipsis;">{{item.descri}}</view>
+
+													<view style="text-align: left;color: #f6f6f6; margin-top: 4upx; margin-left: 20upx;font-size: 32upx;">¥{{item.money}}</view>
 												</view>
 											</view>
-											<view style="    height: 50upx;
-													line-height: 50upx;
-													text-align: left;
-													font-size: 23upx;
-													padding-left: 20upx;
-													color: #777;">个人名片</view>
+											<!--
+											<view style=" height:40upx;background-color: #f6f6f6;float:left;width:100%;text-align: left;">11</view>
+											-->
 										</view>
 									</view>
-									<view class="cu-avatar radius" :style="'background-image:url('+$store.state.img_url+item.bean.fromHeadpic+');'"></view>
-									<view class="date">{{item.bean.date}}</view>
+									<view class="cu-avatar radius" :style="'background-image:url('+$store.state.img_url+item.fromHeadpic+');'"></view>
+									<view class="date">{{item.date}}</view>
 								</view>
 								<view  v-else class="cu-item"  >
-									<view @tap.stop="goUserDetail(item.bean.fromUid)" class="cu-avatar radius" :style="'background-image:url('+$store.state.img_url+item.bean.fromHeadpic+');'" ></view>
+									<view @tap.stop="goUserDetail(item.fromUid)" class="cu-avatar radius" :style="'background-image:url('+$store.state.img_url+item.fromHeadpic+');'" ></view>
 									<view class="main">
-										<view   @tap="clickCard(item.bean)"  style="border: 1px solid #eee;background-color: #fff;width:400upx;height:180upx;border-radius: 6px;">
-											<view style="    height: 130upx;
-													border-bottom: 1px solid #eee;
-													width: 90%;
-													margin: auto auto;display: flex;">
-												<view style="width:90upx;margin-top: 26upx;width: 80upx;height: 80upx;" class="cu-avatar radius" :style="'background-image:url('+$store.state.img_url+item.bean.mheadpic+');'" ></view>
-												<view style="width: 240upx;;margin-top: 30upx;margin-left: 12upx; text-align: left;">
-													<view style="overflow: hidden;word-break: keep-all;text-overflow: ellipsis;">{{item.bean.mname}}</view>
-													<view style="color: #bbb;font-size: 24upx; margin-top: 8upx;">ID：{{item.bean.mid}}</view>
+										<view :style="item.status&&item.status==1?'opacity: .6;':''" @tap="clickTransfer(item)" style="background-color: #FC9105;width:380upx;height:150upx;border-radius: 6px;">
+											<view style="float:left;height:150upx;">
+												<view style="float: left;margin-top: 40upx;margin-left: 20upx;">
+													<text :class="item.status&&item.status==1?'icon-chenggong1':'icon-zhuanzhang'"    class="iconfont " style="font-size: 68upx; color: #f6f6f6;"><span></span></text>
+												</view>
+												<view style="float:left;">
+													<view v-if="item.status&&item.status==1" style="text-align: left; color: #f6f6f6; margin-top: 30upx; margin-left: 20upx;font-size: 28upx;
+													overflow: hidden;width: 250upx;height: 44upx;">已收钱</view>
+													<view v-else-if="item.status&&item.status==2" style="text-align: left; color: #f6f6f6; margin-top: 30upx; margin-left: 20upx;font-size: 28upx;
+													overflow: hidden;width: 250upx;height: 44upx;">转账已过期</view>
+													<view v-else style="text-align: left; color: #f6f6f6; margin-top: 30upx; margin-left: 20upx;font-size: 28upx;
+													overflow: hidden;width: 250upx;height: 44upx;word-break: keep-all;text-overflow: ellipsis;">{{item.descri}}</view>
+													<view style="text-align: left;color: #f6f6f6; margin-top: 4upx; margin-left: 20upx;font-size: 32upx;">¥{{item.money}}</view>
 												</view>
 											</view>
-											<view style="    height: 50upx;
-													line-height: 50upx;
-													text-align: left;
-													font-size: 23upx;
-													padding-left: 20upx;
-													color: #777;">个人名片</view>
+											<!--
+											<view style=" height:40upx;background-color: #f6f6f6;float:left;width:100%;text-align: left;">11</view>
+											-->
 										</view>
 									</view>
-									<view class="date "> {{item.bean.date}}</view>
+									<view class="date "> {{item.date}}</view>
 								</view>
 
+
 					</block>
-					
-				<block v-else-if="item.type=='USER_TRANSFER'" >
-							<view   v-if="item.bean.fromUid==$store.state.user.id" class="cu-item self" >
-								<view class="main">
-									<view :style="item.bean.status&&item.bean.status==1?'opacity: .6;':''"  @tap="clickTransfer(item.bean)"  style="background-color: #FC9105;width:380upx;height:150upx;border-radius: 6px;">
-										<view style="float:left;height:150upx;">
-											<view style="float: left;margin-top: 40upx;margin-left: 20upx;">
-												<text :class="item.bean.status&&item.bean.status==1?'icon-chenggong1':'icon-zhuanzhang'"   class="iconfont " style="font-size: 68upx; color: #f6f6f6;"><span></span></text>	
+					<block v-else-if="item.type=='USER_RED'">
+								<view   v-if="item.fromUid==$store.state.user.id" class="cu-item self" >
+									<view class="main">
+										<view :style="item.opened&&item.opened==1?'opacity: .6;':''" @tap="clickHongbao(item)" style="background-color: #FF3A36;width:380upx;height:150upx;border-radius: 6px;">
+											<view style="float:left;height:150upx;">
+												<view style="float: left;margin-top: 40upx;margin-left: 20upx;">
+													<text   class="iconfont icon-lingquhongbao" style="font-size: 64upx; color: #FCBF00;"><span></span></text>
+												</view>
+												<view style="float:left;">
+													<view style="text-align: left; color: #f6f6f6; margin-top: 52upx; margin-left: 20upx;font-size: 28upx;
+													overflow: hidden;width: 250upx;height: 44upx;">{{item.descri}}</view>
+													<!--
+													<view style="text-align: left;color: #f6f6f6; margin-top: 12upx; margin-left: 20upx;font-size: 26upx;">领取红包</view>
+													-->
+												</view>
 											</view>
-											<view style="float:left;">
-												
-												<view v-if="item.bean.status&&item.bean.status==1"  style="text-align: left; color: #f6f6f6; margin-top: 30upx; margin-left: 20upx;font-size: 28upx;
-												overflow: hidden;width: 250upx;height: 44upx;">已收款</view> 
-												<view v-else-if="item.bean.status&&item.bean.status==2"  style="text-align: left; color: #f6f6f6; margin-top: 30upx; margin-left: 20upx;font-size: 28upx;
-												overflow: hidden;width: 250upx;height: 44upx;">转账已过期</view> 
-												<view v-else style="text-align: left; color: #f6f6f6; margin-top: 30upx; margin-left: 20upx;font-size: 28upx;
-												overflow: hidden;width: 250upx;height: 44upx; word-break: keep-all;text-overflow: ellipsis;">{{item.bean.descri}}</view> 
-												
-												<view style="text-align: left;color: #f6f6f6; margin-top: 4upx; margin-left: 20upx;font-size: 32upx;">¥{{item.bean.money}}</view>
-											</view>
+											<!--
+											<view style=" height:40upx;background-color: #f6f6f6;float:left;width:100%;text-align: left;">11</view>
+											-->
 										</view>
-										<!--
-										<view style=" height:40upx;background-color: #f6f6f6;float:left;width:100%;text-align: left;">11</view>
-										-->
 									</view>
+									<view class="cu-avatar radius" :style="'background-image:url('+$store.state.img_url+item.fromHeadpic+');'"></view>
+									<view class="date">{{item.date}}</view>
 								</view>
-								<view class="cu-avatar radius" :style="'background-image:url('+$store.state.img_url+item.bean.fromHeadpic+');'"></view>
-								<view class="date">{{item.bean.date}}</view>
-							</view>
-							<view  v-else class="cu-item"  >
-								<view @tap.stop="goUserDetail(item.bean.fromUid)" class="cu-avatar radius" :style="'background-image:url('+$store.state.img_url+item.bean.fromHeadpic+');'" ></view>
-								<view class="main">
-									<view :style="item.bean.status&&item.bean.status==1?'opacity: .6;':''" @tap="clickTransfer(item.bean)" style="background-color: #FC9105;width:380upx;height:150upx;border-radius: 6px;">
-										<view style="float:left;height:150upx;">
-											<view style="float: left;margin-top: 40upx;margin-left: 20upx;">
-												<text :class="item.bean.status&&item.bean.status==1?'icon-chenggong1':'icon-zhuanzhang'"    class="iconfont " style="font-size: 68upx; color: #f6f6f6;"><span></span></text>	
+								<view  v-else class="cu-item"  >
+									<view @tap.stop="goUserDetail(item.fromUid)" class="cu-avatar radius" :style="'background-image:url('+$store.state.img_url+item.fromHeadpic+');'" ></view>
+									<view class="main">
+										<view :style="item.opened&&item.opened==1?'opacity: .6;':''" @tap="clickHongbao(item)" style="background-color: #FF3A36;width:380upx;height:150upx;border-radius: 6px;">
+											<view style="float:left;height:150upx;">
+												<view style="float: left;margin-top: 40upx;margin-left: 20upx;">
+													<text   class="iconfont icon-lingquhongbao" style="font-size: 64upx; color: #FCBF00;"><span></span></text>
+												</view>
+												<view style="float:left;">
+													<view style="text-align: left; color: #f6f6f6; margin-top: 52upx; margin-left: 20upx;font-size: 28upx;
+													overflow: hidden;width: 250upx;height: 44upx;">{{item.descri}}</view>
+													<!--
+													<view style="text-align: left;color: #f6f6f6; margin-top: 12upx; margin-left: 20upx;font-size: 26upx;">领取红包</view>
+													-->
+												</view>
 											</view>
-											<view style="float:left;">
-												<view v-if="item.bean.status&&item.bean.status==1" style="text-align: left; color: #f6f6f6; margin-top: 30upx; margin-left: 20upx;font-size: 28upx;
-												overflow: hidden;width: 250upx;height: 44upx;">已收钱</view>
-												<view v-else-if="item.bean.status&&item.bean.status==2" style="text-align: left; color: #f6f6f6; margin-top: 30upx; margin-left: 20upx;font-size: 28upx;
-												overflow: hidden;width: 250upx;height: 44upx;">转账已过期</view>
-												<view v-else style="text-align: left; color: #f6f6f6; margin-top: 30upx; margin-left: 20upx;font-size: 28upx;
-												overflow: hidden;width: 250upx;height: 44upx;word-break: keep-all;text-overflow: ellipsis;">{{item.bean.descri}}</view>
-												<view style="text-align: left;color: #f6f6f6; margin-top: 4upx; margin-left: 20upx;font-size: 32upx;">¥{{item.bean.money}}</view>
-											</view>
+											<!--
+											<view style=" height:40upx;background-color: #f6f6f6;float:left;width:100%;text-align: left;">11</view>
+											-->
 										</view>
-										<!--
-										<view style=" height:40upx;background-color: #f6f6f6;float:left;width:100%;text-align: left;">11</view>
-										-->
 									</view>
+									<view class="date "> {{item.date}}</view>
 								</view>
-								<view class="date "> {{item.bean.date}}</view>
-							</view>
-							
-							
-				</block>
-				<block v-else-if="item.type=='USER_RED'">
-							<view   v-if="item.bean.fromUid==$store.state.user.id" class="cu-item self" >
-								<view class="main">
-									<view :style="item.bean.opened&&item.bean.opened==1?'opacity: .6;':''" @tap="clickHongbao(item.bean)" style="background-color: #FF3A36;width:380upx;height:150upx;border-radius: 6px;">
-										<view style="float:left;height:150upx;">
-											<view style="float: left;margin-top: 40upx;margin-left: 20upx;">
-												<text   class="iconfont icon-lingquhongbao" style="font-size: 64upx; color: #FCBF00;"><span></span></text>	
-											</view>
-											<view style="float:left;">
-												<view style="text-align: left; color: #f6f6f6; margin-top: 52upx; margin-left: 20upx;font-size: 28upx;
-												overflow: hidden;width: 250upx;height: 44upx;">{{item.bean.descri}}</view>
-												<!--
-												<view style="text-align: left;color: #f6f6f6; margin-top: 12upx; margin-left: 20upx;font-size: 26upx;">领取红包</view>
-												-->
-											</view>
-										</view>
-										<!--
-										<view style=" height:40upx;background-color: #f6f6f6;float:left;width:100%;text-align: left;">11</view>
-										-->
+
+
+					</block>
+					<block v-else>
+						<view  v-if="item.fromUid==$store.state.user.id" class="cu-item self" >
+							<view class="main">
+								<!---
+								<view v-if="item.read==-1" class="iconfont cu-load load-cuIcon loading text-xxl" style="margin-right:30upx;color: #999;font-size: 24upx;"></view>
+								-->
+								<view v-if="item.read==0" style="margin-right:30upx;color: #999;font-size: 24upx;">未读</view>
+								<view v-if="item.read==1" style="margin-right:30upx;color: #999;font-size: 24upx;">已读</view>
+								<view  class="content bg-green shadow" style="background-color: #98E165;
+				color:#222;">
+									<u-parse v-if="item.psr=='uparse'" :content="item.txt" @preview="preview" @navigate="navigate" ></u-parse>
+									<view @tap="clickVoice(item.txt,index)" v-else-if="item.psr=='voice'">
+										<text  v-show="selVoiceIndex != index"  style="float:left;width:100upx;font-size: 52upx;position: relative;top: 4upx;"  class="iconfont icon-yuyin1 text-xxl "></text>
+										<text  v-show="selVoiceIndex != index"  style="float:left;font-size: 26upx;position: relative;top: 4upx;">{{item.sub_txt}}"</text>
+										<text  v-show="selVoiceIndex == index"   style="float:left;width:100upx;font-size: 52upx;position: relative;text-align: left;top:0;line-height: 38upx;"  class="iconfont cu-load load-cuIcon loading text-xxl "></text>
+										<text  v-show="selVoiceIndex == index"  style="float:left;font-size: 26upx;position: relative;top: 6upx;">{{item.sub_txt}}"</text>
 									</view>
+									<video  direction="0"   v-else-if="item.psr=='video'" :src="$store.state.img_url+item.txt"></video>
+									<rich-text v-else   :nodes="item.txt"></rich-text>
+
 								</view>
-								<view class="cu-avatar radius" :style="'background-image:url('+$store.state.img_url+item.bean.fromHeadpic+');'"></view>
-								<view class="date">{{item.bean.date}}</view>
 							</view>
-							<view  v-else class="cu-item"  >
-								<view @tap.stop="goUserDetail(item.bean.fromUid)" class="cu-avatar radius" :style="'background-image:url('+$store.state.img_url+item.bean.fromHeadpic+');'" ></view>
-								<view class="main">
-									<view :style="item.bean.opened&&item.bean.opened==1?'opacity: .6;':''" @tap="clickHongbao(item.bean)" style="background-color: #FF3A36;width:380upx;height:150upx;border-radius: 6px;">
-										<view style="float:left;height:150upx;">
-											<view style="float: left;margin-top: 40upx;margin-left: 20upx;">
-												<text   class="iconfont icon-lingquhongbao" style="font-size: 64upx; color: #FCBF00;"><span></span></text>	
-											</view>
-											<view style="float:left;">
-												<view style="text-align: left; color: #f6f6f6; margin-top: 52upx; margin-left: 20upx;font-size: 28upx;
-												overflow: hidden;width: 250upx;height: 44upx;">{{item.bean.descri}}</view>
-												<!--
-												<view style="text-align: left;color: #f6f6f6; margin-top: 12upx; margin-left: 20upx;font-size: 26upx;">领取红包</view>
-												-->
-											</view>
-										</view>
-										<!--
-										<view style=" height:40upx;background-color: #f6f6f6;float:left;width:100%;text-align: left;">11</view>
-										-->
-									</view>
-								</view>
-								<view class="date "> {{item.bean.date}}</view>
-							</view>
-							
-							
-				</block>
-				<block v-else>
-					<view  v-if="item.bean.fromUid==$store.state.user.id" class="cu-item self" >
-						<view class="main">
-							<!---
-							<view v-if="item.bean.read==-1" class="iconfont cu-load load-cuIcon loading text-xxl" style="margin-right:30upx;color: #999;font-size: 24upx;"></view>
-							-->
-							<view v-if="item.bean.read==0" style="margin-right:30upx;color: #999;font-size: 24upx;">未读</view>
-							<view v-if="item.bean.read==1" style="margin-right:30upx;color: #999;font-size: 24upx;">已读</view>
-							<view  class="content bg-green shadow" style="background-color: #98E165;
-			color:#222;">
-								<u-parse v-if="item.bean.psr=='uparse'" :content="item.bean.txt" @preview="preview" @navigate="navigate" ></u-parse>
-								<view @tap="clickVoice(item.bean.txt,index)" v-else-if="item.bean.psr=='voice'">
-									<text  v-show="selVoiceIndex != index"  style="float:left;width:100upx;font-size: 52upx;position: relative;top: 4upx;"  class="iconfont icon-yuyin1 text-xxl "></text>
-									<text  v-show="selVoiceIndex != index"  style="float:left;font-size: 26upx;position: relative;top: 4upx;">{{item.bean.sub_txt}}"</text>
-									<text  v-show="selVoiceIndex == index"   style="float:left;width:100upx;font-size: 52upx;position: relative;text-align: left;top:0;line-height: 38upx;"  class="iconfont cu-load load-cuIcon loading text-xxl "></text>
-									<text  v-show="selVoiceIndex == index"  style="float:left;font-size: 26upx;position: relative;top: 6upx;">{{item.bean.sub_txt}}"</text>
-								</view>
-								<video  direction="0"   v-else-if="item.bean.psr=='video'" :src="$store.state.img_url+item.bean.txt"></video>
-								<rich-text v-else   :nodes="item.bean.txt"></rich-text>
-								
-							</view>
+							<view class="cu-avatar radius" :style="'background-image:url('+$store.state.img_url+item.fromHeadpic+');'"></view>
+							<view class="date">{{item.date}}</view>
 						</view>
-						<view class="cu-avatar radius" :style="'background-image:url('+$store.state.img_url+item.bean.fromHeadpic+');'"></view>
-						<view class="date">{{item.bean.date}}</view>
-					</view>
-					
-					<view v-else class="cu-item"  >
-						<view @tap.stop="goUserDetail(item.bean.fromUid)" class="cu-avatar radius" :style="'background-image:url('+$store.state.img_url+item.bean.fromHeadpic+');'" ></view>
-						<view class="main">
-							<view   class="content shadow" style="
-			color:#222;">
-								<u-parse v-if="item.bean.psr=='uparse'" :content="item.bean.txt" @preview="preview" @navigate="navigate" ></u-parse>
-								<view @tap="clickVoice(item.bean.txt,index)" v-else-if="item.bean.psr=='voice'">
-									<text  v-show="selVoiceIndex != index"  style="text-align: right; float:right;width:100upx;font-size: 52upx;position: relative;top: 4upx;"  class="iconfont icon-yuyin1 text-xxl "></text>
-									<text  v-show="selVoiceIndex != index"  style="float:right;font-size: 26upx;position: relative;top: 4upx;">{{item.bean.sub_txt}}"</text>
-									<text  v-show="selVoiceIndex == index"   style="text-align: right;float:right;width:100upx;font-size: 52upx;position: relative;top:0;line-height: 38upx;"  class="iconfont cu-load load-cuIcon loading text-xxl "></text>
-									<text  v-show="selVoiceIndex == index"  style="float:right;font-size: 26upx;position: relative;top: 6upx;">{{item.bean.sub_txt}}"</text>
+
+						<view v-else class="cu-item"  >
+							<view @tap.stop="goUserDetail(item.fromUid)" class="cu-avatar radius" :style="'background-image:url('+$store.state.img_url+item.fromHeadpic+');'" ></view>
+							<view class="main">
+								<view   class="content shadow" style="
+				color:#222;">
+									<u-parse v-if="item.psr=='uparse'" :content="item.txt" @preview="preview" @navigate="navigate" ></u-parse>
+									<view @tap="clickVoice(item.txt,index)" v-else-if="item.psr=='voice'">
+										<text  v-show="selVoiceIndex != index"  style="text-align: right; float:right;width:100upx;font-size: 52upx;position: relative;top: 4upx;"  class="iconfont icon-yuyin1 text-xxl "></text>
+										<text  v-show="selVoiceIndex != index"  style="float:right;font-size: 26upx;position: relative;top: 4upx;">{{item.sub_txt}}"</text>
+										<text  v-show="selVoiceIndex == index"   style="text-align: right;float:right;width:100upx;font-size: 52upx;position: relative;top:0;line-height: 38upx;"  class="iconfont cu-load load-cuIcon loading text-xxl "></text>
+										<text  v-show="selVoiceIndex == index"  style="float:right;font-size: 26upx;position: relative;top: 6upx;">{{item.sub_txt}}"</text>
+									</view>
+									<video  direction="0"   v-else-if="item.psr=='video'" :src="$store.state.img_url+item.txt"></video>
+									<rich-text v-else   :nodes="item.txt"></rich-text>
 								</view>
-								<video  direction="0"   v-else-if="item.bean.psr=='video'" :src="$store.state.img_url+item.bean.txt"></video>
-								<rich-text v-else   :nodes="item.bean.txt"></rich-text>
 							</view>
+							<view class="date "> {{item.date}}</view>
 						</view>
-						<view class="date "> {{item.bean.date}}</view>
-					</view>
+					</block>
+
 				</block>
-				
-				
-			</block>
+			</scroll-view>
 			<!--
 			<view class="cu-item self" > 
 				<view class="main">
@@ -310,7 +318,9 @@
 		},
 		data() {
 			return {
+				toid:"",
 				list:[],
+				allList:[],
 				player:null,
 				selVoiceIndex:-1,
 				domHeight:0,
@@ -363,28 +373,86 @@
 				temp_bean:null,
 				showOpenRed:false,
 				showname:"",
+				refresherTriggered: false, //下拉刷新状态
+				_refresherTriggered: false, //防止异步操作
+				numPag: 1, // 第一页
+				allPageNum: 10000, // 总页数
+				pageSize: 50,//50条
+				status: "more", // 加载状态
+				timer: null
 			};
 		},
-		onLoad(option) {
+		onLoad(e) {
+			this.toid = e.id;
 			let _this = this;
-			let user = uni.getStorageSync("USER");
-			let str = uni.getStorageSync(user.id+"#"+this.$store.state.cur_chat_entity.id+'_CHAT_MESSAGE');
-			if(str&&str!="") {
-				 var jsonObj = JSON.parse(str);
-				 _this.list = jsonObj;
-				 // if(jsonObj.length>50) {
-					// jsonObj.splice(0,jsonObj.length-50);
-				 //  }
-			}
-			
-			setTimeout(()=>{
-				uni.pageScrollTo({
-				    scrollTop: 9999999999,
-				    duration: 0
-				});
-			},50)
+			this.loadStoreData(this.pageSize,this.numPag);
 		},
 		methods: {
+			refresherrefresh() {
+				console.log('自定义下拉刷新被触发');
+				let _this = this;
+				if (_this._refresherTriggered) {
+					return;
+				}
+				_this._refresherTriggered = true;
+				//界面下拉触发，triggered可能不是true，要设为true
+				if (!_this.refresherTriggered) {
+					_this.refresherTriggered = true;
+				}
+				//pageNum + 1
+				this.numPag = this.numPag + 1;
+				this.loadStoreData(this.pageSize,this.numPag);
+			},
+			refresherrestore() {
+				console.log('自定义下拉刷新被复位');
+				let _this = this;
+				_this.refresherTriggered = false;
+				_this._refresherTriggered = false;
+			},
+			refresherabort() {
+				console.log('自定义下拉刷新被中止    ');
+				let _this = this;
+				_this.refresherTriggered = false;
+				_this._refresherTriggered = false;
+			},
+			scrollLower() {
+				console.log('我滚动到底部了')
+			},
+			closeRefresh(){
+				this.refresherTriggered = false; //触发onRestore，并关闭刷新图标
+				this._refresherTriggered = false;
+			},
+			loadStoreData(pSize,pNumber) {
+				let _this = this;
+				let user = uni.getStorageSync("USER");
+				if(user){
+					_this.$http.post("/chat/listPage",
+							{
+								pageSize:pSize,//数量
+								pageNumber:pNumber,//页数
+								toMemberid:_this.toid,
+							},
+							{
+								header:{
+									"x-access-uid":user.id,
+									"x-access-client":_this.$clientType
+								}
+							}
+					).then(res_1=>{
+						let res_data_1 = eval(res_1.data);
+						console.log("test_test",res_data_1)
+						if(res_data_1.code==200) {
+							this.numPag = res_data_1.body.pageNumber;//当前在第几页
+
+							_this.allList = res_data_1.body.list;
+
+							this.closeRefresh();
+						} else {
+							this.closeRefresh();
+						}
+					})
+				}
+			},
 			getPopButton(item) {
 				// popButton: ["复制", "转发", "收藏","删除","撤消"],
 				if(item=="复制") return "icon-fuzhi";

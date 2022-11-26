@@ -1,9 +1,9 @@
 {
-    "name" : "触感",
-    "appid" : "__UNI__GD0C4D81",
-    "description" : "触感",
-    "versionName" : "1.0.7",
-    "versionCode" : 8,
+    "name" : "约伴",
+    "appid" : "__UNI__3464A7A",
+    "description" : "约伴",
+    "versionName" : "1.0.8",
+    "versionCode" : 9,
     "transformPx" : false,
     /* 5+App特有相关 */
     "app-plus" : {
@@ -134,7 +134,7 @@
         "router" : {
             "base" : "/"
         },
-        "title" : "触感APP",
+        "title" : "约伴APP",
         "optimization" : {
             "treeShaking" : {
                 "enable" : true
@@ -155,6 +155,5 @@
             },
             "port" : 8080
         }
-    },
-    "fallbackLocale" : "zh-Hans"
+    }
 }

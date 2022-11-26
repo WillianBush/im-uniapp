@@ -8,7 +8,8 @@
 				<text class="cuIcon-search"></text>
 				<input @input="search_list($event.target.value)" type="text" placeholder="搜索" confirm-type="search"></input>
 			</view>
-			
+
+			<button @tap="searchP(inputText)" style="background: #FFAA01;"   class="cu-btn bg-gradual-green shadow-blur round">搜索</button>
 		</view>
 		
 		<view style="background: #fff;width: 96%;
@@ -23,7 +24,7 @@
 							 @refresherrestore="refresherrestore"
 							 @refresherabort="refresherabort"
 							 @scrolltolower="scrollLower">
-						<view @tap="goUserDetail(item.id)" style="display: inline-block;width:20%;margin-bottom:20upx;text-align: center;" v-for="(item,index) in totalList">
+						<view @tap="goUserDetail(item.id)" style="display: inline-block;width:20%;margin-bottom:20upx;text-align: center;margin-top: 10px" v-for="(item,index) in totalList">
 							<view  class="cu-avatar round" :style="'height:100upx;width:100upx;background-image:url('+$store.state.img_url+item.headpic+');'"></view>
 							<view    style="margin:auto auto;color: #999;font-size:24upx;text-align: center;margin-top:8upx;overflow: hidden;height:68upx;width:100upx;word-wrap: break-word; word-break: normal">{{item.nickName}}</view>
 							
@@ -51,7 +52,8 @@
 				allPageNum: 10000, // 总页数
 				pageSize: 50,//50条
 				status: "more", // 加载状态
-				timer: null
+				timer: null,
+				inputText:""
 				
 			}
 		},
@@ -86,6 +88,39 @@
 			
 		},
 		methods: {
+			searchP(a){
+				if(typeof a !== 'undefined' && a != null && a !== ''){
+					let _this = this;
+					_this.$http.post("/room/json/getMember",
+							{
+								roomid:_this.$store.state.cur_chat_entity.id,
+								nickname:a,
+							},
+							{
+								header:{
+									"x-access-uid":_this.$store.state.user.id,
+									"x-access-client":_this.$clientType
+								}
+							}
+					).then(res=>{
+						let res_data = eval(res.data);
+						if(res_data.code==200) {
+							let item = res_data.body;
+							if(item){
+								// let s = uni.getStorageSync(item.id+"_NOTE");
+								// if(s&&s!="") {
+								// 	item.nickName=s;
+								// }
+								_this.totalList = [];
+								_this.totalList = item;
+								console.log("搜索进来啦2",_this.totalList)
+							}
+						}
+					})
+				}else {
+					this.refresherrefresh();
+				}
+			},
 			refresherrefresh() {
 				console.log('自定义下拉刷新被触发');
 				let _this = this;
@@ -164,48 +199,7 @@
 				})
 			},
 			search_list(a){
-				/*let _this = this;
-				this.list1 = this.list;
-				if(this.kw.trim()!="") {
-					this.list1 = this.list1.filter((item)=>{
-						 if(item.nickName.indexOf(_this.kw.trim())>=0) {
-							 return true;
-						 }
-						 return false;
-					 })
-				}*/
-				if(typeof a !== 'undefined' && a != null && a !== ''){
-					let _this = this;
-					_this.$http.post("/room/json/getMember",
-							{
-								roomid:_this.$store.state.cur_chat_entity.id,
-								nickname:a,
-							},
-							{
-								header:{
-									"x-access-uid":_this.$store.state.user.id,
-									"x-access-client":_this.$clientType
-								}
-							}
-					).then(res=>{
-						let res_data = eval(res.data);
-						if(res_data.code==200) {
-							let item = res_data.body;
-							if(res_data.body){
-								let s = uni.getStorageSync(item.id+"_NOTE");
-								if(s&&s!="") {
-									item.nickName=s;
-								}
-								_this.totalList = [];
-								_this.totalList.push(item);
-								console.log("搜索进来啦2",_this.totalList)
-							}
-						}
-						_this.closeRefresh();
-					})
-				}else{
-					this.refresherrefresh();
-				}
+				this.inputText = a;
 			},
 			goUserDetail(_id){
 				let _this = this;

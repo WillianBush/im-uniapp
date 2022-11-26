@@ -11,7 +11,7 @@
 			<!-- 头部logo -->
 			<view class="header"  @tap="">
 				<!-- <image :src="$store.state.img_url+(headpic==''?'/img_sys/defaultHeadPic.jpg':headpic)"></image> -->
-				<image src="/static/chugan-logo.png"></image>
+				<image src="/static/logo12.png"></image>
 				<!-- <view style="font-size: 24upx;color:#aaa;text-align: center;margin-top:10upx;">点击上传头像</view> -->
 			</view> 
 			<!-- 主体 -->

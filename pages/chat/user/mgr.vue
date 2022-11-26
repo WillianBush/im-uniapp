@@ -362,7 +362,7 @@
 			},
 			goMsgRecord() {
 				uni.navigateTo({
-					url:"/pages/chat/user/message_record"
+					url:"/pages/chat/user/message_record?id="+this.id
 				})
 			},
 			clearChatMsg(){
