@@ -137,7 +137,6 @@ export default new Vuex.Store({
 
 
 					// 保存clientid到服务器，最好延迟一下获取信息否则有时会获取不到
-					// #ifdef APP-PLUS
 					setTimeout(function(){
 						const clientInfo = plus.push.getClientInfo()
 						let pushUser = {
@@ -150,7 +149,6 @@ export default new Vuex.Store({
 						}
 						_this.dispatch("WEBSOCKET_SEND", "{body:'"+JSON.stringify(pushUser)+"',CMD:'APP_PUSH_USER_INFO'}");
 					},1000);
-					// #endif
 				}
 
 				if(heartCheck) {

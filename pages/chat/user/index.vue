@@ -1156,7 +1156,6 @@
 				this.$websocket.dispatch("WEBSOCKET_SEND", "{body:'"+JSON.stringify(v)+"',CMD:'CHAT_MSG_READED'}");
 			},
 			onLoadMethod (){
-			  console.log('77777')
 			  this.$store.commit("setCur_chat_msg_list",[]);
 			  this.$store.commit("setChat_my_loadding",false);
 

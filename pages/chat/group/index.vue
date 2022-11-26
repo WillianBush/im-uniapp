@@ -1194,7 +1194,6 @@
 			onLoadMethod () {
 				this.$store.commit("setCur_chat_msg_list",[]);
 				this.$store.commit("setChat_my_loadding",false);
-				this.getWindowSize();
 				// #ifndef H5
 				//录音开始事件
 				this.RECORDER.onStart((e)=>{
