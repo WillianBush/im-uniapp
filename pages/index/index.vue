@@ -11,8 +11,8 @@
     text-align: center;
     font-size: 24upx;opacity: .92;" v-show="isCloseNet()">网络已断开，请检查网络稳定性</view>
 
-		<home ref="homeRef" v-show="PageCur=='home'"></home>
-		<addressBook v-show="PageCur=='addressBook'"></addressBook>
+		<home :isBlank="isBlank" v-if="PageCur=='home'"></home>
+		<addressBook :isBlank="isBlank" v-if="PageCur=='addressBook'"></addressBook>
 		<!-- <hotItem v-if="PageCur=='hotItem'&&$store.state.hotItem.show_type==1"></hotItem> -->
 		<faxian v-show="PageCur=='faxian'"></faxian>
 		<mine v-show="PageCur=='mine'"></mine>
@@ -29,7 +29,7 @@
 			<view class="action">
 				<view class='cuIcon-cu-image'></view>
 			</view>
-			<view class="action" @click="NavChange" data-cur="home">
+			<view class="action" @click="switchNav" data-cur="home">
 				<view class='cuIcon-cu-image'>
 					<!--
 					<image :src="'/static/tabbar/basics' + [PageCur=='home'?'_cur':''] + '.png'"></image>
@@ -39,7 +39,7 @@
 				</view>
 				<view style="margin-top: 2upx;" :style="'color:'+(PageCur=='home'?'#3F92F8':'#888')">消息</view>
 			</view>
-			<view class="action" @click="NavChange" data-cur="addressBook">
+			<view class="action" @click="switchNav" data-cur="addressBook">
 				<view class='cuIcon-cu-image'>
 					<!--
 					<image :src="'/static/tabbar/component' + [PageCur == 'addressBook'?'_cur':''] + '.png'"></image>
@@ -49,7 +49,7 @@
 				</view>
 				<view style="margin-top: 2upx;" :style="'color:'+(PageCur=='addressBook'?'#3F92F8':'#888')">通讯录</view>
 			</view>
-			<view class="action" @click="NavChange" data-cur="faxian">
+			<view class="action" @click="switchNav" data-cur="faxian">
 				<view class='cuIcon-cu-image'>
 					<!--
 					<image :src="'/static/tabbar/plugin' + [PageCur == 'faxian'?'_cur':''] + '.png'"></image>
@@ -58,7 +58,7 @@
 				</view>
 				<view style="margin-top: 2upx;" :style="'color:'+(PageCur=='faxian'?'#3F92F8':'#888')">发现</view>
 			</view>
-			<view class="action" @click="NavChange" data-cur="mine">
+			<view class="action" @click="switchNav" data-cur="mine">
 				<view class='cuIcon-cu-image'>
 					<!--
 					<image :src="'/static/tabbar/about' + [PageCur == 'mine'?'_cur':''] + '.png'"></image>
@@ -70,7 +70,7 @@
 			<view class="action">
 				<view class='cuIcon-cu-image'></view>
 			</view>
-			<view @click="NavChange" data-cur="hotItem" class="action text-gray">
+			<view @click="switchNav" data-cur="hotItem" class="action text-gray">
 				<view class='cuIcon-cu-image'>
 					<img src="../../static/logo.png" width="50px" height="50px"></img>
 				</view>
@@ -108,6 +108,7 @@
 				PageCur: 'home',
 				hot_wv : null,
 				showSignIn:false,
+				isBlank:false,
 				time_t:new Date().getTime(),
 				randomid: 0,
 			}
@@ -125,38 +126,40 @@
 			hideSignIn(){
 				this.showSignIn = false;
 			},
-			NavChange: function(e) {
+			switchNav: function(e) {
 				let _this = this;
 				let user = uni.getStorageSync("USER");
 
-				console.log(this.hot_wv);
 				if(this.hot_wv) {
 					this.hot_wv.hide();
 				}
-				if(e.currentTarget.dataset.cur=="hotItem") {
+				if(e.currentTarget.dataset.cur=="hotItem") { //最下方群发
 					this.randomid = parseInt(Math.random()*100000000);
 					this.$store.state.cur_chat_msg_list = [];
 						// uni.navigateTo({
 						// 	url:"/pages/hotItem/hotItem_app"
 						// })
 						// return;
-				} else if(e.currentTarget.dataset.cur=="mine") {
+				} else if(e.currentTarget.dataset.cur=="mine") {  //我的
 
 					_this.$http.post("/sysConfig/json/getShimingCfg",
-						{
-							header:{
-								//"x-access-uid":_this.$store.state.user.id
-								"x-access-client":_this.$clientType
+							{
+								header:{
+									//"x-access-uid":_this.$store.state.user.id
+									"x-access-client":_this.$clientType
+								}
 							}
-						}
 					).then(res=>{
 						if(res.data.code==200) {
 							_this.$store.commit("setShimingCfg",res.data.body);
 						}
 					})
+				}else if(e.currentTarget.dataset.cur=="home") {
+					this.isBlank = true;
 				} else {
-					if(e.currentTarget.dataset.cur=="addressBook") {
+					if(e.currentTarget.dataset.cur=="addressBook") { //通讯录
 
+						this.isBlank = true;
 						if(!this.$store.state.friend_list||this.$store.state.friend_list.length<=0) {
 
 							_this.$http.post("/user/friend/list/v1",

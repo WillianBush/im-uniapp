@@ -69,11 +69,6 @@
 				type: String,
 				default: '#fffbe8'
 			},
-			speed: {
-				// 默认1s滚动100px
-				type: Number,
-				default: 100
-			},
 			color: {
 				type: String,
 				default: '#de8c17'
@@ -114,6 +109,7 @@
 			return {
 				textWidth: 0,
 				boxWidth: 0,
+				speed:50,
 				wrapWidth: '',
 				webviewHide: false,
 				// #ifdef APP-NVUE

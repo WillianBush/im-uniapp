@@ -17,36 +17,36 @@
 				<view @click="copy(user.nickName)" style="margin:auto auto;font-size:34upx;margin-top:20upx;height:34upx;font-weight: 800;margin-left:20upx">{{user.nickName}}
 				<text style="font-size:20upx;font-weight: 400;color:#999;" v-if="user.nickName_real&&user.nickName_real!=''">({{user.nickName_real}})</text>
 				</view>
-				
+
 				<view @click="copy(user.memberId)" style="margin:auto auto;font-size:28upx;margin-top:26upx;height:34upx;margin-left:20upx;color:#777">ID号：{{user.memberId}}</view>
 			</view>
 			<view  v-else style="margin-left: 20upx;line-height:190upx;">
 				<view style="margin:auto auto;font-size:34upx;height:34upx;font-weight: 800;margin-left:20upx">{{user.nickName}}</view>
 			</view>
-			
-			 
-		</view> 
-		
+
+
+		</view>
+
 		<view v-show="showGroupStopSpeak" class="cu-item cu-form-group margin-top">
 			<view class="title">禁止在此群发言</view>
 			<switch @change="GroupStopSpeak" :class="groupStopSpeak?'checked':''" :checked="groupStopSpeak?true:false"></switch>
 		</view>
-		
+
 	<block v-if="user.id!=$store.state.user.id">
 		<view v-if="isMyFri" @tap="goChat(id)" style="clear: both;" class="cu-list menu">
 			<view class="margin-top" style="text-align: center;background: #fff;height:100upx;line-height: 100upx;" >
 				<text style="color: #485D83;font-size: 50upx;position: relative;top:6upx;" class="iconfont icon-icon--"></text>
 				<text style="color: #485D83;font-size: 30upx;font-weight: 800;margin-left: 10upx;">发消息</text>
 			</view>
-		</view>	
-		
+		</view>
+
 <!--		<view v-else @tap="addFriend(id)" style="clear: both;" class="cu-list menu">-->
 <!--			<view class="margin-top" style="text-align: center;background: #fff;height:100upx;line-height: 100upx;" >-->
 <!--				<text style="color: #485D83;font-size: 30upx;font-weight: 800;margin-left: 10upx;">添加好友</text>-->
 <!--			</view>-->
 <!--		</view>	-->
-	</block>	
-		
+	</block>
+
 	</view>
 </template>
 
@@ -71,8 +71,8 @@
 					if(this.$store.state.cur_chat_entity&&this.$store.state.cur_chat_entity.owner_UUID&&
 						(this.$store.state.cur_chat_entity.owner_UUID==this.$store.state.user.id||this.$store.state.cur_chat_entity.memberMgr_ids.indexOf(this.$store.state.user.id)>=0)) {
 						return true;
-					} 
-				}  
+					}
+				}
 				return false;
 			}
 		},
@@ -81,8 +81,8 @@
 			this.id = e.id;
 			if(e.room_id&&e.room_id!=undefined) {
 				this.room_id = e.room_id;
-				
-				
+
+
 				_this.$http.post("/room/json/isStopSpeak4User",
 					{roomid:_this.room_id,uid:_this.id},
 					{
@@ -93,7 +93,7 @@
 					}
 				).then(res=>{
 					let res_data = eval(res.data);
-					if(res_data.code==200) {  
+					if(res_data.code==200) {
 						if(res_data.msg=="0") {
 							_this.groupStopSpeak = false;
 						} else {
@@ -105,10 +105,10 @@
 						    duration: 2000
 						});
 					}
-				});				
+				});
 			}
-			
-			
+
+
 			_this.$http.post("/user/json/loadById/v1",
 				{id:this.id},
 				{
@@ -119,7 +119,7 @@
 				}
 			).then(res=>{
 				let res_data = eval(res.data);
-				if(res_data.code==200) {  
+				if(res_data.code==200) {
 					_this.user = res_data.body;
 					let s = uni.getStorageSync(_this.user.id+"_NOTE");
 					if(s&&s!="") {
@@ -128,7 +128,7 @@
 					}
 				}
 			})
-					
+
 			_this.$http.post("/user/friend/isMyFri/v1",
 				{uid:this.id},
 				{
@@ -139,7 +139,7 @@
 				}
 			).then(res=>{
 				let res_data = eval(res.data);
-				if(res_data.code==200) {  
+				if(res_data.code==200) {
 					if(res_data.msg=="1") {
 						_this.isMyFri = true;
 					}
@@ -234,8 +234,8 @@
 			GroupStopSpeak(e) {
 				let _this = this;
 				this.groupStopSpeak = e.detail.value;
-				
-				
+
+
 				_this.$http.post("/room/json/uStopSpeakSingle",
 					{roomid:_this.room_id,uid:_this.id},
 					{
@@ -246,7 +246,7 @@
 					}
 				).then(res=>{
 					let res_data = eval(res.data);
-					if(res_data.code==200) {  
+					if(res_data.code==200) {
 					} else {
 						uni.showToast({
 						    title: res_data.msg,
@@ -254,8 +254,8 @@
 						});
 					}
 				})
-				
-				
+
+
 				// uni.request({
 				// 	method:"POST",
 				// 	url: _this.$store.state.req_url + "/room/json/uStopSpeakSingle",
@@ -266,7 +266,7 @@
 				// 	},
 				// 	success(res) {
 				// 		let res_data = eval(res.data);
-				// 		if(res_data.code==200) {  
+				// 		if(res_data.code==200) {
 				// 		} else {
 				// 			uni.showToast({
 				// 			    title: res_data.msg,
@@ -291,7 +291,7 @@
 					url:"/pages/home/index?id="+_id+"&typeid=2"
 				})
 			}
-			
+
 		}
 	}
 </script>

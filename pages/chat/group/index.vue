@@ -1,13 +1,24 @@
 <template>
 	<view ref="topVew" v-if="$store.state.cur_chat_entity"   :style="chatCfg.chatBackgroundImage&&chatCfg.chatBackgroundImage!=''?'background-image: url('+$store.state.img_url+chatCfg.chatBackgroundImage+')':''" style="background-size: 100%;min-height: 100vh;" >
-		<cu-custom backUrl="/pages/index/index" bgColor="bg-blue"  :isBack="true" :nameToLeft="false">
+		<cu-custom v-if="isGroupChat" backUrl="/pages/index/index" bgColor="bg-blue"  :isBack="true" :nameToLeft="false">
 			<block slot="backText">
 				<view class="cu-avatar radius" style="margin-right: 5px; border-radius: 50%" :style="'background-image:url('+$store.state.img_url+friendPic+');'"></view>
 			</block>
 			<block slot="content" style="margin-left: 66px;">{{$store.state.cur_chat_entity.name}}({{$store.state.cur_chat_entity.memberCount}}人)</block><block slot="right">
 			<uni-text @tap="goMgr(entity.id)" style="font-size: 22px;color: #000;margin-right: 5%;cursor: pointer;" class="lg text-gray cuIcon-more"><span></span></uni-text>
 		</block></cu-custom>
-		<uni-notice-bar showIcon="" speed="35" scrollable="true" single="true" v-if="$store.state.cur_chat_entity" :text="$store.state.cur_chat_entity.descri"></uni-notice-bar>
+
+		<cu-custom v-if="!isGroupChat" backUrl="/pages/index/index" bgColor="bg-blue"  :isBack="true" :nameToLeft="true"><block slot="backText"></block><block slot="content">
+			<view class="cu-avatar radius" style="margin-right: 5px; border-radius: 50%" :style="'background-image:url('+$store.state.img_url+friendPic+');'"></view>
+			{{showname}} <text v-if="chatCfg.showUserOnline==1">{{entity.online==0?' (离线)':' (在线)'}}</text>
+			<text v-show="$store.state.temp.input_ing" style="font-size: 26upx;margin-left:10upx;">- 正在输入...</text>
+			<text v-show="toIP" style="font-size: 16upx; color: #FFCC99; margin-left:10upx;">{{"IP："+toIP}}</text>
+			<!-- <text v-show="toIP" style="font-size: 14upx; color: #FFCC99; margin-left:10upx;">{{toIP}}</text> -->
+		</block><block slot="right">
+			<uni-text @tap="goMgr2(entity.id)" style="font-size: 22px;color: #000;margin-right: 5%;cursor: pointer;" class="lg text-gray cuIcon-more"><span></span></uni-text>
+		</block></cu-custom>
+
+		<uni-notice-bar v-if="isGroupChat" showIcon="" speed="35" scrollable="true" single="true" :text="$store.state.cur_chat_entity.descri"></uni-notice-bar>
 		<scroll-view @scroll="scrollFn" :scroll-into-view="viewId" :scroll-top="scrollTop" scroll-y="true"    ref="chatVew" @tap="clickChat()"  class="cu-chat" style="background: #eee;" :style="'height: calc(100vh - '+CustomBar+'px - 68px - '+(120+InputBottom)+'upx)'" >
 			<block  v-for="(item,index) in $store.state.cur_chat_msg_list">
 
@@ -330,7 +341,7 @@
 					<text @tap.stop="clearAiteToMy" class="cuIcon-close text-red " style="margin-left: 16upx;"></text>
 		</view>
 
-		<view class="cu-bar foot input" :style="[{bottom:InputBottom+'upx'}]" style="flex-direction: row;height:120px; width: calc(80% - 54px);left: calc(20% + 54px);background-color: #fff;">
+		<view v-if="isGroupChat"  class="cu-bar foot input" :style="[{bottom:InputBottom+'upx'}]" style="flex-direction: row;height:120px; width: calc(80% - 54px);left: calc(20% + 54px);background-color: #fff;">
 			<!-- #ifndef H5 -->
 			<view @tap="selType(2)" v-show="c_type==1"  class="action">
 				<text class="cuIcon-sound text-grey"></text>
@@ -349,16 +360,16 @@
 					id="testInputg"
 					placeholder="请输入信息"
 					style="height:30px !important;line-height:30px;width: 100%;"
-					  confirm-type="send"
-					  @confirm="send"
+					confirm-type="send"
+					@confirm="send"
 
-					  @keydown.shift.enter="altOrShiftEnter"
-					  @keydown.alt.enter="altOrShiftEnter"
-					  @focus="InputFocus"
-					  @blur="InputBlur"
-					  v-show="c_type==1&&stopSpeak==0"
-					  v-model="txt" @input="inputTxt"
-					  class="solid-bottom" :adjust-position="true" :focus="input_is_focus" maxlength="-1" cursor-spacing="10"
+					@keydown.shift.enter="altOrShiftEnter"
+					@keydown.alt.enter="altOrShiftEnter"
+					@focus="InputFocus"
+					@blur="InputBlur"
+					v-show="c_type==1&&stopSpeak==0"
+					v-model="txt" @input="inputTxt"
+					class="solid-bottom" :adjust-position="true" :focus="input_is_focus" maxlength="-1" cursor-spacing="10"
 			></input>
 			<view @tap="ChooseImage()" style="cursor: pointer;position: absolute;top: 5px; left: 10px;"><text style="font-size: 60upx;color:#3F92F8" class="iconfont icon-zhaopian-cuxiantiao-fill"></text></view>
 			<view @tap="ChooseVideo()" style="cursor: pointer;position: absolute;top: 5px; left: 50px;"><text style="font-size: 60upx;color:#F39F90" class="iconfont icon-paishe"></text></view>
@@ -369,6 +380,46 @@
 			<button  style="min-width: 50px;padding:0px!important" v-show="!showjia" @tap.stop="send()"  class="cu-btn bg-green shadow">发送</button>
 
 		</view>
+
+		<view v-if="!isGroupChat"  class="cu-bar foot input" :style="[{bottom:InputBottom+'upx'}]" style="flex-direction: row;height:120px; width: calc(80% - 54px);left: calc(20% + 54px);background-color: #fff;">
+			<!-- #ifndef H5 -->
+			<view @tap="selType(2)" v-show="c_type==1"  class="action">
+				<text class="cuIcon-sound text-grey"></text>
+			</view>
+			<view @tap="selType(1)" v-show="c_type==2"   class="action">
+				<text class="cuIcon-keyboard text-grey"></text>
+			</view>
+			<!-- #endif -->
+
+
+
+			<!-- @focus="InputFocus" @blur="InputBlur"-->
+			<input @keydown.enter="send2" style="background: #eee!important;" disabled="true" placeholder="禁言" placeholder-style="text-align:center;background: #eee;" v-show="stopSpeak==1"  class="solid-bottom" :adjust-position="true" :focus="false" maxlength="300" cursor-spacing="10"
+			></input>
+			<input
+					id="testInputg2"
+					placeholder="请输入信息"
+					style="height:30px !important;line-height:30px;width: 100%;"
+					confirm-type="send"
+					@confirm="send2"
+					@keydown.shift.enter="altOrShiftEnter"
+					@keydown.alt.enter="altOrShiftEnter"
+					@focus="InputFocus"
+					@blur="InputBlur"
+					v-show="c_type==1&&stopSpeak==0"
+					v-model="txt" @input="inputTxt"
+					class="solid-bottom" :adjust-position="true" :focus="input_is_focus" maxlength="-1" cursor-spacing="10"
+			></input>
+			<view @tap="ChooseImage()" style="cursor: pointer;position: absolute;top: 5px; left: 10px;"><text style="font-size: 60upx;color:#3F92F8" class="iconfont icon-zhaopian-cuxiantiao-fill"></text></view>
+			<view @tap="ChooseVideo()" style="cursor: pointer;position: absolute;top: 5px; left: 50px;"><text style="font-size: 60upx;color:#F39F90" class="iconfont icon-paishe"></text></view>
+			<view v-if="false" @tap="sendCard()" style="cursor: pointer;position: absolute;top: 5px; left: 80px;"><text style="font-size: 60upx;color:#FA9B4E" class="iconfont icon-mingpian2"></text></view>
+			<view style="cursor: pointer;position: absolute;top: 5px; left: 80px;" class="action" @tap="showItemIndex(1)">
+				<text  class="cuIcon-emojifill text-grey" style="position: absolute;top: 0;left: 0px"></text>
+			</view>
+			<button  style="min-width: 50px;padding:0px!important" v-show="!showjia" @tap.stop="send2()"  class="cu-btn bg-green shadow">发送</button>
+
+		</view>
+
 
 
 		<view v-show="showItem==1" class="cu-bar foot " style="box-shadow: none;-webkit-box-shadow: none;display: block;background: #fff;height:330upx;margin-bottom:80upx;width: calc(80% - 54px);left: calc(20% + 54px);">
@@ -945,14 +996,22 @@
 			openRed
 		},
 		props: {
+			isGroupChat: {
+				type: Boolean,
+				default: false
+			},
 			msgToGroupId: {
 				type: String,
 				default: ''
 			},
-			// ChatTypeId: {
-			// 	type: Number,
-			// 	default: 0
-			// },
+			msgToId: {
+				type: String,
+				default: ''
+			},
+			isRandom: {
+				type: Number,
+				default: 0
+			},
 		},
 		data() {
 			return {
@@ -1011,6 +1070,7 @@
 				pickerUserIndex: -1,
 				/* 临时内容 */
 				temp_content:"",
+				showname:"",
 				temp_uuid:"",
 				chatCfg:{},
 				temp_bean:null,
@@ -1022,14 +1082,27 @@
 			};
 		},
 		watch: {
-		  msgToGroupId: function(newVal,oldVal){
-			console.log('watchGroupMsgToId')
-			console.log('----------------------newVal',newVal)
-			console.log('---------------------oldVal',oldVal)
-			this.toid = newVal;
-			this.onShowMethod();
-			this.onLoadMethod();
-		  },
+		  // msgToGroupId: function(newVal,oldVal){
+			// console.log('进入group')
+			// this.toid = newVal;
+		  // },
+			// msgToId: function(newVal,oldVal){
+			// 	console.log('进入usr')
+			// 	this.toid = newVal;
+			// },
+			isRandom: function(newVal,oldVal){
+				if(this.isGroupChat){
+					this.toid = this.msgToGroupId;
+					this.onShowMethod();
+					this.onLoadMethod();
+					this.loadOrRefreshDate();
+				}else{
+					this.toid = this.msgToId;
+					this.onShowMethod2();
+					this.onLoadMethod2();
+					this.loadOrRefreshDate2();
+				}
+			}
 		 //  ChatTypeId: function(newVal,oldVal){
 			// console.log('watchGroupMsgToId')
 			// console.log('----------------------newType',newVal)
@@ -1062,6 +1135,229 @@
 		},
 
 		methods: {
+			onShowMethod2() {
+				let _this = this;
+				uni.$on("scrollTopFn",()=>{
+					console.log("触发了-scrollTopFn");
+					//scrollLeft: 0, scrollTop: 3935, scrollHeight: 4500, scrollWidth: 375, deltaX: 0
+					//console.log(_this.scrollDetail)
+					let svH = _this.winH - _this.CustomBar - 50;
+					console.log("svH:"+svH);
+					//console.log(_this.scrollDetail.scrollHeight-_this.scrollDetail.scrollTop);
+					console.log(_this.scrollDetail.scrollHeight-_this.scrollDetail.scrollTop - svH);
+					if((_this.scrollDetail.scrollHeight-_this.scrollDetail.scrollTop - svH)<300) {
+						//#ifdef APP-PLUS
+						setTimeout(()=>{
+							_this.scrollTop = 99999999+Math.random();
+						},1200)
+						//#endif
+						//#ifdef H5
+						setTimeout(()=>{
+							_this.scrollTop = 99999999+Math.random();
+						},500)
+						//#endif
+					}
+				});
+
+				let s = uni.getStorageSync(this.toid+"_NOTE");
+				console.log('fuck', this.toid, s)
+				if(s&&s!="") {
+					this.showname = s;
+				}
+				let v = {
+					toUid:this.toid,
+					fromUid:this.$store.state.user.id
+				}
+				this.$websocket.dispatch("WEBSOCKET_SEND", "{body:'"+JSON.stringify(v)+"',CMD:'CHAT_MSG_READED'}");
+			},
+			onLoadMethod2 (){
+				this.$store.commit("setCur_chat_msg_list",[]);
+				this.$store.commit("setChat_my_loadding",false);
+
+				// #ifndef H5
+				//录音开始事件
+				this.RECORDER.onStart((e)=>{
+					this.recordBegin(e);
+				})
+				//录音结束事件
+				this.RECORDER.onStop((e)=>{
+					this.recordEnd(e);
+				})
+				// #endif
+
+				//this.vindex = "v"+(this.$store.state.cur_chat_msg_list.length)
+				let _this = this;
+				// this.toid = _this.toid;
+				let user = uni.getStorageSync("USER");
+				this.getWindowSize();
+				if(this.$store.state.chatMessageMap.has(user.id+"#"+this.toid)) {
+					let msg_list = this.$store.state.chatMessageMap.get(user.id+"#"+this.toid);
+					if(msg_list&&msg_list.length>0) {
+						// var newMsgList = msg_list.filter(o => !(o.bean.psr == "video" && o.bean.txt.indexOf('<video') > -1));
+						var newMsgList = msg_list;
+						this.$store.commit("setCur_chat_msg_list",newMsgList);
+					}
+				} else {
+					let str = uni.getStorageSync(user.id+"#"+this.toid+'_CHAT_MESSAGE');
+					if(str&&str!="") {
+						var jsonObj = JSON.parse(str);
+						this.$store.commit("updateChatMessageMap",{
+							key:user.id+"#"+this.toid,
+							value:jsonObj
+						});
+						this.$store.commit("setCur_chat_msg_list",jsonObj);
+					} else {
+						//如果什么都没记录的话，则从云端加载
+						//this.tongbuMsg_1stInNoData();
+					}
+				}
+
+				/*获取聊天的对象 user数据*/
+				_this.$http.get("/user/json/userInfo?toid="+_this.toid,
+						{
+							header:{
+								"x-access-uid":_this.$store.state.user.id,
+								"x-access-client":_this.$clientType
+							}
+						}
+				).then(res=>{
+					let res_data = eval(res.data);
+					console.log('userInfo33', res_data)
+					if(res_data.code==200) {
+						console.log('userInfo22', res_data.body.ip+"===="+res_data.body.ipAddr)
+						_this.toIP = res_data.body.ip +"("+ res_data.body.ipAddr+")";
+						console.log('userInfo11', _this.toIP)
+					}
+				})
+
+
+				this.scrollToBottom();
+				_this.$http.post("/sysConfig/json/getChatCfg",
+						{
+							header:{
+								"x-access-uid":_this.$store.state.user.id,
+								"x-access-client":_this.$clientType
+							}
+						}
+				).then(res=>{
+					let res_data = eval(res.data);
+					if(res_data.code==200) {
+						_this.chatCfg = res_data.body;
+					}
+				})
+				this.paseteImg();
+			},
+			loadOrRefreshDate2(){
+				var _this = this;
+				console.log("去除小红点1 user",_this.entity)
+
+				_this.$http.post("/user/json/loadById/v1",
+						{id:_this.toid},
+						{
+							header:{
+								"x-access-uid":_this.$store.state.user.id,
+								"x-access-client":_this.$clientType
+							}
+						}
+				).then(res=>{
+					//
+					let res_data = eval(res.data);
+					let statusCode = res_data ? res_data.code : 0;
+					console.log('usr_data===>',res_data)
+					if(statusCode==200) {
+						//主要是为了让onshow检查是否已设置备注，如果已设置备注则不需要使用用户原昵称
+						setTimeout(function(){
+							_this.showname = _this.entity.nickName;
+							_this.friendPic = _this.entity.headpic;
+						},100)
+
+						_this.entity = res_data.body;
+						_this.$store.commit("setCur_chat_entity",_this.entity);
+
+						let unRead = uni.getStorageSync(_this.$store+"#"+_this.toid+'_CHAT_MESSAGE_UNREAD');
+						if(unRead&&unRead!="") {
+							// uni.removeStorageSync(_this.$store.state.user.id+"#"+_this.toid+'_CHAT_MESSAGE_UNREAD');
+							_this.$store.commit("setUnReadMsgSum",_this.$store.state.setUnReadMsgSum - parseInt(unRead))
+						}
+						console.log("去除小红点3",_this.$store.state.ar_list_show)
+						_this.$store.state.ar_list_show.forEach(item=>{
+							if(item.id==_this.entity.id) {
+								console.log("去除小红点","进来了")
+								item.unread = 0;
+								return;
+							}
+						})
+					}
+					let unRead = uni.getStorageSync(user.id+"#"+_this.toid+'_CHAT_MESSAGE_UNREAD');
+					if(unRead&&unRead!="") {
+						uni.removeStorageSync(user.id+"#"+_this.toid+'_CHAT_MESSAGE_UNREAD');
+						_this.$store.commit("setUnReadMsgSum",_this.$store.state.setUnReadMsgSum - parseInt(unRead))
+					}
+				})
+			},
+			loadOrRefreshDate(){
+				var _this = this;
+				console.log("去除小红点2 group",_this.entity)
+
+				_this.$http.post("/room/json/load/v1",
+						{roomid:_this.toid},
+						{
+							header:{
+								"x-access-uid":_this.$store.state.user.id,
+								"x-access-client":_this.$clientType
+							}
+						}
+				).then(res=>{
+					let res_data = eval(res.data);
+					console.log('groupdata===>',res_data)
+					if(res_data.code==200) {
+						_this.entity = res_data.body;
+						_this.friendPic = res_data.body.img;
+						_this.$store.commit("setCur_chat_entity",res_data.body);
+
+						if(!_this.checkStopSpeak()) {
+							_this.stopSpeak = 1;
+						} else {
+
+							_this.$http.post("/room/json/isStopSpeak4User",
+									{roomid:_this.toid,uid:_this.$store.state.user.id},
+									{
+										header:{
+											"x-access-uid":_this.$store.state.user.id,
+											"x-access-client":_this.$clientType
+										}
+									}
+							).then(res=>{
+								let res_data = eval(res.data);
+								if(res_data.code==200) {
+									if(res_data.msg=="1") {
+										_this.stopSpeak = 1;
+									}
+								}
+							})
+						}
+					} else {
+						uni.showModal({
+							title: '信息提示',
+							content: res_data.msg,
+							showCancel:false,
+							success: function (res) {
+								if (res.confirm) {
+									uni.navigateBack({
+										delta:1
+									})
+								}
+							}
+						});
+						return;
+					}
+					let unRead = uni.getStorageSync(user.id+"#"+_this.toid+'_CHAT_MESSAGE_UNREAD');
+					if(unRead&&unRead!="") {
+						uni.removeStorageSync(user.id+"#"+_this.toid+'_CHAT_MESSAGE_UNREAD');
+						_this.$store.commit("setUnReadMsgSum",_this.$store.state.setUnReadMsgSum - parseInt(unRead))
+					}
+				})
+			},
 			clickRight(event, item) {
 				this.onLongPress(event, item)
 			},
@@ -1148,9 +1444,90 @@
 				      }
 				    });
 			},
+			paseteImg2 () {
+				var _this = this;
+				var imgReader = function( item ){
+				      var blob = item.getAsFile(),
+				          reader = new FileReader();
+					  var img = new Image();
+				      reader.onload = function( e ){
+				        img.src = e.target.result;
+						_this.pasteImgUrl = e.target.result;
+						img.style.cssText = "width: 100px; height: 60px;position: absolute;top: -6px;"
+
+				        document.getElementById( 'testInputg2' ).appendChild( img );
+						var regS = new RegExp("\\+","g");
+						var newBaseValue = e.target.result.replace(regS,"#");
+						_this.$http.post("/user/file/uploadB64Img",
+							{
+								base64:newBaseValue
+							},
+							{
+								header:{
+									"x-access-uid": _this.$store.state.user.id,
+									"x-access-client":_this.$clientType
+								}
+							}
+
+						).then(res=>{
+							let res_data = eval(res.data);
+							if (res_data.code == 200) {
+								let json = eval(res.data);
+								let v = {
+									txt:json.msg,
+									toGroupid:_this.toid,
+									fromUid:_this.$store.state.user.id,
+									uuid:_this.GenerateUUID(),
+								};
+								_this.$websocket.dispatch("WEBSOCKET_SEND", "{body:'"+JSON.stringify(v)+"',CMD:'GROUP_CHAT_SEND_TXT'}");
+								let img = _this.$store.state.img_url+json.msg;
+								_this.temp_txt = _this.temp_txt + ("<img  style='max-width: 150px;max-height:150px;' class='face' src='"+img+"'>");
+								v.psr = "uparse";
+								v.simple_content = "[图片]";
+								_this.sendBaseDo(v);
+								setTimeout(function(){
+									_this.scrollToBottom();
+								},100)
+							 }
+						})
+						setTimeout(function(){
+							document.getElementById( 'testInputg2' ).removeChild( img );
+						},2000)
+				      };
+				      reader.readAsDataURL( blob );
+				    };
+					const targetEle = document.getElementById( 'testInputg2' );
+					if (!targetEle) return;
+				    targetEle.addEventListener( 'paste', function( e ){
+				    	console.log("aaaaaabbbbccccc",e)
+				      var clipboardData = e.clipboardData,
+				          i = 0,
+				          items, item, types;
+
+				      if( clipboardData ){
+				        items = clipboardData.items;
+
+				        if( !items || items.length ==0 ){
+				          return;
+				        }
+				        item = items[0];
+				        types = clipboardData.types || [];
+
+				        for( ; i < types.length; i++ ){
+				          if( types[i] === 'Files' ){
+				            item = items[i];
+				            break;
+				          }
+				        }
+
+				        if( item && item.kind === 'file' && item.type.match(/^image\//i) ){
+				          imgReader( item );
+				        }
+				      }
+				    });
+			},
 			onShowMethod() {
 				let _this = this;
-				uni.$off("aiteFn");
 				uni.$on("scrollTopFn",()=>{
 					let svH = _this.winH - _this.CustomBar - 50;
 					//console.log(_this.scrollDetail.scrollHeight-_this.scrollDetail.scrollTop - svH);
@@ -1207,63 +1584,7 @@
 
 				let _this = this;
 				let user = uni.getStorageSync("USER");
-				_this.$http.post("/room/json/load/v1",
-					{roomid:_this.toid},
-					{
-						header:{
-							"x-access-uid":_this.$store.state.user.id,
-							"x-access-client":_this.$clientType
-						}
-					}
-				).then(res=>{
-					let res_data = eval(res.data);
-					if(res_data.code==200) {
-						_this.entity = res_data.body;
-						_this.friendPic = res_data.body.img;
-						_this.$store.commit("setCur_chat_entity",res_data.body);
 
-						if(!_this.checkStopSpeak()) {
-							_this.stopSpeak = 1;
-						} else {
-
-							_this.$http.post("/room/json/isStopSpeak4User",
-								{roomid:_this.toid,uid:_this.$store.state.user.id},
-								{
-									header:{
-										"x-access-uid":_this.$store.state.user.id,
-										"x-access-client":_this.$clientType
-									}
-								}
-							).then(res=>{
-								let res_data = eval(res.data);
-								if(res_data.code==200) {
-									if(res_data.msg=="1") {
-										_this.stopSpeak = 1;
-									}
-								}
-							})
-						}
-					} else {
-						uni.showModal({
-						    title: '信息提示',
-						    content: res_data.msg,
-							showCancel:false,
-						    success: function (res) {
-						        if (res.confirm) {
-						            uni.navigateBack({
-						            	delta:1
-						            })
-						        }
-						    }
-						});
-						return;
-					}
-					let unRead = uni.getStorageSync(user.id+"#"+_this.toid+'_CHAT_MESSAGE_UNREAD');
-					if(unRead&&unRead!="") {
-						uni.removeStorageSync(user.id+"#"+_this.toid+'_CHAT_MESSAGE_UNREAD');
-						_this.$store.commit("setUnReadMsgSum",_this.$store.state.setUnReadMsgSum - parseInt(unRead))
-					}
-				})
 				if(this.$store.state.chatMessageMap.has(user.id+"#"+this.toid)) {
 					let msg_list = this.$store.state.chatMessageMap.get(user.id+"#"+this.toid);
 					if(msg_list&&msg_list.length>0) {
@@ -1911,6 +2232,15 @@
 				// 	url:"/pages/chat/group/mgr?id="+_id
 				// })
 			},
+			goMgr2(_id){
+				this.$emit('openModal', {
+					id: _id,
+					type: 'user'
+				})
+				// uni.navigateTo({
+				// 	url:"/pages/chat/group/mgr?id="+_id
+				// })
+			},
 
 			GenerateUUID() {
 				var s = [];
@@ -1945,6 +2275,85 @@
 			    return fmt;
 			},
 			sendBaseDo(v) {
+				v.fromHeadpic = this.$store.state.user.headpic;
+				let date = new Date();
+				v.date = this.dateFormat("Y/m/d H:M", date);
+				v.fromName = this.$store.state.user.nickName;
+				v.dateTime = date.getTime();
+				v.read = 0;
+				v.oldTxt = v.txt;
+				v.simple_content = v.txt;
+				if(this.temp_txt!="") {
+					v.txt = this.temp_txt;
+					this.temp_txt = "";
+				}
+
+				if(this.temp_map.size>0) {
+					this.temp_map.forEach((value, key, map)=>{
+						while(v.txt.indexOf(key)>=0) {
+							v.txt = v.txt.replace(key,value);
+						}
+					})
+				}
+
+
+				//去除视频上传和图片上传 纯文件内容才检测URL
+				if(v.txt.indexOf("/chat_video")<0&&v.txt.indexOf("/chat_img")<0) {
+					let hasUrl = false;
+					let httpReg = new RegExp("(http[s]{0,1}|ftp)://[a-zA-Z0-9\\.\\-]+\\.([a-zA-Z]{2,4})(:\\d+)?(/[a-zA-Z0-9\\.\\-~!@#$%^&amp;*+?:_/=<>]*)?", "gi");
+					let formatTxtContent = v.txt.replace(httpReg, function(httpText) {
+						if(httpText.indexOf("/img/emotion/")>=0) return httpText;
+						hasUrl = true;
+					    return '<a style="color: #3F92F8;" href="' + httpText + '">' + httpText + '</a>';
+					});
+					if(hasUrl) {
+						v.txt = formatTxtContent;
+						v.psr = "uparse";
+					}
+				}
+
+				let msgbean = {
+					chatType:"1",
+					chatid:this.toid,
+					type:"USER_TXT",
+					bean:v
+				}
+
+				let list = [msgbean];
+				let str = uni.getStorageSync(this.$store.state.user.id+"#"+msgbean.chatid+'_CHAT_MESSAGE');
+				if(str&&str!="") {
+					var jsonObj = JSON.parse(str);
+					jsonObj = jsonObj.concat(list);
+					// if(jsonObj.length>50) {
+						//  jsonObj.splice(0,jsonObj.length-50);
+					// }
+					uni.setStorageSync(this.$store.state.user.id+"#"+msgbean.chatid+'_CHAT_MESSAGE',JSON.stringify(jsonObj));
+					 if(jsonObj.length>50) {
+						jsonObj.splice(0,jsonObj.length-50);
+					 }
+					this.$store.commit("updateChatMessageMap",{
+						key:this.$store.state.user.id+"#"+msgbean.chatid,
+						value:jsonObj
+					});
+
+					if(this.$store.state.cur_chat_entity&&this.$store.state.cur_chat_entity.id==v.toGroupid) {
+						this.$store.commit("setCur_chat_msg_list",jsonObj);
+					}
+					//uni.setStorageSync(this.$store.state.user.id+"#"+msgbean.chatid+'_CHAT_MESSAGE_LASTCONTENT',jsonObj[jsonObj.length-1].bean.simple_content);
+				} else {
+					uni.setStorageSync(this.$store.state.user.id+"#"+msgbean.chatid+'_CHAT_MESSAGE',JSON.stringify(list));
+					this.$store.commit("updateChatMessageMap",{
+						key:this.$store.state.user.id+"#"+msgbean.chatid,
+						value:list
+					});
+					if(this.$store.state.cur_chat_entity&&this.$store.state.cur_chat_entity.id==v.toGroupid) {
+						this.$store.commit("setCur_chat_msg_list",list);
+					}
+					// uni.setStorageSync(this.$store.state.user.id+"#"+msgbean.chatid+'_CHAT_MESSAGE_LASTCONTENT',"");
+				}
+				this.$store.commit("setChat_my_loadding",false);
+			},
+			sendBaseDo2(v) {
 				v.fromHeadpic = this.$store.state.user.headpic;
 				let date = new Date();
 				v.date = this.dateFormat("Y/m/d H:M", date);
@@ -2082,11 +2491,43 @@
 					this.txt = "";
 					this.showjia = true;
 					this.sendCount = this.sendCount +1;
+					console.log('现在信息=》',this.$store.state.cur_chat_msg_list)
 					setTimeout(function(){
 						_this.scrollToBottom();
 						_this.input_is_focus = true;
 					},300)
 				},100);
+			},
+
+
+			send2(){ //发送用户
+				let _this = this;
+				setTimeout(()=>{
+					if(this.isAltOrShiftEnter) return;
+					this.input_is_focus = false;
+					let v = {
+						txt:this.txt.replace(/\n/g,"<br/>"),
+						toUid:this.toid,
+						fromUid:this.$store.state.user.id,
+						uuid:this.GenerateUUID(),
+					}
+					if(this.txt.trim()=="") {
+						return;
+					}
+					this.txt = "";
+					this.$websocket.dispatch("WEBSOCKET_SEND", "{body:'"+JSON.stringify(v)+"',CMD:'USER_CHAT_SEND_TXT'}");
+					this.$store.commit("setChat_my_loadding",true);
+					this.sendBaseDo2(v);
+					this.showjia = true;
+					this.sendCount = this.sendCount +1;
+					//this.clickChat();
+					console.log('现在信息2=》',this.$store.state.cur_chat_msg_list)
+					setTimeout(function(){
+						_this.scrollToBottom();
+						_this.input_is_focus = true;
+					},300)
+				},100)
+
 			},
 			sendEmotion(_a,_b){
 				let _this = this;

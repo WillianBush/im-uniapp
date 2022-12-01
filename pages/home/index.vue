@@ -124,23 +124,19 @@
 				-->
 			</scroll-view>
 		</view>
-		<view v-show="!msgToId && !msgToGroupId" style="height: 100vh;width: 80%; float: left; border-left: 1px solid #ddd; background:#eee">
+		<view v-show="!msgToId && !msgToGroupId && isBlank" style="height: 100vh;width: 80%; float: left; border-left: 1px solid #ddd; background:#eee">
 			<img src="../../static/logo1.png" width="100px" height="100px" style="margin-top: calc(50vh - 50px);margin-left: calc(50% - 50px);"></img>
 		</view>
-		<view v-loading="ongoing" v-show="isGroupChat" style="height: calc(100vh - 50upx);width: 80%; float: left; border-left: 1px solid #ddd">
+
+		<view style="height: calc(100vh - 50upx);width: 80%; float: left; border-left: 1px solid #ddd">
 			<scroll-view :scroll-y="modalName==null"
-				style="width: 100%"
-				class="page" :class="modalName!=null?'show':''">
-				<GroupChat :msgToGroupId="msgToGroupId" @openModal="openModal" @openAtModal="openAtModal"></GroupChat>
+						 style="width: 100%"
+						 class="page" :class="modalName!=null?'show':''">
+				<GroupChat :msgToGroupId="msgToGroupId" :isGroupChat="isGroupChat" :isRandom="random" :msgToId="msgToId"  @openModal="openModal" @openAtModal="openAtModal"></GroupChat>
 			</scroll-view>
 		</view>
-		<view  v-loading="ongoing"  v-show="msgToId && !isGroupChat" style="height: calc(100vh - 50upx);width: 80%; float: left; border-left: 1px solid #ddd">
-			<scroll-view :scroll-y="modalName==null"
-				style="width: 100%"
-				class="page" :class="modalName!=null?'show':''">
-				<UserChat :msgToId="msgToId" @openModal="openModal"></UserChat>
-			</scroll-view>
-		</view>
+
+
 		<view v-show="visiable" style="width: 100%; height: 100%;color:#fff;background-color: #0006; position: fixed;left: 0;top:0; z-index: 10;">
 			<text @click="closeModal" class="cuIcon-close" style="font-size: 36px; cursor: pointer; position:absolute; top:15px; right: 15px"></text>
 		    <UserMgr v-show="mgrType=='user'" :mgrId="mgrId"></UserMgr>
@@ -158,9 +154,9 @@
 			UserChat,
 			GroupChat
 		},
+		props:['isBlank'],
 		data() {
 			return {
-				ongoing: false,
 				isGroupChat: false,
 				visiable: false,
 				msgToId: '',
@@ -224,6 +220,7 @@
 				}],
 				modalName: null,
 				gridCol: 3,
+				random:0,
 				gridBorder: false,
 				menuBorder: false,
 				menuArrow: false,
@@ -237,31 +234,9 @@
 				roomid: ''
 			};
 		},
-		onLoad: function (option) { //option为object类型，会序列化上个页面传递的参数
-			let id = option.id;
-			let typeid = option.typeid;
-			if (id == "-1") {
-				this.msgToId = id;
-				this.isGroupChat = false;
-				// uni.navigateTo({
-				// 	url: "/pages/chat/guang_fang_chat"
-				// })
-			} else {
-				if (typeid == "2") {
-					this.msgToId = id;
-					this.isGroupChat = false;
-					// uni.navigateTo({
-					// 	url: "/pages/chat/user/index?toid=" + item.id
-					// })
-				} else {
-					this.msgToGroupId = id;
-					this.isGroupChat = true;
-					// uni.navigateTo({
-					// 	url: "/pages/chat/group/index?toid=" + item.id
-					// })
-				}
-			}
+		watch:{
 		},
+
 		methods: {
 			closeModal() {
 				this.visiable = false;
@@ -297,7 +272,7 @@
 				_this._refresherTriggered = false;
 			},
 			refresherabort() {
-				console.log('自定义下拉刷新被中止    ');
+				console.log('自定义下拉刷新被中止');
 				let _this = this;
 				_this.refresherTriggered = false;
 				_this._refresherTriggered = false;
@@ -724,30 +699,17 @@
 			},
 			goChat(item) {
 				console.log('tom', item.id)
-				this.ongoing = true
-						setTimeout(()=>{
-						this.ongoing = false
-						},1000);
-				if (item.id == "-1") {
+				console.log('typeid', item.typeid)
+				setTimeout(()=>{
+				},1000);
+				if (item.id == "-1" || item.typeid == "2") {
 					this.msgToId = item.id;
 					this.isGroupChat = false;
-					// uni.navigateTo({
-					// 	url: "/pages/chat/guang_fang_chat"
-					// })
+					this.random = this.random +1
 				} else {
-					if (item.typeid == "2") {
-						this.msgToId = item.id;
-						this.isGroupChat = false;
-						// uni.navigateTo({
-						// 	url: "/pages/chat/user/index?toid=" + item.id
-						// })
-					} else {
-						this.msgToGroupId = item.id;
-						this.isGroupChat = true;
-						// uni.navigateTo({
-						// 	url: "/pages/chat/group/index?toid=" + item.id
-						// })
-					}
+					this.msgToGroupId = item.id;
+					this.isGroupChat = true;
+					this.random = this.random +1
 				}
 			},
 			showModal(e) {
@@ -804,10 +766,10 @@
 		},
 		//因为这个home/index.vue是组件形式显示的。所有没有页面的生命周期只有mounted等
 		mounted() {
+
+			console.log('insideornot=>',this.isBlank)
 			let _this = this;
 			let user = uni.getStorageSync("USER");
-			//console.log(user.id);
-
 			_this.$http.post("/sysConfig/json/getChatCfg", {
 				header: {
 					"x-access-uid": _this.$store.state.user.id,

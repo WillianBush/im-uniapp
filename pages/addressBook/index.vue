@@ -2,7 +2,7 @@
 	<view>
 		<view  style="width:20%; float: left">
 			<view v-show="PageCur=='tongxunlu'">
-				<view style="height: 45px;line-height: 45px;text-align: center;background: #eee;">通讯录()人</view>
+				<view style="height: 45px;line-height: 45px;text-align: center;background: #eee;">通讯录({{$store.state.memberLength}})人</view>
 				<view class="cu-bar bg-white search" >
 					<view class="search-form round">
 						<text class="cuIcon-search"></text>
@@ -70,7 +70,7 @@
 			<blackList v-show="PageCur=='heimingdan'" :keyid="keyid" @goBack="showMain"></blackList>
 			<qunliao v-show="PageCur=='qunliao'" :keyid="keyid" @goBack="showMain" @goGroupChat="goGroupChat"></qunliao>
 		</view>
-		<view v-show="!msgToId" style="height: 100vh;width: 80%; float: left; border-left: 1px solid #ddd; background:#eee">
+		<view v-show="!msgToId && isBlank" style="height: 100vh;width: 80%; float: left; border-left: 1px solid #ddd; background:#eee">
 			<img src="../../static/logo1.png" width="100px" height="100px" style="margin-top: calc(50vh - 50px);margin-left: calc(50% - 50px);"></img>
 		</view>
 		<view v-show="isGroupChat" style="height: calc(100vh - 50upx);width: 80%; float: left; border-left: 1px solid #ddd">
@@ -79,7 +79,7 @@
 						 class="page" :class="modalName!=null?'show':''" :refresher-enabled="true"
 						 :refresher-triggered="refresherTriggered" @refresherrefresh="refresherrefresh"
 						 @refresherrestore="refresherrestore" @refresherabort="refresherabort">
-				<GroupChat :msgToGroupId="msgToGroupId" @openModal="openModal"></GroupChat>
+				<GroupChat :msgToGroupId="msgToGroupId"  @openModal="openModal"></GroupChat>
 			</scroll-view>
 		</view>
 		<view v-show="msgToId && !isGroupChat" style="height: calc(100vh - 50upx);width: 80%; float: left; border-left: 1px solid #ddd">
@@ -109,6 +109,7 @@
 			UserChat,
 			GroupChat
 		},
+		props:['isBlank'],
 		data() {
 			return {
 				StatusBar: this.StatusBar,
@@ -117,7 +118,7 @@
 				modalName: null,
 				refresherTriggered: true,
 				listCurID: '',
-				memberList: [],
+				memberList: [], //会员列表
 				list: [],
 				listCur: '',
 				kw:"",
@@ -137,6 +138,7 @@
 			};
 		},
 		mounted() {
+
 			let _this = this;
 			let user = uni.getStorageSync("USER");
 			if(this.$store.state.friend_list.length<=0) {
@@ -147,13 +149,14 @@
 								"x-access-client":_this.$clientType
 							}
 						}
-
 				).then(res=>{
 					let res_data = eval(res.data);
-					res.data.body.forEach((item, index) => {
-						this.memberList.push(item.list)
+					res.data.body.forEach((item, index) => { //循环拿到聊天人员列表name。根据name长度获取人数
+						item.list.forEach((item, index) => {
+							this.memberList.push(item.name)
+						})
 					})
-					console.log('checkout->',this.memberList)
+					this.$store.state.memberLength = this.memberList.length
 					if(res_data.code==200) {
 						_this.$store.commit("setFriend_list",res_data.body);
 						res_data.body.forEach(item=>{

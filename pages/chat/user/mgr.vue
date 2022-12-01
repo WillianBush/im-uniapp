@@ -352,7 +352,7 @@
 				c_type:1,
 				InputBottom: 0,
 				toid:"",
-				entity:{},
+				entity:{nickname:'1'},
 				txt:"",
 				temp_txt:"",
 				showjia:true,
@@ -406,7 +406,7 @@
 				switchB:false,
 				switchC:false,
 				id:"",
-				cur_user:{},
+				cur_user:{'nickname':'1'},
 				super_user:0,
 				user_note:"",
 			}
@@ -448,7 +448,6 @@
 					duration: 2000
 				});
 			},
-			//聊天记录方法
 			getLogs(){ //获取聊天记录方法
 				this.logShow = true
 				let _this = this;
@@ -461,7 +460,6 @@
 					// jsonObj.splice(0,jsonObj.length-50);
 					//  }
 				}
-
 				setTimeout(()=>{
 					uni.pageScrollTo({
 						scrollTop: 9999999999,
@@ -647,23 +645,7 @@
 			},
 			onLoadMethod() {
 				let _this = this;
-				_this.$http.post("/user/json/loadById/v1",
-					{id:this.id},
-					{
-						header:{
-							"x-access-client":_this.$clientType
-						}
-					}
-				).then(res=>{
-					let res_data = eval(res.data);
-					if(res_data.code==200) {
-						_this.cur_user = res_data.body;
-						let s = uni.getStorageSync(_this.id+"_NOTE");
-						if(s&&s!="") {
-							_this.cur_user.nickName = s;
-						}
-					}
-				})
+
 
 				//是否超级用户
 

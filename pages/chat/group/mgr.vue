@@ -1,13 +1,13 @@
 <!--群聊天页面，点击右上角设置-->
 <template>
-	<view style="background: #fff;width: 80%;margin: 40px 0 0 12%">
+	<view style="background: #fff;width: 80%;margin: 10px 0 0 12%">
 		<view v-show="PageCur=='main'"
 			v-if="$store.state.cur_chat_entity&&$store.state.cur_chat_entity.owner_UUID&&$store.state.cur_chat_entity.owner_UUID!=''">
 			<view style="height: 45px;line-height: 45px;text-align: center;background: #eee;color:#000">群组信息</view>
 			<view style="background: #fff;width: 96%;
 		margin: auto auto;
 		margin-top: 10px;" class="margin-top">
-				<view v-if="$store.state.isEmployee" style="height:60upx;width:90%;margin:auto auto;padding-top: 20upx;">
+				<view v-if="$store.state.isEmployee" style="height:60upx;width:90%;margin:auto auto;">
 					<text style="float:left;font-weight: 800;
 		color:#333">群成员</text>
 					<text style="float:right;margin-top:6upx;" class="lg text-gray cuIcon-right"></text>
@@ -17,7 +17,7 @@
 				</view>
 
 				<view v-if="$store.state.isEmployee" style="display: flex; width:100%">
-					<view style="padding-top:30upx;padding-bottom:30upx;margin-left: 10upx;flex:1;    line-height: 140upx;">
+					<view style="padding-top:10upx;padding-bottom:10upx;margin-left: 10upx;flex:1;    line-height: 140upx;">
 						<view @tap="goUserDetail(index)" v-for="(item,index) in $store.state.cur_chat_entity.top5Hp"
 							class="cu-avatar round margin-left"
 							:style="'height:100upx;width:100upx;background-image:url('+$store.state.img_url+item+');'">
@@ -112,9 +112,9 @@
 						<text class="text-grey" style="color:#333">群公告</text>
 					</view>
 				</view>
-				<view style="position: relative;top:-10upx;color:#bbb;font-size: 26upx;background: #fff;
-				padding:20upx;line-height: 40upx;word-wrap:break-word;
-	word-break:normal; " class="text-grey text-sm">{{$store.state.cur_chat_entity.descri}}</view>
+<!--				<view style="position: relative;top:-10upx;color:#bbb;font-size: 26upx;background: #fff;-->
+<!--				padding:20upx;line-height: 40upx;word-wrap:break-word;-->
+<!--	word-break:normal; " class="text-grey text-sm">{{$store.state.cur_chat_entity.descri}}</view>-->
 
 
 
@@ -181,7 +181,6 @@
 			return {
 				switchA: false,
 				switchB: false,
-				switchC: false,
 				id: "",
 				showTransferGroupModal: false,
 				to_member_id: "",
@@ -201,7 +200,6 @@
 			},
 			onLoadMethod() {
 				let _this = this;
-				this.switchC = this.$store.state.cur_chat_entity.stopSpeak == 1
 
 				let darao = uni.getStorageSync(this.id + "_darao");
 				if (darao && darao != "") {
@@ -220,7 +218,6 @@
 					}
 				}).then(res => {
 					if (res.data.code == 200) {
-						console.log(res.data.body);
 						_this.$store.commit("setShimingCfg", res.data.body);
 					}
 				})
@@ -581,34 +578,6 @@
 						}
 					},
 				});
-
-			},
-			SwitchC(e) {
-				let _this = this;
-				this.switchC = e.detail.value;
-				let stopSpeak = 0;
-				if (e.detail.value) stopSpeak = 1;
-
-
-				_this.$http.post("/room/json/uStopSpeak/v1", {
-					roomid: _this.$store.state.cur_chat_entity.id,
-					stopSpeak: stopSpeak
-				}, {
-					header: {
-						"x-access-uid": _this.$store.state.user.id,
-						"x-access-client": _this.$clientType
-					}
-				}).then(res => {
-					let res_data = eval(res.data);
-					if (res_data.code == 200) {
-						_this.$store.state.cur_chat_entity.stopSpeak = stopSpeak;
-					} else {
-						uni.showToast({
-							title: res_data.msg,
-							duration: 2000
-						});
-					}
-				})
 
 			},
 			SwitchA(e) {

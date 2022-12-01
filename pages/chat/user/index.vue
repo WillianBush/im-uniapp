@@ -5,11 +5,11 @@
 			<view class="cu-avatar radius" style="margin-right: 5px; border-radius: 50%" :style="'background-image:url('+$store.state.img_url+friendPic+');'"></view>
 			{{showname}} <text v-if="chatCfg.showUserOnline==1">{{entity.online==0?' (离线)':' (在线)'}}</text>
 			<text v-show="$store.state.temp.input_ing" style="font-size: 26upx;margin-left:10upx;">- 正在输入...</text>
-				<text v-show="toIP" style="font-size: 16upx; color: #FFCC99; margin-left:10upx;">{{"IP："+toIP}}</text>
-				<!-- <text v-show="toIP" style="font-size: 14upx; color: #FFCC99; margin-left:10upx;">{{toIP}}</text> -->
-			</block><block slot="right">
-				<uni-text @tap="goMgr(entity.id)" style="font-size: 22px;color: #000;margin-right: 5%;cursor: pointer;" class="lg text-gray cuIcon-more"><span></span></uni-text>
-			</block></cu-custom>
+			<text v-show="toIP" style="font-size: 16upx; color: #FFCC99; margin-left:10upx;">{{"IP："+toIP}}</text>
+			<!-- <text v-show="toIP" style="font-size: 14upx; color: #FFCC99; margin-left:10upx;">{{toIP}}</text> -->
+		</block><block slot="right">
+			<uni-text @tap="goMgr(entity.id)" style="font-size: 22px;color: #000;margin-right: 5%;cursor: pointer;" class="lg text-gray cuIcon-more"><span></span></uni-text>
+		</block></cu-custom>
 			<scroll-view @scroll="scrollFn"  :scroll-top="scrollTop" scroll-y="true"    ref="chatVew" @tap="clickChat()" style="background: #eee;" class="cu-chat" :style="'height: calc(100vh - '+CustomBar+'px - 62px - '+(120+InputBottom)+'upx)'" >
 				<block  v-for="(item,index) in $store.state.cur_chat_msg_list">
 					<block v-if="item.opt&&item.opt=='undo'">
@@ -966,12 +966,12 @@
 			};
 		},
 		watch: {
-		  msgToId: function(newVal,oldVal){
-			this.toid = newVal;
-			this.onShowMethod();
-			this.onLoadMethod();
-			this.loadOrRefreshDate();
-		  }
+			isRandom: function(newVal,oldVal){
+					this.toid = this.msgToGroupId;
+					this.onShowMethod();
+					this.onLoadMethod();
+					this.loadOrRefreshDate();
+			}
 		},
 		onBackPress() {
 			this.$store.commit("setCur_chat_entity",null);
@@ -990,7 +990,7 @@
 		methods: {
 			loadOrRefreshDate(){
 				var _this = this;
-				console.log("去除小红点",_this.entity)
+				console.log("去除小红点1 user",_this.entity)
 
 				_this.$http.post("/user/json/loadById/v1",
 						{id:_this.toid},
@@ -1001,9 +1001,17 @@
 							}
 						}
 				).then(res=>{
+					//
 					let res_data = eval(res.data);
 					let statusCode = res_data ? res_data.code : 0;
+					console.log('usr_data===>',res_data)
 					if(statusCode==200) {
+						//主要是为了让onshow检查是否已设置备注，如果已设置备注则不需要使用用户原昵称
+						setTimeout(function(){
+							_this.showname = _this.entity.nickName;
+							_this.friendPic = _this.entity.headpic;
+						},100)
+
 						_this.entity = res_data.body;
 						_this.$store.commit("setCur_chat_entity",_this.entity);
 
@@ -1020,6 +1028,11 @@
 								return;
 							}
 						})
+					}
+					let unRead = uni.getStorageSync(user.id+"#"+_this.toid+'_CHAT_MESSAGE_UNREAD');
+					if(unRead&&unRead!="") {
+						uni.removeStorageSync(user.id+"#"+_this.toid+'_CHAT_MESSAGE_UNREAD');
+						_this.$store.commit("setUnReadMsgSum",_this.$store.state.setUnReadMsgSum - parseInt(unRead))
 					}
 				})
 			},
@@ -1215,32 +1228,7 @@
 					}
 				})
 
-				_this.$http.post("/user/json/loadById/v1",
-			  	{id:_this.toid},
-			  	{
-			  		header:{
-			  			"x-access-uid":_this.$store.state.user.id,
-			  			"x-access-client":_this.$clientType
-			  		}
-			  	}
-			  ).then(res=>{
-			  	let res_data = eval(res.data);
-				let statusCode = res_data ? res_data.code : 0;
-			  	if(statusCode==200) {
-			  		_this.entity = res_data.body;
-			  		_this.$store.commit("setCur_chat_entity",_this.entity);
-			  		//主要是为了让onshow检查是否已设置备注，如果已设置备注则不需要使用用户原昵称
-			  		setTimeout(function(){
-			  				_this.showname = _this.entity.nickName;
-							_this.friendPic = _this.entity.headpic;
-			  		},100)
-			  	}
-			  	let unRead = uni.getStorageSync(user.id+"#"+_this.toid+'_CHAT_MESSAGE_UNREAD');
-			  	if(unRead&&unRead!="") {
-			  		uni.removeStorageSync(user.id+"#"+_this.toid+'_CHAT_MESSAGE_UNREAD');
-			  		_this.$store.commit("setUnReadMsgSum",_this.$store.state.setUnReadMsgSum - parseInt(unRead))
-			  	}
-			  })
+
 			  this.scrollToBottom();
 			  _this.$http.post("/sysConfig/json/getChatCfg",
 			  	{
@@ -1968,10 +1956,6 @@
 						_this.input_is_focus = true;
 					},300)
 				},100)
-
-
-
-
 
 			},
 			sendEmotion(_a,_b){

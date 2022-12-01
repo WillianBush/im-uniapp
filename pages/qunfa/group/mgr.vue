@@ -10,7 +10,7 @@
     color:#333">群成员</text>
 		<text style="float:right;margin-top:6upx;" class="lg text-gray cuIcon-right"></text>
 		<text @tap="lookMemberList()" style="font-size: 26upx;float:right;    color: #aaa;">查看{{$store.state.cur_chat_entity.memberCount}}名群成员</text>
-		
+
 	</view>
 
 			<!--群成员头像-->
@@ -20,16 +20,16 @@
 						<text v-if="false" @tap="yaoqi()" style="position: relative;
     top: 36upx;font-size: 120upx;margin-top:20upx;color:#999;margin-left:20upx" class="iconfont icon-tianjiatupian"></text>
 					</view>
-					
+
 			</view>
-			
-			 
-		</view> 
-		
+
+
+		</view>
+
 		<view style="clear: both;   width: 96%;
     margin: auto auto;
     margin-top: 10px!important;" class="cu-list menu">
-	
+
 	<view v-if="($store.state.user.id==$store.state.cur_chat_entity.owner_UUID
 			||$store.state.cur_chat_entity.memberMgr_ids.indexOf($store.state.user.id)>=0)&&$store.state.shimingCfg.shiming==1" @tap="lookNotShimingMemberList()" class="cu-item arrow" >
 		<view class="content">
@@ -47,20 +47,20 @@
 			<text class="text-grey" style="color:#333">移除群成员</text>
 		</view>
 	</view>
-	
+
 	<view v-if="$store.state.user.id==$store.state.cur_chat_entity.owner_UUID"  @tap="goMgrset"  class="cu-item arrow" >
 		<view class="content">
 			<text class="text-grey" style="color:#333">群设置</text>
 		</view>
 	</view>
-	
+
 	<view v-if="$store.state.user.id==$store.state.cur_chat_entity.owner_UUID||$store.state.cur_chat_entity.memberMgr_ids.indexOf($store.state.user.id)>=0"  @tap="goSssList"  class="cu-item arrow" >
 		<view class="content">
 			<text class="text-grey" style="color:#333">成员禁言管理</text>
 		</view>
 	</view>
-	
-	
+
+
 	<view v-if="$store.state.user.id==$store.state.cur_chat_entity.owner_UUID
 			||$store.state.cur_chat_entity.memberMgr_ids.indexOf($store.state.user.id)>=0" @tap="editGroupName()" class="cu-item arrow margin-top" >
 		<view class="content">
@@ -68,14 +68,14 @@
 			<text class="text-grey text-sm" style="float:right;color:#aaa;font-size: 26upx;">{{$store.state.cur_chat_entity.name}}</text>
 		</view>
 	</view>
-	
+
 	<view v-else  class="cu-item margin-top" >
 		<view class="content">
 			<text class="text-grey" style="color:#333">群组名称</text>
 			<text class="text-grey text-sm" style="float:right;color:#aaa;font-size: 26upx;">{{$store.state.cur_chat_entity.name}}</text>
 		</view>
 	</view>
-	
+
 	<view v-if="$store.state.user.id==$store.state.cur_chat_entity.owner_UUID
 			||$store.state.cur_chat_entity.memberMgr_ids.indexOf($store.state.user.id)>=0"  class="cu-item  margin-top" >
 		<view class="content">
@@ -83,7 +83,7 @@
 			<text class="text-grey text-sm" style="float:right;color:#aaa;font-size: 26upx;">{{$store.state.cur_chat_entity.roomid}}</text>
 		</view>
 	</view>
-	
+
 	<view v-if="$store.state.user.id==$store.state.cur_chat_entity.owner_UUID
 		||$store.state.cur_chat_entity.memberMgr_ids.indexOf($store.state.user.id)>=0"  @tap="edit_pic()" class="cu-item arrow" >
 		<view class="content">
@@ -91,14 +91,14 @@
 			<view  class="cu-avatar round lg" :style="'width:60upx;height:60upx;float: right;background-image: url('+$store.state.img_url+$store.state.cur_chat_entity.img+');'"></view>
 		</view>
 	</view>
-	
+
 	<view v-if="false" @tap="goQrcode"  class="cu-item arrow" >
 		<view class="content">
 			<text class="text-grey" style="color:#333">群二维码</text>
 			<text style="color:#666;font-size:22px;float: right; position: relative; right: -20upx;" class="lg text-gray cuIcon-qr_code"><span></span></text>
 		</view>
 	</view>
-	
+
 	<view v-if="$store.state.user.id==$store.state.cur_chat_entity.owner_UUID
 		||$store.state.cur_chat_entity.memberMgr_ids.indexOf($store.state.user.id)>=0" @tap="editGroupNotice()" class="cu-item arrow "  >
 		<view class="content">
@@ -110,11 +110,11 @@
 			<text class="text-grey" style="color:#333">群公告</text>
 		</view>
 	</view>
-	<view style="position: relative;top:-10upx;color:#bbb;font-size: 26upx;background: #fff;
-			padding:20upx;line-height: 40upx;word-wrap:break-word;
-word-break:normal; " class="text-grey text-sm">{{$store.state.cur_chat_entity.descri}}</view>
-	
-	
+<!--	<view style="position: relative;top:-10upx;color:#bbb;font-size: 26upx;background: #fff;-->
+<!--			padding:20upx;line-height: 40upx;word-wrap:break-word;-->
+<!--word-break:normal; " class="text-grey text-sm">{{$store.state.cur_chat_entity.descri}}</view>-->
+
+
 
 
 			<view @tap="goMsgRecord()" class="cu-item arrow margin-top" >
@@ -122,7 +122,7 @@ word-break:normal; " class="text-grey text-sm">{{$store.state.cur_chat_entity.de
 					<text class="text-grey" style="color:#333">查看聊天记录</text>
 				</view>
 			</view>
-			
+
 			<view class="cu-form-group margin-top">
 				<view class="title">消息免打扰</view>
 				<switch @change="SwitchA" :class="switchA?'checked':''" :checked="switchA?true:false"></switch>
@@ -131,27 +131,27 @@ word-break:normal; " class="text-grey text-sm">{{$store.state.cur_chat_entity.de
 				<view class="title">置顶聊天</view>
 				<switch @change="SwitchB" :class="switchB?'checked':''" :checked="switchB?true:false"></switch>
 			</view>
-			
+
 			<view class="cu-item margin-top arrow" @tap="clearChatMsg()" >
 				<view class="content">
 					<text class="text-grey" style="color:#333">清空聊天记录</text>
 				</view>
 			</view>
-			
+
 			<view v-if="false" class="cu-item margin-top arrow" @tap="tousu()" >
 				<view class="content">
 					<text class="text-grey" style="color:#333">投诉此群</text>
 				</view>
 			</view>
-			
+
 			<view v-if="$store.state.user.id!=$store.state.cur_chat_entity.owner_UUID" class="cu-item margin-top" style="margin-bottom: 80upx;" @tap="outGroup()" >
 				<view class="content" style="text-align: center;">
 					<text class="text-grey" style="color:#FF2442;">退出群组</text>
 				</view>
 			</view>
-			
-		</view>	
-		
+
+		</view>
+
 	</view>
 </template>
 
@@ -171,7 +171,7 @@ word-break:normal; " class="text-grey text-sm">{{$store.state.cur_chat_entity.de
 				id:"",
 				showTransferGroupModal:false,
 				to_member_id:"",
-				
+
 			}
 		},
 		watch: {
@@ -182,19 +182,19 @@ word-break:normal; " class="text-grey text-sm">{{$store.state.cur_chat_entity.de
 		},
 		methods: {
 			onLoadMethod() {
-				let _this = this;			
+				let _this = this;
 				this.switchC = this.$store.state.cur_chat_entity.stopSpeak==1
-				
+
 				let darao = uni.getStorageSync(this.id+"_darao");
 				if(darao&&darao!="") {
 					this.switchA = darao;
 				}
-				
+
 				let zhiding = uni.getStorageSync(this.id+"_zhiding");
 				if(zhiding&&zhiding!="") {
 					this.switchB = zhiding;
 				}
-				
+
 				_this.$http.post("/sysConfig/json/getShimingCfg",
 					{
 						header:{
@@ -207,7 +207,7 @@ word-break:normal; " class="text-grey text-sm">{{$store.state.cur_chat_entity.de
 						console.log(res.data.body);
 						_this.$store.commit("setShimingCfg",res.data.body);
 					}
-				})				
+				})
 			},
 			goUserDetail(_index){
 				let _this = this;
@@ -222,7 +222,7 @@ word-break:normal; " class="text-grey text-sm">{{$store.state.cur_chat_entity.de
 					}
 				).then(res=>{
 					let res_data = eval(res.data);
-					if(res_data.code==200) {  
+					if(res_data.code==200) {
 						let flag = false;
 						//哪个角色可查看群成员详细 0全体 1仅群主 2群主和群管理员
 						if(res_data.body.lookGroupMemberDetailForRole==0) {
@@ -237,17 +237,17 @@ word-break:normal; " class="text-grey text-sm">{{$store.state.cur_chat_entity.de
 								flag = true;
 							}
 						}
-						
-							
+
+
 						if(flag) {
 							uni.navigateTo({
 								url:"/pages/chat/user_detail?id="+_id+"&room_id="+_this.$store.state.cur_chat_entity.id
 							})
-						}	
-						
+						}
+
 					}
 				})
-				
+
 			},
 			goSssList(){
 				uni.navigateTo({
@@ -271,7 +271,7 @@ word-break:normal; " class="text-grey text-sm">{{$store.state.cur_chat_entity.de
 				this.showTransferGroupModal = true;
 			},
 			tousu() {
-				
+
 			},
 			goQrcode(){
 				uni.navigateTo({
@@ -281,7 +281,7 @@ word-break:normal; " class="text-grey text-sm">{{$store.state.cur_chat_entity.de
 			transferGroup(){
 				let _this = this;
 				let user = uni.getStorageSync("USER");
-				
+
 				if(this.to_member_id.trim()=="") {
 					uni.showToast({
 					    icon: 'none',
@@ -290,7 +290,7 @@ word-break:normal; " class="text-grey text-sm">{{$store.state.cur_chat_entity.de
 					});
 					return;
 				}
-				
+
 				_this.$http.post("/room/json/transferGroup",
 					{roomid:_this.$store.state.cur_chat_entity.id,toUid:_this.to_member_id.trim()},
 					{
@@ -302,7 +302,7 @@ word-break:normal; " class="text-grey text-sm">{{$store.state.cur_chat_entity.de
 				).then(res=>{
 					// console.log(res.data)
 					let res_data = eval(res.data);
-					if(res_data.code==200) {  
+					if(res_data.code==200) {
 						uni.showToast({
 						   icon: 'success',
 						   title: "转让成功"
@@ -310,9 +310,9 @@ word-break:normal; " class="text-grey text-sm">{{$store.state.cur_chat_entity.de
 						setTimeout(function(){
 							uni.navigateTo({
 								url:"/pages/index/index"
-							}) 
+							})
 						},1500)
-						
+
 					} else {
 						uni.showToast({
 							icon:"none",
@@ -321,7 +321,7 @@ word-break:normal; " class="text-grey text-sm">{{$store.state.cur_chat_entity.de
 						});
 					}
 				})
-				
+
 				// uni.request({
 				// 	method:"POST",
 				// 	url: _this.$store.state.req_url + "/room/json/transferGroup",
@@ -333,7 +333,7 @@ word-break:normal; " class="text-grey text-sm">{{$store.state.cur_chat_entity.de
 				// 	success(res) {
 				// 		console.log(res.data)
 				// 		let res_data = eval(res.data);
-				// 		if(res_data.code==200) {  
+				// 		if(res_data.code==200) {
 				// 			uni.showToast({
 				// 			   icon: 'success',
 				// 			   title: "转让成功"
@@ -341,9 +341,9 @@ word-break:normal; " class="text-grey text-sm">{{$store.state.cur_chat_entity.de
 				// 			setTimeout(function(){
 				// 				uni.navigateTo({
 				// 					url:"/pages/index/index?nav=home"
-				// 				}) 
+				// 				})
 				// 			},1500)
-							
+
 				// 		} else {
 				// 			uni.showToast({
 				// 				icon:"none",
@@ -353,8 +353,8 @@ word-break:normal; " class="text-grey text-sm">{{$store.state.cur_chat_entity.de
 				// 		}
 				// 	}
 				// })
-				
-				
+
+
 			},
 			dissolveGroup() {
 				let _this = this;
@@ -364,7 +364,7 @@ word-break:normal; " class="text-grey text-sm">{{$store.state.cur_chat_entity.de
 				    content: '是否解散此群组?',
 				    success: function (res) {
 						if (res.confirm) {
-							
+
 							_this.$http.post("/room/json/dissolve",
 								{roomid:_this.$store.state.cur_chat_entity.id},
 								{
@@ -375,11 +375,11 @@ word-break:normal; " class="text-grey text-sm">{{$store.state.cur_chat_entity.de
 								}
 							).then(res=>{
 								let res_data = eval(res.data);
-								if(res_data.code==200) {  
+								if(res_data.code==200) {
 									uni.navigateTo({
 										url:"/pages/index/index"
 									})
-									
+
 								} else {
 									uni.showToast({
 									    title: res_data.msg,
@@ -387,7 +387,7 @@ word-break:normal; " class="text-grey text-sm">{{$store.state.cur_chat_entity.de
 									});
 								}
 							})
-							
+
 							// uni.request({
 							// 	method:"POST",
 							// 	url: _this.$store.state.req_url + "/room/json/dissolve",
@@ -399,12 +399,12 @@ word-break:normal; " class="text-grey text-sm">{{$store.state.cur_chat_entity.de
 							// 	success(res) {
 							// 		console.log(res.data)
 							// 		let res_data = eval(res.data);
-							// 		if(res_data.code==200) {  
+							// 		if(res_data.code==200) {
 							// 			console.log("-----");
 							// 			uni.navigateTo({
 							// 				url:"/pages/index/index?nav=home"
 							// 			})
-										
+
 							// 		} else {
 							// 			uni.showToast({
 							// 			    title: res_data.msg,
@@ -413,9 +413,9 @@ word-break:normal; " class="text-grey text-sm">{{$store.state.cur_chat_entity.de
 							// 		}
 							// 	}
 							// })
-						} 
+						}
 					},
-				});	
+				});
 			},
 			outGroup() {
 				let _this = this;
@@ -435,7 +435,7 @@ word-break:normal; " class="text-grey text-sm">{{$store.state.cur_chat_entity.de
 								}
 							).then(res=>{
 								let res_data = eval(res.data);
-								if(res_data.code==200) {  
+								if(res_data.code==200) {
 									uni.showToast({
 										icon: 'none',
 										title: "已成功退出此群组"
@@ -449,15 +449,15 @@ word-break:normal; " class="text-grey text-sm">{{$store.state.cur_chat_entity.de
 										}
 									).then(res_1=>{
 										let res_data_1 = eval(res_1.data);
-										if(res_data_1.code==200) {  
+										if(res_data_1.code==200) {
 											let unreadSum = 0;
 											res_data_1.body.forEach(item=>{
-												
+
 												let s = uni.getStorageSync(item.id+"_NOTE");
 												if(s&&s!="") {
 													item.title = s;
 												}
-												
+
 												let last_txt = uni.getStorageSync(res_data.body.id+"#"+item.id+'_CHAT_MESSAGE_LASTCONTENT');
 												if(last_txt.indexOf("<img")>=0) {
 													item.content = "[图片]";
@@ -468,12 +468,12 @@ word-break:normal; " class="text-grey text-sm">{{$store.state.cur_chat_entity.de
 												}  else {
 													item.content = last_txt;
 												}
-												
+
 												let aite_count = uni.getStorageSync(item.id+"#AITE_COUNT");
 												if(aite_count&&aite_count!="") {
 													item.aiteCount = parseInt(aite_count);
-												}	
-												
+												}
+
 												let unRead = uni.getStorageSync(res_data.body.id+"#"+item.id+'_CHAT_MESSAGE_UNREAD');
 												if(unRead&&unRead!="") {
 													unreadSum+=parseInt(unRead);
@@ -481,12 +481,12 @@ word-break:normal; " class="text-grey text-sm">{{$store.state.cur_chat_entity.de
 												} else {
 													item.unread = 0;
 												}
-												
+
 												let zhiding = uni.getStorageSync(item.id+"_zhiding");
 												if(zhiding) {
 													item.top = 0;
 												}
-												
+
 											});
 											let list = res_data_1.body;
 											list.sort(function(a,b){
@@ -508,7 +508,7 @@ word-break:normal; " class="text-grey text-sm">{{$store.state.cur_chat_entity.de
 									uni.navigateTo({
 										url:"/pages/index/index"
 									})
-									
+
 								} else {
 									uni.showToast({
 									    title: res_data.msg,
@@ -516,7 +516,7 @@ word-break:normal; " class="text-grey text-sm">{{$store.state.cur_chat_entity.de
 									});
 								}
 							})
-							
+
 							// uni.request({
 							// 	method:"POST",
 							// 	url: _this.$store.state.req_url + "/room/json/out",
@@ -527,12 +527,12 @@ word-break:normal; " class="text-grey text-sm">{{$store.state.cur_chat_entity.de
 							// 	},
 							// 	success(res) {
 							// 		let res_data = eval(res.data);
-							// 		if(res_data.code==200) {  
+							// 		if(res_data.code==200) {
 							// 			console.log("-----");
 							// 			uni.navigateTo({
 							// 				url:"/pages/index/index?nav=home"
 							// 			})
-										
+
 							// 		} else {
 							// 			uni.showToast({
 							// 			    title: res_data.msg,
@@ -541,11 +541,11 @@ word-break:normal; " class="text-grey text-sm">{{$store.state.cur_chat_entity.de
 							// 		}
 							// 	}
 							// })
-						} 
+						}
 					},
-				});	
-				
-				
+				});
+
+
 			},
 			edit_pic() {
 				uni.navigateTo({
@@ -582,7 +582,7 @@ word-break:normal; " class="text-grey text-sm">{{$store.state.cur_chat_entity.de
 					url:"/pages/chat/group/member_list"
 				})
 			},
-			
+
 			goMsgRecord() {
 				uni.navigateTo({
 					url:"/pages/chat/group/message_record"
@@ -605,21 +605,21 @@ word-break:normal; " class="text-grey text-sm">{{$store.state.cur_chat_entity.de
 							    title: '清除成功',
 							    duration: 2000
 							});
-							 
+
 							//清空云数据
 							_this.$websocket.dispatch("WEBSOCKET_SEND", "{body:'"+(user.id+"#"+_this.id)+"',CMD:'CLEARCHATMSG_SINGLE_CLOUD'}");
-						} 
+						}
 					},
-				});	
-				
+				});
+
 			},
 			SwitchC(e) {
 				let _this = this;
 				this.switchC = e.detail.value;
 				let stopSpeak = 0;
 				if(e.detail.value) stopSpeak = 1;
-				
-				
+
+
 				_this.$http.post("/room/json/uStopSpeak/v1",
 					{roomid:_this.$store.state.cur_chat_entity.id,stopSpeak:stopSpeak},
 					{
@@ -630,7 +630,7 @@ word-break:normal; " class="text-grey text-sm">{{$store.state.cur_chat_entity.de
 					}
 				).then(res=>{
 					let res_data = eval(res.data);
-					if(res_data.code==200) {  
+					if(res_data.code==200) {
 						_this.$store.state.cur_chat_entity.stopSpeak = stopSpeak;
 					} else {
 						uni.showToast({
@@ -639,7 +639,7 @@ word-break:normal; " class="text-grey text-sm">{{$store.state.cur_chat_entity.de
 						});
 					}
 				})
-				
+
 				// uni.request({
 				// 	method:"POST",
 				// 	url: _this.$store.state.req_url + "/room/json/uStopSpeak/v1",
@@ -650,7 +650,7 @@ word-break:normal; " class="text-grey text-sm">{{$store.state.cur_chat_entity.de
 				// 	},
 				// 	success(res) {
 				// 		let res_data = eval(res.data);
-				// 		if(res_data.code==200) {  
+				// 		if(res_data.code==200) {
 				// 			_this.$store.state.cur_chat_entity.stopSpeak = stopSpeak;
 				// 		} else {
 				// 			uni.showToast({
@@ -660,8 +660,8 @@ word-break:normal; " class="text-grey text-sm">{{$store.state.cur_chat_entity.de
 				// 		}
 				// 	}
 				// })
-				
-				
+
+
 			},
 			SwitchA(e) {
 				this.switchA = e.detail.value;
@@ -670,9 +670,9 @@ word-break:normal; " class="text-grey text-sm">{{$store.state.cur_chat_entity.de
 			SwitchB(e) {
 				this.switchB = e.detail.value;
 				uni.setStorageSync(this.id+"_zhiding",e.detail.value);
-				
-				
-				
+
+
+
 				let l = this.$store.state.ar_list;
 				let list1 = [];	//没有置顶的
 				let list2 = [];//置顶的
@@ -691,9 +691,9 @@ word-break:normal; " class="text-grey text-sm">{{$store.state.cur_chat_entity.de
 				list2.sort(function(a,b){
 					return b.createDateTime-a.createDateTime;
 				})
-				
+
 				this.$store.commit("setAr_list_show",list2.concat(list1));
-				
+
 			},
 		}
 	}
