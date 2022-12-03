@@ -189,9 +189,9 @@
             initNetBind(_this);
 
 			this.$store.state.appShow = true;
-			// setTimeout(()=>{
-			//  	_this.$websocket.dispatch('WEBSOCKET_INIT');
-			// },500);
+			setTimeout(()=>{
+			 	_this.$websocket.dispatch('WEBSOCKET_INIT');
+			},500);
 
 
 			if(_checkLink) {
