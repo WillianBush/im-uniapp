@@ -8,7 +8,7 @@
 			</view>
 
 			<scroll-view   :scroll-y="true"
-						   :refresher-enabled="true"
+						   :refresher-enabled="false"
 						   :refresher-triggered="refresherTriggered"
 						   @refresherrefresh="refresherrefresh"
 						   @refresherrestore="refresherrestore"
@@ -231,9 +231,13 @@
 					</block>
 
 				</block>
+				<view style="margin-top:20rpx;margin-bottom:20rpx">
+					<uni-pagination :current="pageSize" :pageSize="numPag" title="标题文字" />
+				</view>
+
 			</scroll-view>
 			<!--
-			<view class="cu-item self" > 
+			<view class="cu-item self" >
 				<view class="main">
 					<view class="content bg-green shadow">
 						<text>喵喵喵！喵喵喵！喵喵喵！喵喵！喵喵！！喵！喵喵喵！</text>
@@ -242,9 +246,9 @@
 				<view class="cu-avatar radius" style="background-image:url(https://ossweb-img.qq.com/images/lol/web201310/skin/big107000.jpg);"></view>
 				<view class="date">2018年3月23日 13:23</view>
 			</view>
-			
+
 			<view class="cu-info round">对方撤回一条消息!</view>
-			
+
 			<view class="cu-item" @tap="goUserDetail()">
 				<view class="cu-avatar radius" style="background-image:url(https://ossweb-img.qq.com/images/lol/web201310/skin/big143004.jpg);"></view>
 				<view class="main">
@@ -254,11 +258,11 @@
 				</view>
 				<view class="date "> 13:23</view>
 			</view>
-			
+
 			<view class="cu-info">
 				<text class="cuIcon-roundclosefill text-red "></text> 对方拒绝了你的消息
 			</view>
-			
+
 			<view class="cu-info">
 				对方开启了好友验证，你还不是他(她)的好友。请先发送好友验证请求，对方验证通过后，才能聊天。
 				<text class="text-blue">发送好友验证</text>
@@ -282,7 +286,7 @@
 				<view class="cu-avatar radius" style="background-image:url(https://ossweb-img.qq.com/images/lol/web201310/skin/big107000.jpg);"></view>
 				<view class="date">13:23</view>
 			</view>
-			
+
 			<view class="cu-item self">
 				<view class="main">
 					<view class="action">
@@ -296,11 +300,11 @@
 				<view class="date">13:23</view>
 			</view>
 			-->
-			
-			
+
+
 		</view>
 
-	
+
 <openRed @hide="hideOpenRed" @openRedDetail="openRedDetail" v-show="showOpenRed" ></openRed>
 
 	</view>
@@ -341,7 +345,7 @@
 					mitemHeight: 0
 				},
 				sendCount:0,//这里为了。第一次发送需要延迟拉下拉
-				
+
 				RECORDER:uni.getRecorderManager(),
 				AUDIO:uni.createInnerAudioContext(),
 				recordTimer:null,
@@ -367,6 +371,11 @@
 				/* 选择的用户下标 */
 				pickerUserIndex: -1,
 				/* 临时内容 */
+				pageParams:{
+					pageNumber:'1',
+					pageCount:'30',
+				},
+				chatLogs:[],
 				temp_content:"",
 				temp_uuid:"",
 				chatCfg:{},
@@ -469,7 +478,7 @@
 				this.showPop = false;
 				this.showItem = 0;
 				this.InputBottom=0;
-				
+
 				uni.navigateTo({
 					url:"/pages/chat/card/sendCard"
 				})
@@ -499,7 +508,7 @@
 				console.log(bean);
 				let _this = this;
 				let user = uni.getStorageSync("USER");
-				
+
 				let str = uni.getStorageSync(user.id+'_RED_MUST_UPDATE_MAP');
 				if(str&&str!="") {
 					var arrs = JSON.parse(str);
@@ -507,7 +516,7 @@
 					if(arrs[bean.redUUID]) {
 						bean = arrs[bean.redUUID];
 					}
-				} 
+				}
 				this.temp_bean = bean;
 				this.showOpenRed = true;
 				this.$store.state.temp.bean = this.temp_bean;
@@ -523,14 +532,14 @@
 					if(arrs[bean.utid]) {
 						bean = arrs[bean.utid];
 					}
-				} 
+				}
 				this.temp_bean = bean;
 				this.$store.state.temp.bean = this.temp_bean;
-				
+
 				uni.navigateTo({
 					url:"../transfer/transfer_receive"
 				})
-				
+
 			},
 			sendRed(){
 				this.showPop = false;
@@ -557,7 +566,7 @@
 					    duration: 0
 					});
 				},100)
-			},	
+			},
 			clickVoice(_vpath,_index) {
 				let _this = this;
 				if(this.selVoiceIndex == _index) {
@@ -570,15 +579,15 @@
 				}
 				//_vpath = "http://39.98.129.168:8080/images/upload/chat/voice/277c7e2561ff45d5b54e0760ae3b039b.amr";
 				console.log(_vpath);
-				this.selVoiceIndex = _index; 
+				this.selVoiceIndex = _index;
 				//this.voicePath = _vpath;
 				this.player = plus.audio.createPlayer(_vpath);
-				this.player.play(function(){  
+				this.player.play(function(){
 					_this.selVoiceIndex = -1;
 					console.log("播放完了");
-				}, function(e) {  
+				}, function(e) {
 				        console.log("播放失败")
-				}); 
+				});
 			},
 			/* 获取窗口尺寸 */
 			getWindowSize() {
