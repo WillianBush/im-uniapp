@@ -7,7 +7,7 @@
 		{
 			"path": "pages/index/index",
 			"style": {}
-		},{ 
+		},{
             "path": "pages/login/login",
             "style": {}
         },{
@@ -54,7 +54,9 @@
 		}
 		,{
 		    "path" : "pages/chat/user/message_record",
-		    "style" : {}
+		    "style" : {
+				"enablePullDownRefresh":true
+			}
 		}
         ,{
             "path" : "pages/chat/user_detail",
@@ -135,7 +137,7 @@
 		{
 		    "path" : "pages/chat/group/upd_pic",
 		    "style" : {}
-		} 
+		}
         ,{
             "path" : "pages/faxian/site/site",
             "style" : {}
@@ -226,21 +228,21 @@
 		}
         ,{
             "path" : "pages/faxian/txtContent/txtContent",
-            "style" :                                                                                    
+            "style" :
             {
                 "navigationBarTitleText": "",
                 "enablePullDownRefresh": false
             }
-            
+
         },
 		{
 		    "path" : "pages/super_user/search",
-		    "style" :                                                                                    
+		    "style" :
 		    {
 		        "navigationBarTitleText": "",
 		        "enablePullDownRefresh": false
 		    }
-		    
+
 		},
 		{
 		    "path" : "pages/mine/user_info/qrCode",
@@ -260,156 +262,156 @@
 		}
         ,{
             "path" : "pages/chat/red/sendRed",
-            "style" :                                                                                    
+            "style" :
             {
                 "navigationBarTitleText": "",
                 "enablePullDownRefresh": false
             }
-            
+
         }
 		,{
 		    "path" : "pages/chat/transfer/transfer",
-		    "style" :                                                                                    
+		    "style" :
 		    {
 		        "navigationBarTitleText": "",
 		        "enablePullDownRefresh": false
 		    }
-		    
+
 		}
         ,{
             "path" : "pages/chat/red/red_detail",
-            "style" :                                                                                    
+            "style" :
             {
                 "navigationBarTitleText": "",
                 "enablePullDownRefresh": false,
 				"navigationBarBackgroundColor":"#E13C36"
             }
-            
+
         }
         ,{
             "path" : "pages/chat/transfer/transfer_receive",
-            "style" :                                                                                    
+            "style" :
             {
                 "navigationBarTitleText": "",
                 "enablePullDownRefresh": false
             }
-            
+
         }
 		,{
 		    "path" : "pages/chat/card/sendCard",
-		    "style" :                                                                                    
+		    "style" :
 		    {
 		        "navigationBarTitleText": "",
 		        "enablePullDownRefresh": false
 		    }
-		    
+
 		}
         ,{
             "path" : "pages/hotItem/hotItem",
-            "style" :                                                                                    
+            "style" :
             {
                 "navigationBarTitleText": "",
                 "enablePullDownRefresh": false
             }
-            
+
         }
         ,{
             "path" : "pages/hotItem/hotItem_app",
             "style" : {
 				"navigationBarBackgroundColor":"#E54D42"
 			}
-            
+
         }
         ,{
             "path" : "pages/mine/shiming",
-            "style" :                                                                                    
+            "style" :
             {
                 "navigationBarTitleText": "",
                 "enablePullDownRefresh": false
             }
-            
+
         }
         ,{
             "path" : "pages/chat/group/not_shiming_member_list",
-            "style" :                                                                                    
+            "style" :
             {
                 "navigationBarTitleText": "",
                 "enablePullDownRefresh": false
             }
-            
+
         }
         ,{
             "path" : "pages/chat/red/redRecord",
-            "style" :                                                                                    
+            "style" :
             {
                 "navigationBarTitleText": "",
                 "enablePullDownRefresh": false
             }
-            
+
         }
         ,{
             "path" : "pages/chat/group/yaoqi",
-            "style" :                                                                                    
+            "style" :
             {
                 "navigationBarTitleText": "",
                 "enablePullDownRefresh": false
             }
-            
+
         }
         ,{
             "path" : "pages/chat/group/add_room_mgr",
-            "style" :                                                                                    
+            "style" :
             {
                 "navigationBarTitleText": "",
                 "enablePullDownRefresh": false
             }
-            
+
         }
         ,{
             "path" : "pages/chat/group/room_mgr",
-            "style" :                                                                                    
+            "style" :
             {
                 "navigationBarTitleText": "",
                 "enablePullDownRefresh": false
             }
-            
+
         }
-       
+
         ,{
             "path" : "pages/faxian/notice/index",
-            "style" :                                                                                    
+            "style" :
             {
                 "navigationBarTitleText": "",
                 "enablePullDownRefresh": false
             }
-            
+
         }
         ,{
             "path" : "pages/faxian/notice/detail",
-            "style" :                                                                                    
+            "style" :
             {
                 "navigationBarTitleText": "",
                 "enablePullDownRefresh": false
             }
-            
+
         }
         ,{
             "path" : "pages/mine/signIn",
-            "style" :                                                                                    
+            "style" :
             {
                 "navigationBarTitleText": "",
                 "enablePullDownRefresh": false
             }
-            
+
         }
         ,{
             "path" : "pages/mine/signInRecord",
-            "style" :                                                                                    
+            "style" :
             {
                 "navigationBarTitleText": "",
                 "enablePullDownRefresh": false
             }
-            
+
         }
     ],
 	"globalStyle": {
@@ -417,11 +419,11 @@
 		"navigationStyle": "custom",
 		"navigationBarBackgroundColor":"#0081FF",
 		"app-plus": {
-			"titleNView": false ,//禁用原生导航栏  
+			"titleNView": false ,//禁用原生导航栏
 			"softinputMode": "adjustResize"//手机软键盘升起不让其将页面头部上推
 			//"animationType": "fade-in",
 			//"animationDuration": 300
-		} 
+		}
 	},
 	"condition" : { //模式配置，仅开发期间生效
 		"current": 0, //当前激活的模式(list 的索引项)

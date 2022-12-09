@@ -231,8 +231,8 @@
 					</block>
 
 				</block>
-				<view style="margin-top:20rpx;margin-bottom:20rpx">
-					<uni-pagination :current="pageSize" :pageSize="numPag" title="标题文字" />
+				<view @click="loadmore" v-if="allList.length>0" style="color:rgb(170, 170, 170);text-align:center;margin-top:30rpx;margin-bottom:20rpx">
+					点击加载更多...
 				</view>
 
 			</scroll-view>
@@ -396,7 +396,12 @@
 			let _this = this;
 			this.loadStoreData(this.pageSize,this.numPag);
 		},
+
 		methods: {
+			loadmore() {
+				this.numPag = this.numPag + 1
+				this.loadStoreData(this.pageSize,this.numPag);
+			},
 			refresherrefresh() {
 				console.log('自定义下拉刷新被触发');
 				let _this = this;
@@ -452,9 +457,11 @@
 						console.log("test_test",res_data_1)
 						if(res_data_1.code==200) {
 							this.numPag = res_data_1.body.pageNumber;//当前在第几页
-
-							_this.allList = res_data_1.body.list;
-
+							if(this.numPag > 1){
+								_this.allList = _this.allList.concat(res_data_1.body.list);
+							}else{
+								_this.allList = res_data_1.body.list;
+							}
 							this.closeRefresh();
 						} else {
 							this.closeRefresh();
