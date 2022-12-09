@@ -386,7 +386,7 @@
 				pageSize: 50,//50条
 				status: "more", // 加载状态
 				pageParams:{
-					pageNumber:1,
+					pageNumber:'1',
 					pageCount:'30',
 				},
 				timer: null
