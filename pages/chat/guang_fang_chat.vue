@@ -18,13 +18,13 @@
 							</view>
 							<video  direction="0"   v-else-if="item.bean.psr=='video'" :src="$store.state.img_url+item.bean.txt"></video>
 							<rich-text v-else   :nodes="item.bean.txt"></rich-text>
-							
-						</view> 
-					</view> 
+
+						</view>
+					</view>
 					<view class="cu-avatar radius" :style="'background-image:url('+$store.state.img_url+item.bean.fromHeadpic+');'"></view>
 					<view class="date">{{item.bean.date}}</view>
 				</view>
-				
+
 				<view     v-else class="cu-item" >
 					<view @tap.stop="goUserDetail(item.bean.fromUid)" class="cu-avatar radius" :style="'background-image:url('+$store.state.img_url+item.bean.fromHeadpic+');'" ></view>
 					<view class="main">
@@ -51,7 +51,7 @@
 					<view class="cu-avatar radius" :style="'background-image:url('+$store.state.img_url+$store.state.user.headpic+');'"></view>
 			</view>
 			<!--
-			<view class="cu-item self" > 
+			<view class="cu-item self" >
 				<view class="main">
 					<view class="content bg-green shadow">
 						<text>喵喵喵！喵喵喵！喵喵喵！喵喵！喵喵！！喵！喵喵喵！</text>
@@ -60,9 +60,9 @@
 				<view class="cu-avatar radius" style="background-image:url(https://ossweb-img.qq.com/images/lol/web201310/skin/big107000.jpg);"></view>
 				<view class="date">2018年3月23日 13:23</view>
 			</view>
-			
+
 			<view class="cu-info round">对方撤回一条消息!</view>
-			
+
 			<view class="cu-item" @tap="goUserDetail()">
 				<view class="cu-avatar radius" style="background-image:url(https://ossweb-img.qq.com/images/lol/web201310/skin/big143004.jpg);"></view>
 				<view class="main">
@@ -72,11 +72,11 @@
 				</view>
 				<view class="date "> 13:23</view>
 			</view>
-			
+
 			<view class="cu-info">
 				<text class="cuIcon-roundclosefill text-red "></text> 对方拒绝了你的消息
 			</view>
-			
+
 			<view class="cu-info">
 				对方开启了好友验证，你还不是他(她)的好友。请先发送好友验证请求，对方验证通过后，才能聊天。
 				<text class="text-blue">发送好友验证</text>
@@ -100,7 +100,7 @@
 				<view class="cu-avatar radius" style="background-image:url(https://ossweb-img.qq.com/images/lol/web201310/skin/big107000.jpg);"></view>
 				<view class="date">13:23</view>
 			</view>
-			
+
 			<view class="cu-item self">
 				<view class="main">
 					<view class="action">
@@ -114,38 +114,38 @@
 				<view class="date">13:23</view>
 			</view>
 			-->
-			
-			
+
+
 		</view>
 		<view class="cu-bar foot input" :style="[{bottom:InputBottom+'upx'}]" >
 			<!-- #ifndef H5 -->
 			<view @tap="selType(2)" v-show="c_type==1"  class="action">
-				<text class="cuIcon-sound text-grey"></text> 
-			</view> 
+				<text class="cuIcon-sound text-grey"></text>
+			</view>
 			<view @tap="selType(1)" v-show="c_type==2"   class="action">
-				<text class="cuIcon-keyboard text-grey"></text> 
+				<text class="cuIcon-keyboard text-grey"></text>
 			</view>
 			<!-- #endif -->
-			
-			
-			
+
+
+
 			<!-- @focus="InputFocus" @blur="InputBlur"-->
 			<input @focus="InputFocus" @blur="InputBlur"  v-show="c_type==1" v-model="txt" @input="inputTxt()" class="solid-bottom" :adjust-position="true" :focus="false" maxlength="300" cursor-spacing="10"
 			></input>
 			<!--
 			<button  @touchstart="checkAuthorize" @touchend="endRecord" v-show="c_type==2"  style="color: #aaa;margin-left: 20upx;width:100%" class="cu-btn block line-orange lg">按住 说话</button>
 			-->
-			<button  
+			<button
 			 @touchstart="voiceBegin"  @touchend="voiceEnd" @touchcancel="voiceCancel"
 			 v-show="c_type==2"  style="color: #aaa;margin-left: 20upx;width:100%" class="cu-btn block line-orange lg">按住 说话</button>
 			<view style="margin-right: 20upx;" class="action" @tap="showItemIndex(1)">
 				<text  class="cuIcon-emojifill text-grey"></text>
 			</view>
-			<text v-show="showjia"  @tap="showItemIndex(2)" style="font-size:52upx;color:#777;margin-top:6upx;margin-left:6upx;margin-right:6upx" class="iconfont icon-jia"></text>	
+			<text v-show="showjia"  @tap="showItemIndex(2)" style="font-size:52upx;color:#777;margin-top:6upx;margin-left:6upx;margin-right:6upx" class="iconfont icon-jia"></text>
 			<button  v-show="!showjia" @tap.stop="send()" class="cu-btn bg-green shadow">发送</button>
 		</view>
-		
-		
+
+
 		<view v-show="showItem==1" class="cu-bar foot " style="box-shadow: none;-webkit-box-shadow: none;display: block;background: #fff;height:330upx;margin-bottom:80upx;">
 			<scroll-view scroll-y class="indexes" style="height:330upx;padding-bottom:20upx;padding-top: 10upx;"
 			 :scroll-with-animation="true" :enable-back-to-top="true">
@@ -169,7 +169,7 @@
 		<view @tap="sendEmotion(0,13)" style="flex:1;text-align: center;"><image lazy-load src="../../static/emotion/face00/13.gif" style="width:50upx;height:50upx;margin-top: 10upx;;"></image></view>
 		<view @tap="sendEmotion(0,14)" style="flex:1;text-align: center;"><image lazy-load src="../../static/emotion/face00/14.gif" style="width:50upx;height:50upx;margin-top: 10upx;;"></image></view>
 		<view @tap="sendEmotion(0,15)" style="flex:1;text-align: center;"><image lazy-load src="../../static/emotion/face00/15.gif" style="width:50upx;height:50upx;margin-top: 10upx;;"></image></view>
-		
+
 	</view>
 	<view style="display: flex;">
 		<view @tap="sendEmotion(0,16)" style="flex:1;text-align: center;"><image lazy-load src="../../static/emotion/face00/16.gif" style="width:50upx;height:50upx;margin-top: 10upx;;"></image></view>
@@ -180,7 +180,7 @@
 		<view @tap="sendEmotion(0,21)" style="flex:1;text-align: center;"><image lazy-load src="../../static/emotion/face00/21.gif" style="width:50upx;height:50upx;margin-top: 10upx;;"></image></view>
 		<view @tap="sendEmotion(0,22)" style="flex:1;text-align: center;"><image lazy-load src="../../static/emotion/face00/22.gif" style="width:50upx;height:50upx;margin-top: 10upx;;"></image></view>
 		<view @tap="sendEmotion(0,23)" style="flex:1;text-align: center;"><image lazy-load src="../../static/emotion/face00/23.gif" style="width:50upx;height:50upx;margin-top: 10upx;;"></image></view>
-		
+
 	</view>
 	<view style="display: flex;">
 		<view @tap="sendEmotion(0,24)" style="flex:1;text-align: center;"><image lazy-load src="../../static/emotion/face00/24.gif" style="width:50upx;height:50upx;margin-top: 10upx;;"></image></view>
@@ -201,7 +201,7 @@
 		<view @tap="sendEmotion(0,37)" style="flex:1;text-align: center;"><image lazy-load src="../../static/emotion/face00/37.gif" style="width:50upx;height:50upx;margin-top: 10upx;;"></image></view>
 		<view @tap="sendEmotion(0,38)" style="flex:1;text-align: center;"><image lazy-load src="../../static/emotion/face00/38.gif" style="width:50upx;height:50upx;margin-top: 10upx;;"></image></view>
 		<view @tap="sendEmotion(0,39)" style="flex:1;text-align: center;"><image lazy-load src="../../static/emotion/face00/39.gif" style="width:50upx;height:50upx;margin-top: 10upx;;"></image></view>
-	</view>	
+	</view>
 	<view style="display: flex;">
 		<view @tap="sendEmotion(0,40)" style="flex:1;text-align: center;"><image lazy-load src="../../static/emotion/face00/40.gif" style="width:50upx;height:50upx;margin-top: 10upx;;"></image></view>
 		<view @tap="sendEmotion(0,41)" style="flex:1;text-align: center;"><image lazy-load src="../../static/emotion/face00/41.gif" style="width:50upx;height:50upx;margin-top: 10upx;;"></image></view>
@@ -211,7 +211,7 @@
 		<view @tap="sendEmotion(0,45)" style="flex:1;text-align: center;"><image lazy-load src="../../static/emotion/face00/45.gif" style="width:50upx;height:50upx;margin-top: 10upx;;"></image></view>
 		<view @tap="sendEmotion(0,46)" style="flex:1;text-align: center;"><image lazy-load src="../../static/emotion/face00/46.gif" style="width:50upx;height:50upx;margin-top: 10upx;;"></image></view>
 		<view @tap="sendEmotion(0,47)" style="flex:1;text-align: center;"><image lazy-load src="../../static/emotion/face00/47.gif" style="width:50upx;height:50upx;margin-top: 10upx;;"></image></view>
-	</view>	
+	</view>
 	<view style="display: flex;">
 		<view @tap="sendEmotion(0,48)" style="flex:1;text-align: center;"><image lazy-load src="../../static/emotion/face00/48.gif" style="width:50upx;height:50upx;margin-top: 10upx;;"></image></view>
 		<view @tap="sendEmotion(0,49)" style="flex:1;text-align: center;"><image lazy-load src="../../static/emotion/face00/49.gif" style="width:50upx;height:50upx;margin-top: 10upx;;"></image></view>
@@ -314,7 +314,7 @@
 		<view @tap="sendEmotion(1,13)" style="flex:1;text-align: center;"><image lazy-load src="../../static/emotion/face01/13.png" style="width:50upx;height:50upx;margin-top: 10upx;;"></image></view>
 		<view @tap="sendEmotion(1,14)" style="flex:1;text-align: center;"><image lazy-load src="../../static/emotion/face01/14.png" style="width:50upx;height:50upx;margin-top: 10upx;;"></image></view>
 		<view @tap="sendEmotion(1,15)" style="flex:1;text-align: center;"><image lazy-load src="../../static/emotion/face01/15.png" style="width:50upx;height:50upx;margin-top: 10upx;;"></image></view>
-		
+
 	</view>
 	<view style="display: flex;">
 		<view @tap="sendEmotion(1,16)" style="flex:1;text-align: center;"><image lazy-load src="../../static/emotion/face01/16.png" style="width:50upx;height:50upx;margin-top: 10upx;;"></image></view>
@@ -325,7 +325,7 @@
 		<view @tap="sendEmotion(1,21)" style="flex:1;text-align: center;"><image lazy-load src="../../static/emotion/face01/21.png" style="width:50upx;height:50upx;margin-top: 10upx;;"></image></view>
 		<view @tap="sendEmotion(1,22)" style="flex:1;text-align: center;"><image lazy-load src="../../static/emotion/face01/22.png" style="width:50upx;height:50upx;margin-top: 10upx;;"></image></view>
 		<view @tap="sendEmotion(1,23)" style="flex:1;text-align: center;"><image lazy-load src="../../static/emotion/face01/23.png" style="width:50upx;height:50upx;margin-top: 10upx;;"></image></view>
-		
+
 	</view>
 	<view style="display: flex;">
 		<view @tap="sendEmotion(1,24)" style="flex:1;text-align: center;"><image lazy-load src="../../static/emotion/face01/24.png" style="width:50upx;height:50upx;margin-top: 10upx;;"></image></view>
@@ -346,7 +346,7 @@
 		<view @tap="sendEmotion(1,37)" style="flex:1;text-align: center;"><image lazy-load src="../../static/emotion/face01/37.png" style="width:50upx;height:50upx;margin-top: 10upx;;"></image></view>
 		<view @tap="sendEmotion(1,38)" style="flex:1;text-align: center;"><image lazy-load src="../../static/emotion/face01/38.png" style="width:50upx;height:50upx;margin-top: 10upx;;"></image></view>
 		<view @tap="sendEmotion(1,39)" style="flex:1;text-align: center;"><image lazy-load src="../../static/emotion/face01/39.png" style="width:50upx;height:50upx;margin-top: 10upx;;"></image></view>
-	</view>	
+	</view>
 	<view style="display: flex;">
 		<view @tap="sendEmotion(1,40)" style="flex:1;text-align: center;"><image lazy-load src="../../static/emotion/face01/40.png" style="width:50upx;height:50upx;margin-top: 10upx;;"></image></view>
 		<view @tap="sendEmotion(1,41)" style="flex:1;text-align: center;"><image lazy-load src="../../static/emotion/face01/41.png" style="width:50upx;height:50upx;margin-top: 10upx;;"></image></view>
@@ -356,7 +356,7 @@
 		<view @tap="sendEmotion(1,45)" style="flex:1;text-align: center;"><image lazy-load src="../../static/emotion/face01/45.png" style="width:50upx;height:50upx;margin-top: 10upx;;"></image></view>
 		<view @tap="sendEmotion(1,46)" style="flex:1;text-align: center;"><image lazy-load src="../../static/emotion/face01/46.png" style="width:50upx;height:50upx;margin-top: 10upx;;"></image></view>
 		<view @tap="sendEmotion(1,47)" style="flex:1;text-align: center;"><image lazy-load src="../../static/emotion/face01/47.png" style="width:50upx;height:50upx;margin-top: 10upx;;"></image></view>
-	</view>	
+	</view>
 	<view style="display: flex;">
 		<view @tap="sendEmotion(1,48)" style="flex:1;text-align: center;"><image lazy-load src="../../static/emotion/face01/48.png" style="width:50upx;height:50upx;margin-top: 10upx;;"></image></view>
 		<view @tap="sendEmotion(1,49)" style="flex:1;text-align: center;"><image lazy-load src="../../static/emotion/face01/49.png" style="width:50upx;height:50upx;margin-top: 10upx;;"></image></view>
@@ -438,8 +438,8 @@
 		<view  style="flex:1;text-align: center;"></view>
 	</view>
 </view>
-			
-			
+
+
 			<view v-if="emotion==3">
 				<view style="display: flex;">
 					<view @tap="sendEmotion(2,0)" style="flex:1;text-align: center;"><image lazy-load src="../../static/emotion/face02/0.gif" style="width:80upx;height:80upx;margin-top: 10upx;;"></image></view>
@@ -447,7 +447,7 @@
 					<view @tap="sendEmotion(2,2)" style="flex:1;text-align: center;"><image lazy-load src="../../static/emotion/face02/2.gif" style="width:80upx;height:80upx;margin-top: 10upx;;"></image></view>
 					<view @tap="sendEmotion(2,3)" style="flex:1;text-align: center;"><image lazy-load src="../../static/emotion/face02/3.gif" style="width:80upx;height:80upx;margin-top: 10upx;;"></image></view>
 					<view @tap="sendEmotion(2,4)" style="flex:1;text-align: center;"><image lazy-load src="../../static/emotion/face02/4.gif" style="width:80upx;height:80upx;margin-top: 10upx;;"></image></view>
-					
+
 				</view>
 				<view style="display: flex;">
 					<view @tap="sendEmotion(2,5)" style="flex:1;text-align: center;"><image lazy-load src="../../static/emotion/face02/5.gif" style="width:80upx;height:80upx;margin-top: 10upx;;"></image></view>
@@ -462,16 +462,16 @@
 					<view @tap="sendEmotion(2,12)" style="flex:1;text-align: center;"><image lazy-load src="../../static/emotion/face02/12.gif" style="width:80upx;height:80upx;margin-top: 10upx;;"></image></view>
 					<view @tap="sendEmotion(2,13)" style="flex:1;text-align: center;"><image lazy-load src="../../static/emotion/face02/13.gif" style="width:80upx;height:80upx;margin-top: 10upx;;"></image></view>
 					<view @tap="sendEmotion(2,14)" style="flex:1;text-align: center;"><image lazy-load src="../../static/emotion/face02/14.gif" style="width:80upx;height:80upx;margin-top: 10upx;;"></image></view>
-				</view>	
+				</view>
 				<view style="display: flex;">
 					<view @tap="sendEmotion(2,15)" style="flex:1;text-align: center;"><image lazy-load src="../../static/emotion/face02/15.gif" style="width:80upx;height:80upx;margin-top: 10upx;;"></image></view>
 					<view  style="flex:1;text-align: center;"></view>
 					<view  style="flex:1;text-align: center;"></view>
 					<view  style="flex:1;text-align: center;"></view>
 					<view  style="flex:1;text-align: center;"></view>
-				</view>	
+				</view>
 			</view>
-			
+
 			<view v-if="emotion==4">
 				<view style="display: flex;">
 					<view @tap="sendEmotion(3,0)" style="flex:1;text-align: center;"><image lazy-load src="../../static/emotion/face03/0.gif" style="width:80upx;height:80upx;margin-top: 10upx;;"></image></view>
@@ -479,7 +479,7 @@
 					<view @tap="sendEmotion(3,2)" style="flex:1;text-align: center;"><image lazy-load src="../../static/emotion/face03/2.gif" style="width:80upx;height:80upx;margin-top: 10upx;;"></image></view>
 					<view @tap="sendEmotion(3,3)" style="flex:1;text-align: center;"><image lazy-load src="../../static/emotion/face03/3.gif" style="width:80upx;height:80upx;margin-top: 10upx;;"></image></view>
 					<view @tap="sendEmotion(3,4)" style="flex:1;text-align: center;"><image lazy-load src="../../static/emotion/face03/4.gif" style="width:80upx;height:80upx;margin-top: 10upx;;"></image></view>
-					
+
 				</view>
 				<view style="display: flex;">
 					<view @tap="sendEmotion(3,5)" style="flex:1;text-align: center;"><image lazy-load src="../../static/emotion/face03/5.gif" style="width:80upx;height:80upx;margin-top: 10upx;;"></image></view>
@@ -494,14 +494,14 @@
 					<view @tap="sendEmotion(3,12)" style="flex:1;text-align: center;"><image lazy-load src="../../static/emotion/face03/12.gif" style="width:80upx;height:80upx;margin-top: 10upx;;"></image></view>
 					<view @tap="sendEmotion(3,13)" style="flex:1;text-align: center;"><image lazy-load src="../../static/emotion/face03/13.gif" style="width:80upx;height:80upx;margin-top: 10upx;;"></image></view>
 					<view @tap="sendEmotion(3,14)" style="flex:1;text-align: center;"><image lazy-load src="../../static/emotion/face03/14.gif" style="width:80upx;height:80upx;margin-top: 10upx;;"></image></view>
-				</view>	
+				</view>
 				<view style="display: flex;">
 					<view @tap="sendEmotion(3,15)" style="flex:1;text-align: center;"><image lazy-load src="../../static/emotion/face03/15.gif" style="width:80upx;height:80upx;margin-top: 10upx;;"></image></view>
 					<view  style="flex:1;text-align: center;"></view>
 					<view  style="flex:1;text-align: center;"></view>
 					<view  style="flex:1;text-align: center;"></view>
 					<view  style="flex:1;text-align: center;"></view>
-				</view>	
+				</view>
 			</view>
 
 
@@ -512,7 +512,7 @@
 					<view @tap="sendEmotion(4,2)" style="flex:1;text-align: center;"><image lazy-load src="../../static/emotion/face04/2.gif" style="width:80upx;height:80upx;margin-top: 10upx;;"></image></view>
 					<view @tap="sendEmotion(4,3)" style="flex:1;text-align: center;"><image lazy-load src="../../static/emotion/face04/3.gif" style="width:80upx;height:80upx;margin-top: 10upx;;"></image></view>
 					<view @tap="sendEmotion(4,4)" style="flex:1;text-align: center;"><image lazy-load src="../../static/emotion/face04/4.gif" style="width:80upx;height:80upx;margin-top: 10upx;;"></image></view>
-					
+
 				</view>
 				<view style="display: flex;">
 					<view @tap="sendEmotion(4,5)" style="flex:1;text-align: center;"><image lazy-load src="../../static/emotion/face04/5.gif" style="width:80upx;height:80upx;margin-top: 10upx;;"></image></view>
@@ -527,14 +527,14 @@
 					<view @tap="sendEmotion(4,12)" style="flex:1;text-align: center;"><image lazy-load src="../../static/emotion/face04/12.gif" style="width:80upx;height:80upx;margin-top: 10upx;;"></image></view>
 					<view @tap="sendEmotion(4,13)" style="flex:1;text-align: center;"><image lazy-load src="../../static/emotion/face04/13.gif" style="width:80upx;height:80upx;margin-top: 10upx;;"></image></view>
 					<view @tap="sendEmotion(4,14)" style="flex:1;text-align: center;"><image lazy-load src="../../static/emotion/face04/14.gif" style="width:80upx;height:80upx;margin-top: 10upx;;"></image></view>
-				</view>	
+				</view>
 				<view style="display: flex;">
 					<view @tap="sendEmotion(4,15)" style="flex:1;text-align: center;"><image lazy-load src="../../static/emotion/face04/15.gif" style="width:80upx;height:80upx;margin-top: 10upx;;"></image></view>
 					<view  style="flex:1;text-align: center;"></view>
 					<view  style="flex:1;text-align: center;"></view>
 					<view  style="flex:1;text-align: center;"></view>
 					<view  style="flex:1;text-align: center;"></view>
-				</view>	
+				</view>
 			</view>
 
 			<view v-if="emotion==6">
@@ -544,7 +544,7 @@
 					<view @tap="sendEmotion(5,2)" style="flex:1;text-align: center;"><image lazy-load src="../../static/emotion/face05/2.gif" style="width:80upx;height:80upx;margin-top: 10upx;;"></image></view>
 					<view @tap="sendEmotion(5,3)" style="flex:1;text-align: center;"><image lazy-load src="../../static/emotion/face05/3.gif" style="width:80upx;height:80upx;margin-top: 10upx;;"></image></view>
 					<view @tap="sendEmotion(5,4)" style="flex:1;text-align: center;"><image lazy-load src="../../static/emotion/face05/4.gif" style="width:80upx;height:80upx;margin-top: 10upx;;"></image></view>
-					
+
 				</view>
 				<view style="display: flex;">
 					<view @tap="sendEmotion(5,5)" style="flex:1;text-align: center;"><image lazy-load src="../../static/emotion/face05/5.gif" style="width:80upx;height:80upx;margin-top: 10upx;;"></image></view>
@@ -559,18 +559,18 @@
 					<view @tap="sendEmotion(5,12)" style="flex:1;text-align: center;"><image lazy-load src="../../static/emotion/face05/12.gif" style="width:80upx;height:80upx;margin-top: 10upx;;"></image></view>
 					<view @tap="sendEmotion(5,13)" style="flex:1;text-align: center;"><image lazy-load src="../../static/emotion/face05/13.gif" style="width:80upx;height:80upx;margin-top: 10upx;;"></image></view>
 					<view @tap="sendEmotion(5,14)" style="flex:1;text-align: center;"><image lazy-load src="../../static/emotion/face05/14.gif" style="width:80upx;height:80upx;margin-top: 10upx;;"></image></view>
-				</view>	
+				</view>
 				<view style="display: flex;">
 					<view @tap="sendEmotion(5,15)" style="flex:1;text-align: center;"><image lazy-load src="../../static/emotion/face05/15.gif" style="width:80upx;height:80upx;margin-top: 10upx;;"></image></view>
 					<view  style="flex:1;text-align: center;"></view>
 					<view  style="flex:1;text-align: center;"></view>
 					<view  style="flex:1;text-align: center;"></view>
 					<view  style="flex:1;text-align: center;"></view>
-				</view>	
+				</view>
 			</view>
-			
-			
-			
+
+
+
 			<view v-if="emotion==7">
 				<view style="display: flex;">
 					<view @tap="sendEmotion(6,0)" style="flex:1;text-align: center;"><image lazy-load src="../../static/emotion/face06/0.gif" style="width:80upx;height:80upx;margin-top: 10upx;;"></image></view>
@@ -578,7 +578,7 @@
 					<view @tap="sendEmotion(6,2)" style="flex:1;text-align: center;"><image lazy-load src="../../static/emotion/face06/2.gif" style="width:80upx;height:80upx;margin-top: 10upx;;"></image></view>
 					<view @tap="sendEmotion(6,3)" style="flex:1;text-align: center;"><image lazy-load src="../../static/emotion/face06/3.gif" style="width:80upx;height:80upx;margin-top: 10upx;;"></image></view>
 					<view @tap="sendEmotion(6,4)" style="flex:1;text-align: center;"><image lazy-load src="../../static/emotion/face06/4.gif" style="width:80upx;height:80upx;margin-top: 10upx;;"></image></view>
-					
+
 				</view>
 				<view style="display: flex;">
 					<view @tap="sendEmotion(6,5)" style="flex:1;text-align: center;"><image lazy-load src="../../static/emotion/face06/5.gif" style="width:80upx;height:80upx;margin-top: 10upx;;"></image></view>
@@ -593,16 +593,16 @@
 					<view @tap="sendEmotion(6,12)" style="flex:1;text-align: center;"><image lazy-load src="../../static/emotion/face06/12.gif" style="width:80upx;height:80upx;margin-top: 10upx;;"></image></view>
 					<view @tap="sendEmotion(6,13)" style="flex:1;text-align: center;"><image lazy-load src="../../static/emotion/face06/13.gif" style="width:80upx;height:80upx;margin-top: 10upx;;"></image></view>
 					<view @tap="sendEmotion(6,14)" style="flex:1;text-align: center;"><image lazy-load src="../../static/emotion/face06/14.gif" style="width:80upx;height:80upx;margin-top: 10upx;;"></image></view>
-				</view>	
+				</view>
 				<view style="display: flex;">
 					<view @tap="sendEmotion(6,15)" style="flex:1;text-align: center;"><image lazy-load src="../../static/emotion/face06/15.gif" style="width:80upx;height:80upx;margin-top: 10upx;;"></image></view>
 					<view  style="flex:1;text-align: center;"></view>
 					<view  style="flex:1;text-align: center;"></view>
 					<view  style="flex:1;text-align: center;"></view>
 					<view  style="flex:1;text-align: center;"></view>
-				</view>	
+				</view>
 			</view>
-			
+
 			</scroll-view>
 			<view style="width:100%;height:80upx;background: #f6f6f6;border-top:1px solid #eee;bottom:0;position: fixed;display: flex;">
 				<view @tap="showEmotion(1)" :style="emotion==1?'background: #fff;':''" style="flex:1;height:100%;text-align: center;">
@@ -628,8 +628,8 @@
 				</view>
 			</view>
 		</view>
-		
-		
+
+
 		<view v-show="showItem==2" class="cu-bar foot " style="box-shadow: none;-webkit-box-shadow: none;display: block;background: #fff;height:410upx;">
 				<scroll-view scroll-y class="indexes" style="height:410upx;padding-bottom:20upx;padding-top: 10upx;"
 				 :scroll-with-animation="true" :enable-back-to-top="true">
@@ -652,8 +652,8 @@
 						</view>
 					</view>
 				</scroll-view>
-		</view>		
-		
+		</view>
+
 
 
 	</view>
@@ -689,8 +689,8 @@
 					mitemHeight: 0
 				},
 				sendCount:0,//这里为了。第一次发送需要延迟拉下拉
-				
-				
+
+
 				RECORDER:uni.getRecorderManager(),
 				AUDIO:uni.createInnerAudioContext(),
 				recordTimer:null,
@@ -706,18 +706,18 @@
 			// this.domHeight = document.documentElement.clientHeight
 		},
 		onBackPress() {
-			this.$store.commit("setCur_chat_entity",null); 
-			this.$store.commit("setCur_chat_msg_list",[]); 
+			this.$store.commit("setCur_chat_entity",null);
+			this.$store.commit("setCur_chat_msg_list",[]);
 		},
-		
+
 		onLoad() {
 			//this.vindex = "v"+(this.$store.state.cur_chat_msg_list.length)
 			let _this = this;
 			let user = uni.getStorageSync("USER");
-			
-			
-			this.$store.commit("setChat_my_loadding",false); 
-			
+
+
+			this.$store.commit("setChat_my_loadding",false);
+
 			// #ifndef H5
 			//录音开始事件
 			this.RECORDER.onStart((e)=>{
@@ -728,12 +728,12 @@
 				this.recordEnd(e);
 			})
 			// #endif
-			
-			 
+
+
 			if(this.$store.state.chatMessageMap.has(user.id+"#"+this.toid)) {
 				let msg_list = this.$store.state.chatMessageMap.get(user.id+"#"+this.toid);
 				if(msg_list&&msg_list.length>0) {
-					this.$store.commit("setCur_chat_msg_list",msg_list); 
+					this.$store.commit("setCur_chat_msg_list",msg_list);
 				}
 			} else {
 				let str = uni.getStorageSync(user.id+"#"+this.toid+'_CHAT_MESSAGE');
@@ -749,7 +749,7 @@
 					  this.$store.commit("setCur_chat_msg_list",jsonObj);
 				}
 			}
-			
+
 			_this.$http.post("/user/json/loadById/v1",
 				{id:_this.toid},
 				{
@@ -760,9 +760,9 @@
 				}
 			).then(res=>{
 				let res_data = eval(res.data);
-				if(res_data.code==200) {  
+				if(res_data.code==200) {
 					_this.entity = res_data.body;
-					_this.$store.commit("setCur_chat_entity",res_data.body); 
+					_this.$store.commit("setCur_chat_entity",res_data.body);
 				}
 				let unRead = uni.getStorageSync(user.id+"#"+_this.toid+'_CHAT_MESSAGE_UNREAD');
 				if(unRead&&unRead!="") {
@@ -770,7 +770,7 @@
 					_this.$store.commit("setUnReadMsgSum",_this.$store.state.setUnReadMsgSum - parseInt(unRead))
 				}
 			})
-			
+
 			// uni.request({
 			// 	method:"POST",
 			// 	url: _this.$store.state.req_url + "/user/json/loadById/v1",
@@ -781,21 +781,21 @@
 			// 	},
 			// 	success(res) {
 			// 		let res_data = eval(res.data);
-			// 		if(res_data.code==200) {  
+			// 		if(res_data.code==200) {
 			// 			_this.entity = res_data.body;
-			// 			_this.$store.commit("setCur_chat_entity",res_data.body); 
+			// 			_this.$store.commit("setCur_chat_entity",res_data.body);
 			// 		}
 			// 		let unRead = uni.getStorageSync(user.id+"#"+_this.toid+'_CHAT_MESSAGE_UNREAD');
 			// 		if(unRead&&unRead!="") {
 			// 			uni.removeStorageSync(user.id+"#"+_this.toid+'_CHAT_MESSAGE_UNREAD');
 			// 			_this.$store.commit("setUnReadMsgSum",_this.$store.state.setUnReadMsgSum - parseInt(unRead))
 			// 		}
-					
-					
+
+
 			// 	}
 			// })
-			
-			
+
+
 			_this.$http.post("/user/accessRecord/json/saveOrUpdate",
 				{type:2,eid:this.toid},
 				{
@@ -806,15 +806,15 @@
 				}
 			).then(res=>{
 				let res_data = eval(res.data);
-				if(res_data.code==200) {  
+				if(res_data.code==200) {
 					//更新消息列表
-					
+
 					// let list = _this.$store.state.ar_list.filter(item=>{
 					// 	if(item.id==res_data.body.id) return false;
 					// })
 					// list.splice(0,0,res_data.body);
-					// _this.$store.commit("setAr_list",list); 
-					
+					// _this.$store.commit("setAr_list",list);
+
 				} else {
 					uni.showModal({
 					    title: '信息提示',
@@ -828,8 +828,8 @@
 					        }
 					    }
 					});
-					
-					
+
+
 					// uni.showToast({
 					//     icon: 'none',
 					// 	position: 'bottom',
@@ -837,9 +837,9 @@
 					// });
 				}
 			})
-			
-			
-			
+
+
+
 			// uni.request({
 			// 	method:"POST",
 			// 	url: _this.$store.state.req_url + "/user/accessRecord/json/saveOrUpdate",
@@ -850,15 +850,15 @@
 			// 	},
 			// 	success(res) {
 			// 		let res_data = eval(res.data);
-			// 		if(res_data.code==200) {  
+			// 		if(res_data.code==200) {
 			// 			//更新消息列表
-						
+
 			// 			// let list = _this.$store.state.ar_list.filter(item=>{
 			// 			// 	if(item.id==res_data.body.id) return false;
 			// 			// })
 			// 			// list.splice(0,0,res_data.body);
-			// 			// _this.$store.commit("setAr_list",list); 
-						
+			// 			// _this.$store.commit("setAr_list",list);
+
 			// 		} else {
 			// 			uni.showModal({
 			// 			    title: '信息提示',
@@ -872,8 +872,8 @@
 			// 			        }
 			// 			    }
 			// 			});
-						
-						
+
+
 			// 			// uni.showToast({
 			// 			//     icon: 'none',
 			// 			// 	position: 'bottom',
@@ -882,7 +882,7 @@
 			// 		}
 			// 	}
 			// })
-			
+
 			// this.$store.state.ar_list.forEach(item=>{
 			// 	if(item.id==option.toid) {
 			// 		_this.entity = item;
@@ -890,11 +890,11 @@
 			// 	}
 			// })
 			this.scrollToBottom();
-			
-			
+
+
 			// recorderManager.onStop(function(res) {
-			 
-			 
+
+
 			//   _this.voicePath = res.tempFilePath;
 			//   uni.request({
 			//   	data:{
@@ -905,7 +905,7 @@
 			//   	success(res) {
 			//   	}
 			//   })
-			  
+
 			//   var uper = uni.uploadFile({
 			// 		 // 需要上传的地址
 			// 		 url:_this.$store.state.req_url+ '/user/file/uploadVoice',
@@ -929,11 +929,11 @@
 			// 			 }
 			// 		 }
 			//   });
-			  
-			  
-			  
-			  
-			  
+
+
+
+
+
 			// });
 		},
 		methods: {
@@ -1004,6 +1004,13 @@
 				})
 			},
 			goMgr(_id){
+				if(!_id){
+					uni.showToast({
+   icon: 'none',
+   title: "操作太快啦，稍作休息。"
+});
+return
+				}
 				uni.navigateTo({
 					url:"/pages/chat/user/mgr?id="+_id
 				})
@@ -1036,7 +1043,7 @@
 				    toUid:this.toid,
 				    fromUid:this.$store.state.user.id
 				}
-				
+
 				/**
 				uni.pageScrollTo({
 				    scrollTop: 9999999999,
@@ -1049,11 +1056,11 @@
 				this.sendCount = this.sendCount +1;
 				this.scrollToBottom();
 			},
-			InputFocus(e) { 
+			InputFocus(e) {
 			   var that = this
 			   setTimeout(function() {  // 加上延时会使页面看起来更流畅
 					 // that.domHeight=document.documentElement.clientHeight;
-					 document.body.scrollTop = document.body.scrollHeight; 
+					 document.body.scrollTop = document.body.scrollHeight;
 				},500)
 			},
 			InputBlur(e) {
@@ -1061,17 +1068,17 @@
 				 var that = this
 				setTimeout(function() {  // 加上延时会使页面看起来更流畅
 					 // that.domHeight=document.documentElement.clientHeight;
-					 document.body.scrollTop = document.body.scrollHeight; 
+					 document.body.scrollTop = document.body.scrollHeight;
 				},500)
 			},
-			
-			
+
+
 			ChooseVideo() {
 				let _this = this;
 				uni.chooseVideo({
-					sourceType: ['camera'], 
+					sourceType: ['camera'],
 					success: (res) => {
-						_this.$store.commit("setChat_my_loadding",true); 
+						_this.$store.commit("setChat_my_loadding",true);
 						setTimeout(()=>{
 							uni.pageScrollTo({
 							    scrollTop: 9999999999,
@@ -1091,7 +1098,7 @@
 								 let json = eval("("+res1.data+")");
 								 // 显示上传信息
 								 if(json.code==200) {
-										
+
 									let v = {
 										txt:json.msg,
 										toUid:_this.toid,
@@ -1101,14 +1108,14 @@
 								 }
 							 }
 						});
-						 
-						 
+
+
 					}
 				});
 			},
-			
-			
-			
+
+
+
 			ChooseImage() {
 				let _this = this;
 				uni.chooseImage({
@@ -1116,7 +1123,7 @@
 					sizeType: ['original', 'compressed'], //可以指定是原图还是压缩图，默认二者都有
 					sourceType: ['album','camera'], //从相册选择
 					success: (res) => {
-						_this.$store.commit("setChat_my_loadding",true); 
+						_this.$store.commit("setChat_my_loadding",true);
 						setTimeout(()=>{
 							uni.pageScrollTo({
 							    scrollTop: 9999999999,
@@ -1125,7 +1132,7 @@
 						},100)
 						let arrs = res.tempFilePaths;
 						arrs.forEach(item=>{
-							
+
 							var uper = uni.uploadFile({
 								 // 需要上传的地址
 								 url:_this.$store.state.req_url+ '/user/file/upload',
@@ -1149,8 +1156,8 @@
 								 }
 							});
 						});
-						 
-						 
+
+
 					}
 				});
 			},
@@ -1166,21 +1173,21 @@
 				// this.initPoint.identifier = e.touches[0].identifier;
 				this.RECORDER.start({format:"amr"});//录音开始,
 			},
-			
+
 			//录音开始UI效果
 			recordBegin(e){
 				//this.recording = true;
 				//this.='  结束';
 				uni.showToast({
 				    title: '正在录音',
-				    image: '../../static/luyin.png', 
+				    image: '../../static/luyin.png',
 					duration: 60000
 				});
 				this.recordLength = 0;
 				this.recordTimer = setInterval(()=>{
 					this.recordLength++;
 				},1000)
-			}, 
+			},
 			// 结束录音
 			voiceEnd(e){
 				// if(!this.recording){
@@ -1204,7 +1211,7 @@
 				console.log("----------------------1");
 				let _this = this;
 				let user = uni.getStorageSync("USER");
-				
+
 				clearInterval(this.recordTimer);
 				// if(!this.willStop){
 				// 	console.log("e: " + JSON.stringify(e));
@@ -1239,7 +1246,7 @@
 					    duration: 0
 					});
 				},100)
-				
+
 				// var uper = uni.uploadFile({
 				// 		 // 需要上传的地址
 				// 		 url:_this.$store.state.req_url+ '/user/file/uploadVoice',
@@ -1263,31 +1270,31 @@
 				// 			 }
 				// 		 }
 				// });
-				
-				
+
+
 			},
-			
-			
-			
-			
+
+
+
+
 			startRecord() {
 			  uni.showToast({
 			      title: '正在录音',
-			      image: '../../static/luyin.png', 
+			      image: '../../static/luyin.png',
 			  	duration: 60000
 			  });
-			  this.RECORDER.start({  
-				  format: 'mp3'  
-			  });  
-			  
+			  this.RECORDER.start({
+				  format: 'mp3'
+			  });
+
 			},
-			
+
 			endRecord() {
 				let _this = this;
-			 
-			
+
+
 				uni.hideToast();
-			   this.RECORDER.stop();  
+			   this.RECORDER.stop();
 			},
 			clickVoice(_vpath,_index) {
 				let _this = this;
@@ -1301,15 +1308,15 @@
 				}
 				//_vpath = "http://39.98.129.168:8080/images/upload/chat/voice/277c7e2561ff45d5b54e0760ae3b039b.amr";
 				console.log(_vpath);
-				this.selVoiceIndex = _index; 
+				this.selVoiceIndex = _index;
 				//this.voicePath = _vpath;
 				this.player = plus.audio.createPlayer(_vpath);
-				this.player.play(function(){  
+				this.player.play(function(){
 					_this.selVoiceIndex = -1;
 					console.log("播放完了");
-				}, function(e) {  
+				}, function(e) {
 				        console.log("播放失败")
-				}); 
+				});
 			},
 			scrollToBottom: function () {
 				setTimeout(()=>{
@@ -1329,32 +1336,32 @@
 			// 		let t = 100;
 			// 		if(that.sendCount==1) {
 			// 			t = 1000;
-			// 		} 
+			// 		}
 			// 		setTimeout(() => {
 			// 			if (that.style.mitemHeight > (that.style.contentViewHeight - 100)) {   //判断子元素高度是否大于显示高度
 			// 				that.scrollTop = that.style.mitemHeight - that.style.contentViewHeight    //用子元素的高度减去显示的高度就获益获得序言滚动的高度
 			// 			}
 			// 		}, t)
-					
+
 			// 　　　
 			// 　　})
 			},
-			/**  
-			 * 录音语音文件转base64字符串  
-			 * @param {Object} path  
-			 */  
-			Audio2dataURL(path,timeStr) {   
+			/**
+			 * 录音语音文件转base64字符串
+			 * @param {Object} path
+			 */
+			Audio2dataURL(path,timeStr) {
 				let _this = this;
 				let user = uni.getStorageSync("USER");
 				//console.log("*******************:"+path);
-			    plus.io.resolveLocalFileSystemURL(path, function(entry){  
-			        entry.file(function(file){  
-			            var reader = new plus.io.FileReader();  
-			            reader.onloadend = function (e) {  
+			    plus.io.resolveLocalFileSystemURL(path, function(entry){
+			        entry.file(function(file){
+			            var reader = new plus.io.FileReader();
+			            reader.onloadend = function (e) {
 							//console.log("------------------------");
-			                //console.log(e.target.result);  
+			                //console.log(e.target.result);
 							//_this.v_base64 = e.target.result;
-							
+
 							_this.$http.post("/user/file/uploadVoice",
 								{base64:e.target.result},
 								{
@@ -1364,7 +1371,7 @@
 								}
 							).then(res=>{
 								let res_data = eval(res.data);
-								if(res_data.code==200) {  
+								if(res_data.code==200) {
 									 console.log(res.data);
 									 let json = eval(res.data);
 									 // 显示上传信息
@@ -1378,10 +1385,10 @@
 										}
 										_this.$websocket.dispatch("WEBSOCKET_SEND", "{body:'"+JSON.stringify(v)+"',CMD:'USER_CHAT_SEND_VOICE'}");
 									 }
-									
+
 								}
 							})
-							
+
 							// uni.request({
 							// 	method:"POST",
 							// 	url: _this.$store.state.req_url + "/user/file/uploadVoice",
@@ -1392,7 +1399,7 @@
 							// 	},
 							// 	success(res) {
 							// 		let res_data = eval(res.data);
-							// 		if(res_data.code==200) {  
+							// 		if(res_data.code==200) {
 							// 			 console.log(res.data);
 							// 				 let json = eval(res.data);
 							// 				 // 显示上传信息
@@ -1406,63 +1413,63 @@
 							// 					}
 							// 					_this.$websocket.dispatch("WEBSOCKET_SEND", "{body:'"+JSON.stringify(v)+"',CMD:'USER_CHAT_SEND_VOICE'}");
 							// 				 }
-										
+
 							// 		}
 							// 	}
 							// })
-							
-							
-							
+
+
+
 							//console.log("------------------------");
-			            };  
-			            reader.readAsDataURL(file);  
-			        },function(e){  
-			            mui.toast("读写出现异常: " + e.message );  
-			        })  
-			    })  
+			            };
+			            reader.readAsDataURL(file);
+			        },function(e){
+			            mui.toast("读写出现异常: " + e.message );
+			        })
+			    })
 			},
-			/**  
-			 * base64字符串转成语音文件(参考http://ask.dcloud.net.cn/question/16935)  
-			 * @param {Object} base64Str  
-			 * @param {Object} callback  
-			 */  
-			dataURL2Audio (base64Str, callback) {  
-			    var base64Str = base64Str.replace('data:audio/amr;base64,','');  
-			    var audioName = (new Date()).valueOf() + '.amr';  
-			
-			    plus.io.requestFileSystem(plus.io.PRIVATE_DOC,function(fs){  
-			        fs.root.getFile(audioName,{create:true},function(entry){  
-			            // 获得平台绝对路径  
-			            var fullPath = entry.fullPath;  
-			            if(mui.os.android){    
-			                // 读取音频  
-			                var Base64 = plus.android.importClass("android.util.Base64");  
-			                var FileOutputStream = plus.android.importClass("java.io.FileOutputStream");  
-			                try{  
-			                    var out = new FileOutputStream(fullPath);  
-			                    var bytes = Base64.decode(base64Str, Base64.DEFAULT);  
-			                    out.write(bytes);   
-			                    out.close();  
-			                    // 回调  
-			                    callback && callback(entry);  
-			                }catch(e){  
-			                    console.log(e.message);  
-			                }  
-			            }else if(mui.os.ios){  
-			                var NSData = plus.ios.importClass('NSData');  
-			                var nsData = new NSData();  
-			                nsData = nsData.initWithBase64EncodedStringoptions(base64Str,0);  
-			                if (nsData) {  
-			                    nsData.plusCallMethod({writeToFile: fullPath,atomically:true});  
-			                    plus.ios.deleteObject(nsData);  
-			                }  
-			                // 回调  
-			                callback && callback(entry);  
-			            }  
-			        })  
-			    })  
+			/**
+			 * base64字符串转成语音文件(参考http://ask.dcloud.net.cn/question/16935)
+			 * @param {Object} base64Str
+			 * @param {Object} callback
+			 */
+			dataURL2Audio (base64Str, callback) {
+			    var base64Str = base64Str.replace('data:audio/amr;base64,','');
+			    var audioName = (new Date()).valueOf() + '.amr';
+
+			    plus.io.requestFileSystem(plus.io.PRIVATE_DOC,function(fs){
+			        fs.root.getFile(audioName,{create:true},function(entry){
+			            // 获得平台绝对路径
+			            var fullPath = entry.fullPath;
+			            if(mui.os.android){
+			                // 读取音频
+			                var Base64 = plus.android.importClass("android.util.Base64");
+			                var FileOutputStream = plus.android.importClass("java.io.FileOutputStream");
+			                try{
+			                    var out = new FileOutputStream(fullPath);
+			                    var bytes = Base64.decode(base64Str, Base64.DEFAULT);
+			                    out.write(bytes);
+			                    out.close();
+			                    // 回调
+			                    callback && callback(entry);
+			                }catch(e){
+			                    console.log(e.message);
+			                }
+			            }else if(mui.os.ios){
+			                var NSData = plus.ios.importClass('NSData');
+			                var nsData = new NSData();
+			                nsData = nsData.initWithBase64EncodedStringoptions(base64Str,0);
+			                if (nsData) {
+			                    nsData.plusCallMethod({writeToFile: fullPath,atomically:true});
+			                    plus.ios.deleteObject(nsData);
+			                }
+			                // 回调
+			                callback && callback(entry);
+			            }
+			        })
+			    })
 			}
-								
+
 		}
 	}
 </script>
@@ -1490,7 +1497,7 @@
 	 	align-items: center;
 	 	align-content: center;
 	 }
-	 
+
 	 /* 弹性盒子弹性容器 */
 	 .flex_col .flex_grow {
 	 	width: 0;
@@ -1498,19 +1505,19 @@
 	 	-ms-flex-positive: 1;
 	 	flex-grow: 1;
 	 }
-	 
+
 	 .flex_row .flex_grow {
 	 	-webkit-box-flex: 1;
 	 	-ms-flex-positive: 1;
 	 	flex-grow: 1;
 	 }
-	 
+
 	 /* 弹性盒子允许换行 */
 	 .flex_col.flex_wrap {
 	 	-ms-flex-wrap: wrap;
 	 	flex-wrap: wrap;
 	 }
-	 
+
 	 /* 列表 */
 	 .list {
 	 	background-color: #fff;
@@ -1518,37 +1525,37 @@
 	 	color: #333;
 	 	user-select: none;
 	 	touch-callout: none;
-	 
+
 	 	&>view {
 	 		padding: 24upx 30upx;
 	 		position: relative;
-	 
+
 	 		&:active,
 	 		&.active {
 	 			background-color: #f3f3f3;
 	 		}
-	 
+
 	 		image {
 	 			height: 80upx;
 	 			width: 80upx;
 	 			border-radius: 4px;
 	 			margin-right: 20upx;
 	 		}
-	 
+
 	 		&>view {
 	 			line-height: 40upx;
-	 
+
 	 			.time,
 	 			.info {
 	 				color: #999;
 	 				font-size: 24upx;
 	 			}
-	 
+
 	 			.time {
 	 				width: 150upx;
 	 				text-align: right;
 	 			}
-	 
+
 	 			.info {
 	 				overflow: hidden;
 	 				text-overflow: ellipsis;
@@ -1556,10 +1563,10 @@
 	 			}
 	 		}
 	 	}
-	 
+
 	 	&>view:not(:first-child) {
 	 		margin-top: 1px;
-	 
+
 	 		&::after {
 	 			content: '';
 	 			display: block;
@@ -1573,7 +1580,7 @@
 	 		}
 	 	}
 	 }
-	 
+
 	 /* 遮罩 */
 	 .shade {
 	 	position: fixed;
@@ -1583,7 +1590,7 @@
 	 	bottom: 0;
 	 	left: 0;
 	 	-webkit-touch-callout: none;
-	 
+
 	 	.pop {
 	 		position: fixed;
 	 		z-index: 101;
@@ -1604,7 +1611,7 @@
 	 		&.show {
 	 			transform: scale(1, 1);
 	 		}
-	 
+
 	 		&>view {
 	 			padding: 0 20upx;
 	 			overflow: hidden;
@@ -1612,7 +1619,7 @@
 	 			white-space: nowrap;
 	 			user-select: none;
 	 			-webkit-touch-callout: none;
-	 
+
 	 			&:active {
 	 				background-color: #f3f3f3;
 	 			}

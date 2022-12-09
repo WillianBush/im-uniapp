@@ -3,7 +3,7 @@
 		<cu-custom bgColor="bg-blue"  :isBack="true" :nameToLeft="true"><block slot="backText"></block><block slot="content">历史聊天记录</block><block slot="right">
 		</block></cu-custom>
 		<view class="cu-chat">
-			<view v-if="allList.length<=0" style="text-align: center;color:#aaa;margin-top:60upx;font-size: 28upx;">
+			<view v-if="chatLogs.length<=0" style="text-align: center;color:#aaa;margin-top:60upx;font-size: 28upx;">
 				暂无聊天记录
 			</view>
 
@@ -14,7 +14,7 @@
 						   @refresherrestore="refresherrestore"
 						   @refresherabort="refresherabort"
 						   @scrolltolower="scrollLower">
-				<block  v-for="(item,index) in allList">
+				<block  v-for="(item,index) in chatLogs">
 					<block v-if="item.opt&&item.opt=='undo'">
 						<!-- <view v-if="item.opt_uid==$store.state.user.id"  class="cu-info round">撤回一条消息</view>
 						<view v-else  class="cu-info round">对方撤回一条消息</view> -->
@@ -231,10 +231,13 @@
 					</block>
 
 				</block>
-				<view @click="loadmore" v-if="allList.length>0" style="color:rgb(170, 170, 170);text-align:center;margin-top:30rpx;margin-bottom:20rpx">
+
+				<view @click="loadmore" v-if="moreShow" style="color:rgb(170, 170, 170);text-align:center;margin-top:30rpx;margin-bottom:20rpx">
 					点击加载更多...
 				</view>
-
+				<view  v-if="!moreShow"  style="color:rgb(170, 170, 170);text-align:center;margin-top:30rpx;margin-bottom:20rpx">
+					暂无更多...
+				</view>
 			</scroll-view>
 			<!--
 			<view class="cu-item self" >
@@ -313,6 +316,7 @@
 <script>
 	import uParse from '@/components/u-parse/u-parse.vue'
 	import openRed from '@/components/hongbao/open.vue'
+	import {isUndefined} from "../../../js_sdk/luch-request/luch-request/utils";
 	//const recorderManager = uni.getRecorderManager();
 	const innerAudioContext = uni.createInnerAudioContext();
 	export default {
@@ -334,6 +338,7 @@
 				entity:{},
 				txt:"",
 				temp_txt:"",
+				moreShow:true,
 				showjia:true,
 				emotion:1,
 				showItem:0,
@@ -400,8 +405,10 @@
 
 		methods: {
 			loadmore() {
-				this.pageParams.pageNumber = this.pageParams.pageNumber + 1
-				this.loadStoreData(this.pageParams.pageCount,this.pageParams.pageNumber);
+				this.pageParams.pageNumber++
+				console.log('watch=>',this.pageParams.pageNumber)
+				console.log('watch=>',this.pageParams.pageNumber + '1')
+				this.tongbuMsg(this.pageParams.pageCount,this.pageParams.pageNumber);
 			},
 			refresherrefresh() {
 				console.log('自定义下拉刷新被触发');
@@ -415,7 +422,7 @@
 					_this.refresherTriggered = true;
 				}
 				//pageNum + 1
-				this.pageParams.pageNumber = this.pageParams.pageNumber + 1;
+				this.pageParams.pageNumber++;
 				this.loadStoreData(this.pageParams.pageCount,this.pageParams.pageNumber);
 			},
 			refresherrestore() {
@@ -448,7 +455,7 @@
 				uni.showLoading()
 				_this.$http.post("/chat_msg/syncMsgData",
 						{
-							chatId:_this.$store.state.cur_chat_entity.id,
+							chatid:_this.$store.state.cur_chat_entity.id,
 							pageNumber:this.pageParams.pageNumber,
 						},
 						{
@@ -462,25 +469,32 @@
 					if(res_data.code==201) {
 						//没缓存数据，把加载取消
 						setTimeout(()=>{
+							this.moreShow = false
 							uni.hideLoading();
 							uni.showToast({
-								title:"没有云端数据",
+								title:"暂无更多",
 								icon:"none"
 							})
 
 						},400);
 					} else if(res_data.code==200) {
 						this.pageParams = res_data.body
-						this.chatLogs = res_data.body.list
-						for (let i = 0; i < this.chatLogs.length; i++){ //从[0]中取出
-							this.chatLogs[i] = this.chatLogs[i][0]
+						if(this.pageParams.pageNumber > 1){
+							for (let i = 0; i < res_data.body.list.length; i++){ //从[0]中取出
+								res_data.body.list[i] = res_data.body.list[i][0].bean
+							} //遍历拿出数组bean
+							_this.chatLogs = _this.chatLogs.concat(res_data.body.list);
+							uni.hideLoading();
+						}else{
+							uni.hideLoading();
+							this.chatLogs = res_data.body.list
 						}
+						for (let i = 0; i < this.chatLogs.length; i++){ //从[0]中取出
+							this.chatLogs[i] = this.chatLogs[i][0].bean
+						} //遍历拿出数组bean
 						setTimeout(()=>{
 							uni.hideLoading();
-							uni.showToast({
-								title:"同步成功",
-								icon:"none"
-							})
+
 						},400);
 
 					}
@@ -505,7 +519,7 @@
 						let res_data_1 = eval(res_1.data);
 						console.log("test_test",res_data_1)
 						if(res_data_1.code==200) {
-							this.pageParams.pageNumber = res_data_1.body.pageNumber;//当前在第几页
+							this.pageParams.pageNumber = res_data_1.body.pageNumber;
 							if(this.pageParams.pageNumber > 1){
 								_this.allList = _this.allList.concat(res_data_1.body.list);
 							}else{
@@ -662,6 +676,13 @@
 				})
 			},
 			goMgr(_id){
+				if(!_id){
+					uni.showToast({
+						icon: 'none',
+						title: "操作太快啦，稍作休息。"
+					});
+					return
+				}
 				uni.navigateTo({
 					url:"/pages/chat/user/mgr?id="+_id
 				})
