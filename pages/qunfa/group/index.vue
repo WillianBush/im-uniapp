@@ -1305,13 +1305,7 @@
 
 						},400);
 					} else if(res_data.code==200) {
-						setTimeout(()=>{
-							uni.hideLoading();
-							uni.showToast({
-								title:"同步成功",
-								icon:"none"
-							})
-						},400);
+					
 
 					}
 				})

@@ -821,7 +821,7 @@
 					 :scroll-with-animation="true" :enable-back-to-top="true">
 						<view>
 							<view style="display: flex;">
-								<view @tap="ChooseImage()" style="flex:1;text-align: center;margin-top: 20upx;"><text style="font-size: 60upx;color:#3F92F8" class="iconfont icon-zhaopian-cuxiantiao-fill"></text><view style="font-size: 24upx;color: #8799a3;">照片</view></view>
+									<view @tap="ChooseImage()" style="flex:1;text-align: center;margin-top: 20upx;"><text style="font-size: 60upx;color:#3F92F8" class="iconfont icon-zhaopian-cuxiantiao-fill"></text><view style="font-size: 24upx;color: #8799a3;">照片</view></view>
 								<view @tap="ChooseVideo()" style="flex:1;text-align: center;margin-top: 20upx;"><text style="font-size: 60upx;color:#F39F90" class="iconfont icon-paishe"></text><view style="font-size: 24upx;color: #8799a3;">拍摄</view></view>
 								<!--
 								<view @tap="showLocation()" style="flex:1;text-align: center;margin-top: 20upx;"><text style="font-size: 60upx;color:#75BB6D" class="iconfont icon-weizhi-tianchong"></text><view style="font-size: 24upx;color: #8799a3;">位置</view></view>
@@ -1004,7 +1004,7 @@
 					//
 					let res_data = eval(res.data);
 					let statusCode = res_data ? res_data.code : 0;
-					console.log('usr_data===>',res_data)
+					console.log('usr_data===>',this.toid)
 					if(statusCode==200) {
 						//主要是为了让onshow检查是否已设置备注，如果已设置备注则不需要使用用户原昵称
 						setTimeout(function(){
@@ -1313,13 +1313,7 @@
 
 						},400);
 					} else if(res_data.code==200) {
-						setTimeout(()=>{
-							uni.hideLoading();
-							uni.showToast({
-								title:"同步成功",
-								icon:"none"
-							})
-						},400);
+					
 
 					}
 				})

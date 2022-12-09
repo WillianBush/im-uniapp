@@ -235,12 +235,6 @@
 				return false;
 			}
 		},
-		onShow() {
-			let _this = this;
-			//清除当前窗口数据
-			this.$store.commit("setCur_chat_entity",null);
-			this.$store.commit("setCur_chat_msg_list",[]);
-		},
 		mounted() {
 
 			let _this = this;

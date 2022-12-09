@@ -4,11 +4,11 @@
 /**
 比如这样
 t(state,payload){
-		
+
 }
 或
 t:(state,payload)=>{
-	
+
 }
 **/
 //在使用mutations里的函数时应使用this.$store.commit(方法名)或this.$store.commit(方法名,载荷/即参数)
@@ -58,7 +58,7 @@ export default {
 	updateUsername(state,payload){
 		state.user.nickName = payload;
 	},
-	setAr_list(state,payload){ 
+	setAr_list(state,payload){
 		if(state.ar_list_show.length==state.ar_list.length) {
 			state.ar_list_show = payload;
 		}
@@ -89,7 +89,7 @@ export default {
 		state.chatMessageMap.set(payload.key,payload.value);
 	},
 	setCur_chat_entity(state,payload){
-		
+
 		state.cur_chat_entity = payload;
 	},
 	setCur_chat_msg_list(state,payload){
@@ -103,18 +103,18 @@ export default {
 	},
 	clearData(state) {
 		state.unReadMsgSum = 0;
-		state.user = {}; 
-		state.user_token = ""; 
-		state.unReadMsgSum = 0; 
-		state.ar_list = []; 
-		state.ar_list_show = [];  
-		state.friend_list = []; 
-		state.group_list = []; 
-		state.unDoFriendAddCount = 0; 
-		state.unDoRoomAddCount = 0; 
-		state.chatMessageMap = new Map(); 
-		state.cur_chat_entity = {}; 
-		state.cur_chat_msg_list = []; 
+		state.user = {};
+		state.user_token = "";
+		state.unReadMsgSum = 0;
+		state.ar_list = [];
+		state.ar_list_show = [];
+		state.friend_list = [];
+		state.group_list = [];
+		state.unDoFriendAddCount = 0;
+		state.unDoRoomAddCount = 0;
+		state.chatMessageMap = new Map();
+		state.cur_chat_entity = {};
+		state.cur_chat_msg_list = [];
 		state.chat_my_loadding = false;
 		state.isEmployee = "";
 	}

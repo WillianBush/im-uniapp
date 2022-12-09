@@ -51,6 +51,7 @@ export default new Vuex.Store({
 				st:null,
 				si:null,
 				start:function() {
+					console.log('ws success1')
 					var self = this;
 					this.si = setTimeout(()=>{
 						let user = uni.getStorageSync("USER");
@@ -76,8 +77,8 @@ export default new Vuex.Store({
 									_this.dispatch('WEBSOCKET_INIT');
 								//}
 							}
-						}, 10000)
-					},10000)
+						}, 20000)
+					},20000)
 				},
 				reset:function() {
 					clearTimeout(this.st);
@@ -1229,7 +1230,6 @@ export default new Vuex.Store({
 
 							if(store.state.cur_chat_entity&&store.state.cur_chat_entity.id==data.body[0].chatid) {
 								store.commit("setCur_chat_msg_list",jsonObj);
-								console.log("---->3");
 								let v = {
 									toUid:data.body[0].chatid,
 									fromUid:store.state.user.id

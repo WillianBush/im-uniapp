@@ -94,8 +94,8 @@
 
 		<view v-show="visiable" style="width: 100%; height: 100%;color:#fff;background-color: #0006; position: fixed;left: 0;top:0; z-index: 10;">
 			<text @click="closeModal" class="cuIcon-close" style="font-size: 36px; cursor: pointer; position:absolute; top:15px; right: 15px"></text>
-			<UserMgr v-show="mgrType=='user'" :mgrId="mgrId"></UserMgr>
-			<GroupMgr v-show="mgrType=='group'" :mgrId="mgrId"></GroupMgr>
+			<UserMgr v-show="mgrType=='user'"  :visiable="randomnum" :mgrId="mgrId" :msgToId="msgToId"></UserMgr>
+			<GroupMgr v-show="mgrType=='group'" :mgrId="mgrId" :msgToId="msgToId"></GroupMgr>
 		</view>
 	</view>
 </template>
@@ -112,6 +112,7 @@
 		props:['isBlank'],
 		data() {
 			return {
+				randomnum:'',
 				StatusBar: this.StatusBar,
 				CustomBar: this.CustomBar,
 				hidden: true,
@@ -242,7 +243,7 @@
 			openModal(obj) {
 				this.mgrId = obj.id;
 				this.mgrType = obj.type;
-				this.visiable = true;
+				this.randomnum = Math.random();
 			},
 			showMain() {
 				this.PageCur = 'tongxunlu';

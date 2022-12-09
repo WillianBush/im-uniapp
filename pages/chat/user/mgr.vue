@@ -6,15 +6,14 @@
 			<view>
 
 				<view class="cu-chat">
-					<div class="left-icon" @click="logShow = false">
+					<div class="left-icon" @click="changeloginshow">
 						<image style="width:10px;height:16px;float:left;margin-top:3px"  src="@/static/images/back.png"></image>
 						<span style="margin-left:10px;color:black;font-size:16px">返回</span>
 					</div>
-					<view v-if="list.length<=0" style="text-align: center;color:#aaa;margin-top:60upx;font-size: 28upx;">
-						<image style="width:10px;height:16px;position:absolute;left:3%;top:5%;cursor:pointer" @click="logShow = false" src="@/static/images/back.png"></image>
+					<view v-if="!chatLogs.length" style="text-align: center;color:#aaa;margin-top:60upx;font-size: 28upx;">
 						<p style="margin-top:15%">暂无聊天记录</p>
 					</view>
-					<div  v-for="(item,index) in $store.state.cur_chat_msg_list">
+					<div v-else  v-for="(item,index) in chatLogs">
 						<div v-if="item.opt&&item.opt=='undo'">
 							<!-- <view v-if="item.opt_uid==$store.state.user.id"  class="cu-info round">撤回一条消息</view>
                             <view v-else  class="cu-info round">对方撤回一条消息</view> -->
@@ -233,6 +232,16 @@
 							</view>
 						</div>
 					</div>
+					<div style="text-align: center"
+						 v-if="chatLogs.length>0">
+						<el-pagination
+								:page-size="pageParams.pageCount"
+								@current-change="pageChange"
+								:current-page="pageParams.pageNumber"
+								layout="prev, pager, next"
+								:total="pageParams.totalCount">
+						</el-pagination>
+					</div>
 
 
 
@@ -286,7 +295,7 @@
 			<view @tap="getLogs()" class="cu-item arrow" >
 
 				<view class="content">
-					<text class="text-grey" style="color:#333">查看聊天记录</text>
+					<text class="text-grey" style="color:#333"> 查看聊天记录</text>
 				</view>
 			</view>
 
@@ -331,7 +340,15 @@
 	const innerAudioContext = uni.createInnerAudioContext();
 	export default {
 		props: {
+			visiable:{
+				 type: Boolean,
+				 default:false,
+			},
 			mgrId: {
+				type: String,
+				default: ''
+			},
+			msgToId: {
 				type: String,
 				default: ''
 			}
@@ -356,6 +373,10 @@
 				txt:"",
 				temp_txt:"",
 				showjia:true,
+				pageParams:{
+					pageNumber:'1',
+					pageCount:'30',
+				},
 				emotion:1,
 				showItem:0,
 				scrollTop:0,
@@ -380,6 +401,7 @@
 				winSize: {},
 				/* 显示遮罩 */
 				showShade: false,
+				chatLogs:[],//聊天记录list
 				/* 显示操作弹窗 */
 				showPop: false,
 				/* 弹窗按钮列表 */
@@ -401,6 +423,8 @@
 				showname:"",
 				//以上聊天记录内容状态
 
+				pageNumber:10,//分页参数
+				pageNum:1,
 				logShow:false,
 				switchA:false,
 				switchB:false,
@@ -412,15 +436,23 @@
 			}
 		},
 		watch: {
+			visiable(){
+				this.logShow = false
+			},
 		  mgrId: function(newVal,oldVal){
 			this.id = newVal;
-			this.onShowMethod();
+		    this.onShowMethod();
 			this.onLoadMethod();
 		  },
 		},
 		mounted(){
 		},
 		methods: {
+			pageChange(val){ //页码更换
+				this.pageParams.pageNumber = val
+				this.tongbuMsg() //recall pagination datas.
+
+			},
 
 			//以下备注方法
 			getNotes(){
@@ -448,6 +480,52 @@
 					duration: 2000
 				});
 			},
+			tongbuMsg(){ //当前页面聊天记录&页码请求
+				let _this = this;
+				_this.$store.state.chatMessageMap.delete(_this.$store.state.user.id+"#"+_this.toid);
+				uni.removeStorageSync(_this.$store.state.user.id+"#"+_this.toid+'_CHAT_MESSAGE');
+				// _this.$store.commit("setCur_chat_msg_list",[]); //Dont know why set null, noted.
+				uni.removeStorageSync(_this.$store.state.user.id+"#"+_this.toid+'_CHAT_MESSAGE_LASTCONTENT');
+				uni.removeStorageSync(_this.$store.state.user.id+"#"+_this.toid+'_CHAT_MESSAGE_UNREAD');
+
+				uni.showLoading()
+				_this.$http.post("/chat_msg/syncMsgData",
+						{
+							chatid: localStorage.getItem('toUser'),
+							pageNumber:this.pageParams.pageNumber,
+						},
+						{
+							header:{
+								"x-access-uid":_this.$store.state.user.id,
+								"x-access-client":_this.$clientType
+							}
+						}
+				).then(res=>{
+					let res_data = eval(res.data);
+					if(res_data.code==201) {
+						//没缓存数据，把加载取消
+						setTimeout(()=>{
+							uni.hideLoading();
+							uni.showToast({
+								title:"没有云端数据",
+								icon:"none"
+							})
+
+						},400);
+					} else if(res_data.code==200) {
+						uni.hideLoading();
+						this.pageParams = res_data.body
+						this.chatLogs = res_data.body.list
+						for (let i = 0; i < this.chatLogs.length; i++){ //从[0]中取出
+							this.chatLogs[i] = this.chatLogs[i][0]
+						}
+
+
+					}
+				}).catch(err=>{
+					console.log('err=>',err)
+				})
+			},
 			getLogs(){ //获取聊天记录方法
 				this.logShow = true
 				let _this = this;
@@ -460,6 +538,7 @@
 					// jsonObj.splice(0,jsonObj.length-50);
 					//  }
 				}
+				this.tongbuMsg()
 				setTimeout(()=>{
 					uni.pageScrollTo({
 						scrollTop: 9999999999,
@@ -632,6 +711,10 @@
 			},
 			InputFocus(e) {
 				this.InputBottom = e.detail.height
+			},
+			changeloginshow(){
+				console.log('clase')
+				this.logShow = false
 			},
 			InputBlur(e) {
 				this.InputBottom = 0

@@ -1,15 +1,15 @@
 <template>
 	<view>
 		<view class="cu-custom" :style="[{height:CustomBar + 'px'}]">
-			<view class="cu-bar fixed" style="background-color: #eee; width: 80%; color:#000;border-bottom: 1px solid #bdbaba;" :style="style" :class="[bgImage!=''?'none-bg text-white bg-img':'',bgColor]">
-				<view class="action" @tap="BackPage" v-if="isBack">
+			<view class="group-cu-bar" :style="style" style="background-color: #eee; width: 100%; color:#000;border-bottom: 1px solid #bdbaba;"  :class="[bgImage!=''?'none-bg text-white bg-img':'',bgColor]">
+				<view class="action" style="display: inline;margin-left:1%;"  v-if="isBack">
 					<!-- <text class="cuIcon-back"></text> -->
 					<slot name="backText"></slot>
 				</view>
-				<view v-if="!nameToLeft" class="content" style="text-align: left;margin-left: 65px" :style="[{top:StatusBar + 'px'}]">
+				<view v-if="!nameToLeft" class="content group-content" style="text-align: left;margin-left: 65px" :style="[{top:StatusBar + 'px'}]">
 					<slot name="content"></slot>
 				</view>
-				<view v-else style="width: calc(100% - 140upx);text-align: left;margin-left: 5px"  class="content" :style="[{top:StatusBar + 'px'}]">
+				<view v-else style="width: calc(100% - 140upx);text-align: left;margin-left: 5px"  class="content group-content" :style="[{top:StatusBar + 'px'}]">
 					<slot name="content"></slot>
 				</view>
 				<slot name="right"></slot>
@@ -51,6 +51,14 @@
 			nameToLeft: {
 				type: [Boolean, String],
 				default: false
+			},
+			entityId: {
+				type: String,
+				default: ''
+			},
+			isGroupChat: {
+				type: String,
+				default: ''
 			},
 			bgImage: {
 				type: String,
