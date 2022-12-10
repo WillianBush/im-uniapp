@@ -104,7 +104,7 @@
                     //    break;
                 }
 
-                _this.getSerivceVersion(1,"约伴");
+                _this.getSerivceVersion(1,"触感");
             },
             getSerivceVersion(_appType,_appName){
                 let _this = this;
