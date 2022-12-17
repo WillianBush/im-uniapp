@@ -7,7 +7,7 @@
 				width="30%"
 				:title="'修改昵称'"
 				:visible.sync="usernameShow">
-			<upd_name>
+			<upd_name @userShow="userShow">
 
 			</upd_name>
 		</el-dialog>
@@ -191,6 +191,10 @@ import uQRCode from '@/common/uqrcode.js'
 
 		},
 		methods: {
+		userShow(e){
+			console.log("see=>",e)
+			this.usernameShow = false
+		},
 
 		//以下二维码相关方法
 			goQrcode() {
