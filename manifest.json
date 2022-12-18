@@ -1,7 +1,7 @@
 {
-    "name" : "约伴",
+    "name" : "触感",
     "appid" : "__UNI__C75D761",
-    "description" : "约伴",
+    "description" : "触感",
     "versionName" : "1.1.4",
     "versionCode" : 15,
     "transformPx" : false,
@@ -135,7 +135,7 @@
         "router" : {
             "base" : "/"
         },
-        "title" : "约伴APP",
+        "title" : "触感APP",
         "optimization" : {
             "treeShaking" : {
                 "enable" : true

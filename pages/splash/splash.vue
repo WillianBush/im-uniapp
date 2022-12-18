@@ -1,6 +1,6 @@
 <template>
     <view class="start-wrap">
-        <image class="start-img" src="/static/splash.png" mode="aspectFill" @load="loadImage"></image>
+        <image class="start-img" src="/static/splash.jpg" mode="aspectFill" @load="loadImage"></image>
         <view class="wraper-row" @click="jump">{{count}}跳过</view>
         <updatepage ref="updatepage"></updatepage>
     </view>
@@ -110,7 +110,7 @@
                     //    break;
                 }
 
-                _this.getSerivceVersion(1,"约伴");
+                _this.getSerivceVersion(1,"触感");
             },
             getSerivceVersion(_appType,_appName){
                 let _this = this;
