@@ -2731,6 +2731,10 @@ return
 									uuid:_this.GenerateUUID(),
 								}
 								_this.$websocket.dispatch("WEBSOCKET_SEND", "{body:'"+JSON.stringify(v)+"',CMD:'GROUP_CHAT_SEND_VOICE'}");
+
+								v.psr = "voice";
+								v.simple_content = "[语音]";
+								_this.sendBaseDo(v);
 								setTimeout(function(){
 									_this.scrollToBottom();
 								},100)

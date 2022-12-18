@@ -394,7 +394,8 @@
 					pageNumber:'1',
 					pageCount:'30',
 				},
-				timer: null
+				timer: null,
+				syncMessageArr:[]
 			};
 		},
 		onLoad(e) {
@@ -447,11 +448,11 @@
 
 			tongbuMsg(){ //当前页面聊天记录&页码请求
 				let _this = this;
-				_this.$store.state.chatMessageMap.delete(_this.$store.state.user.id+"#"+_this.toid);
-				uni.removeStorageSync(_this.$store.state.user.id+"#"+_this.toid+'_CHAT_MESSAGE');
-				// _this.$store.commit("setCur_chat_msg_list",[]); //Dont know why set null, noted.
-				uni.removeStorageSync(_this.$store.state.user.id+"#"+_this.toid+'_CHAT_MESSAGE_LASTCONTENT');
-				uni.removeStorageSync(_this.$store.state.user.id+"#"+_this.toid+'_CHAT_MESSAGE_UNREAD');
+				// _this.$store.state.chatMessageMap.delete(_this.$store.state.user.id+"#"+_this.toid);
+				// uni.removeStorageSync(_this.$store.state.user.id+"#"+_this.toid+'_CHAT_MESSAGE');
+				// // _this.$store.commit("setCur_chat_msg_list",[]); //Dont know why set null, noted.
+				// uni.removeStorageSync(_this.$store.state.user.id+"#"+_this.toid+'_CHAT_MESSAGE_LASTCONTENT');
+				// uni.removeStorageSync(_this.$store.state.user.id+"#"+_this.toid+'_CHAT_MESSAGE_UNREAD');
 				uni.showLoading()
 				_this.$http.post("/chat_msg/syncMsgData",
 						{
@@ -478,6 +479,35 @@
 
 						},400);
 					} else if(res_data.code==200) {
+						if(res_data.body && res_data.body.list.length != 0){
+
+							let cList = [];
+							for (let i = 0; i < res_data.body.list.length; i++){ //从[0]中取出
+								cList.push(res_data.body.list[i][0])
+							} //遍历
+							_this.syncMessageArr.unshift.apply(_this.syncMessageArr,cList)
+
+							let user = uni.getStorageSync("USER");
+							//1：先清楚和刷新当前显示列表
+							_this.$store.commit("setCur_chat_msg_list",[]);
+
+							this.$store.state.cur_chat_msg_list = _this.syncMessageArr;
+							//2：再清除和刷新大消息列表当前聊天对象数据
+							if(this.$store.state.chatMessageMap.has(user.id+"#"+this.toid)) {
+								this.$store.commit("updateChatMessageMap",{
+									key:user.id+"#"+this.toid,
+									value:this.$store.state.cur_chat_msg_list
+								});
+							}
+							//3:设置最后一个信息
+							if(this.$store.state.cur_chat_msg_list.length != 0){
+								this.$store.state.cur_chat_msg_list[this.$store.state.cur_chat_msg_list.length - 1].bean.simple_content;
+							}
+							//4：刷新本地存储的数据
+							uni.setStorageSync(user.id+"#"+this.toid+'_CHAT_MESSAGE',JSON.stringify(this.$store.state.cur_chat_msg_list));
+						}
+
+
 						this.pageParams = res_data.body
 						if(this.pageParams.pageNumber > 1){
 							for (let i = 0; i < res_data.body.list.length; i++){ //从[0]中取出

@@ -26,7 +26,7 @@
 		</view>
 			<view @tap="goMsgRecord()" class="cu-item arrow" >
 				<view class="content">
-					<text class="text-grey" style="color:#333">查看聊天记录</text>
+					<text class="text-grey" style="color:#333">同步/查看聊天记录</text>
 				</view>
 			</view>
 			
@@ -384,8 +384,9 @@
 							});
 							
 							//清空云数据
-							_this.$websocket.dispatch("WEBSOCKET_SEND", "{body:'"+(user.id+"#"+_this.id)+"',CMD:'CLEARCHATMSG_SINGLE_CLOUD'}");
-							
+							// if(_this.$store.state.isEmployee){
+								_this.$websocket.dispatch("WEBSOCKET_SEND", "{body:'"+(user.id+"#"+_this.id)+"',CMD:'CLEARCHATMSG_SINGLE_CLOUD'}");
+							// }
 						} 
 					},
 				});	

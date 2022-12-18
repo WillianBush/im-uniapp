@@ -1,6 +1,6 @@
 <template>
     <view class="start-wrap">
-        <image class="start-img" src="/static/setup-chugan.jpg" mode="aspectFill" @load="loadImage"></image>
+        <image class="start-img" src="/static/splash.png" mode="aspectFill" @load="loadImage"></image>
         <view class="wraper-row" @click="jump">{{count}}跳过</view>
         <updatepage ref="updatepage"></updatepage>
     </view>
@@ -15,6 +15,7 @@
         },
         data() {
             return {
+                autoJump:true,
                 count:'',
                 canDoNext:true//如果需要版本升级，这里就是false，不让倒计时后直接进主页或者登录页面
             };
@@ -38,7 +39,9 @@
                                 return;
                             }
 
-                            this.jump();
+                            if(this.autoJump){
+                                this.jump();
+                            }
                         }
                     }, 1000)
                 }
@@ -50,6 +53,9 @@
                     uni.navigateTo({
                         url: "/pages/index/index"
                     })
+                    if(this.timer){
+                        this.autoJump = false;
+                    }
                 }else{
                     uni.navigateTo({
                         url: "/pages/login/login"
@@ -104,7 +110,7 @@
                     //    break;
                 }
 
-                _this.getSerivceVersion(1,"触感");
+                _this.getSerivceVersion(1,"约伴");
             },
             getSerivceVersion(_appType,_appName){
                 let _this = this;

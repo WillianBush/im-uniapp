@@ -1,6 +1,6 @@
 <template>
 	<view> 
-		<cu-custom bgColor="bg-blue" :isBack="false"><block slot="content">通讯录</block></cu-custom>
+		<cu-custom bgColor="bg-blue" :isBack="false"><block slot="content">通讯录({{memberList.length}})</block></cu-custom>
 		
 		
 		<view class="cu-bar bg-white search" >
@@ -108,7 +108,8 @@
 				list: [],
 				listCur: '',
 				kw:"",
-				kw1:""
+				kw1:"",
+				memberList: [], //会员列表
 			};
 		},
 		mounted() {
@@ -147,7 +148,14 @@
 							i.name = item.h;
 							_this.list.push(i);
 						})
-						
+
+
+						res.data.body.forEach((item, index) => { //循环拿到聊天人员列表name。根据name长度获取人数
+							item.list.forEach((item, index) => {
+								this.memberList.push(item.name)
+							})
+						})
+						this.$store.state.memberLength = this.memberList.length
 					}
 				});
 				

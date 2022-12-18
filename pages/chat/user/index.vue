@@ -2292,6 +2292,16 @@
 				// 	console.log('取消发送录音');
 				// }
 				// this.willStop = false;
+				console.log("voice1111111",this.recordLength)
+				if(this.recordLength<1){
+					uni.showToast({
+						icon:"none",
+						title: "录音时间太短",
+						duration: 1000
+					});
+					return;
+				}
+
 				uni.hideToast();
 				let msg = "";
 				let min = parseInt(this.recordLength/60);
@@ -2477,6 +2487,10 @@
 									uuid:_this.GenerateUUID(),
 								}
 								_this.$websocket.dispatch("WEBSOCKET_SEND", "{body:'"+JSON.stringify(v)+"',CMD:'USER_CHAT_SEND_VOICE'}");
+
+								v.psr = "voice";
+								v.simple_content = "[语音]";
+								_this.sendBaseDo(v);
 
 								setTimeout(function(){
 									_this.scrollToBottom();

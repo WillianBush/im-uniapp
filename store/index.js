@@ -9,7 +9,7 @@ import module from "./module.js"
 Vue.use(Vuex)
 
 const state = {
-	SYS_VERSION:"1.0.8",//客户端版本
+	SYS_VERSION:"1.1.4",//客户端版本
 	app_uuid:"",//每次打开都会自动生成一个唯一的字符，可用于后台程序判断冲线的问题
 	signInCnf:null,//签到配置
 	WAIT_SEND_MSG:"",//发送失败，等待重头发送信息
@@ -49,6 +49,7 @@ const state = {
 	greetingpic_4:"",
 	greetingpic_5:"",
 	greetingList:[],
+	memberLength:"",
 	//临时属性    
 	temp:{  
 		base64:"",//【作用于群二维码发给朋友临时存等等，因为直接使用带参数页面跳转会导致特殊符号过滤掉】

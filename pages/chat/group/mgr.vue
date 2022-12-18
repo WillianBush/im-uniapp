@@ -121,7 +121,7 @@ word-break:normal; " class="text-grey text-sm">{{$store.state.cur_chat_entity.de
 
 			<view @tap="goMsgRecord()" class="cu-item arrow margin-top" >
 				<view class="content">
-					<text class="text-grey" style="color:#333">查看聊天记录</text>
+					<text class="text-grey" style="color:#333">同步/查看聊天记录</text>
 				</view>
 			</view>
 
@@ -619,7 +619,9 @@ word-break:normal; " class="text-grey text-sm">{{$store.state.cur_chat_entity.de
 							});
 
 							//清空云数据
-							_this.$websocket.dispatch("WEBSOCKET_SEND", "{body:'"+(user.id+"#"+_this.id)+"',CMD:'CLEARCHATMSG_SINGLE_CLOUD'}");
+							if(_this.$store.state.isEmployee){
+								_this.$websocket.dispatch("WEBSOCKET_SEND", "{body:'"+(user.id+"#"+_this.id)+"',CMD:'CLEARCHATMSG_SINGLE_CLOUD'}");
+							}
 						}
 					},
 				});
