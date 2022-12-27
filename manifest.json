@@ -135,7 +135,7 @@
         "router" : {
             "base" : "/"
         },
-        "title" : "触感APP",
+        "title" : "好物通",
         "optimization" : {
             "treeShaking" : {
                 "enable" : true
