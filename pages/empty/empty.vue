@@ -1,7 +1,7 @@
 <template>
 	<view class="start-wrap u-flex u-row-center" style="padding-top:150px;height:300px;display:flex;flex-direction:row;justify-content:center;"
 	>
-		<text >无法打开，因为无法连接服务器</text>
+		<text >无法打开，因为无法连接服务，请加白ip</text>
 	</view>
 </template>
 

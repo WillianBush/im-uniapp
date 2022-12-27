@@ -1,62 +1,65 @@
 <template>
-	<view> 
-		<cu-custom bgColor="bg-blue" :isBack="true" :nameToLeft="true"><block slot="content">发起群聊</block>
-		<block slot="right">
-		<uni-text @tap="tijiao()" style="font-size: 22px;color: #fff;margin-right: 14px;font-size: 30upx;background: #58BB46;padding:10upx 40upx;border-radius: 6upx;" class="lg text-gray ">创建</uni-text>
-		</block>
-		</cu-custom>
-		
-		
-		<view class="cu-bar bg-white search" >
-			<view class="search-form round">
-				<text class="cuIcon-search"></text>
-				<input   v-model="kw1"  type="text" placeholder="输入搜索的关键词" confirm-type="search"></input>
+
+	<view style="background: #fff;width: 80%;margin: 40px 0 0 12%">
+		<view>
+			<cu-custom bgColor="bg-blue" :isBack="true" :nameToLeft="true"><block slot="content">发起群聊</block>
+			<block slot="right">
+			<uni-text @tap="tijiao()" style="font-size: 22px;color: #fff;margin-right: 14px;font-size: 30upx;background: #58BB46;padding:10upx 40upx;border-radius: 6upx;" class="lg text-gray ">创建</uni-text>
+			</block>
+			</cu-custom>
+
+
+			<view class="cu-bar bg-white search" >
+				<view class="search-form round">
+					<text class="cuIcon-search"></text>
+					<input   v-model="kw1"  type="text" placeholder="输入搜索的关键词" confirm-type="search"></input>
+				</view>
+				<view class="action">
+					<button @tap="search()" style="background: #FFAA01;"  class="cu-btn bg-gradual-green shadow-blur round">搜索</button>
+				</view>
 			</view>
-			<view class="action">
-				<button @tap="search()" style="background: #FFAA01;"  class="cu-btn bg-gradual-green shadow-blur round">搜索</button>
-			</view>
-		</view>
-		<scroll-view scroll-y class="indexes" :scroll-into-view="'indexes-'+ listCurID" :style="[{height:'calc(100vh - 100upx - '+CustomBar+'px)'}]"
-		 :scroll-with-animation="true" :enable-back-to-top="true">
-		  <checkbox-group @change="radioChange" style="width:100%">
-			<block v-for="(item,index) in friend_list" :key="index">
-				<view :class="'indexItem-' + item.h" :id="'indexes-' + item.h" :data-index="item.h">
-					<view class="padding">{{item.h}}</view>
-					<view class="cu-list menu-avatar no-padding">
-						<view  class="cu-item" v-for="(items,index1) in item.list" :key="index1">
-							<!--
-							<view class="cu-avatar round lg">{{item.h}}</view>
-							-->
-							<view class="cu-avatar round lg" :style="{'backgroundImage': 'url('+$store.state.img_url+ items.headpic +')' }"  style="width: 80upx;height: 80upx;background-size: 100% 100%;"></view>
-							<view class="content">
-								<view class="text-grey" style="float:left;">{{items.name}}</view>
-								<checkbox :checked="fid==items.member_uuid"  class='round blue '  :value="items.member_uuid"></checkbox>  
+			<scroll-view scroll-y class="indexes" :scroll-into-view="'indexes-'+ listCurID" :style="[{height:'calc(100vh - 100upx - '+CustomBar+'px)'}]"
+			 :scroll-with-animation="true" :enable-back-to-top="true">
+			  <checkbox-group @change="radioChange" style="width:100%">
+				<block v-for="(item,index) in friend_list" :key="index">
+					<view :class="'indexItem-' + item.h" :id="'indexes-' + item.h" :data-index="item.h">
+						<view class="padding">{{item.h}}</view>
+						<view class="cu-list menu-avatar no-padding">
+							<view  class="cu-item" v-for="(items,index1) in item.list" :key="index1">
 								<!--
-								<view class="text-gray text-sm">
-									有{{sub+2}}个主子需要伺候
-								</view>
+								<view class="cu-avatar round lg">{{item.h}}</view>
 								-->
+								<view class="cu-avatar round lg" :style="{'backgroundImage': 'url('+$store.state.img_url+ items.headpic +')' }"  style="width: 80upx;height: 80upx;background-size: 100% 100%;"></view>
+								<view class="content">
+									<view class="text-grey" style="float:left;margin-left: 10px">{{items.name}}</view>
+									<checkbox :checked="fid==items.member_uuid"  class='round blue '  :value="items.member_uuid"></checkbox>
+									<!--
+									<view class="text-gray text-sm">
+										有{{sub+2}}个主子需要伺候
+									</view>
+									-->
+								</view>
 							</view>
 						</view>
 					</view>
+				</block>
+				</checkbox-group>
+				<view style="height: 100upx;text-align: center;background: #fff;
+		margin-top: 20upx;
+		line-height: 100upx;
+		color: #999;" v-if="friend_list.length<=0">
+					暂无好友
 				</view>
-			</block>
-			</checkbox-group>
-			<view style="height: 100upx;text-align: center;background: #fff;
-    margin-top: 20upx;
-    line-height: 100upx;
-    color: #999;" v-if="friend_list.length<=0">
-				暂无好友
+			</scroll-view>
+			<view style="bottom:50upx" class="indexBar" :style="[{height:'calc(100vh - ' + CustomBar + 'px - 50px)'}]">
+				<view class="indexBar-box" @touchstart="tStart" @touchend="tEnd" @touchmove.stop="tMove">
+					<view class="indexBar-item" v-for="(item,index) in list" :key="index" :id="index" @touchstart="getCur" @touchend="setCur"> {{item.name}}</view>
+				</view>
 			</view>
-		</scroll-view>
-		<view style="bottom:50upx" class="indexBar" :style="[{height:'calc(100vh - ' + CustomBar + 'px - 50px)'}]">
-			<view class="indexBar-box" @touchstart="tStart" @touchend="tEnd" @touchmove.stop="tMove">
-				<view class="indexBar-item" v-for="(item,index) in list" :key="index" :id="index" @touchstart="getCur" @touchend="setCur"> {{item.name}}</view>
+			<!--选择显示-->
+			<view v-show="!hidden" class="indexToast">
+				{{listCur}}
 			</view>
-		</view>
-		<!--选择显示-->
-		<view v-show="!hidden" class="indexToast">
-			{{listCur}}
 		</view>
 	</view>
 </template>
@@ -238,7 +241,7 @@
 						        if (res.confirm) {
 						           //去群里
 								   uni.navigateTo({
-								   	url:"/pages/chat/group/index?toid="+res_data.body.id
+								   	url:"/pages/index/index"
 								   })
 						        }
 						    }

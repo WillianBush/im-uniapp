@@ -5,7 +5,7 @@
 				<view class="action" style="font-size: 36upx;font-weight: 600;">
 					<text class="cuIcon-title text-orange " style="color: green"></text> 消息列表
 				</view>
-				<text v-if="false" @tap.stop="showMenuFn()"
+				<text @tap.stop="showMenuFn()"
 					style="float:right;font-size:48upx;cursor: pointer;color:#333;margin-top:6upx;margin-right:40upx"
 					class="iconfont icon-jia"></text>
 			</view>
@@ -18,7 +18,7 @@
 
 			</view>
 			<!--#ifdef H5 -->
-			<view v-show="showMenu" :style="super_user==1?'height: 330upx;':'height: 250upx;'" style="position: absolute;
+			<view v-show="showMenu" :style="super_user==1?'height: 110upx;':'height: 110upx;'" style="position: absolute;
 					width: 280upx;
 					background: #4A484D;
 					top: 140upx;
@@ -31,11 +31,11 @@
 						style="float:left;font-size:46upx;margin-top:6upx;margin-left:10upx"
 						class="iconfont icon-liaotian1"></text><text
 						style="float:left;margin-top:10upx;margin-left:20upx;font-size: 28upx;">发起群聊</text></view>
-				<view @tap.stop="addFriend()" style="border-top:1px solid #777;float:left;width:98%;padding-top:10upx;">
+				<view v-if="false" @tap.stop="addFriend()" style="border-top:1px solid #777;float:left;width:98%;padding-top:10upx;">
 					<text style="float:left;font-size:46upx;margin-top:6upx;margin-left:10upx"
 						class="iconfont icon-tianjiahaoyou1"></text><text
 						style="float:left;margin-top:10upx;margin-left:20upx;font-size: 28upx;">添加好友</text></view>
-				<view @tap.stop="searchGroup()" style="border-top:1px solid #777;float:left;width:98%;padding-top:10upx;">
+				<view v-if="false" @tap.stop="searchGroup()" style="border-top:1px solid #777;float:left;width:98%;padding-top:10upx;">
 					<text style="float:left;font-size:46upx;margin-top:6upx;margin-left:10upx"
 						class="iconfont icon-chazhao"></text><text
 						style="float:left;margin-top:10upx;margin-left:20upx;font-size: 28upx;">查找群组</text></view>
@@ -137,11 +137,12 @@
 		</view>
 
 
-		<view v-show="visiable" style="width: 100%; height: 100%;color:#fff;background-color: #0006; position: fixed;left: 0;top:0; z-index: 10;">
+		<view v-if="visiable" style="width: 100%; height: 100%;color:#fff;background-color: #0006; position: fixed;left: 0;top:0; z-index: 10;">
 			<text @click="closeModal" class="cuIcon-close" style="font-size: 36px; cursor: pointer; position:absolute; top:15px; right: 15px"></text>
-		    <UserMgr v-show="mgrType=='user'" :mgrId="mgrId"></UserMgr>
-			<GroupMgr v-show="mgrType=='group'" :mgrId="mgrId"></GroupMgr>
+		    <UserMgr v-show="mgrType=='user'" :mgrId="mgrId" :friendPic="friendPic" :toid="toId"></UserMgr>
+			<GroupMgr v-show="mgrType=='group'" :mgrId="mgrId" :toid="toId"></GroupMgr>
 			<Aite v-show="mgrType=='at'" :roomid="roomid" @closeModal="closeModal"></Aite>
+			<CreateGroup v-show="mgrType=='createGroup'"></CreateGroup>
 		</view>
 	</view>
 </template>
@@ -162,6 +163,8 @@
 				msgToId: '',
 				msgToGroupId: '',
 				mgrId: '',
+				friendPic: '',
+				toId:'',
 				mgrType: 'user',
 				refresherTriggered: false, //下拉刷新状态
 				_refresherTriggered: false, //防止异步操作
@@ -244,6 +247,8 @@
 			openModal(obj) {
 				this.mgrId = obj.id;
 				this.mgrType = obj.type;
+				this.friendPic= obj.friendPic;
+				this.toId = obj.toId;
 				this.visiable = true;
 			},
 			openAtModal(id){
@@ -635,10 +640,12 @@
 
 			},
 			createGroup() {
-				uni.navigateTo({
-					url: "/pages/chat/group/createGroup"
-				})
+				// uni.navigateTo({
+				// 	url: "/pages/chat/group/createGroup"
+				// })
 				this.showMenu = false;
+				this.mgrType = "createGroup";
+				this.visiable = true;
 			},
 			addFriend() {
 				uni.navigateTo({

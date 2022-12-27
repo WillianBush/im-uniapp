@@ -2075,7 +2075,6 @@ button.cuIcon.lg {
 }
 .cu-chat {
 	display: flex;
-	min-height:600px;
 	flex-direction: column;
 }
 

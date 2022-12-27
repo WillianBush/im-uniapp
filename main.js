@@ -33,6 +33,9 @@ Vue.component('UserMgr',UserMgr)
 import GroupMgr from './pages/chat/group/mgr.vue'
 Vue.component('GroupMgr',GroupMgr)
 
+import CreateGroup from './pages/chat/group/createGroup.vue'
+Vue.component('CreateGroup',CreateGroup)
+
 import Aite from './pages/chat/group/aite.vue'
 Vue.component('Aite',Aite)
 
@@ -95,7 +98,8 @@ Vue.component('mine',mine)
 
 import cuCustom from './colorui/components/cu-custom.vue'
 Vue.component('cu-custom',cuCustom)
-
+import groupCuCustom from './colorui/components/groupcu-custom.vue'
+Vue.component('group-custom',groupCuCustom)
 import headbar from './components/headbar.vue'
 Vue.component('headbar',headbar)
 

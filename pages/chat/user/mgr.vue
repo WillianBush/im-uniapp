@@ -2,7 +2,7 @@
 <template>
 	<div>
 
-		<view style="position:relative;background: #fff;width: 80%;margin: 40px 0 0 12%;height:600px;overflow: scroll" v-show="logShow">
+		<view style="position:relative;background: #fff;width: 80%;margin: 40px 0 0 12%;height:600px;overflow: scroll" v-if="logShow">
 			<view>
 
 				<view class="cu-chat">
@@ -234,13 +234,10 @@
 					</div>
 					<div style="text-align: center"
 						 v-if="chatLogs.length>0">
-						<el-pagination
-								:page-size="pageParams.pageCount"
-								@current-change="pageChange"
-								:current-page="pageParams.pageNumber"
-								layout="prev, pager, next"
-								:total="pageParams.totalCount">
-						</el-pagination>
+						<view @click="loadmore" style="color:rgb(170, 170, 170);text-align:center;margin-top:30rpx;margin-bottom:20rpx">
+							点击加载更多...
+						</view>
+
 					</div>
 
 
@@ -275,7 +272,7 @@
     margin: auto auto;
     margin-top: 10px!important;" class="margin-top">
 			<view style="width:150upx;padding-top:30upx;padding-bottom:30upx;margin-left: 10upx;">
-				<view class="cu-avatar radius margin-left" :style="'height:100upx;width:100upx;background-image:url('+$store.state.img_url+cur_user.headpic+');'"></view>
+				<view class="cu-avatar radius margin-left" :style="'height:100upx;width:100upx;background-image:url('+$store.state.img_url+friendPic+');'"></view>
 				<view style="margin:auto auto;color: #999;font-size:24upx;text-align: center;margin-top:8upx;overflow: hidden;height:34upx;width:100upx;">{{cur_user.nickName}}</view>
 			</view>
 
@@ -295,7 +292,7 @@
 			<view @tap="getLogs()" class="cu-item arrow" >
 
 				<view class="content">
-					<text class="text-grey" style="color:#333"> 查看聊天记录</text>
+					<text class="text-grey" style="color:#333">同步/查看聊天记录</text>
 				</view>
 			</view>
 
@@ -351,7 +348,9 @@
 			msgToId: {
 				type: String,
 				default: ''
-			}
+			},
+			friendPic: '',
+			toid: ''
 		},
 		components: {
 			uParse,
@@ -368,15 +367,13 @@
 				domHeight:0,
 				c_type:1,
 				InputBottom: 0,
-				toid:"",
 				entity:{nickname:'1'},
 				txt:"",
 				temp_txt:"",
 				showjia:true,
-				pageParams:{
-					pageNumber:'1',
-					pageCount:'30',
-				},
+				pageNumber:1,
+				pageCount:30,
+				totalCount:0,
 				emotion:1,
 				showItem:0,
 				scrollTop:0,
@@ -423,8 +420,6 @@
 				showname:"",
 				//以上聊天记录内容状态
 
-				pageNumber:10,//分页参数
-				pageNum:1,
 				logShow:false,
 				switchA:false,
 				switchB:false,
@@ -433,7 +428,8 @@
 				cur_user:{'nickname':'1'},
 				super_user:0,
 				user_note:"",
-			}
+                syncMessageArr:[]
+            }
 		},
 		watch: {
 			visiable(){
@@ -441,6 +437,7 @@
 			},
 		  mgrId: function(newVal,oldVal){
 			this.id = newVal;
+			console.log("kkkkkkkkk",newVal+"==="+oldVal)
 		    this.onShowMethod();
 			this.onLoadMethod();
 		  },
@@ -448,10 +445,9 @@
 		mounted(){
 		},
 		methods: {
-			pageChange(val){ //页码更换
-				this.pageParams.pageNumber = val
+			loadmore(){ //页码更换
+				this.pageNumber ++;
 				this.tongbuMsg() //recall pagination datas.
-
 			},
 
 			//以下备注方法
@@ -482,17 +478,12 @@
 			},
 			tongbuMsg(){ //当前页面聊天记录&页码请求
 				let _this = this;
-				_this.$store.state.chatMessageMap.delete(_this.$store.state.user.id+"#"+_this.toid);
-				uni.removeStorageSync(_this.$store.state.user.id+"#"+_this.toid+'_CHAT_MESSAGE');
-				// _this.$store.commit("setCur_chat_msg_list",[]); //Dont know why set null, noted.
-				uni.removeStorageSync(_this.$store.state.user.id+"#"+_this.toid+'_CHAT_MESSAGE_LASTCONTENT');
-				uni.removeStorageSync(_this.$store.state.user.id+"#"+_this.toid+'_CHAT_MESSAGE_UNREAD');
 
 				uni.showLoading()
 				_this.$http.post("/chat_msg/syncMsgData",
 						{
 							chatid: localStorage.getItem('toUser'),
-							pageNumber:this.pageParams.pageNumber,
+							pageNumber:this.pageNumber,
 						},
 						{
 							header:{
@@ -513,13 +504,41 @@
 
 						},400);
 					} else if(res_data.code==200) {
-						uni.hideLoading();
-						this.pageParams = res_data.body
-						this.chatLogs = res_data.body.list
-						for (let i = 0; i < this.chatLogs.length; i++){ //从[0]中取出
-							this.chatLogs[i] = this.chatLogs[i][0]
-						}
+						if(res_data.body && res_data.body.list.length != 0){
 
+							let cList = [];
+							for (let i = 0; i < res_data.body.list.length; i++){ //从[0]中取出
+								cList.push(res_data.body.list[i][0])
+							} //遍历
+							_this.syncMessageArr.unshift.apply(_this.syncMessageArr,cList)
+
+							let user = uni.getStorageSync("USER");
+							//1：先清楚和刷新当前显示列表
+							_this.$store.commit("setCur_chat_msg_list",[]);
+
+							this.$store.state.cur_chat_msg_list = _this.syncMessageArr;
+							//2：再清除和刷新大消息列表当前聊天对象数据
+							if(this.$store.state.chatMessageMap.has(user.id+"#"+this.toid)) {
+								this.$store.commit("updateChatMessageMap",{
+									key:user.id+"#"+this.toid,
+									value:this.$store.state.cur_chat_msg_list
+								});
+							}
+							//3:设置最后一个信息
+							if(this.$store.state.cur_chat_msg_list.length != 0){
+								this.$store.state.cur_chat_msg_list[this.$store.state.cur_chat_msg_list.length - 1].bean.simple_content;
+							}
+							//4：刷新本地存储的数据
+							uni.setStorageSync(user.id+"#"+this.toid+'_CHAT_MESSAGE',JSON.stringify(this.$store.state.cur_chat_msg_list));
+						}
+						for (let i = 0; i < res_data.body.list.length; i++){ //从[0]中取出
+							res_data.body.list[i] = res_data.body.list[i][0]
+						} //遍历拿出数组bean
+						_this.chatLogs.unshift.apply(_this.chatLogs,res_data.body.list)
+						uni.hideLoading();
+
+						this.pageNumber = res_data.body.pageNumber;
+						this.totalCount = res_data.body.totalCount * res_data.body.pageCount;
 
 					}
 				}).catch(err=>{
@@ -631,7 +650,7 @@
 				this.showItem = 0;
 				this.InputBottom=0;
 				uni.navigateTo({
-					url:"/pages/chat/red/sendRed?chatType=user&toid="+this.entity.id
+					url:"/pages/chat/red/sendRed?chatType=user&toid="+this.toid
 				})
 			},
 			goFavourite() {

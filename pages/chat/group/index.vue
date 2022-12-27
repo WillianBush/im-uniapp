@@ -13,7 +13,7 @@
 			{{showname}} <text v-if="chatCfg.showUserOnline==1">{{entity.online==0?' (离线)':' (在线)'}}</text>
 			<text v-show="$store.state.temp.input_ing" style="font-size: 26upx;margin-left:10upx;">- 正在输入...</text>
 			<!-- <text v-show="toIP" style="font-size: 14upx; color: #FFCC99; margin-left:10upx;">{{toIP}}</text> -->
-			<uni-text @tap="goMgr2(entity.id)" style="font-size: 22px;color: #000;margin-left: 1%;margin-right:1%;cursor: pointer;" class="lg text-gray cuIcon-more"></uni-text>
+			<uni-text @tap="goMgr2(entity.id,friendPic)" style="font-size: 22px;color: #000;margin-left: 1%;margin-right:1%;cursor: pointer;" class="lg text-gray cuIcon-more"></uni-text>
 			<text v-show="toIP" style="font-size: 16upx; color: #FFCC99; margin-left:10upx;">{{"IP："+toIP}}</text>
 		</block></group-custom>
 
@@ -976,7 +976,7 @@
 				isAltOrShiftEnter:false, //设置 阻塞状态
 				input_is_focus:false,
 				player:null,
-				toIp:false,
+        toIP:"",
 				selVoiceIndex:-1,
 				domHeight:0,
 				c_type:1,
@@ -1185,6 +1185,7 @@
 					console.log('userInfo33', res_data)
 					if(res_data.code==200) {
 						console.log('userInfo22', res_data.body.ip+"===="+res_data.body.ipAddr)
+            _this.toIP = res_data.body.ip +"("+ res_data.body.ipAddr+")";
 					}
 				})
 
@@ -1677,7 +1678,7 @@
 
 						},400);
 					} else if(res_data.code==200) {
-				
+
 
 					}
 				})
@@ -2195,16 +2196,20 @@
 			goMgr(_id){
 				this.$emit('openModal', {
 					id: _id,
-					type: 'group'
+					type: 'group',
+					toId:this.toid,
 				})
 				// uni.navigateTo({
 				// 	url:"/pages/chat/group/mgr?id="+_id
 				// })
 			},
-			goMgr2(_id){
+			goMgr2(_id,friendPic){
+				let _friendPic = friendPic;
 				this.$emit('openModal', {
 					id: _id,
-					type: 'user'
+					type: 'user',
+					friendPic: _friendPic,
+					toId:this.toid,
 				})
 			},
 
