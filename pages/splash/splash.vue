@@ -1,7 +1,10 @@
 <template>
     <view class="start-wrap">
-        <image class="start-img" src="/static/splash.jpg" mode="aspectFill" @load="loadImage"></image>
-        <view class="wraper-row" @click="jump">{{count}}跳过</view>
+		<!-- 触感 -->
+        <!-- <image class="start-img" src="/static/setup-chugan.jpg" mode="aspectFill" @load="loadImage"></image> -->
+       <!-- 约伴 -->
+	   <image class="start-img" src="/static//541_960.png" mode="aspectFill" @load="loadImage"></image>
+		<view class="wraper-row" @click="jump">{{count}}跳过</view>
         <updatepage ref="updatepage"></updatepage>
     </view>
 </template>

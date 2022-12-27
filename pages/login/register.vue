@@ -1,6 +1,6 @@
 <template>
 	<view class="register"style="background: #fff;height:100vh">
-	
+
 		<view class="content">
 			<view @tap="back" style="position: relative;
     top: 14px;
@@ -11,9 +11,12 @@
 			<!-- 头部logo -->
 			<view class="header"  @tap="">
 				<!-- <image :src="$store.state.img_url+(headpic==''?'/img_sys/defaultHeadPic.jpg':headpic)"></image> -->
+				<!-- 触感 -->
+				<!-- <image src="/static/chugan-logo.png"></image> -->
+				 <!-- 约伴 -->
 				<image src="/static/logo12.png"></image>
 				<!-- <view style="font-size: 24upx;color:#aaa;text-align: center;margin-top:10upx;">点击上传头像</view> -->
-			</view> 
+			</view>
 			<!-- 主体 -->
 			<view class="main">
 				<!-- <wInput
@@ -24,28 +27,28 @@
 				></wInput> -->
 				<wInput
 					v-if="cnf.useRegisterCode==1"
-					v-model="regCode" 
+					v-model="regCode"
 					type="text"
 					placeholder="注册码"
 				></wInput>
 				<wInput
 					v-if="cnf.useInviteCode==1"
-					v-model="inviteCode" 
+					v-model="inviteCode"
 					type="text"
 					placeholder="邀请码"
 				></wInput>
-				<!-- <wInput 
+				<!-- <wInput
 					v-if="cnf.reg_sms==1"
 					v-model="verCode"
 					type="number"
 					maxlength="10"
 					placeholder="验证码"
-					
+
 					isShowCode
 					ref="runCode"
 					@setCode="getVerCode()"
 				></wInput> -->
-				
+
 				<wInput
 					v-model="nickname"
 					type="text"
@@ -59,25 +62,25 @@
 					isShowPass
 				></wInput>
 			</view>
-				
-			<wButton 
+
+			<wButton
 				class="wbutton"
 				text="注 册"
-				:rotate="isRotate" 
+				:rotate="isRotate"
 				@click.native="startReg()"
 			></wButton>
-			
+
 			<!-- 底部信息 -->
 			<view class="footer" style="    margin-top: 20upx;">
-				<text 
-					@tap="isShowAgree" 
+				<text
+					@tap="isShowAgree"
 					class="cuIcon"
 					:class="showAgree?'cuIcon-radiobox':'cuIcon-round'"
 				> 同意</text>
 				<!-- 协议地址 -->
 				<navigator url="" open-type="navigate">《协议》</navigator>
 			</view>
-			
+
 		</view>
 	</view>
 </template>
@@ -86,7 +89,7 @@
 	var _this;
 	import wInput from '../../components/user/watch-login/watch-input.vue' //input
 	import wButton from '../../components/user/watch-login/watch-button.vue' //button
-	
+
 	export default {
 		data() {
 			return {
@@ -110,13 +113,13 @@
 		},
 		mounted() {
 			_this= this;
-			
-			
-			
+
+
+
 		},
 		onShow() {
 			let _this = this;
-			
+
 			_this.$http.post("/sysConfig/json/getRegCfg",
 				{
 					header:{
@@ -126,12 +129,12 @@
 				}
 			).then(res=>{
 				let res_data = eval(res.data);
-				if(res_data.code==200) {  
+				if(res_data.code==200) {
 					_this.cnf = res_data.body;
-					
+
 				}
 			})
-			
+
 			// uni.request({
 			// 	method:"POST",
 			// 	url: _this.$store.state.req_url + "/sysConfig/json/getRegCfg",
@@ -140,9 +143,9 @@
 			// 	},
 			// 	success(res) {
 			// 		let res_data = eval(res.data);
-			// 		if(res_data.code==200) {  
+			// 		if(res_data.code==200) {
 			// 			_this.cnf = res_data.body;
-						
+
 			// 		}
 			// 	}
 			// })
@@ -168,7 +171,7 @@
 							});
 							return;
 						}
-						
+
 						 var uper = uni.uploadFile({
 							 // 需要上传的地址
 							 url:_this.$store.state.req_url+ '/user/file/upload',
@@ -185,7 +188,7 @@
 									 });
 									 _this.headpic = json.msg
 									 console.log("******"+json.msg);
-									 
+
 								 } else {
 									 uni.showToast({
 									    icon: 'none',
@@ -212,7 +215,7 @@
 				    });
 				    return false;
 				}
-				
+
 				_this.$http.post("/user/json/sendSms/v1",
 					{
 						tel:_this.phoneData
@@ -225,7 +228,7 @@
 					}
 				).then(res=>{
 					let res_data = eval(res.data);
-					if(res_data.code==200) {  
+					if(res_data.code==200) {
 						_this.$refs.runCode.$emit('runCode'); //触发倒计时（一般用于请求成功验证码后调用）
 					}  else {
 						uni.showToast({
@@ -234,8 +237,8 @@
 						});
 					}
 				})
-				
-				
+
+
 				// uni.request({
 				// 	method:"POST",
 				// 	url: _this.$store.state.req_url + "/user/json/sendSms/v1",
@@ -247,7 +250,7 @@
 				// 	},
 				// 	success(res) {
 				// 		let res_data = eval(res.data);
-				// 		if(res_data.code==200) {  
+				// 		if(res_data.code==200) {
 				// 			_this.$refs.runCode.$emit('runCode'); //触发倒计时（一般用于请求成功验证码后调用）
 				// 		}  else {
 				// 			uni.showToast({
@@ -255,12 +258,12 @@
 				// 				title: res_data.msg
 				// 			});
 				// 		}
-						
+
 				// 	}
 				// })
-				
-				
-				
+
+
+
 				// setTimeout(function(){
 				// 	_this.$refs.runCode.$emit('runCode',0); //假装模拟下需要 终止倒计时
 				// },3000)
@@ -295,7 +298,7 @@
 		            });
 		            return false;
 		        }
-				
+
 				// if(this.cnf.reg_sms==1) {
 				// 	if(this.verCode.trim()=="") {
 				// 		uni.showToast({
@@ -306,7 +309,7 @@
 				// 		return false;
 				// 	}
 				// }
-				
+
 				if(this.cnf.useRegisterCode==1) {
 					if(this.regCode.trim()=="") {
 						uni.showToast({
@@ -317,8 +320,8 @@
 						return false;
 					}
 				}
-				
-				
+
+
 				if(this.cnf.useInviteCode==1) {
 					if(this.inviteCode.trim()=="") {
 						uni.showToast({
@@ -329,7 +332,7 @@
 						return false;
 					}
 				}
-				
+
 				if (this.nickname.trim()=="") {
 				    uni.showToast({
 				        icon: 'none',
@@ -346,7 +349,7 @@
 				    });
 				    return false;
 				}
-				
+
 				/***
 				if (this.verCode.length != 4) {
 				    uni.showToast({
@@ -358,7 +361,7 @@
 				}
 				**/
 				_this.isRotate=true
-				
+
 				_this.$http.post("/user/json/registerV2",
 					{
 						// tel:_this.phoneData,
@@ -376,44 +379,24 @@
 						}
 					}
 				).then(res=>{
+
 					_this.isRotate=false
 					let res_data = eval(res.data);
-					if(res_data.code==200) {  
+					if(res_data.code==200) {
 						//console.log(res_data.body);
-						_this.$store.commit("setUser",res_data.body)
-						uni.setStorageSync("USER",res_data.body);
-						_this.$store.commit("setUnDoRoomAddCount",res_data.body.unDoRoomAddCount);
-						_this.$store.commit("setUnDoFriendAddCount",res_data.body.unDoFriendAddCount);
-						//_this.$websocket.dispatch("WEBSOCKET_SEND", "{body:'"+res_data.body.id+"',CMD:'PUTSESSION'}");
-						let v = {
-							user_id:res_data.body.id,
-							app_uuid:_this.$store.state.app_uuid,
-						}
-						
-						v.client = _this.$clientType;
-						v.user_id = v.user_id+"#"+v.client;
-						setTimeout(function(){
-							_this.$websocket.dispatch('WEBSOCKET_SEND', "{body:'"+JSON.stringify(v)+"',CMD:'PUTSESSION'}");
-						},10000);
-						// 保存clientid到服务器，最好延迟一下获取信息否则有时会获取不到
-						// #ifdef APP-PLUS
-						setTimeout(function(){
-							const clientInfo = plus.push.getClientInfo()
-							let pushUser = {
-							  clientid: clientInfo.clientid,
-							  appid: clientInfo.appid,
-							  appkey: clientInfo.appkey,
-							  userName: '用户名',
-							  userRole: '用户角色',
-							  uid:res_data.body.id
-							}
-							_this.$websocket.dispatch("WEBSOCKET_SEND", "{body:'"+JSON.stringify(pushUser)+"',CMD:'APP_PUSH_USER_INFO'}");
-						},10000);
-						// #endif
-						
-						uni.navigateTo({
-							url:"/pages/index/index"
-						})
+            uni.showToast({
+              icon: 'none',
+              position: 'bottom',
+              title: '注册成功'
+            });
+         setTimeout(() => {
+           uni.navigateTo({
+             url:"/pages/login/login"
+           })
+         }, 1500)
+
+
+
 					} else {
 						uni.showToast({
 							icon: 'none',
@@ -421,8 +404,8 @@
 						});
 					}
 				})
-				
-				
+
+
 				// uni.request({
 				// 	method:"POST",
 				// 	data:{headpic:_this.headpic,nickname:_this.nickname,tel:_this.phoneData,password:_this.passData,regCode:_this.regCode,code:_this.verCode},
@@ -433,7 +416,7 @@
 				// 	success(res) {
 				// 		_this.isRotate=false
 				// 		let res_data = eval(res.data);
-				// 		if(res_data.code==200) {  
+				// 		if(res_data.code==200) {
 				// 			//console.log(res_data.body);
 				// 			_this.$store.commit("setUser",res_data.body)
 				// 			uni.setStorageSync("USER",res_data.body);
@@ -454,7 +437,7 @@
 				// 			v.user_id = v.user_id+"#"+v.client;
 				// 			_this.$websocket.dispatch('WEBSOCKET_SEND', "{body:'"+JSON.stringify(v)+"',CMD:'PUTSESSION'}");
 				// 			// #endif
-							
+
 				// 			// 保存clientid到服务器，最好延迟一下获取信息否则有时会获取不到
 				// 			// #ifdef APP-PLUS
 				// 			// setTimeout(function(){
@@ -470,7 +453,7 @@
 				// 			// 	_this.$websocket.dispatch("WEBSOCKET_SEND", "{body:'"+JSON.stringify(pushUser)+"',CMD:'APP_PUSH_USER_INFO'}");
 				// 			// },1000);
 				// 			// #endif
-							
+
 				// 			uni.navigateTo({
 				// 				url:"/pages/index/index"
 				// 			})
@@ -482,7 +465,7 @@
 				// 		}
 				// 	}
 				// })
-				
+
 		    }
 		}
 	}

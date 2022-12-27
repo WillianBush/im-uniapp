@@ -1,14 +1,11 @@
 <template>
 	<view ref="topVew" v-if="$store.state.cur_chat_entity"   :style="chatCfg.chatBackgroundImage&&chatCfg.chatBackgroundImage!=''?'background-image: url('+$store.state.img_url+chatCfg.chatBackgroundImage+')':''" style="background-size: 100%;min-height: 100vh;" >
-		<cu-custom backUrl="/pages/index/index" bgColor="bg-blue"  :isBack="true" :nameToLeft="true">
-			<block slot="backText"></block>
-			<block slot="content">{{$store.state.cur_chat_entity.name}}({{$store.state.cur_chat_entity.memberCount}}人)</block><block slot="right">
-			<uni-text @tap="goMgr(entity.id)" style="font-size: 22px;color: #fff;margin-right: 14px;" class="lg text-gray cuIcon-more"><span></span></uni-text>
-		</block></cu-custom>
-		<uni-notice-bar showIcon="" speed="35" scrollable="true" single="true" v-if="$store.state.cur_chat_entity" :text="$store.state.cur_chat_entity.descri"></uni-notice-bar>
-		<scroll-view @scroll="scrollFn" :scroll-into-view="viewId" :scroll-top="scrollTop" scroll-y="true"    ref="chatVew" @tap="clickChat()"  class="cu-chat" :style="'height: calc(100vh - '+CustomBar+'px - '+(120+InputBottom)+'upx)'" >
+		<view style="height: 45px;line-height: 45px;border-bottom: 1px solid #bdbaba; background: #eee;padding-left: 20px">
+			<text style="color:#009FE8;font-size:50upx; margin-right: 8px" class="iconfont icon-qunzhong"></text>
+			群发所有好友
+		</view>
+		<scroll-view @scroll="scrollFn" :scroll-into-view="viewId" :scroll-top="scrollTop" scroll-y="true"    ref="chatVew" @tap="clickChat()"  class="cu-chat" style="background: #eee;" :style="'height: calc(100vh - '+CustomBar+'px - 60px - '+(120+InputBottom)+'upx)'" >
 			<block  v-for="(item,index) in $store.state.cur_chat_msg_list">
-
 				<block v-if="item.opt&&item.opt=='undo'">
 					<!-- <view v-if="item.opt_uid==$store.state.user.id"  class="cu-info round">撤回一条消息</view>
 					<view v-else  class="cu-info round">{{item.name}} 撤回一条消息</view> -->
@@ -85,14 +82,8 @@
 											<view style="float:left;">
 												<view style="text-align: left; color: #f6f6f6; margin-top: 52upx; margin-left: 20upx;font-size: 28upx;
 												overflow: hidden;width: 250upx;height: 44upx;">{{item.bean.descri}}</view>
-												<!--
-												<view style="text-align: left;color: #f6f6f6; margin-top: 12upx; margin-left: 20upx;font-size: 26upx;">领取红包</view>
-												-->
 											</view>
 										</view>
-										<!--
-										<view style=" height:40upx;background-color: #f6f6f6;float:left;width:100%;text-align: left;">11</view>
-										-->
 									</view>
 								</view>
 								<view class="cu-avatar radius" :style="'background-image:url('+$store.state.img_url+item.bean.fromHeadpic+');'"></view>
@@ -110,14 +101,8 @@
 											<view style="float:left;">
 												<view style="text-align: left; color: #f6f6f6; margin-top: 52upx; margin-left: 20upx;font-size: 28upx;
 												overflow: hidden;width: 250upx;height: 44upx;">{{item.bean.descri}}</view>
-												<!--
-												<view style="text-align: left;color: #f6f6f6; margin-top: 12upx; margin-left: 20upx;font-size: 26upx;">领取红包</view>
-												-->
 											</view>
 										</view>
-										<!--
-										<view style=" height:40upx;background-color: #f6f6f6;float:left;width:100%;text-align: left;">11</view>
-										-->
 									</view>
 								</view>
 								<view class="date "> {{item.bean.date}}</view>
@@ -135,7 +120,7 @@
 									<text class="cuIcon-warnfill text-red text-xxl"></text>
 								</view>
 
-								<view v-if="item.bean.psr!='video'" @longtap="onLongPress($event,item.bean)" :class="[item.bean.psr=='uparse'?'':'content bg-green shadow']" :style="{backgroundColor:item.bean.psr=='uparse'? 'none':'#fff'}" style="color:#222;">
+								<view v-if="item.bean.psr!='video'" @longpress="onLongPress($event,item.bean)" :class="[item.bean.psr=='uparse'?'':'content bg-green shadow']" :style="{backgroundColor:item.bean.psr=='uparse'? 'none':'#fff'}" style="color:#222;">
 									<u-parse v-if="item.bean.psr=='uparse'" :content="item.bean.txt" @preview="preview" @navigate="navigate" ></u-parse>
 									<view @tap="clickVoice(item.bean.txt,index)" v-else-if="item.bean.psr=='voice'">
 										<text  v-show="selVoiceIndex != index"  style="float:left;width:100upx;font-size: 52upx;position: relative;top: 4upx;"  class="iconfont icon-yuyin1 text-xxl "></text>
@@ -152,7 +137,7 @@
 
 						<!--接收着-->
 						<view v-else class="cu-item"  :id="item.bean.uuid">
-							<view @click="doublebclick2($event,item.bean)" class="cu-avatar radius" :style="'background-image:url('+$store.state.img_url+item.bean.fromHeadpic+');'" ></view>
+							<view @longpress="onLongPress1($event,item.bean)" @tap.stop="goUserDetail(item.bean.fromUid)" class="cu-avatar radius" :style="'background-image:url('+$store.state.img_url+item.bean.fromHeadpic+');'" ></view>
 							<view class="main" style="display: block!important;">
 								<view style="height: 40upx;font-size: 12px;color: #8799a3;">
 								<text style="color:#FFB502;margin-right:6upx;    font-size: 36upx;" v-if="item.bean.fromUid==$store.state.cur_chat_entity.owner_UUID" class="iconfont icon-tianchongxing-"></text>
@@ -160,7 +145,7 @@
 								{{item.bean.fromName}}
 								</view>
 
-								<view @longtap="onLongPress($event,item.bean)" :class="[item.bean.psr=='uparse'?'':'content shadow']" style="color:#222;">
+								<view  @longpress="onLongPress($event,item.bean)"  :class="[item.bean.psr=='uparse'?'':'content shadow']" style="color:#222;">
 									<u-parse v-if="item.bean.psr=='video'" :content="item.bean.txt" @preview="preview" @navigate="navigate" ></u-parse>
 									<u-parse v-else-if="item.bean.psr=='uparse'" :content="item.bean.txt" @preview="preview" @navigate="navigate" ></u-parse>
 									<view @tap="clickVoice(item.bean.txt,index)" v-else-if="item.bean.psr=='voice'">
@@ -176,59 +161,6 @@
 						</view>
 					<!--#endif-->
 
-					<!--#ifdef APP-PLUS-->
-					<!--发送者-->
-					<view :id="item.bean.uuid"  v-if="item.bean.fromUid==$store.state.user.id" class="cu-item self" >
-						<view class="main">
-							<view v-if="$store.state.WAIT_SEND_MSG.indexOf(item.bean.uuid)>=0" class="action text-grey">
-								<text class="cuIcon-warnfill text-red text-xxl"></text>
-							</view>
-
-							<view v-if="item.bean.psr!='video'" @longpress="onLongPress($event,item.bean)" :class="[item.bean.psr=='uparse'?'':'content bg-green shadow']" :style="{backgroundColor:item.bean.psr=='uparse'? 'none':'#fff'}" style="color:#222;">
-								<!--因为视频在底层窗口的显示等级是最上层，所以无法嵌套在scroll里面滑动，这里用image 代替-->
-								<image @tap="clickVideo($store.state.img_url+item.bean.oldTxt)" v-if="item.bean.psr=='uparse' && item.bean.txt.indexOf(videoCheck) != -1" style="width:418upx;height:335upx;border-radius: 5px" src="../../../static/images/video.png"></image>
-
-								<u-parse v-else-if="item.bean.psr=='uparse' && item.bean.txt.indexOf(verdeoCheck) == -1" :content="item.bean.txt" @preview="preview" @navigate="navigate" ></u-parse>
-								<view @tap="clickVoice(item.bean.txt,index)" v-else-if="item.bean.psr=='voice'">
-									<text  v-show="selVoiceIndex != index"  style="float:left;width:100upx;font-size: 52upx;position: relative;top: 4upx;"  class="iconfont icon-yuyin1 text-xxl "></text>
-									<text  v-show="selVoiceIndex != index"  style="float:left;font-size: 26upx;position: relative;top: 4upx;">{{item.bean.sub_txt}}"</text>
-									<text  v-show="selVoiceIndex == index"   style="float:left;width:100upx;font-size: 52upx;position: relative;text-align: left;top:0;line-height: 38upx;"  class="iconfont cu-load load-cuIcon loading text-xxl "></text>
-									<text  v-show="selVoiceIndex == index"  style="float:left;font-size: 26upx;position: relative;top: 6upx;">{{item.bean.sub_txt}}"</text>
-								</view>
-								<rich-text style="max-width:440upx" v-else   :nodes="item.bean.txt"></rich-text>
-							</view>
-						</view>
-						<view v-if="item.bean.psr!='video'" class="cu-avatar radius" :style="'background-image:url('+$store.state.img_url+item.bean.fromHeadpic+');'"></view>
-						<view v-if="item.bean.psr!='video'" class="date">{{item.bean.date}}</view>
-					</view>
-
-					<!--接收者-->
-					<view v-else class="cu-item"  :id="item.bean.uuid">
-						<view @longpress="onLongPress1($event,item.bean)" @tap.stop="goUserDetail(item.bean.fromUid)" class="cu-avatar radius" :style="'background-image:url('+$store.state.img_url+item.bean.fromHeadpic+');'" ></view>
-						<view class="main" style="display: block!important;">
-							<view style="height: 40upx;font-size: 12px;color: #8799a3;">
-								<text style="color:#FFB502;margin-right:6upx;    font-size: 36upx;" v-if="item.bean.fromUid==$store.state.cur_chat_entity.owner_UUID" class="iconfont icon-tianchongxing-"></text>
-								<text style="color:#FF4633;margin-right:6upx;    font-size: 28upx;" v-if="$store.state.cur_chat_entity.memberMgr_ids&&$store.state.cur_chat_entity.memberMgr_ids.indexOf(item.bean.fromUid)>=0" class="iconfont icon-maozi"></text>
-								{{item.bean.fromName}}
-							</view>
-
-							<view  @longpress="onLongPress($event,item.bean)"  :class="[item.bean.psr=='uparse'?'':'content shadow']" style="color:#222;">
-								<!--因为视频在底层窗口的显示等级是最上层，所以无法嵌套在scroll里面滑动，这里用image 代替-->
-								<image @tap="clickVideo($store.state.img_url+item.bean.oldTxt)" v-if="item.bean.psr=='video' && item.bean.txt.indexOf(videoCheck) != -1" style="width:418upx;height:335upx;border-radius: 5px" src="../../../static/images/video.png"></image>
-
-								<u-parse v-else-if="item.bean.psr=='uparse'" :content="item.bean.txt" @preview="preview" @navigate="navigate" ></u-parse>
-								<view @tap="clickVoice(item.bean.txt,index)" v-else-if="item.bean.psr=='voice'">
-									<text  v-show="selVoiceIndex != index"  style="text-align: right; float:right;width:100upx;font-size: 52upx;position: relative;top: 4upx;"  class="iconfont icon-yuyin1 text-xxl "></text>
-									<text  v-show="selVoiceIndex != index"  style="float:right;font-size: 26upx;position: relative;top: 4upx;">{{item.bean.sub_txt}}"</text>
-									<text  v-show="selVoiceIndex == index"   style="text-align: right;float:right;width:100upx;font-size: 52upx;position: relative;top:0;line-height: 38upx;"  class="iconfont cu-load load-cuIcon loading text-xxl "></text>
-									<text  v-show="selVoiceIndex == index"  style="float:right;font-size: 26upx;position: relative;top: 6upx;">{{item.bean.sub_txt}}"</text>
-								</view>
-								<rich-text style="max-width:440upx" v-else   :nodes="item.bean.txt"></rich-text>
-							</view>
-						</view>
-						<view class="date "> {{item.bean.date}}</view>
-					</view>
-					<!--#endif-->
 				</block>
 
 
@@ -244,75 +176,6 @@
 			<view v-show="$store.state.cur_chat_entity.stopSpeak&&$store.state.cur_chat_entity.stopSpeak==1" class="cu-info">
 				<text class="cuIcon-roundclosefill text-red " style="margin-right: 8upx;"></text> 全员禁言中
 			</view>
-
-
-
-			<!--
-			<view class="cu-item self" >
-				<view class="main">
-					<view class="content bg-green shadow">
-						<text>喵喵喵！喵喵喵！喵喵喵！喵喵！喵喵！！喵！喵喵喵！</text>
-					</view>
-				</view>
-				<view class="cu-avatar radius" style="background-image:url(https://ossweb-img.qq.com/images/lol/web201310/skin/big107000.jpg);"></view>
-				<view class="date">2018年3月23日 13:23</view>
-			</view>
-
-
-
-			<view class="cu-item" @tap="goUserDetail()">
-				<view class="cu-avatar radius" style="background-image:url(https://ossweb-img.qq.com/images/lol/web201310/skin/big143004.jpg);"></view>
-				<view class="main">
-					<view class="content shadow">
-						<text>喵喵喵！喵喵喵！</text>
-					</view>
-				</view>
-				<view class="date "> 13:23</view>
-			</view>
-
-			<view class="cu-info">
-				<text class="cuIcon-roundclosefill text-red "></text> 对方拒绝了你的消息
-			</view>
-
-			<view class="cu-info">
-				对方开启了好友验证，你还不是他(她)的好友。请先发送好友验证请求，对方验证通过后，才能聊天。
-				<text class="text-blue">发送好友验证</text>
-			</view>
-			<view class="cu-item self">
-				<view class="main">
-					<image lazy-load src="https://ossweb-img.qq.com/images/lol/web201310/skin/big10006.jpg" class="radius" mode="widthFix"></image>
-				</view>
-				<view class="cu-avatar radius" style="background-image:url(https://ossweb-img.qq.com/images/lol/web201310/skin/big107000.jpg);"></view>
-				<view class="date"> 13:23</view>
-			</view>
-			<view class="cu-item self">
-				<view class="main">
-					<view class="action text-bold text-grey">
-						3"
-					</view>
-					<view class="content shadow">
-						<text class="cuIcon-sound text-xxl padding-right-xl"> </text>
-					</view>
-				</view>
-				<view class="cu-avatar radius" style="background-image:url(https://ossweb-img.qq.com/images/lol/web201310/skin/big107000.jpg);"></view>
-				<view class="date">13:23</view>
-			</view>
-
-			<view class="cu-item self">
-				<view class="main">
-					<view class="action">
-						<text class="cuIcon-locationfill text-orange text-xxl"></text>
-					</view>
-					<view class="content shadow">
-						喵星球，喵喵市
-					</view>
-				</view>
-				<view class="cu-avatar radius" style="background-image:url(https://ossweb-img.qq.com/images/lol/web201310/skin/big107000.jpg);"></view>
-				<view class="date">13:23</view>
-			</view>
-			-->
-
-
 		</scroll-view>
 
 
@@ -328,7 +191,7 @@
 					<text @tap.stop="clearAiteToMy" class="cuIcon-close text-red " style="margin-left: 16upx;"></text>
 		</view>
 
-		<view class="cu-bar foot input" :style="[{bottom:InputBottom+'upx'}]" >
+		<view class="cu-bar foot input" :style="[{bottom:InputBottom+'upx'}]" style="flex-direction: row;height:120px; width: calc(100% - 66px);left: 66px;background-color: #fff;">
 			<!-- #ifndef H5 -->
 			<view @tap="selType(2)" v-show="c_type==1"  class="action">
 				<text class="cuIcon-sound text-grey"></text>
@@ -343,39 +206,31 @@
 			<!-- @focus="InputFocus" @blur="InputBlur"-->
 			<input @keydown.enter="send" style="background: #eee!important;" disabled="true" placeholder="禁言" placeholder-style="text-align:center;background: #eee;" v-show="stopSpeak==1"  class="solid-bottom" :adjust-position="true" :focus="false" maxlength="300" cursor-spacing="10"
 			></input>
-			<textarea style="height:72upx;margin-left:10upx;line-height:72upx;"
+			<textarea style="height:30px !important;line-height:30px;width: 100%;"
 					  confirm-type="send"
 					  @confirm="send"
-					  confirm-hold="true"
+
 					  @keydown.shift.enter="altOrShiftEnter"
 					  @keydown.alt.enter="altOrShiftEnter"
 					  @focus="InputFocus"
 					  @blur="InputBlur"
 					  v-show="c_type==1&&stopSpeak==0"
 					  v-model="txt" @input="inputTxt"
+					  placeholder="请输入消息"
 					  class="solid-bottom" :adjust-position="true" :focus="input_is_focus" maxlength="-1" cursor-spacing="10"
 			></textarea>
-
-			<!--
-			<button  @touchstart="checkAuthorize" @touchend="endRecord" v-show="c_type==2"  style="color: #aaa;margin-left: 20upx;width:100%" class="cu-btn block line-orange lg">按住 说话</button>
-			-->
-			<button
-			 @touchstart="voiceBegin"  @touchend="voiceEnd" @touchcancel="voiceCancel"
-			 v-show="c_type==2&&stopSpeak==0"  style="color: #aaa;margin-left: 20upx;width:100%" class="cu-btn block line-orange lg">按住 说话</button>
-
-			<view style="margin-right: 20upx;" class="action" @tap="showItemIndex(1)">
-				<text  class="cuIcon-emojifill text-grey"></text>
+			<view @tap="ChooseImage()" style="cursor: pointer;position: absolute;top: 0; left: 0px;"><text style="font-size: 60upx;color:#3F92F8" class="iconfont icon-zhaopian-cuxiantiao-fill"></text></view>
+			<view @tap="ChooseVideo()" style="cursor: pointer;position: absolute;top: 0; left: 40px;"><text style="font-size: 60upx;color:#F39F90" class="iconfont icon-paishe"></text></view>
+			<view v-if="false" @tap="sendCard()" style="cursor: pointer;position: absolute;top: 0; left: 80px;"><text style="font-size: 60upx;color:#FA9B4E" class="iconfont icon-mingpian2"></text></view>
+			<view style="cursor: pointer;position: absolute;top: 0; left: 70px;" class="action" @tap="showItemIndex(1)">
+				<text  class="cuIcon-emojifill text-grey" style="position: absolute;top: 0;left: 0px"></text>
 			</view>
-			<!--#ifdef APP-PLUS
-			<text  @tap="showItemIndex(2)" style="font-size:52upx;color:#777;margin-top:6upx;margin-left:6upx;margin-right:6upx" class="iconfont icon-jia"></text>
-			#endif -->
-			<text v-show="showjia"  @tap="showItemIndex(2)" style="font-size:52upx;color:#777;margin-top:6upx;margin-left:6upx;margin-right:6upx" class="iconfont icon-jia"></text>
-			<button  style="    min-width: 50px;padding:0px!important" v-show="!showjia" @tap.stop="send()" class="cu-btn bg-green shadow">发送</button>
+			<button  style="min-width: 50px;padding:0px!important" v-show="!showjia" @tap.stop="send()" class="cu-btn bg-green shadow">群发</button>
 
 		</view>
 
 
-		<view v-show="showItem==1" class="cu-bar foot " style="box-shadow: none;-webkit-box-shadow: none;display: block;background: #fff;height:330upx;margin-bottom:80upx;">
+		<view v-show="showItem==1" class="cu-bar foot " style="box-shadow: none;-webkit-box-shadow: none;display: block;background: #fff;height:330upx;margin-bottom:80upx;width: calc(80% - 54px);left: calc(20% + 54px);">
 			<scroll-view scroll-y class="indexes" style="height:330upx;padding-bottom:20upx;padding-top: 10upx;"
 			 :scroll-with-animation="true" :enable-back-to-top="true">
 			<view v-if="emotion==1">
@@ -859,7 +714,7 @@
 		</view>
 
 
-		<view v-show="showItem==2" class="cu-bar foot " style="box-shadow: none;-webkit-box-shadow: none;display: block;background: #fff;height:410upx;">
+		<view v-show="showItem==2" class="cu-bar foot " style="box-shadow: none;-webkit-box-shadow: none;display: block;background: #fff;height:410upx;width: calc(80% - 54px);left: calc(20% + 54px);">
 				<scroll-view scroll-y class="indexes" style="height:410upx;padding-bottom:20upx;padding-top: 10upx;"
 				 :scroll-with-animation="true" :enable-back-to-top="true">
 <!--					<view>-->
@@ -897,7 +752,7 @@
 							<!--							<view @tap="goFavourite" style="flex:1;text-align: center;margin-top: 20upx;"><text style="font-size: 60upx;color:#23A2FB" class="iconfont icon-shoucang"></text><view style="font-size: 24upx;color: #8799a3;">收藏</view></view>-->
 
 
-							<view v-if="false" @tap="sendCard()" style="flex:1;text-align: center;margin-top: 20upx;"><text style="font-size: 60upx;color:#FA9B4E" class="iconfont icon-mingpian2"></text><view style="font-size: 24upx;color: #8799a3;">名片</view></view>
+							<view @tap="sendCard()" style="flex:1;text-align: center;margin-top: 20upx;"><text style="font-size: 60upx;color:#FA9B4E" class="iconfont icon-mingpian2"></text><view style="font-size: 24upx;color: #8799a3;">名片</view></view>
 <!--							<view @tap="voiceCall()" style="flex:1;text-align: center;margin-top: 20upx;"><text style="font-size: 60upx;color:#FA9B4E" class="iconfont icon-yuyin"></text><view style="font-size: 24upx;color: #8799a3;">语音</view></view>-->
 						</view>
 						<!--						<view style="display: flex;margin-top: 40upx;">-->
@@ -938,9 +793,20 @@
 	const innerAudioContext = uni.createInnerAudioContext();
 	//innerAudioContext.autoplay = true;
 	export default {
+		name: 'GroupChat',
 		components: {
 		    uParse,
 			openRed
+		},
+		props: {
+			msgToId: {
+				type: String,
+				default: ''
+			},
+			// ChatTypeId: {
+			// 	type: Number,
+			// 	default: 0
+			// },
 		},
 		data() {
 			return {
@@ -956,6 +822,7 @@
 				c_type:1,
 				InputBottom: 0,
 				toid:"",
+				friendPic:"",
 				entity:{},
 				txt:"",
 				temp_txt:"",
@@ -1006,455 +873,37 @@
 				input_focus:false,
 				aite_map:new Map(),//@的用户列表 key:@昵称 value:用户ID
 				viewId:"",
-				touchNum: 0,//h5 双击
 			};
+		},
+		watch: {
+		  msgToId: function(newVal,oldVal){
+
+			console.log('watchGroupMsgToId')
+			console.log('----------------------newVal',newVal)
+			console.log('---------------------oldVal',oldVal)
+			this.toid = newVal;
+			this.onShowMethod();
+			this.onLoadMethod();
+		  },
+		 //  ChatTypeId: function(newVal,oldVal){
+			// console.log('watchGroupMsgToId')
+			// console.log('----------------------newType',newVal)
+			// console.log('---------------------oldType',oldVal)
+			// this.onShowMethod();
+			// this.onLoadMethod();
+		 //  },
 		},
 		onBackPress() {
 			this.$store.commit("setCur_chat_entity",{});
 			this.$store.commit("setCur_chat_msg_list",[]);
 		},
-		onHide() {
-			uni.$off("scrollTopFn");
-		},
-		onShow() {
-			let _this = this;
-			uni.$off("aiteFn");
-			uni.$on("scrollTopFn",()=>{
-				console.log("触发了-scrollTopFn");
-				//scrollLeft: 0, scrollTop: 3935, scrollHeight: 4500, scrollWidth: 375, deltaX: 0
-				//console.log(_this.scrollDetail)
-				let svH = _this.winH - _this.CustomBar - 50;
-				//console.log(_this.scrollDetail.scrollHeight-_this.scrollDetail.scrollTop - svH);
-				if((_this.scrollDetail.scrollHeight-_this.scrollDetail.scrollTop - svH)<300) {
-					//#ifdef APP-PLUS
-					setTimeout(()=>{
-						_this.scrollTop = 99999999+Math.random();
-					},1200)
-					//#endif
-					//#ifdef H5
-					setTimeout(()=>{
-						_this.scrollTop = 99999999+Math.random();
-					},500)
-					//#endif
-				}
-			});
 
-			uni.$on("aiteFn",(item)=>{
-				let _this = this;
-				setTimeout(()=>{
-					_this.input_focus = false;
-					console.log("触发了aiteFn");
-					// console.log(item);
-					if(item.t&&item.t=="all") {
-						this.txt = this.txt + "所有人 ";
-						_this.aite_map.set("@所有人","all");
-					} else {
-						this.txt = this.txt + item.nickName+" ";
-						_this.aite_map.set("@"+item.nickName,item.id);
-					}
-
-					setTimeout(()=>{
-						_this.input_focus = true;
-						if(_this.txt.trim()=="") {
-							_this.showjia = true;
-						} else {
-							_this.showjia = false;
-						}
-					},200)
-				},200);
-			});
-
-		},
-		onLoad(option) {
-			this.$store.commit("setCur_chat_msg_list",[]);
-			this.$store.commit("setChat_my_loadding",false);
-			this.getWindowSize();
-			// #ifndef H5
-			//录音开始事件
-			this.RECORDER.onStart((e)=>{
-				this.recordBegin(e);
-			})
-			//录音结束事件
-			this.RECORDER.onStop((e)=>{
-				this.recordEnd(e);
-			})
-			// #endif
-
-
-			//this.vindex = "v"+(this.$store.state.cur_chat_msg_list.length)
-			let _this = this;
-			this.toid = option.toid;
-			let user = uni.getStorageSync("USER");
-
-
-			_this.$http.post("/room/json/load/v1",
-				{roomid:_this.toid},
-				{
-					header:{
-						"x-access-uid":_this.$store.state.user.id,
-						"x-access-client":_this.$clientType
-					}
-				}
-			).then(res=>{
-				let res_data = eval(res.data);
-				if(res_data.code==200) {
-					_this.entity = res_data.body;
-					_this.$store.commit("setCur_chat_entity",res_data.body);
-
-					if(!_this.checkStopSpeak()) {
-						_this.stopSpeak = 1;
-						console.log("---------->2");
-					} else {
-
-						_this.$http.post("/room/json/isStopSpeak4User",
-							{roomid:_this.toid,uid:_this.$store.state.user.id},
-							{
-								header:{
-									"x-access-uid":_this.$store.state.user.id,
-									"x-access-client":_this.$clientType
-								}
-							}
-						).then(res=>{
-							let res_data = eval(res.data);
-							if(res_data.code==200) {
-								if(res_data.msg=="1") {
-									_this.stopSpeak = 1;
-								}
-							}
-						})
-
-						// uni.request({
-						// 	method:"POST",
-						// 	url: _this.$store.state.req_url + "/room/json/isStopSpeak4User",
-						// 	data:{roomid:_this.toid,uid:_this.$store.state.user.id},
-						// 	header:{
-						// 		"Content-Type":"application/x-www-form-urlencoded",
-						// 		"x-access-uid":_this.$store.state.user.id
-						// 	},
-						// 	success(res) {
-						// 		let res_data = eval(res.data);
-						// 		if(res_data.code==200) {
-						// 			if(res_data.msg=="1") {
-						// 				_this.stopSpeak = 1;
-						// 			}
-						// 		}
-						// 	}
-						// })
-					}
-
-				} else {
-					uni.showModal({
-					    title: '信息提示',
-					    content: res_data.msg,
-						showCancel:false,
-					    success: function (res) {
-					        if (res.confirm) {
-					            uni.navigateBack({
-					            	delta:1
-					            })
-					        }
-					    }
-					});
-					return;
-				}
-				let unRead = uni.getStorageSync(user.id+"#"+_this.toid+'_CHAT_MESSAGE_UNREAD');
-				if(unRead&&unRead!="") {
-					uni.removeStorageSync(user.id+"#"+_this.toid+'_CHAT_MESSAGE_UNREAD');
-					_this.$store.commit("setUnReadMsgSum",_this.$store.state.setUnReadMsgSum - parseInt(unRead))
-				}
-			})
-
-			// uni.request({
-			// 	method:"POST",
-			// 	url: _this.$store.state.req_url + "/room/json/load/v1",
-			// 	data:{roomid:_this.toid},
-			// 	header:{
-			// 		"Content-Type":"application/x-www-form-urlencoded",
-			// 		"x-access-uid":_this.$store.state.user.id
-			// 	},
-			// 	success(res) {
-			// 		let res_data = eval(res.data);
-			// 		if(res_data.code==200) {
-			// 			_this.entity = res_data.body;
-			// 			_this.$store.commit("setCur_chat_entity",res_data.body);
-
-			// 			if(!_this.checkStopSpeak()) {
-			// 				_this.stopSpeak = 1;
-			// 				console.log("---------->2");
-			// 			} else {
-			// 				uni.request({
-			// 					method:"POST",
-			// 					url: _this.$store.state.req_url + "/room/json/isStopSpeak4User",
-			// 					data:{roomid:_this.toid,uid:_this.$store.state.user.id},
-			// 					header:{
-			// 						"Content-Type":"application/x-www-form-urlencoded",
-			// 						"x-access-uid":_this.$store.state.user.id
-			// 					},
-			// 					success(res) {
-			// 						let res_data = eval(res.data);
-			// 						if(res_data.code==200) {
-			// 							if(res_data.msg=="1") {
-			// 								_this.stopSpeak = 1;
-			// 							}
-			// 						}
-			// 					}
-			// 				})
-			// 			}
-
-			// 		}
-			// 		let unRead = uni.getStorageSync(user.id+"#"+_this.toid+'_CHAT_MESSAGE_UNREAD');
-			// 		if(unRead&&unRead!="") {
-			// 			uni.removeStorageSync(user.id+"#"+_this.toid+'_CHAT_MESSAGE_UNREAD');
-			// 			_this.$store.commit("setUnReadMsgSum",_this.$store.state.setUnReadMsgSum - parseInt(unRead))
-			// 		}
-
-
-			// 	}
-			// })
-
-
-
-
-
-
-			if(this.$store.state.chatMessageMap.has(user.id+"#"+this.toid)) {
-				let msg_list = this.$store.state.chatMessageMap.get(user.id+"#"+this.toid);
-				if(msg_list&&msg_list.length>0) {
-					this.$store.commit("setCur_chat_msg_list",msg_list);
-				}
-				console.log("listlist121221",msg_list)
-			} else {
-				let str = uni.getStorageSync(user.id+"#"+this.toid+'_CHAT_MESSAGE');
-				if(str&&str!="") {
-					 var jsonObj = JSON.parse(str);
-					 // if(jsonObj.length>50) {
-					 //  	jsonObj.splice(0,jsonObj.length-50);
-					 //  }
-					 this.$store.commit("updateChatMessageMap",{
-					 	key:user.id+"#"+this.toid,
-					 	value:jsonObj
-					 });
-					  this.$store.commit("setCur_chat_msg_list",jsonObj);
-				} else {
-					//如果什么都没记录的话，则从云端加载
-					//this.tongbuMsg_1stInNoData();
-				}
-				console.log("listlist3434343434",str)
-			}
-
-			try {
-
-
-				let str = uni.getStorageSync(this.toid+'#AITE_LIST');
-				if(str&&str!="") {
-					let list = JSON.parse(str);
-					let s = "";//用于临时使用
-					list = list.filter(item=>{
-						if(s.indexOf(item.fromuid)<0) {
-							s+=(item.fromuid+"#");
-							return true;
-						}
-						return false;
-					});
-					//this.aiteToMyList = list;
-					_this.$store.commit("setCur_chat_aiteToMyList",list);
-				}
-
-				_this.$store.state.ar_list.forEach(item=>{
-					if(item.id==_this.toid) {
-						item.aiteCount=0;
-						uni.removeStorageSync(item.id+"#AITE_COUNT");
-						uni.removeStorageSync(item.id+"#AITE_LIST");
-						throw Error();
-					}
-				})
-			} catch(e) {}
-
-			// list.splice(0,0,res_data.body);
-			// _this.$store.commit("setAr_list",list);
-
-			_this.$http.post("/user/accessRecord/json/saveOrUpdate",
-				{type:1,eid:this.toid},
-				{
-					header:{
-						"x-access-uid":_this.$store.state.user.id,
-						"x-access-client":_this.$clientType
-					}
-				}
-			).then(res=>{
-				let res_data = eval(res.data);
-				if(res_data.code==200) {
-					//更新消息列表
-
-					// let list = _this.$store.state.ar_list.filter(item=>{
-					// 	if(item.id==res_data.body.id) return false;
-					// })
-					// list.splice(0,0,res_data.body);
-					// _this.$store.commit("setAr_list",list);
-
-				} else {
-					uni.showModal({
-					    title: '信息提示',
-					    content: res_data.msg,
-						showCancel:false,
-					    success: function (res) {
-					        if (res.confirm) {
-					            uni.navigateBack({
-					            	delta:1
-					            })
-					        }
-					    }
-					});
-
-
-					// uni.showToast({
-					//     icon: 'none',
-					// 	position: 'bottom',
-					//     title: res_data.msg
-					// });
-				}
-			})
-
-
-
-			// uni.request({
-			// 	method:"POST",
-			// 	url: _this.$store.state.req_url + "/user/accessRecord/json/saveOrUpdate",
-			// 	data:{type:1,eid:this.toid},
-			// 	header:{
-			// 		"Content-Type":"application/x-www-form-urlencoded",
-			// 		"x-access-uid":_this.$store.state.user.id
-			// 	},
-			// 	success(res) {
-			// 		let res_data = eval(res.data);
-			// 		if(res_data.code==200) {
-			// 			//更新消息列表
-
-			// 			// let list = _this.$store.state.ar_list.filter(item=>{
-			// 			// 	if(item.id==res_data.body.id) return false;
-			// 			// })
-			// 			// list.splice(0,0,res_data.body);
-			// 			// _this.$store.commit("setAr_list",list);
-
-			// 		} else {
-			// 			uni.showModal({
-			// 			    title: '信息提示',
-			// 			    content: res_data.msg,
-			// 				showCancel:false,
-			// 			    success: function (res) {
-			// 			        if (res.confirm) {
-			// 			            uni.navigateBack({
-			// 			            	delta:1
-			// 			            })
-			// 			        }
-			// 			    }
-			// 			});
-
-
-			// 			// uni.showToast({
-			// 			//     icon: 'none',
-			// 			// 	position: 'bottom',
-			// 			//     title: res_data.msg
-			// 			// });
-			// 		}
-			// 	}
-			// })
-
-			// this.$store.state.ar_list.forEach(item=>{
-			// 	if(item.id==option.toid) {
-			// 		_this.entity = item;
-			// 		return;
-			// 	}
-			// })
-
-
-			_this.$http.post("/sysConfig/json/getChatCfg",
-				{
-					header:{
-						"x-access-uid":_this.$store.state.user.id,
-						"x-access-client":_this.$clientType
-					}
-				}
-			).then(res=>{
-				let res_data = eval(res.data);
-				if(res_data.code==200) {
-					_this.chatCfg = res_data.body;
-				}
-			})
-
-			// uni.request({
-			// 	method:"POST",
-			// 	url: _this.$store.state.req_url + "/sysConfig/json/getChatCfg",
-			// 	header:{
-			// 		"Content-Type":"application/x-www-form-urlencoded",
-			// 		"x-access-uid":_this.$store.state.user.id
-			// 	},
-			// 	success(res) {
-			// 		let res_data = eval(res.data);
-			// 		if(res_data.code==200) {
-			// 			_this.chatCfg = res_data.body;
-			// 		}
-			// 	}
-			// })
-
-			this.scrollToBottom();
-			// recorderManager.onStop(function(res) {
-			// 	uni.request({
-			// 		data:{
-			// 			t:1
-			// 		},
-			// 		method:"GET",
-			// 		url:_this.$store.state.req_url+"/test1",
-			// 		success(res) {
-			// 		}
-			// 	})
-			//   console.log("录音停止了" + JSON.stringify(res)); //返回录音的临时保存地址, 可用于后面的播放
-			//   _this.voicePath = res.tempFilePath;
-
-			//   uni.request({
-			//   	data:{
-			//   		t:_this.voicePath
-			//   	},
-			//   	method:"GET",
-			//   	url:_this.$store.state.req_url+"/test1",
-			//   	success(res) {
-			//   	}
-			//   })
-
-			//   var uper = uni.uploadFile({
-			// 		 // 需要上传的地址
-			// 		 url:_this.$store.state.req_url+ '/user/file/uploadVoice',
-			// 		 header:{
-			// 			// "Content-Type":"multipart/form-data",
-			// 			"x-access-uid":_this.$store.state.user.id
-			// 		 },
-			// 		 // filePath  需要上传的文件
-			// 		 formData: {
-			// 			 file: _this.voicePath
-			// 		 },
-			// 		 fileType: 'video',
-			// 		 filePath: _this.voicePath ,
-			// 		 name: 'file',
-			// 		 success(res1) {
-			// 			 let json = eval("("+res1.data+")");
-			// 			 // 显示上传信息
-			// 			 if(json.code==200) {
-			// 				let v = {
-			// 					txt:json.msg,
-			// 					toGroupid:_this.toid,
-			// 					fromUid:_this.$store.state.user.id
-			// 				}
-			// 				_this.$websocket.dispatch("WEBSOCKET_SEND", "{body:'"+JSON.stringify(v)+"',CMD:'GROUP_CHAT_SEND_VOICE'}");
-			// 			 }
-			// 		 }
-			//   });
-
-
-
-
-
-			// });
-		},
+		// onShow() {
+		// 	this.onShowMethod();
+		// },
+		// onLoad() {
+		// 	this.onLoadMethod();
+		// },
 
 		computed:{
 
@@ -1465,6 +914,325 @@
 		},
 
 		methods: {
+			onShowMethod() {
+				let _this = this;
+				uni.$off("aiteFn");
+				uni.$on("scrollTopFn",()=>{
+					let svH = _this.winH - _this.CustomBar - 50;
+					//console.log(_this.scrollDetail.scrollHeight-_this.scrollDetail.scrollTop - svH);
+					if((_this.scrollDetail.scrollHeight-_this.scrollDetail.scrollTop - svH)<300) {
+						//#ifdef APP-PLUS
+						setTimeout(()=>{
+							_this.scrollTop = 99999999+Math.random();
+						},1200)
+						//#endif
+						//#ifdef H5
+						setTimeout(()=>{
+							_this.scrollTop = 99999999+Math.random();
+						},500)
+						//#endif
+					}
+				});
+
+				uni.$on("aiteFn",(item)=>{
+					let _this = this;
+					setTimeout(()=>{
+						_this.input_focus = false;
+						if(item.t&&item.t=="all") {
+							this.txt = this.txt + "所有人 ";
+							_this.aite_map.set("@所有人","all");
+						} else {
+							this.txt = this.txt + item.nickName+" ";
+							_this.aite_map.set("@"+item.nickName,item.id);
+						}
+
+						setTimeout(()=>{
+							_this.input_focus = true;
+							if(_this.txt.trim()=="") {
+								_this.showjia = true;
+							} else {
+								_this.showjia = false;
+							}
+						},200)
+					},200);
+				});
+			},
+			onLoadMethod () {
+				this.$store.commit("setCur_chat_msg_list",[]);
+				this.$store.commit("setChat_my_loadding",false);
+				this.getWindowSize();
+				// #ifndef H5
+				//录音开始事件
+				this.RECORDER.onStart((e)=>{
+					this.recordBegin(e);
+				})
+				//录音结束事件
+				this.RECORDER.onStop((e)=>{
+					this.recordEnd(e);
+				})
+				// #endif
+
+				let _this = this;
+				let user = uni.getStorageSync("USER");
+				_this.$http.post("/room/json/load/v1",
+					{roomid:_this.toid},
+					{
+						header:{
+							"x-access-uid":_this.$store.state.user.id,
+							"x-access-client":_this.$clientType
+						}
+					}
+				).then(res=>{
+					let res_data = eval(res.data);
+					if(res_data.code==200) {
+						_this.entity = res_data.body;
+						_this.friendPic = res_data.body.img;
+						_this.$store.commit("setCur_chat_entity",res_data.body);
+
+						if(!_this.checkStopSpeak()) {
+							_this.stopSpeak = 1;
+						} else {
+
+							_this.$http.post("/room/json/isStopSpeak4User",
+								{roomid:_this.toid,uid:_this.$store.state.user.id},
+								{
+									header:{
+										"x-access-uid":_this.$store.state.user.id,
+										"x-access-client":_this.$clientType
+									}
+								}
+							).then(res=>{
+								let res_data = eval(res.data);
+								if(res_data.code==200) {
+									if(res_data.msg=="1") {
+										_this.stopSpeak = 1;
+									}
+								}
+							})
+						}
+					} else {
+						uni.showModal({
+						    title: '信息提示',
+						    content: res_data.msg,
+							showCancel:false,
+						    success: function (res) {
+						        if (res.confirm) {
+						            uni.navigateBack({
+						            	delta:1
+						            })
+						        }
+						    }
+						});
+						return;
+					}
+					let unRead = uni.getStorageSync(user.id+"#"+_this.toid+'_CHAT_MESSAGE_UNREAD');
+					if(unRead&&unRead!="") {
+						uni.removeStorageSync(user.id+"#"+_this.toid+'_CHAT_MESSAGE_UNREAD');
+						_this.$store.commit("setUnReadMsgSum",_this.$store.state.setUnReadMsgSum - parseInt(unRead))
+					}
+				})
+
+				// uni.request({
+				// 	method:"POST",
+				// 	url: _this.$store.state.req_url + "/room/json/load/v1",
+				// 	data:{roomid:_this.toid},
+				// 	header:{
+				// 		"Content-Type":"application/x-www-form-urlencoded",
+				// 		"x-access-uid":_this.$store.state.user.id
+				// 	},
+				// 	success(res) {
+				// 		let res_data = eval(res.data);
+				// 		if(res_data.code==200) {
+				// 			_this.entity = res_data.body;
+				// 			_this.$store.commit("setCur_chat_entity",res_data.body);
+
+				// 			if(!_this.checkStopSpeak()) {
+				// 				_this.stopSpeak = 1;
+				// 				console.log("---------->2");
+				// 			} else {
+				// 				uni.request({
+				// 					method:"POST",
+				// 					url: _this.$store.state.req_url + "/room/json/isStopSpeak4User",
+				// 					data:{roomid:_this.toid,uid:_this.$store.state.user.id},
+				// 					header:{
+				// 						"Content-Type":"application/x-www-form-urlencoded",
+				// 						"x-access-uid":_this.$store.state.user.id
+				// 					},
+				// 					success(res) {
+				// 						let res_data = eval(res.data);
+				// 						if(res_data.code==200) {
+				// 							if(res_data.msg=="1") {
+				// 								_this.stopSpeak = 1;
+				// 							}
+				// 						}
+				// 					}
+				// 				})
+				// 			}
+
+				// 		}
+				// 		let unRead = uni.getStorageSync(user.id+"#"+_this.toid+'_CHAT_MESSAGE_UNREAD');
+				// 		if(unRead&&unRead!="") {
+				// 			uni.removeStorageSync(user.id+"#"+_this.toid+'_CHAT_MESSAGE_UNREAD');
+				// 			_this.$store.commit("setUnReadMsgSum",_this.$store.state.setUnReadMsgSum - parseInt(unRead))
+				// 		}
+
+
+				// 	}
+				// })
+
+
+
+
+
+
+				if(this.$store.state.chatMessageMap.has(user.id+"#"+this.toid)) {
+					let msg_list = this.$store.state.chatMessageMap.get(user.id+"#"+this.toid);
+					if(msg_list&&msg_list.length>0) {
+						this.$store.commit("setCur_chat_msg_list",msg_list);
+					}
+				} else {
+					let str = uni.getStorageSync(user.id+"#"+this.toid+'_CHAT_MESSAGE');
+					if(str&&str!="") {
+						 var jsonObj = JSON.parse(str);
+						 // if(jsonObj.length>50) {
+						 //  	jsonObj.splice(0,jsonObj.length-50);
+						 //  }
+						 this.$store.commit("updateChatMessageMap",{
+						 	key:user.id+"#"+this.toid,
+						 	value:jsonObj
+						 });
+						  this.$store.commit("setCur_chat_msg_list",jsonObj);
+					} else {
+						//如果什么都没记录的话，则从云端加载
+						//this.tongbuMsg_1stInNoData();
+					}
+				}
+
+				try {
+
+
+					let str = uni.getStorageSync(this.toid+'#AITE_LIST');
+					if(str&&str!="") {
+						let list = JSON.parse(str);
+						let s = "";//用于临时使用
+						list = list.filter(item=>{
+							if(s.indexOf(item.fromuid)<0) {
+								s+=(item.fromuid+"#");
+								return true;
+							}
+							return false;
+						});
+						//this.aiteToMyList = list;
+						_this.$store.commit("setCur_chat_aiteToMyList",list);
+					}
+
+					_this.$store.state.ar_list.forEach(item=>{
+						if(item.id==_this.toid) {
+							item.aiteCount=0;
+							uni.removeStorageSync(item.id+"#AITE_COUNT");
+							uni.removeStorageSync(item.id+"#AITE_LIST");
+							throw Error();
+						}
+					})
+				} catch(e) {}
+
+				// list.splice(0,0,res_data.body);
+				// _this.$store.commit("setAr_list",list);
+
+				// _this.$http.post("/user/accessRecord/json/saveOrUpdate",
+				// 	{type:1,eid:this.toid},
+				// 	{
+				// 		header:{
+				// 			"x-access-uid":_this.$store.state.user.id,
+				// 			"x-access-client":_this.$clientType
+				// 		}
+				// 	}
+				// ).then(res=>{
+				// 	let res_data = eval(res.data);
+				// 	if(res_data.code==200) {
+
+				// 	} else {
+				// 		uni.showModal({
+				// 		    title: '信息提示',
+				// 		    content: res_data.msg,
+				// 			showCancel:false,
+				// 		    success: function (res) {
+				// 		        if (res.confirm) {
+				// 		            uni.navigateBack({
+				// 		            	delta:1
+				// 		            })
+				// 		        }
+				// 		    }
+				// 		});
+				// 	}
+				// })
+
+
+
+				// uni.request({
+				// 	method:"POST",
+				// 	url: _this.$store.state.req_url + "/user/accessRecord/json/saveOrUpdate",
+				// 	data:{type:1,eid:this.toid},
+				// 	header:{
+				// 		"Content-Type":"application/x-www-form-urlencoded",
+				// 		"x-access-uid":_this.$store.state.user.id
+				// 	},
+				// 	success(res) {
+				// 		let res_data = eval(res.data);
+				// 		if(res_data.code==200) {
+				// 			//更新消息列表
+
+				// 			// let list = _this.$store.state.ar_list.filter(item=>{
+				// 			// 	if(item.id==res_data.body.id) return false;
+				// 			// })
+				// 			// list.splice(0,0,res_data.body);
+				// 			// _this.$store.commit("setAr_list",list);
+
+				// 		} else {
+				// 			uni.showModal({
+				// 			    title: '信息提示',
+				// 			    content: res_data.msg,
+				// 				showCancel:false,
+				// 			    success: function (res) {
+				// 			        if (res.confirm) {
+				// 			            uni.navigateBack({
+				// 			            	delta:1
+				// 			            })
+				// 			        }
+				// 			    }
+				// 			});
+
+
+				// 			// uni.showToast({
+				// 			//     icon: 'none',
+				// 			// 	position: 'bottom',
+				// 			//     title: res_data.msg
+				// 			// });
+				// 		}
+				// 	}
+				// })
+
+				// this.$store.state.ar_list.forEach(item=>{
+				// 	if(item.id==option.toid) {
+				// 		_this.entity = item;
+				// 		return;
+				// 	}
+				// })
+				_this.$http.post("/sysConfig/json/getChatCfg",
+					{
+						header:{
+							"x-access-uid":_this.$store.state.user.id,
+							"x-access-client":_this.$clientType
+						}
+					}
+				).then(res=>{
+					let res_data = eval(res.data);
+					if(res_data.code==200) {
+						_this.chatCfg = res_data.body;
+					}
+				})
+				this.scrollToBottom();
+			},
 			// checkSendOk(_item) {
 			// 	let WAIT_SEND_MSG = uni.getStorageSync("WAIT_SEND_MSG");
 			// 	if(WAIT_SEND_MSG&&WAIT_SEND_MSG!=""&&WAIT_SEND_MSG.indexOf(_item.uuid)>=0) {
@@ -1506,7 +1274,7 @@
 			},
 			tongbuMsg(){
 				let _this = this;
-
+				console.log('同步了？')
 				_this.$store.state.chatMessageMap.delete(_this.$store.state.user.id+"#"+_this.toid);
 				uni.removeStorageSync(_this.$store.state.user.id+"#"+_this.toid+'_CHAT_MESSAGE');
 				_this.$store.commit("setCur_chat_msg_list",[]);
@@ -1537,10 +1305,7 @@
 
 						},400);
 					} else if(res_data.code==200) {
-						setTimeout(()=>{
-							uni.hideLoading();
-
-						},400);
+					
 
 					}
 				})
@@ -1649,29 +1414,6 @@
 					}
 				})
 			},
-			// 双击
-			doublebclick2(e,bean) {
-				this.touchNum++
-				setTimeout(() => {
-					if (this.touchNum == 1) {
-						this.goUserDetail(bean.fromUid)
-					}
-					if (this.touchNum >= 2) {
-						console.log('双击')
-						console.log(bean);
-						let item = {
-							id:"",
-							nickName:""
-						}
-						item.id = bean.fromUid;
-						item.nickName = bean.fromName;
-						this.txt = this.txt + "@";
-						uni.$emit("aiteFn",item);
-					}
-					this.touchNum = 0
-				}, 500)
-			},
-
 			onLongPress1(e,bean){
 				console.log("6665656565656");
 				console.log(bean);
@@ -1687,9 +1429,6 @@
 			},
 			/* 长按监听 */
 			onLongPress(e,bean) {
-				this.showPopup(e,bean);
-			},
-			showPopup(e,bean){
 				let _this = this;
 				if(this.showPop) {
 					this.showPop = false;
@@ -1703,28 +1442,28 @@
 				this.temp_bean = bean;
 				//console.log(this.chatCfg);
 				let list = this.popButton.filter(item=>{
-					if(item=="撤消"||item=="管理撤消") {
-						return false;
-					}
-					if(bean.simple_content&&bean.simple_content!=""&&bean.simple_content=="[名片]") {
-						this.temp_content = "[名片USERCARD]#"+bean.mheadpic+"#"+bean.mid+"#"+bean.mname+"#"+bean.muuid
-						if(item=="复制"||item=="收藏") {
-							return false;
-						}
-					}
+					 if(item=="撤消"||item=="管理撤消") {
+						 return false;
+					 }
+					 if(bean.simple_content&&bean.simple_content!=""&&bean.simple_content=="[名片]") {
+					 	 this.temp_content = "[名片USERCARD]#"+bean.mheadpic+"#"+bean.mid+"#"+bean.mname+"#"+bean.muuid
+					 	if(item=="复制"||item=="收藏") {
+					 		 return false;
+					 	}
+					 }
 
-					return true;
-				})
+					 return true;
+				 })
 				this.popButton =list;
 				if(bean.fromUid == this.$store.state.user.id) {
 					if(new Date().getTime() - bean.dateTime < this.chatCfg.chat_msg_undo_sec*1000 || this.chatCfg.chat_msg_undo_sec==0) {
 
-						this.popButton.push("撤消");
+					   this.popButton.push("撤消");
 					}
 				}
 
 				if(this.$store.state.user.id==this.entity.owner_UUID
-						||this.$store.state.cur_chat_entity.memberMgr_ids.indexOf(this.$store.state.user.id)>=0) {
+					||this.$store.state.cur_chat_entity.memberMgr_ids.indexOf(this.$store.state.user.id)>=0) {
 					this.popButton.push("管理撤消");
 				}
 
@@ -2118,16 +1857,13 @@
 
 			},
 			goMgr(_id){
-				if(!_id){
-					uni.showToast({
-   icon: 'none',
-   title: "操作太快啦，稍作休息。"
-});
-return
-				}
-				uni.navigateTo({
-					url:"/pages/chat/group/mgr?id="+_id
+				this.$emit('openModal', {
+					id: _id,
+					type: 'group'
 				})
+				// uni.navigateTo({
+				// 	url:"/pages/chat/group/mgr?id="+_id
+				// })
 			},
 
 			GenerateUUID() {
@@ -2244,9 +1980,10 @@ return
 
 			checkStopSpeak() {
 				let _this = this;
+				let memberIds = _this.$store.state.cur_chat_entity ? _this.$store.state.cur_chat_entity.memberMgr_ids : [];
 				//管理者没限制
 				if(this.entity.owner_UUID==this.$store.state.user.id
-					||_this.$store.state.cur_chat_entity.memberMgr_ids.indexOf(_this.$store.state.user.id)>=0) {
+					|| memberIds.indexOf(_this.$store.state.user.id)>=0) {
 					return true;
 				}
 
@@ -2269,54 +2006,40 @@ return
 				},300)
 
 			},
-			send(){
+			qunfaMsg(dataArrays) {
+				console.log('选择的群组',dataArrays)
 				let _this = this;
 				setTimeout(()=>{
 					if(this.isAltOrShiftEnter) return;
 					this.input_is_focus = false;
-					if(this.stopSpeak==1) return;
-					if(!this.checkStopSpeak()) return;
-					let v = {
-						txt:this.txt.replace(/\n/g,"<br/>"),
-					    toGroupid:this.toid,
-					    fromUid:this.$store.state.user.id,
-						uuid:this.GenerateUUID(),
-					}
-					/**
-					uni.pageScrollTo({
-					    scrollTop: 9999999999,
-					    duration: 100
-					});
-					**/
+
 					if(this.txt.trim()=="") {
 						return;
 					}
 
-					console.log(this.aite_map);
-					let aite = "";
-					for (var [key, value] of this.aite_map) {
-					  //console.log(key + ' = ' + value);
-					  if(this.txt.indexOf(key)>=0) {
-						  aite+=(value+"#");
-					  }
-					}
-					this.aite_map.clear();
-					v.aite = aite;
-
-					this.$websocket.dispatch("WEBSOCKET_SEND", "{body:'"+JSON.stringify(v)+"',CMD:'GROUP_CHAT_SEND_TXT'}");
-
-					this.$store.commit("setChat_my_loadding",true);
-					this.sendBaseDo(v);
-
-					this.txt = "";
-					this.showjia = true;
-					this.sendCount = this.sendCount +1;
-					//this.clickChat();
+					dataArrays.forEach(item=>{
+						let v = {
+							txt:this.txt.replace(/\n/g,"<br/>"),
+							toUid:item,
+							fromUid:this.$store.state.user.id,
+							uuid:this.GenerateUUID(),
+						};
+						this.$websocket.dispatch("WEBSOCKET_SEND", "{body:'"+JSON.stringify(v)+"',CMD:'USER_CHAT_SEND_TXT'}");
+						this.$store.commit("setChat_my_loadding",true);
+						this.sendBaseDo(v);
+						this.showjia = true;
+						this.sendCount = this.sendCount +1;
+					});
 					setTimeout(function(){
 						_this.scrollToBottom();
 						_this.input_is_focus = true;
 					},300)
+					this.txt = "";
 				},100);
+				this.$emit('closeModal');
+			},
+			send(){
+				this.$emit('openModal');
 			},
 			sendEmotion(_a,_b){
 				let _this = this;
@@ -2430,21 +2153,21 @@ return
 				if(!this.checkStopSpeak()) return;
 				let _this = this;
 				uni.chooseImage({
-					count: 9, //默认9
+					count: 4, //默认9
 					sizeType: [ 'compressed'], //可以指定是原图还是压缩图，默认二者都有
 					sourceType: ['album','camera'], //从相册选择
 					success: (res) => {
 
 						//大于3M。则报
-						// if(res.tempFiles[0].size>1024*3072) {
-						// 	uni.showToast({
-						// 	   icon: 'none',
-						// 	   title: "图片大小不能高于3M"
-						// 	});
-						// 	return;
-						// }
+						if(res.tempFiles[0].size>1024*3072) {
+							uni.showToast({
+							   icon: 'none',
+							   title: "图片大小不能高于3M"
+							});
+							return;
+						}
 
-						let arrs = res.tempFiles;
+						let arrs = res.tempFilePaths;
 						_this.$store.commit("setChat_my_loadding",true);
 						setTimeout(function(){
 							_this.scrollToBottom();
@@ -2457,7 +2180,7 @@ return
 									"x-access-uid":_this.$store.state.user.id
 								 },
 								 // filePath  需要上传的文件
-								 filePath: item.path,
+								 filePath: item,
 								 name: 'file',
 								 success(res1) {
 									 let json = eval("("+res1.data+")");
@@ -2731,10 +2454,6 @@ return
 									uuid:_this.GenerateUUID(),
 								}
 								_this.$websocket.dispatch("WEBSOCKET_SEND", "{body:'"+JSON.stringify(v)+"',CMD:'GROUP_CHAT_SEND_VOICE'}");
-
-								v.psr = "voice";
-								v.simple_content = "[语音]";
-								_this.sendBaseDo(v);
 								setTimeout(function(){
 									_this.scrollToBottom();
 								},100)

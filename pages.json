@@ -139,9 +139,15 @@
 		    "style" : {}
 		}
         ,{
-            "path" : "pages/faxian/site/site",
-            "style" : {}
-        },
+			"path" : "pages/faxian/site/site",
+			"style" : {}
+		},{
+			"path" : "pages/faxian/site/shoppage",
+			"style" : {}
+		},{
+			"path" : "pages/faxian/site/shopDetail",
+			"style" : {}
+		},
 		{
 		    "path" : "pages/home/index",
 		    "style" : {}

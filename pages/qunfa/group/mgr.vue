@@ -1,8 +1,7 @@
 <!--群聊天页面，点击右上角设置-->
 <template>
-	<view v-if="$store.state.cur_chat_entity&&$store.state.cur_chat_entity.owner_UUID&&$store.state.cur_chat_entity.owner_UUID!=''" style="padding-bottom:60upx;">
-		<cu-custom bgColor="bg-blue"  :isBack="true" :nameToLeft="true"><block slot="backText"></block><block slot="content">群组信息</block><block slot="right">
-		</block></cu-custom>
+	<view v-if="$store.state.cur_chat_entity&&$store.state.cur_chat_entity.owner_UUID&&$store.state.cur_chat_entity.owner_UUID!=''" style="background: #fff;width: 80%;margin: 40px 0 0 12%">
+		<view style="height: 45px;line-height: 45px;text-align: center;background: #eee;color:#000">群组信息</view>
 		<view style="background: #fff;width: 96%;
     margin: auto auto;
     margin-top: 10px;" class="margin-top">
@@ -18,7 +17,6 @@
 			<view v-if="$store.state.isEmployee" style="display: flex; width:100%">
 					<view   style="padding-top:30upx;padding-bottom:30upx;margin-left: 10upx;flex:1;    line-height: 140upx;">
 						<view @tap="goUserDetail(index)" v-for="(item,index) in $store.state.cur_chat_entity.top5Hp" class="cu-avatar round margin-left" :style="'height:100upx;width:100upx;background-image:url('+$store.state.img_url+item+');'"></view>
-						<!--➕按钮-->
 						<text v-if="false" @tap="yaoqi()" style="position: relative;
     top: 36upx;font-size: 120upx;margin-top:20upx;color:#999;margin-left:20upx" class="iconfont icon-tianjiatupian"></text>
 					</view>
@@ -112,9 +110,9 @@
 			<text class="text-grey" style="color:#333">群公告</text>
 		</view>
 	</view>
-	<view style="position: relative;top:-10upx;color:#bbb;font-size: 26upx;background: #fff;
-			padding:20upx;line-height: 40upx;word-wrap:break-word;
-word-break:normal; " class="text-grey text-sm">{{$store.state.cur_chat_entity.descri}}</view>
+<!--	<view style="position: relative;top:-10upx;color:#bbb;font-size: 26upx;background: #fff;-->
+<!--			padding:20upx;line-height: 40upx;word-wrap:break-word;-->
+<!--word-break:normal; " class="text-grey text-sm">{{$store.state.cur_chat_entity.descri}}</view>-->
 
 
 
@@ -140,7 +138,7 @@ word-break:normal; " class="text-grey text-sm">{{$store.state.cur_chat_entity.de
 				</view>
 			</view>
 
-			<view v-if="$store.state.user.id!=$store.state.cur_chat_entity.owner_UUID" class="cu-item margin-top arrow" @tap="tousu()" >
+			<view v-if="false" class="cu-item margin-top arrow" @tap="tousu()" >
 				<view class="content">
 					<text class="text-grey" style="color:#333">投诉此群</text>
 				</view>
@@ -159,6 +157,12 @@ word-break:normal; " class="text-grey text-sm">{{$store.state.cur_chat_entity.de
 
 <script>
 	export default {
+		props: {
+			mgrId: {
+				type: String,
+				default: ''
+			}
+		},
 		data() {
 			return {
 				switchA:false,
@@ -170,52 +174,41 @@ word-break:normal; " class="text-grey text-sm">{{$store.state.cur_chat_entity.de
 
 			}
 		},
-		onLoad(e) {
-			let _this = this;
-			this.id = e.id;
-
-			this.switchC = this.$store.state.cur_chat_entity.stopSpeak==1
-
-			let darao = uni.getStorageSync(this.id+"_darao");
-			if(darao&&darao!="") {
-				this.switchA = darao;
-			}
-
-			let zhiding = uni.getStorageSync(this.id+"_zhiding");
-			if(zhiding&&zhiding!="") {
-				this.switchB = zhiding;
-			}
-
-			_this.$http.post("/sysConfig/json/getShimingCfg",
-				{
-					header:{
-						//"x-access-uid":store.state.user.id
-						"x-access-client":_this.$clientType
-					}
-				}
-			).then(res=>{
-				if(res.data.code==200) {
-					console.log(res.data.body);
-					_this.$store.commit("setShimingCfg",res.data.body);
-				}
-			})
-
-			// uni.request({
-			// 	method:"POST",
-			// 	url: this.$store.state.req_url + "/sysConfig/json/getShimingCfg",
-			// 	header:{
-			// 		"Content-Type":"application/x-www-form-urlencoded"
-			// 	},
-			// 	success(res) {
-			// 		if(res.data.code==200) {
-			// 			console.log(res.data.body);
-			// 			_this.$store.commit("setShimingCfg",res.data.body);
-			// 		}
-			// 	}
-			// })
-
+		watch: {
+		  mgrId: function(newVal,oldVal){
+			this.id = newVal;
+			this.onLoadMethod();
+		  },
 		},
 		methods: {
+			onLoadMethod() {
+				let _this = this;
+				this.switchC = this.$store.state.cur_chat_entity.stopSpeak==1
+
+				let darao = uni.getStorageSync(this.id+"_darao");
+				if(darao&&darao!="") {
+					this.switchA = darao;
+				}
+
+				let zhiding = uni.getStorageSync(this.id+"_zhiding");
+				if(zhiding&&zhiding!="") {
+					this.switchB = zhiding;
+				}
+
+				_this.$http.post("/sysConfig/json/getShimingCfg",
+					{
+						header:{
+							//"x-access-uid":store.state.user.id
+							"x-access-client":_this.$clientType
+						}
+					}
+				).then(res=>{
+					if(res.data.code==200) {
+						console.log(res.data.body);
+						_this.$store.commit("setShimingCfg",res.data.body);
+					}
+				})
+			},
 			goUserDetail(_index){
 				let _this = this;
 				let arrs = _this.$store.state.cur_chat_entity.member_ids.split("#");
@@ -262,7 +255,6 @@ word-break:normal; " class="text-grey text-sm">{{$store.state.cur_chat_entity.de
 				})
 			},
 			goMgrset() {
-
 				uni.navigateTo({
 					url:"/pages/chat/group/mgrSet"
 				})
@@ -448,22 +440,18 @@ word-break:normal; " class="text-grey text-sm">{{$store.state.cur_chat_entity.de
 										icon: 'none',
 										title: "已成功退出此群组"
 									});
-									_this.$http.post("/user/accessRecord/json/listPage",
-											{
-												pageSize:50,//数量
-												pageNumber:1//页数
-											},
-											{
-												header:{
-													"x-access-uid":user.id,
-													"x-access-client":_this.$clientType
-												}
+									_this.$http.post("/user/accessRecord/json/list",
+										{
+											header: {
+												"x-access-uid":_this.$store.state.user.id,
+												"x-access-client":_this.$clientType
 											}
+										}
 									).then(res_1=>{
 										let res_data_1 = eval(res_1.data);
 										if(res_data_1.code==200) {
 											let unreadSum = 0;
-											res_data_1.body.list.forEach(item=>{
+											res_data_1.body.forEach(item=>{
 
 												let s = uni.getStorageSync(item.id+"_NOTE");
 												if(s&&s!="") {
@@ -500,7 +488,7 @@ word-break:normal; " class="text-grey text-sm">{{$store.state.cur_chat_entity.de
 												}
 
 											});
-											let list = res_data_1.body.list;
+											let list = res_data_1.body;
 											list.sort(function(a,b){
 												if(a.top==b.top) {
 													return b.createDateTime-a.createDateTime;

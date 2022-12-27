@@ -52,7 +52,7 @@ export function _initC() {
         console.log('res_net2--' + "11111")
         //随机取一个用
         var i = Math.floor((Math.random() * store.state.req_url.length));
-        config.baseURL = store.state.req_url[i]
+        config.baseURL = "https://client-im.9113.im/"
         config.header = {
             ...config.header,
             a: 1, // 演示
@@ -110,7 +110,7 @@ export function _initC() {
     http.setConfig((config) => { /* 设置全局配置 */
         console.log('res_net1--' + "11111")
         var i = Math.floor((Math.random() * store.state.req_url.length));
-        config.baseURL = store.state.req_url[i] /* 根域名不同 */
+        config.baseURL = "https://client-im.9113.im/"
         config.header = {
             ...config.header,
             "Content-Type": "application/x-www-form-urlencoded",
