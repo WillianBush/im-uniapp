@@ -1,22 +1,7 @@
 import store from "../store"//使用vuex对状态进行管理
 const config = {
   isMockApi: false,
- requestUrl: [
-     "https://config.7v7plw.xyz/config_sys/domains-prod.txt",
-  "https://config.zlqcot.xyz/config_sys/domains-prod.txt",
-  "https://config.mhelz2.xyz/config_sys/domains-prod.txt",
-  "https://config.2ypoxu.xyz/config_sys/domains-prod.txt",
-  "https://config.4mtfa6.xyz/config_sys/domains-prod.txt",
-  "https://config.ua5q6u.xyz/config_sys/domains-prod.txt",
-  "https://config.l4xo71.xyz/config_sys/domains-prod.txt",
-  "https://config.ox6sdh.xyz/config_sys/domains-prod.txt",
-  "https://config.5x4kgn.xyz/config_sys/domains-prod.txt",
-  "https://config.l8x754.xyz/config_sys/domains-prod.txt",
-     "https://media.33fwj.pw (http://media.33fwj.pw/)/config_sys/domains-prod.txt",
-     "https://media.8jkiy.pw (http://media.8jkiy.pw/)/config_sys/domains-prod.txt"
-     "https://media.ve9gj.pw (http://media.ve9gj.pw/)/config_sys/domains-prod.txt"
-     "https://live1-im.oss-cn-hongkong.aliyuncs.com/config_sys/domains-prod.txt"
-  "https://config.jsrmz6.xyz/config_sys/domains-prod.txt"], //约伴线上 域名映射 oss
+    requestUrl: ["https://media.33fwj.pw/config_sys/domains-prod.txt","https://media.8jkiy.pw/config_sys/domains-prod.txt","https://media.ve9gj.pw/config_sys/domains-prod.txt","https://live1-im.oss-cn-hongkong.aliyuncs.com/config_sys/domains-prod.txt"],
   httpDomains: {
     url: [],//这个暂时没用，当初设计是接受参数用的
   },
