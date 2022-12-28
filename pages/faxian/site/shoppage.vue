@@ -4,14 +4,8 @@
     <cu-custom bgColor="bg-blue" :isBack="true" ><block slot="content">商品列表</block></cu-custom>
     <swiper class="swiper" circular :indicator-dots="indicatorDots" :autoplay="autoplay" :interval="interval"
             :duration="duration">
-      <swiper-item>
-          <image src="https://cdn.it120.cc/apifactory/2019/06/18/06b337d7-92a1-498b-8142-5c5951e8fb97.jpg" />
-      </swiper-item>
-      <swiper-item>
-        <image src="https://dcdn.it120.cc/2022/05/05/ac956ae3-151f-418e-b0e9-fadd76a9ea6d.jpeg" />
-      </swiper-item>
-      <swiper-item>
-        <image src="https://cdn.it120.cc/apifactory/2019/06/18/06b337d7-92a1-498b-8142-5c5951e8fb97.jpg" />
+      <swiper-item v-for="(item,index) in shopList">
+          <image  :src="'https://media.jsrmz6.xyz'+item.img" />
       </swiper-item>
     </swiper>
     <view class="plate">
