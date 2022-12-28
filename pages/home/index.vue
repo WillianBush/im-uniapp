@@ -11,12 +11,12 @@
 				<text class="cuIcon-search"></text>
 				<input @input="search_list($event.target.value)" type="text" placeholder="输入搜索的关键词" confirm-type="search"></input>
 			</view>
-			
+
 		</view>
 		<!--#ifdef APP-PLUS -->
 			<view v-show="showMenu" :style="true?'height: 380upx;':'height: 300upx;'" style="position: absolute;
 				width: 280upx;
-				
+
 				background: #4A484D;
 				top: 140upx;
 				right: 40upx;
@@ -34,7 +34,7 @@
 		<!--#ifdef H5 -->
 		<view v-show="showMenu" :style="super_user==1?'height: 330upx;':'height: 250upx;'" style="position: absolute;
 				width: 280upx;
-				
+
 				background: #4A484D;
 				top: 140upx;
 				right: 40upx;
@@ -48,9 +48,9 @@
 				<view v-if="super_user==1" @tap.stop="searchUser" style="border-top:1px solid #777;float:left;width:98%;padding-top:10upx;"><text style="float:left;font-size:44upx;margin-top:6upx;margin-left:10upx" class="iconfont icon-zuoce-tongxun-gaoliang"></text><text style="float:left;margin-top:10upx;margin-left:20upx;font-size: 28upx;">超级通讯</text></view>
 			 </view>
 		<!--#endif -->
-		 
-		 
-		 
+
+
+
 		<scroll-view style="height: calc(100vh - 100upx - 100upx - 100upx - 50upx);" :scroll-y="modalName==null" class="page" :class="modalName!=null?'show':''"
 					 :refresher-enabled="true"
 					 :refresher-triggered="refresherTriggered"
@@ -58,11 +58,11 @@
 					 @refresherrestore="refresherrestore"
 					 @refresherabort="refresherabort"
 					 @scrolltolower="scrollLower">
-				
-				
+
+
 
 			<view class="cu-list menu-avatar">
-				
+
 				<view style="    text-align: center;
     background: #fff;
     height: 80px;
@@ -100,17 +100,17 @@
 					<view class="move">
 						<view v-if="item.top>0" @touchend.stop=""  @touchmove.stop="" @touchstart.stop="" @tap.stop="zhidingItem(item)" class="bg-grey">置顶</view>
 						<view v-else @touchend.stop=""  @touchmove.stop="" @touchstart.stop="" @tap.stop="cancelZhidingItem(item)" class="bg-grey">取消置顶</view>
-						
+
 						<view @touchend.stop=""  @touchmove.stop="" @touchstart.stop="" @tap.stop="removeItem(item)" class="bg-red">删除</view>
 					</view>
 				</view>
-				
-				
-				
-				
+
+
+
+
 			</view>
-			
-			
+
+
 			<!--
 			<view class="cu-list menu-avatar">
 				<view class="cu-item" :class="modalName=='move-box-'+ index?'move-cur':''" v-for="(item,index) in 4" :key="index"
@@ -178,7 +178,7 @@
 					cuIcon: 'discoverfill',
 					color: 'purple',
 					badge: 0,
-					name: '发现'
+					name: 'VIP'
 				}, {
 					cuIcon: 'questionfill',
 					color: 'mauve',
@@ -848,7 +848,7 @@
 	}
 	.cu-list.menu-avatar>.cu-item::after{
 		border: 0;
-	}  
+	}
 	.cu-list.menu-avatar>.cu-item:before {
             content: "";
             position: absolute;
@@ -862,6 +862,6 @@
 		-webkit-filter: grayscale(100%);
 		filter: grayscale(100%);
 	}
-	
-	
+
+
 </style>

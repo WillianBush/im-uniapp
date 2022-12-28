@@ -1,9 +1,9 @@
 <template>
 	<view>
-		<cu-custom bgColor="bg-blue" :isBack="false"><block slot="content">发现</block></cu-custom>
-   <image class="entrance" style="margin-top:2%" src="imgs/gold.png" @click="infos" />
-   <image class="entrance" src="imgs/silver.png" @click="goShop"/>
-   <image class="entrance" src="imgs/platinum.png" @click="checkIndex" />
+		<cu-custom bgColor="bg-blue" :isBack="false"><block slot="content">VIP</block></cu-custom>
+   <image class="entrance" style="margin-top:2%" src="./imgs/gold.png" @click="infos" />
+   <image class="entrance" src="./imgs/silver.png" @click="goShop"/>
+   <image class="entrance" src="./imgs/platinum.png" @click="checkIndex" />
 
 
 
