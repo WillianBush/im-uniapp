@@ -37,8 +37,11 @@
 		},
 		methods:{
       checkIndex(){
-      	// console.log('see=>',this.$store.state.faxian_site_list.url)
-		  window.open(this.$store.state.faxian_site_list.url)
+      	console.log('see=>',this.$store.state.faxian_site_list[0].url)
+		  uni.navigateTo({
+			  url: `/pages/faxian/webview?url=${this.$store.state.faxian_site_list[0].url}`
+		  })
+		  // window.open(this.$store.state.faxian_site_list.url)
         // if(window.location.href.indexOf("uid")>=0) {
 		// 	uni.showToast({
 		// 		icon: 'none',
