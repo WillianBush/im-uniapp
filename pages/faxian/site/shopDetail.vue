@@ -4,7 +4,7 @@
     <swiper class="swiper" circular :indicator-dots="indicatorDots" :autoplay="autoplay" :interval="interval"
             :duration="duration">
       <swiper-item>
-          <image style="margin:2% 2%;width:96%" :src="'https://media.jsrmz6.xyz'+baseInfo.img" />
+          <image style="margin:2% 2%;width:96%"  :src="$store.state.img_url+item.img" />
       </swiper-item>
     </swiper>
     <view class="shop-area">
