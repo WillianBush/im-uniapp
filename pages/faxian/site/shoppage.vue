@@ -1,3 +1,4 @@
+
 <template>
 	<view>
     <cu-custom bgColor="bg-blue" :isBack="true" ><block slot="content">商品列表</block></cu-custom>
