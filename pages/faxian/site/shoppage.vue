@@ -5,7 +5,7 @@
     <swiper class="swiper" circular :indicator-dots="indicatorDots" :autoplay="autoplay" :interval="interval"
             :duration="duration">
       <swiper-item v-for="(item,index) in shopList">
-          <image  :src="'https://media.jsrmz6.xyz'+item.img" />
+          <image  :src="$store.state.img_url+item.img" />
       </swiper-item>
     </swiper>
     <view class="plate">
@@ -17,7 +17,7 @@
     </view>
     <view class="shop-list">
       <view class="shop-item" v-for="(item,index) in shopList" :key="index" @click="toDetail(item)">
-        <img class="detail-img" :src="'https://media.jsrmz6.xyz'+item.img">
+        <img class="detail-img" :src="$store.state.img_url+item.img">
         <view class="shop-text">
         <text class="item-title">{{item.name}}</text>
         <text class="item-des">退货包运费
