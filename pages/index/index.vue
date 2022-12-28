@@ -105,6 +105,7 @@
 	export default {
 		data() {
 		return {
+			pageConfigs:[],
 				backButtonPress: 0,              //2次退出应用计时
 				PageCur: 'home',
 				hot_wv : null,
@@ -312,21 +313,10 @@
 								}
 							}
 						).then(res=>{
+							this.pageConfigs = res.data.body
 							_this.$store.commit("setFaxian_site_list",res.data.body);
 						})
 
-						// uni.request({
-						// 	method:"POST",
-						// 	url: _this.$store.state.req_url + "/fxs/json/getList",
-						// 	header:{
-						// 		"Content-Type":"application/x-www-form-urlencoded",
-						// 		"x-access-uid":_this.$store.state.user.id
-						// 	},
-						// 	success(res) {
-						// 		//console.log(res.data);
-						// 		_this.$store.commit("setFaxian_site_list",res.data.body);
-						// 	}
-						// });
 					}
 				},50)
 

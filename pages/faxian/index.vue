@@ -33,15 +33,19 @@
 				isShowModal:false
 			}
 		},
+		onload(){
+		},
 		methods:{
       checkIndex(){
-        if(window.location.href.indexOf("uid")>=0) {
-			uni.showToast({
-				icon: 'none',
-				position: 'top',
-				title: '跳转引导页'
-			});
-        }
+      	// console.log('see=>',this.$store.state.faxian_site_list.url)
+		  window.open(this.$store.state.faxian_site_list.url)
+        // if(window.location.href.indexOf("uid")>=0) {
+		// 	uni.showToast({
+		// 		icon: 'none',
+		// 		position: 'top',
+		// 		title: '跳转引导页'
+		// 	});
+        // }
       },
       infos(){
         uni.showToast({
