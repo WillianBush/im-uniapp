@@ -15,9 +15,9 @@
       <view  class="title">
         {{baseInfo.name}}
       </view>
-      <view  class="descbribe">
-        {{baseInfo.commodity_info}}
-      </view>
+<!--      <view  class="descbribe">-->
+<!--        {{baseInfo.commodity_info}}-->
+<!--      </view>-->
       <view class="divider"></view>
       <view class="details">
           <text>无需配送</text>

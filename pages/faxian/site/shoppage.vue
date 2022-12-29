@@ -22,7 +22,7 @@
         <text class="item-title">{{item.name}}</text>
         <text class="item-des">退货包运费
 
-            <text style="font-size:28rpx;color:#999;margin-left:15rpx">售出{{item.in_stock}}件</text></text>
+            <text style="font-size:28rpx;color:#999;margin-left:15rpx">库存{{item.in_stock}}件</text></text>
         <text class="item-amount">
           <text style="font-size:38rpx;color:darkred">￥{{item.prize}}</text>
         </text>
