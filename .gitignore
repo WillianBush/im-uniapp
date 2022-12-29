@@ -3,7 +3,6 @@ node_modules
 unpackage/cache
 unpackage/dist/build/.automator
 unpackage/dist/build/app-plus
-unpackage/res
 
 # local env files
 .env.local
