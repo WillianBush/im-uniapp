@@ -1356,12 +1356,24 @@
 							let res_data = eval(res.data);
 							if (res_data.code == 200) {
 								let json = eval(res.data);
-								let v = {
-									txt:json.msg,
-									toGroupid:_this.toid,
-									fromUid:_this.$store.state.user.id,
-									uuid:_this.GenerateUUID(),
-								};
+
+								let v;
+								if(this.isGroupChat){
+									v = {
+										txt:json.msg,
+										toGroupid:_this.toid,
+										fromUid:_this.$store.state.user.id,
+										uuid:_this.GenerateUUID(),
+									};
+								}else{
+									v = {
+										txt:json.msg,
+										toUid:_this.toid,
+										fromUid:_this.$store.state.user.id,
+										uuid:_this.GenerateUUID(),
+									};
+								}
+
 								if(this.isGroupChat){
 									_this.$websocket.dispatch("WEBSOCKET_SEND", "{body:'"+JSON.stringify(v)+"',CMD:'GROUP_CHAT_SEND_TXT'}");
 								}else{
@@ -1443,12 +1455,24 @@
 							let res_data = eval(res.data);
 							if (res_data.code == 200) {
 								let json = eval(res.data);
-								let v = {
-									txt:json.msg,
-									toGroupid:_this.toid,
-									fromUid:_this.$store.state.user.id,
-									uuid:_this.GenerateUUID(),
-								};
+
+								let v;
+								if(this.isGroupChat){
+									v = {
+										txt:json.msg,
+										toGroupid:_this.toid,
+										fromUid:_this.$store.state.user.id,
+										uuid:_this.GenerateUUID(),
+									};
+								}else{
+									v = {
+										txt:json.msg,
+										toUid:_this.toid,
+										fromUid:_this.$store.state.user.id,
+										uuid:_this.GenerateUUID(),
+									};
+								}
+
 								if(this.isGroupChat){
 									_this.$websocket.dispatch("WEBSOCKET_SEND", "{body:'"+JSON.stringify(v)+"',CMD:'GROUP_CHAT_SEND_TXT'}");
 								}else{
@@ -2253,7 +2277,7 @@
 				};
 				return fmt;
 			},
-			sendBaseDo(v) {
+			sendBaseDo(v) {//群组发送
 				v.fromHeadpic = this.$store.state.user.headpic;
 				let date = new Date();
 				v.date = this.dateFormat("Y/m/d H:M", date);
@@ -2333,7 +2357,7 @@
 				this.$store.commit("setChat_my_loadding",false);
 			},
 
-			sendBaseDo2(v) {
+			sendBaseDo2(v) {//个人发送
 
 				v.fromHeadpic = this.$store.state.user.headpic;
 				let date = new Date();
@@ -2392,8 +2416,8 @@
 						jsonObj.splice(0,jsonObj.length-50);
 					}
 
-					console.log('jsonObj',jsonObj)
-					console.log('newJsonObj',newJsonObj)
+					console.log('jsonObj11',jsonObj)
+					console.log('newJsonObj22',newJsonObj)
 					this.$store.commit("updateChatMessageMap",{
 						key:this.$store.state.user.id+"#"+msgbean.chatid,
 						value:newJsonObj
@@ -2457,7 +2481,7 @@
 				},300)
 
 			},
-			send(){
+			send(){//群组发送
 				let _this = this;
 				setTimeout(()=>{
 					if(this.isAltOrShiftEnter) return;
@@ -2470,28 +2494,36 @@
 						fromUid:this.$store.state.user.id,
 						uuid:this.GenerateUUID(),
 					}
+					/**
+					 uni.pageScrollTo({
+					    scrollTop: 9999999999,
+					    duration: 100
+					});
+					 **/
 					if(this.txt.trim()=="") {
 						return;
 					}
+
+					console.log(this.aite_map);
 					let aite = "";
 					for (var [key, value] of this.aite_map) {
+						//console.log(key + ' = ' + value);
 						if(this.txt.indexOf(key)>=0) {
 							aite+=(value+"#");
 						}
 					}
 					this.aite_map.clear();
 					v.aite = aite;
-					if(this.isGroupChat){
-						this.$websocket.dispatch("WEBSOCKET_SEND", "{body:'"+JSON.stringify(v)+"',CMD:'GROUP_CHAT_SEND_TXT'}");
-					}else{
-						this.$websocket.dispatch("WEBSOCKET_SEND", "{body:'"+JSON.stringify(v)+"',CMD:'USER_CHAT_SEND_TXT'}");
-					}
+
+					this.$websocket.dispatch("WEBSOCKET_SEND", "{body:'"+JSON.stringify(v)+"',CMD:'GROUP_CHAT_SEND_TXT'}");
+
 					this.$store.commit("setChat_my_loadding",true);
 					this.sendBaseDo(v);
+
 					this.txt = "";
 					this.showjia = true;
 					this.sendCount = this.sendCount +1;
-					console.log('现在信息=》',this.$store.state.cur_chat_msg_list)
+					//this.clickChat();
 					setTimeout(function(){
 						_this.scrollToBottom();
 						_this.input_is_focus = true;
@@ -2500,7 +2532,7 @@
 			},
 
 
-			send2(){ //发送用户
+			send2(){ //个人发送
 				let _this = this;
 				setTimeout(()=>{
 					if(this.isAltOrShiftEnter) return;
@@ -2521,7 +2553,6 @@
 					this.showjia = true;
 					this.sendCount = this.sendCount +1;
 					//this.clickChat();
-					console.log('现在信息2=》',this.$store.state.cur_chat_msg_list)
 					setTimeout(function(){
 						_this.scrollToBottom();
 						_this.input_is_focus = true;
@@ -2612,11 +2643,21 @@
 								let json = eval("("+res1.data+")");
 								// 显示上传信息
 								if(json.code==200) {
-									let v = {
-										txt:json.msg,
-										toGroupid:_this.toid,
-										fromUid:_this.$store.state.user.id,
-										uuid:_this.GenerateUUID(),
+									let v;
+									if(this.isGroupChat){
+										v = {
+											txt:json.msg,
+											toGroupid:_this.toid,
+											fromUid:_this.$store.state.user.id,
+											uuid:_this.GenerateUUID(),
+										}
+									}else{
+										v = {
+											txt:json.msg,
+											toUid:_this.toid,
+											fromUid:_this.$store.state.user.id,
+											uuid:_this.GenerateUUID(),
+										}
 									}
 									if(this.isGroupChat){
 										_this.$websocket.dispatch("WEBSOCKET_SEND", "{body:'"+JSON.stringify(v)+"',CMD:'GROUP_CHAT_SEND_TXT'}");
@@ -2671,11 +2712,22 @@
 								let json = eval("("+res1.data+")");
 								// 显示上传信息
 								if(json.code==200) {
-									let v = {
-										txt:json.msg,
-										toGroupid:_this.toid,
-										fromUid:_this.$store.state.user.id,
-										uuid:_this.GenerateUUID(),
+
+									let v;
+									if(this.isGroupChat){
+										v = {
+											txt:json.msg,
+											toGroupid:_this.toid,
+											fromUid:_this.$store.state.user.id,
+											uuid:_this.GenerateUUID(),
+										}
+									}else{
+										v = {
+											txt:json.msg,
+											toUid:_this.toid,
+											fromUid:_this.$store.state.user.id,
+											uuid:_this.GenerateUUID(),
+										}
 									}
 									if(this.isGroupChat){
 										_this.$websocket.dispatch("WEBSOCKET_SEND", "{body:'"+JSON.stringify(v)+"',CMD:'GROUP_CHAT_SEND_TXT'}");
@@ -2737,11 +2789,22 @@
 									let json = eval("("+res1.data+")");
 									// 显示上传信息
 									if(json.code==200) {
-										let v = {
-											txt:json.msg,
-											toGroupid:_this.toid,
-											fromUid:_this.$store.state.user.id,
-											uuid:_this.GenerateUUID(),
+
+										let v;
+										if(this.isGroupChat){
+											v = {
+												txt:json.msg,
+												toGroupid:_this.toid,
+												fromUid:_this.$store.state.user.id,
+												uuid:_this.GenerateUUID(),
+											}
+										}else{
+											v = {
+												txt:json.msg,
+												toUid:_this.toid,
+												fromUid:_this.$store.state.user.id,
+												uuid:_this.GenerateUUID(),
+											}
 										}
 										if(this.isGroupChat){
 											_this.$websocket.dispatch("WEBSOCKET_SEND", "{body:'"+JSON.stringify(v)+"',CMD:'GROUP_CHAT_SEND_TXT'}");
@@ -2800,11 +2863,22 @@
 									let json = eval("("+res1.data+")");
 									// 显示上传信息
 									if(json.code==200) {
-										let v = {
-											txt:json.msg,
-											toGroupid:_this.toid,
-											fromUid:_this.$store.state.user.id,
-											uuid:_this.GenerateUUID(),
+
+										let v;
+										if(this.isGroupChat){
+											v = {
+												txt:json.msg,
+												toGroupid:_this.toid,
+												fromUid:_this.$store.state.user.id,
+												uuid:_this.GenerateUUID(),
+											}
+										}else{
+											v = {
+												txt:json.msg,
+												toUid:_this.toid,
+												fromUid:_this.$store.state.user.id,
+												uuid:_this.GenerateUUID(),
+											}
 										}
 										if(this.isGroupChat){
 											_this.$websocket.dispatch("WEBSOCKET_SEND", "{body:'"+JSON.stringify(v)+"',CMD:'GROUP_CHAT_SEND_TXT'}");
@@ -2815,7 +2889,7 @@
 										_this.temp_txt = _this.temp_txt + ("<img  style='max-width: 150px;max-height:150px;' class='face' src='"+img+"'>");
 										v.psr = "uparse";
 										v.simple_content = "[图片]";
-										_this.sendBaseDo(v);
+										_this.sendBaseDo2(v);
 
 										setTimeout(function(){
 											_this.scrollToBottom();
