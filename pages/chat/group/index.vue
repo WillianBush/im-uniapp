@@ -976,7 +976,7 @@
 				isAltOrShiftEnter:false, //设置 阻塞状态
 				input_is_focus:false,
 				player:null,
-        toIP:"",
+				toIP:"",
 				selVoiceIndex:-1,
 				domHeight:0,
 				c_type:1,
@@ -1185,7 +1185,7 @@
 					console.log('userInfo33', res_data)
 					if(res_data.code==200) {
 						console.log('userInfo22', res_data.body.ip+"===="+res_data.body.ipAddr)
-            _this.toIP = res_data.body.ip +"("+ res_data.body.ipAddr+")";
+						_this.toIP = res_data.body.ip +"("+ res_data.body.ipAddr+")";
 					}
 				})
 
@@ -1272,37 +1272,37 @@
 						if(!_this.checkStopSpeak()) {
 							_this.stopSpeak = 1;
 						} else {
-						let unRead = uni.getStorageSync(_this.$store.state.user.id+"#"+_this.toid+'_CHAT_MESSAGE_UNREAD');
-						if(unRead&&unRead!="") {
-							uni.setStorageSync(_this.$store.state.user.id+"#"+_this.toid+'_CHAT_MESSAGE_UNREAD',"0");
-							_this.$store.commit("setUnReadMsgSum",_this.$store.state.unReadMsgSum - parseInt(unRead))
-						}
-						console.log("去除小红点3",_this.$store.state.ar_list_show)
-						_this.$store.state.ar_list_show.forEach(item=>{
-							if(item.id==_this.entity.id) {
-								console.log("去除小红点","进来了")
-								item.unread = 0;
-								return;
+							let unRead = uni.getStorageSync(_this.$store.state.user.id+"#"+_this.toid+'_CHAT_MESSAGE_UNREAD');
+							if(unRead&&unRead!="") {
+								uni.setStorageSync(_this.$store.state.user.id+"#"+_this.toid+'_CHAT_MESSAGE_UNREAD',"0");
+								_this.$store.commit("setUnReadMsgSum",_this.$store.state.unReadMsgSum - parseInt(unRead))
 							}
-						})
+							console.log("去除小红点3",_this.$store.state.ar_list_show)
+							_this.$store.state.ar_list_show.forEach(item=>{
+								if(item.id==_this.entity.id) {
+									console.log("去除小红点","进来了")
+									item.unread = 0;
+									return;
+								}
+							})
 
-						_this.$http.post("/room/json/isStopSpeak4User",
-								{roomid:_this.toid,uid:_this.$store.state.user.id},
-								{
-									header:{
-										"x-access-uid":_this.$store.state.user.id,
-										"x-access-client":_this.$clientType
+							_this.$http.post("/room/json/isStopSpeak4User",
+									{roomid:_this.toid,uid:_this.$store.state.user.id},
+									{
+										header:{
+											"x-access-uid":_this.$store.state.user.id,
+											"x-access-client":_this.$clientType
+										}
+									}
+							).then(res=>{
+								let res_data = eval(res.data);
+								if(res_data.code==200) {
+									if(res_data.msg=="1") {
+										_this.stopSpeak = 1;
 									}
 								}
-						).then(res=>{
-							let res_data = eval(res.data);
-							if(res_data.code==200) {
-								if(res_data.msg=="1") {
-									_this.stopSpeak = 1;
-								}
-							}
-						})
-					}} else {
+							})
+						}} else {
 						uni.showModal({
 							title: '信息提示',
 							content: res_data.msg,
@@ -1362,7 +1362,11 @@
 									fromUid:_this.$store.state.user.id,
 									uuid:_this.GenerateUUID(),
 								};
-								_this.$websocket.dispatch("WEBSOCKET_SEND", "{body:'"+JSON.stringify(v)+"',CMD:'GROUP_CHAT_SEND_TXT'}");
+								if(this.isGroupChat){
+									_this.$websocket.dispatch("WEBSOCKET_SEND", "{body:'"+JSON.stringify(v)+"',CMD:'GROUP_CHAT_SEND_TXT'}");
+								}else{
+									_this.$websocket.dispatch("WEBSOCKET_SEND", "{body:'"+JSON.stringify(v)+"',CMD:'USER_CHAT_SEND_TXT'}");
+								}
 								let img = _this.$store.state.img_url+json.msg;
 								_this.temp_txt = _this.temp_txt + ("<img  style='max-width: 150px;max-height:150px;' class='face' src='"+img+"'>");
 								v.psr = "uparse";
@@ -1445,7 +1449,11 @@
 									fromUid:_this.$store.state.user.id,
 									uuid:_this.GenerateUUID(),
 								};
-								_this.$websocket.dispatch("WEBSOCKET_SEND", "{body:'"+JSON.stringify(v)+"',CMD:'GROUP_CHAT_SEND_TXT'}");
+								if(this.isGroupChat){
+									_this.$websocket.dispatch("WEBSOCKET_SEND", "{body:'"+JSON.stringify(v)+"',CMD:'GROUP_CHAT_SEND_TXT'}");
+								}else{
+									_this.$websocket.dispatch("WEBSOCKET_SEND", "{body:'"+JSON.stringify(v)+"',CMD:'USER_CHAT_SEND_TXT'}");
+								}
 								let img = _this.$store.state.img_url+json.msg;
 								_this.temp_txt = _this.temp_txt + ("<img  style='max-width: 150px;max-height:150px;' class='face' src='"+img+"'>");
 								v.psr = "uparse";
@@ -2042,14 +2050,14 @@
 
 				}
 				/**
-				uni.showToast({
+				 uni.showToast({
 					title: `第${this.pickerUserIndex+1}个用户,第${index+1}个按钮`,
 					icon: "none",
 					mask: true,
 					duration: 600
 				});
 				 **、
-				/*
+				 /*
 				 因为隐藏弹窗方法中会将当前选择的用户下标还原为-1,
 				 如果行的菜单方法存在异步情况，请在隐藏之前将该值保存，或通过参数传入异步函数中
 				 */
@@ -2085,7 +2093,7 @@
 				if(this.stopSpeak==1) return;
 				if(!this.checkStopSpeak()) return;
 				/**
-				uni.getLocation({
+				 uni.getLocation({
 				    type: 'wgs84',
 				    success: function (res) {
 				        console.log('当前位置的经度：' + res.longitude);
@@ -2473,7 +2481,11 @@
 					}
 					this.aite_map.clear();
 					v.aite = aite;
-					this.$websocket.dispatch("WEBSOCKET_SEND", "{body:'"+JSON.stringify(v)+"',CMD:'GROUP_CHAT_SEND_TXT'}");
+					if(this.isGroupChat){
+						this.$websocket.dispatch("WEBSOCKET_SEND", "{body:'"+JSON.stringify(v)+"',CMD:'GROUP_CHAT_SEND_TXT'}");
+					}else{
+						this.$websocket.dispatch("WEBSOCKET_SEND", "{body:'"+JSON.stringify(v)+"',CMD:'USER_CHAT_SEND_TXT'}");
+					}
 					this.$store.commit("setChat_my_loadding",true);
 					this.sendBaseDo(v);
 					this.txt = "";
@@ -2606,7 +2618,11 @@
 										fromUid:_this.$store.state.user.id,
 										uuid:_this.GenerateUUID(),
 									}
-									_this.$websocket.dispatch("WEBSOCKET_SEND", "{body:'"+JSON.stringify(v)+"',CMD:'GROUP_CHAT_SEND_TXT'}");
+									if(this.isGroupChat){
+										_this.$websocket.dispatch("WEBSOCKET_SEND", "{body:'"+JSON.stringify(v)+"',CMD:'GROUP_CHAT_SEND_TXT'}");
+									}else{
+										_this.$websocket.dispatch("WEBSOCKET_SEND", "{body:'"+JSON.stringify(v)+"',CMD:'USER_CHAT_SEND_TXT'}");
+									}
 									let videoSrc = _this.$store.state.img_url+json.msg;
 									_this.temp_txt = _this.temp_txt + ("<video  style='max-width: 150px;max-height:150px;' class='face' src='"+videoSrc+"'>");
 									v.psr = "video";
@@ -2661,7 +2677,11 @@
 										fromUid:_this.$store.state.user.id,
 										uuid:_this.GenerateUUID(),
 									}
-									_this.$websocket.dispatch("WEBSOCKET_SEND", "{body:'"+JSON.stringify(v)+"',CMD:'GROUP_CHAT_SEND_TXT'}");
+									if(this.isGroupChat){
+										_this.$websocket.dispatch("WEBSOCKET_SEND", "{body:'"+JSON.stringify(v)+"',CMD:'GROUP_CHAT_SEND_TXT'}");
+									}else{
+										_this.$websocket.dispatch("WEBSOCKET_SEND", "{body:'"+JSON.stringify(v)+"',CMD:'USER_CHAT_SEND_TXT'}");
+									}
 									let videoSrc = _this.$store.state.img_url+json.msg;
 									_this.temp_txt = _this.temp_txt + ("<video  style='max-width: 150px;max-height:150px;' class='face' src='"+videoSrc+"'>");
 									v.psr = "video";
@@ -2723,8 +2743,11 @@
 											fromUid:_this.$store.state.user.id,
 											uuid:_this.GenerateUUID(),
 										}
-										_this.$websocket.dispatch("WEBSOCKET_SEND", "{body:'"+JSON.stringify(v)+"',CMD:'GROUP_CHAT_SEND_TXT'}");
-
+										if(this.isGroupChat){
+											_this.$websocket.dispatch("WEBSOCKET_SEND", "{body:'"+JSON.stringify(v)+"',CMD:'GROUP_CHAT_SEND_TXT'}");
+										}else{
+											_this.$websocket.dispatch("WEBSOCKET_SEND", "{body:'"+JSON.stringify(v)+"',CMD:'USER_CHAT_SEND_TXT'}");
+										}
 										let img = _this.$store.state.img_url+json.msg;
 										_this.temp_txt = _this.temp_txt + ("<img  style='max-width: 150px;max-height:150px;' class='face' src='"+img+"'>");
 										v.psr = "uparse";
@@ -2783,8 +2806,11 @@
 											fromUid:_this.$store.state.user.id,
 											uuid:_this.GenerateUUID(),
 										}
-										_this.$websocket.dispatch("WEBSOCKET_SEND", "{body:'"+JSON.stringify(v)+"',CMD:'GROUP_CHAT_SEND_TXT'}");
-
+										if(this.isGroupChat){
+											_this.$websocket.dispatch("WEBSOCKET_SEND", "{body:'"+JSON.stringify(v)+"',CMD:'GROUP_CHAT_SEND_TXT'}");
+										}else{
+											_this.$websocket.dispatch("WEBSOCKET_SEND", "{body:'"+JSON.stringify(v)+"',CMD:'USER_CHAT_SEND_TXT'}");
+										}
 										let img = _this.$store.state.img_url+json.msg;
 										_this.temp_txt = _this.temp_txt + ("<img  style='max-width: 150px;max-height:150px;' class='face' src='"+img+"'>");
 										v.psr = "uparse";
