@@ -4,6 +4,10 @@
    <image class="entrance" style="margin-top:2%" src="./imgs/gold.png" @click="infos" />
    <image class="entrance" src="./imgs/silver.png" @click="goShop"/>
    <image class="entrance" src="./imgs/platinum.png" @click="checkIndex" />
+   <image class="entrance" src="./imgs/royal.png" />
+		<div style="height:60px;">
+
+		</div>
 
 
 
@@ -271,6 +275,7 @@
   .entrance{
     width:96%;
     margin-left:2%;
-    height:200px;
+    height:180px;
   }
+
 </style>
