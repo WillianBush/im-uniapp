@@ -1844,6 +1844,7 @@
 			},
 			/* 长按监听 */
 			onLongPress(e,bean) {
+				console.log("aaaaaaaaabbbbbbbbb")
 				let _this = this;
 				if(this.showPop) {
 					this.showPop = false;
@@ -1871,9 +1872,11 @@
 					}
 				}
 
-				if(this.$store.state.user.id==this.entity.owner_UUID
-						||this.$store.state.cur_chat_entity.memberMgr_ids.indexOf(this.$store.state.user.id)>=0) {
-					this.popButton.push("管理撤消");
+				if(this.isGroupChat){
+					if(this.$store.state.user.id==this.entity.owner_UUID
+							||this.$store.state.cur_chat_entity.memberMgr_ids.indexOf(this.$store.state.user.id)>=0) {
+						this.popButton.push("管理撤消");
+					}
 				}
 
 
@@ -2011,13 +2014,24 @@
 					}
 					_this.$websocket.dispatch("WEBSOCKET_SEND", "{body:'"+JSON.stringify(v)+"',CMD:'CHAT_MSG_UNDO_MGR'}");
 				} else if(name=='撤消') {
-					let v = {};
-					v = {
-						txt:this.temp_bean.uuid,
-						toGroupid:this.temp_bean.toGroupid,
-						fromUid:this.temp_bean.fromUid
+					if(this.isGroupChat){
+						let v = {};
+						v = {
+							txt:this.temp_bean.uuid,
+							toGroupid:this.temp_bean.toGroupid,
+							fromUid:this.temp_bean.fromUid
+						}
+						_this.$websocket.dispatch("WEBSOCKET_SEND", "{body:'"+JSON.stringify(v)+"',CMD:'CHAT_MSG_UNDO'}");
+
+					}else{
+						let v = {};
+						v = {
+							txt:this.temp_bean.uuid,
+							toUid:this.temp_bean.toUid,
+							fromUid:this.temp_bean.fromUid
+						}
+						_this.$websocket.dispatch("WEBSOCKET_SEND", "{body:'"+JSON.stringify(v)+"',CMD:'CHAT_MSG_UNDO'}");
 					}
-					_this.$websocket.dispatch("WEBSOCKET_SEND", "{body:'"+JSON.stringify(v)+"',CMD:'CHAT_MSG_UNDO'}");
 				} else if(name=='收藏') {
 
 					if(_this.temp_content.indexOf("voice")>=0) {
