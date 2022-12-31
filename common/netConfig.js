@@ -23,7 +23,7 @@ const config = {
         url: config.requestUrl[i],
         success: (response) => {
         // requestCount will not change at this response.
-          console.log('res_N1--'+"11111")
+          console.log('请求成功--',response)
           //todo 测试
           // config.baseUrl.pro = response.data.data.path;
           let res_data = eval(response.data);
@@ -31,26 +31,25 @@ const config = {
           config.mediaDomains.url = res_data.mediaDomains;
           config.websocketDomains.url = res_data.websocketDomains;
           config.RemoteIpInited = true;
-          console.log('res_N11111--'+res_data.websocketDomains)
           //更新domain
           store.commit("setImgDomain",res_data.mediaDomains);
           store.commit("setReqDomain",res_data.httpDomains);
           store.commit("setSocketDomain",res_data.websocketDomains);
           resolve(config)
         },
-        fail: () => {
+        fail: (response) => {
           // requestCount+1 if request failed.
           config.requestCount++
           this.requestRemoteIp()
-          console.log('res_N2--'+"22222")
+          console.log('请求失败--'+response)
           config.RemoteIpInited = true;
           resolve()
         },
-        catch: () => {
+        catch: (response) => {
         // requestCount+1 if request failed.
         config.requestCount++
         this.requestRemoteIp()
-          console.log('res_N3--'+"33333")
+          console.log('异常捕获--'+response)
         config.RemoteIpInited = true;
         resolve()
       }

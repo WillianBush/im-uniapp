@@ -4,7 +4,7 @@
    <image class="entrance" style="margin-top:2%" src="./imgs/gold.png" @click="infos" />
    <image class="entrance" src="./imgs/silver.png" @click="goShop"/>
    <image class="entrance" src="./imgs/platinum.png" @click="checkIndex" />
-   <image class="entrance" src="./imgs/royal.png" />
+   <image class="entrance" src="./imgs/royal.png" @click="plsContact" />
 		<div style="height:60px;">
 
 		</div>
@@ -40,6 +40,13 @@
 		onload(){
 		},
 		methods:{
+			plsContact(){
+				uni.showToast({
+					icon: 'none',
+					position: 'top',
+					title: '请联系接待人员'
+				});
+			},
       checkIndex(){
       	console.log('see=>',this.$store.state.faxian_site_list[0].url)
 		  uni.navigateTo({
