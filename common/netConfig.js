@@ -1,7 +1,9 @@
 import store from "../store"//使用vuex对状态进行管理
+import {activeConfig} from "./appConfig";
 const config = {
   isMockApi: false,
-    requestUrl: ["https://media.33fwj.pw/config_sys/domains-prod.txt","https://media.8jkiy.pw/config_sys/domains-prod.txt","https://media.ve9gj.pw/config_sys/domains-prod.txt","https://live1-im.oss-cn-hongkong.aliyuncs.com/config_sys/domains-prod.txt"],
+  // requestUrl: ["https://360-im.oss-cn-hongkong.aliyuncs.com/config_sys/domains-uat.txt"],//测试
+  requestUrl: activeConfig.requestUrl,//线上
   httpDomains: {
     url: [],//这个暂时没用，当初设计是接受参数用的
   },
@@ -12,18 +14,17 @@ const config = {
     url: [],//这个暂时没用，当初设计是接受参数用的
   },
   uuid: Math.random().toString(36).substring(3, 20),
-  requestCount : 0, //默认请求次数id
   requestRemoteIp: () => {
+    console.log("config:", config)
     if (config.RemoteIpInited)
       return Promise.resolve();
     return new Promise((resolve, reject) => {
-      // var i = Math.floor((Math.random() * config.requestUrl.length));//2022.12.19 abandoned
-      var i = config.requestCount;
+      var i = Math.floor((Math.random() * config.requestUrl.length));
       uni.request({
         url: config.requestUrl[i],
         success: (response) => {
-        // requestCount will not change at this response.
-          console.log('请求成功--',response)
+
+          console.log('res_N1--'+"11111")
           //todo 测试
           // config.baseUrl.pro = response.data.data.path;
           let res_data = eval(response.data);
@@ -31,28 +32,20 @@ const config = {
           config.mediaDomains.url = res_data.mediaDomains;
           config.websocketDomains.url = res_data.websocketDomains;
           config.RemoteIpInited = true;
+
+          console.log('res_N11111--'+res_data.websocketDomains)
           //更新domain
           store.commit("setImgDomain",res_data.mediaDomains);
           store.commit("setReqDomain",res_data.httpDomains);
           store.commit("setSocketDomain",res_data.websocketDomains);
           resolve(config)
         },
-        fail: (response) => {
-          // requestCount+1 if request failed.
-          config.requestCount++
-          this.requestRemoteIp()
-          console.log('请求失败--'+response)
+        fail: () => {
+
+          console.log('res_N2--'+"22222")
           config.RemoteIpInited = true;
           resolve()
-        },
-        catch: (response) => {
-        // requestCount+1 if request failed.
-        config.requestCount++
-        this.requestRemoteIp()
-          console.log('异常捕获--'+response)
-        config.RemoteIpInited = true;
-        resolve()
-      }
+        }
       })
     });
   }
