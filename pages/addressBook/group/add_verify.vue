@@ -71,14 +71,14 @@
 						    success: function (res1) {
 								if (res1.confirm) {
 									uni.navigateBack({
-										delta: 2,
+										delta: 1,
 										success: function() {
 											//beforePage.onLoad(); // 执行前一个页面的onLoad方法
 										},
 									});
 								}
 							},
-						});	
+						});
 						
 						
 					} else {
