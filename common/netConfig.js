@@ -1,10 +1,9 @@
 import store from "../store"//使用vuex对状态进行管理
-
+import {activeConfig} from "./appConfig";
 const config = {
   isMockApi: false,
   // requestUrl: ["https://360-im.oss-cn-hongkong.aliyuncs.com/config_sys/domains-uat.txt"],//测试
-  requestUrl: ["https://media.33fwj.pw/config_sys/domains-prod.txt","https://media.8jkiy.pw/config_sys/domains-prod.txt","https://media.ve9gj.pw/config_sys/domains-prod.txt","https://live1-im.oss-cn-hongkong.aliyuncs.com/config_sys/domains-prod.txt"],//触感演示环境用prod
-  // requestUrl: ["https://dasiifdfcc.oss-cn-hongkong.aliyuncs.com/config_sys/domains-prod.txt"],//线上
+  requestUrl: activeConfig.requestUrl,//线上
   httpDomains: {
     url: [],//这个暂时没用，当初设计是接受参数用的
   },
@@ -25,6 +24,7 @@ const config = {
         url: config.requestUrl[i],
         success: (response) => {
 
+          console.log('res_N1--'+"11111")
           //todo 测试
           // config.baseUrl.pro = response.data.data.path;
           let res_data = eval(response.data);
@@ -33,6 +33,7 @@ const config = {
           config.websocketDomains.url = res_data.websocketDomains;
           config.RemoteIpInited = true;
 
+          console.log('res_N11111--'+res_data.websocketDomains)
           //更新domain
           store.commit("setImgDomain",res_data.mediaDomains);
           store.commit("setReqDomain",res_data.httpDomains);

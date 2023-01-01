@@ -1,6 +1,6 @@
 <template>
     <view class="start-wrap u-flex u-row-center">
-        <image class="start-img" src="/static/splash.png" mode="aspectFill" @load="loadImage"></image>
+        <image class="start-img" :src="setupPicture" mode="aspectFill" @load="loadImage"></image>
         <updatepage ref="updatepage"></updatepage>
     </view>
 </template>
@@ -8,14 +8,22 @@
 <script>
     import store from "store"//使用vuex对状态进行管理
     import updatepage from "../../components/user/updatepage/updatepage.vue";
+    import {activeConfig} from "../../common/appConfig";
     export default {
         components: {
             updatepage
         },
         data() {
             return {
+                autoJump:true,
+	            setupPicture:'',
+                count:'',
+                canDoNext:true//如果需要版本升级，这里就是false，不让倒计时后直接进主页或者登录页面
             };
         },
+	    onLoad(e) {
+		    this.setupPicture = activeConfig.setupPicture
+	    },
         methods: {
             loadImage() {
             },
