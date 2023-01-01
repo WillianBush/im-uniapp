@@ -43,12 +43,51 @@
 
 <script>
 	export default {
+		props: {
+			keyid: {
+				type: Number,
+				default: 0
+			}
+		},
 		data() {
 			return {
 				id:"",
 				list:[],
 				list1:[],
 				kw:"",
+			}
+		},
+		watch: {
+			keyid: function(newVal, oldVal) {
+				let _this = this;
+				let user = uni.getStorageSync("USER");
+
+				_this.$http.post("/room/json/getMemberList",
+						{roomid:_this.$store.state.cur_chat_entity.id},
+						{
+							header:{
+								"x-access-uid":_this.$store.state.user.id,
+								"x-access-client":_this.$clientType
+							}
+						}
+				).then(res=>{
+					let res_data = eval(res.data);
+					if(res_data.code==200) {
+						_this.list = res_data.body;
+						let temp = _this.list.filter((item1)=>{
+							if(_this.$store.state.cur_chat_entity.owner_UUID==item1.id||
+									_this.$store.state.cur_chat_entity.memberMgr_ids.indexOf(item1.id)>=0) {
+								return false;
+							}
+							let s = uni.getStorageSync(item1.id+"_NOTE");
+							if(s&&s!="") {
+								item1.nickName=s;
+							}
+							return true;
+						})
+						_this.list1 = temp;
+					}
+				})
 			}
 		},
 		onLoad() {
