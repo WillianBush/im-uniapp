@@ -3,7 +3,7 @@
 		<view class="content">
 			<!-- 头部logo -->
 			<view class="header">
-				<image src="/static/logo12.png"></image>
+				<image :src="registerIcon"></image>
 			</view>
 			<!-- 主体表单 -->
 			<view class="main" style="align-items:center">
@@ -56,11 +56,13 @@
 	var _this;
 	import wInput from '../../components/user/watch-login/watch-input.vue' //input
 	import wButton from '../../components/user/watch-login/watch-button.vue' //button
+	import {activeConfig} from "common/appConfig";
 
 	export default {
 		data() {
 			return {
 				//logo图片 base64
+				registerIcon:'', //用户/电话
 				phoneData:'', //用户/电话
 				passData:'', //密码
 				isRotate: false, //是否加载旋转
@@ -71,7 +73,7 @@
 			wButton,
 		},
 		onLoad(e) {
-			//console.log(e);
+			this.registerIcon = activeConfig.registerIcon
 		},
 		mounted() {
 			_this= this;
