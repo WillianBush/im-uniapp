@@ -453,7 +453,7 @@
 			//以下备注方法
 			getNotes(){
 				this.notesShow = true
-				let s = uni.getStorageSync(this.id+"_NOTE");
+				let s = uni.getStorageSync(this.$store.state.cur_chat_entity.id+"_NOTE");
 				if(s&&s!="") {
 					this.notes = s;
 				} else {
@@ -463,10 +463,12 @@
 			notesSubmits() {
 				let _this = this;
 				let user = this.$store.state.user;
-				uni.setStorageSync(this.id+"_NOTE",this.notes);
+				console.log("net333333333",_this.$store.state.cur_chat_entity.id)
+				uni.setStorageSync(_this.$store.state.cur_chat_entity.id+"_NOTE",this.notes);
+				_this.$store.state.chatShowName = this.notes;
 				let list = this.$store.state.ar_list;
 				list.forEach(item=>{
-					if(item.id==_this.id) {
+					if(item.id==_this.$store.state.cur_chat_entity.id) {
 						item.title = _this.notes;
 					}
 				})

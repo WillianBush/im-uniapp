@@ -10,7 +10,7 @@
 
 		<group-custom  :entityId="entity.id" :isGroupChat="isGroupChat" v-if="!isGroupChat" backUrl="/pages/index/index" bgColor="bg-blue"  :isBack="true" :nameToLeft="true"><block slot="backText"></block><block slot="content">
 			<view class="cu-avatar radius" style="margin-right: 5px; border-radius: 50%" :style="'background-image:url('+$store.state.img_url+friendPic+');'"></view>
-			{{showname}} <text v-if="chatCfg.showUserOnline==1">{{entity.online==0?' (离线)':' (在线)'}}</text>
+			{{$store.state.chatShowName}} <text v-if="chatCfg.showUserOnline==1">{{entity.online==0?' (离线)':' (在线)'}}</text>
 			<text v-show="$store.state.temp.input_ing" style="font-size: 26upx;margin-left:10upx;">- 正在输入...</text>
 			<!-- <text v-show="toIP" style="font-size: 14upx; color: #FFCC99; margin-left:10upx;">{{toIP}}</text> -->
 			<uni-text @tap="goMgr2(entity.id,friendPic)" style="font-size: 22px;color: #000;margin-left: 1%;margin-right:1%;cursor: pointer;" class="lg text-gray cuIcon-more"></uni-text>
@@ -353,7 +353,7 @@
 
 
 			<!-- @focus="InputFocus" @blur="InputBlur"-->
-			<input @keydown.enter="send" style="background: #eee!important;" disabled="true" placeholder="禁言" placeholder-style="text-align:center;background: #eee;" v-show="stopSpeak==1"  class="solid-bottom" :adjust-position="true" :focus="false" maxlength="300" cursor-spacing="10"
+			<input @keydown.enter="send" style="background: #eee!important;" disabled="true" placeholder="禁言" placeholder-style="text-align:center;background: #eee;" v-show="isGroupChat && stopSpeak==1"  class="solid-bottom" :adjust-position="true" :focus="false" maxlength="300" cursor-spacing="10"
 			></input>
 			<input
 					id="testInputg"
@@ -1025,7 +1025,6 @@
 				pickerUserIndex: -1,
 				/* 临时内容 */
 				temp_content:"",
-				showname:"",
 				temp_uuid:"",
 				chatCfg:{},
 				temp_bean:null,
@@ -1123,7 +1122,7 @@
 				let s = uni.getStorageSync(this.toid+"_NOTE");
 				console.log('fuck', this.toid, s)
 				if(s&&s!="") {
-					this.showname = s;
+					_this.$store.state.chatShowName = s;
 				}
 				let v = {
 					toUid:this.toid,
@@ -1227,7 +1226,15 @@
 					if(statusCode==200) {
 						//主要是为了让onshow检查是否已设置备注，如果已设置备注则不需要使用用户原昵称
 						setTimeout(function(){
-							_this.showname = _this.entity.nickName;
+							//如果用户设置了备注别名，展示备注别名
+							let s = uni.getStorageSync(_this.toid+"_NOTE");
+							console.log("net00000000",s)
+							console.log("net11111111",_this.toid)
+							if(s&&s!="") {
+								_this.$store.state.chatShowName = s;
+							}else{
+								_this.$store.state.chatShowName = _this.entity.nickName;
+							}
 							_this.friendPic = _this.entity.headpic;
 						},100)
 

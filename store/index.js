@@ -58,7 +58,8 @@ const state = {
 		input_ing:false,
 		msg_mp3_playtime:0,
 		chatVew:null,//当前聊天窗口scroll-view
-	}
+	},
+	chatShowName:""//这里是为了兼容pc的nickName
 	 
 }
 
