@@ -305,7 +305,7 @@
 					_this.PageCur = e.currentTarget.dataset.cur;
 					if(_this.PageCur=="faxian") {
 
-						_this.$http.post("/fxs/json/getList",
+						_this.$http.post("/fxs/json/getListWithMid",
 							{
 								header:{
 									"x-access-uid":_this.$store.state.user.id,
