@@ -45,5 +45,5 @@ const fangyuan= {
 	setupPicture : "/static/splash.jpg"
 }
 
-const activeConfig = config9113
+const activeConfig = configLive1
 export  {configJapan,configLive1,config9113,fangyuan,activeConfig}
