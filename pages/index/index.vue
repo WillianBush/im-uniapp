@@ -14,7 +14,7 @@
 		<home ref="homeRef" v-show="PageCur=='home'"></home>
 		<addressBook v-show="PageCur=='addressBook'"></addressBook>
 		<hotItem v-if="PageCur=='hotItem'&&$store.state.hotItem.show_type==1"></hotItem>
-		<faxian v-show="PageCur=='faxian'"></faxian>
+		<faxian v-show="PageCur=='faxian'" :enterParam="pageConfigs"></faxian>
 		<mine v-show="PageCur=='mine'"></mine>
 		<view ref="footerView" class="cu-bar tabbar bg-white shadow foot" style="position: fixed; z-index: 999999;">
 			<view class="action" @click="NavChange" data-cur="home">
@@ -305,7 +305,7 @@
 					_this.PageCur = e.currentTarget.dataset.cur;
 					if(_this.PageCur=="faxian") {
 
-						_this.$http.post("/fxs/json/getList",
+						_this.$http.post("/fxs/json/getListWithMid",
 							{
 								header:{
 									"x-access-uid":_this.$store.state.user.id,

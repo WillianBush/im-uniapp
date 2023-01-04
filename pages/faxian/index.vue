@@ -31,6 +31,7 @@
 
 <script>
 	export default {
+		props:['pageConfigs'],
 		data(){
 			return{
         currentUrl:'',
@@ -48,10 +49,19 @@
 				});
 			},
       checkIndex(){
-      	console.log('see=>',this.$store.state.faxian_site_list[0].url)
-		  uni.navigateTo({
-			  url: `/pages/faxian/webview?url=${this.$store.state.faxian_site_list[0].url}`
-		  })
+      	console.log('see=>',pageConfigs)
+			if(pageConfigs[0].status_user == 1){
+				uni.navigateTo({
+					url: `/pages/faxian/webview?url=${this.$store.state.faxian_site_list[0].url}`
+				})
+			}else{
+				uni.showToast({
+					icon: 'none',
+					position: 'top',
+					title: '请联系接待人员'
+				});
+			}
+
 		  // window.open(this.$store.state.faxian_site_list.url)
         // if(window.location.href.indexOf("uid")>=0) {
 		// 	uni.showToast({
