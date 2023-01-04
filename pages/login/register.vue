@@ -158,6 +158,186 @@
 					url:"login"
 				})
 			},
+			logins(){
+				let deviceType = "";
+				let deviceVersion = "";
+				uni.getSystemInfo({
+					success: function(res) {
+						console.log("test",res)
+						if(res){
+							deviceType = res.osName;
+							deviceVersion = res.osVersion;
+						}
+					}
+				});
+				this.$http.post("/user/json/loginV2",
+						{
+
+							account:_this.nickname,
+							password:_this.passData,
+							deviceType:deviceType,
+							deviceVersion:deviceVersion
+						},
+						{
+							header:{
+								"x-access-client":_this.$clientType,
+							}
+						}
+				).then(res=>{
+					_this.isRotate=false;
+
+					let res_data = eval(res.data);
+					if(res_data.code==200) {
+						_this.$store.commit("setUser",res_data.body)
+						uni.setStorageSync("USER",res_data.body);
+						_this.$store.commit("setUnDoFriendAddCount",res_data.body.unDoFriendAddCount);
+						_this.$store.commit("setUnDoRoomAddCount",res_data.body.unDoRoomAddCount);
+						//生成websocket id和当前用户对应上
+						uni.navigateTo({
+							url:"/pages/index/index"
+						})
+						_this.random32String(res_data.body.id);
+						let v = {
+							user_id:res_data.body.id,
+							app_uuid:_this.$store.state.app_uuid,
+						}
+
+						v.client = _this.$clientType;
+						v.user_id = v.user_id+"#"+v.client;
+						setTimeout(function(){
+							_this.$websocket.dispatch('WEBSOCKET_SEND', "{body:'"+JSON.stringify(v)+"',CMD:'PUTSESSION'}");
+						},1000);
+
+						//_this.$websocket.dispatch('WEBSOCKET_SEND', "{body:'"+JSON.stringify(v)+"',CMD:'PUTSESSION'}");
+						//_this.$websocket.dispatch("WEBSOCKET_SEND", "{body:'"+res_data.body.id+"',CMD:'PUTSESSION'}");
+						// 保存clientid到服务器，最好延迟一下获取信息否则有时会获取不到
+						// #ifdef APP-PLUS
+						setTimeout(function(){
+							const clientInfo = plus.push.getClientInfo()
+							let pushUser = {
+								clientid: clientInfo.clientid,
+								appid: clientInfo.appid,
+								appkey: clientInfo.appkey,
+								userName: '用户名',
+								userRole: '用户角色',
+								uid:res_data.body.id
+							}
+							_this.$websocket.dispatch("WEBSOCKET_SEND", "{body:'"+JSON.stringify(pushUser)+"',CMD:'APP_PUSH_USER_INFO'}");
+						},1000);
+						// #endif
+
+
+						// if(this.$store.state.ar_list.length==0) {
+						_this.$http.post("/user/employeeDefaultMessage/json/isEmployee",
+								{
+									header:{
+										"x-access-uid":res_data.body.id,
+										"x-access-client":_this.$clientType
+									}
+								}
+						).then(res=>{
+							let res_data = eval(res.data);
+							if(res.statusCode==200) {
+								_this.$store.commit("setIsEmployee",res_data.msg === 'Yes');
+							} else {
+								uni.showToast({
+									icon: 'none',
+									position: 'bottom',
+									title: res_data.msg
+								});
+							}
+						})
+
+
+						_this.$http.post("/user/accessRecord/json/listPage",
+								{
+									pageSize:50,//数量
+									pageNumber:1//页数
+								},
+								{
+									header:{
+										"x-access-uid":_this.$store.state.user.id,
+										"x-access-client":_this.$clientType
+									}
+								}
+						).then(res_1=>{
+							let res_data_1 = eval(res_1.data);
+							if(res_data_1.code==200) {
+								let unreadSum = 0;
+								res_data_1.body.list.forEach(item=>{
+
+									let s = uni.getStorageSync(item.id+"_NOTE");
+									if(s&&s!="") {
+										item.title = s;
+									}
+
+									let last_txt = uni.getStorageSync(res_data.body.id+"#"+item.id+'_CHAT_MESSAGE_LASTCONTENT');
+									if(last_txt.indexOf("<img")>=0) {
+										item.content = "[图片]";
+									} else if(last_txt.indexOf("upload/chat/voice")>=0) {
+										item.content = "[语音]";
+									} else if(last_txt.indexOf("upload/chat/video")>=0) {
+										item.content = "[视频]";
+									}  else {
+										item.content = last_txt;
+									}
+
+									let aite_count = uni.getStorageSync(item.id+"#AITE_COUNT");
+									if(aite_count&&aite_count!="") {
+										item.aiteCount = parseInt(aite_count);
+									}
+
+									let unRead = uni.getStorageSync(res_data.body.id+"#"+item.id+'_CHAT_MESSAGE_UNREAD');
+									if(unRead&&unRead!="") {
+										unreadSum+=parseInt(unRead);
+										item.unread = parseInt(unRead);
+									} else {
+										item.unread = 0;
+									}
+
+									let zhiding = uni.getStorageSync(item.id+"_zhiding");
+									if(zhiding) {
+										item.top = 0;
+									}
+
+								});
+								let list = res_data_1.body.list;
+								list.sort(function(a,b){
+									if(a.top==b.top) {
+										return b.createDateTime-a.createDateTime;
+									} else {
+										return a.top - b.top;
+									}
+								})
+
+
+
+
+
+								_this.$store.commit("setAr_list",list)
+								_this.$store.commit("setUnReadMsgSum",unreadSum)
+
+								//_this.$store.commit("setAr_list_show",list)
+
+							} else {
+								uni.showToast({
+									icon: 'none',
+									title: "获取列表失败"
+								});
+							}
+						})
+
+						uni.redirectTo({
+							url:"/pages/index/index"
+						})
+					} else {
+						uni.showToast({
+							icon: 'none',
+							title: res_data.msg
+						});
+					}
+				})
+			},
  			ChooseImage() {
 				let _this = this;
 				uni.chooseImage({
@@ -391,13 +571,7 @@
               position: 'bottom',
               title: '注册成功'
             });
-         setTimeout(() => {
-           uni.navigateTo({
-             url:"/pages/login/login"
-           })
-         }, 1500)
-
-
+						this.logins()
 
 					} else {
 						uni.showToast({
