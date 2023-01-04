@@ -315,6 +315,13 @@
 						).then(res=>{
 							this.pageConfigs = res.data.body
 							_this.$store.commit("setFaxian_site_list",res.data.body);
+						}).catch(res=>{
+							uni.showToast({
+								icon: 'none',
+								title: "当前接口异常"
+							});
+							console.log('异常信息=>',res)
+							return;
 						})
 
 					}
