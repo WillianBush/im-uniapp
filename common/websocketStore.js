@@ -880,7 +880,6 @@ export default new Vuex.Store({
 
 					// uni.request({
 					// 	method:"POST",
-					// 	url:store.state.req_url + "/user/friend/list/v1",
 					// 	header:{
 					// 		"Content-Type":"application/x-www-form-urlencoded",
 					// 		"x-access-uid":user.id

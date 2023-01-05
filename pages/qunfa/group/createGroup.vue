@@ -1,12 +1,12 @@
 <template>
-	<view> 
+	<view>
 		<cu-custom bgColor="bg-blue" :isBack="true" :nameToLeft="true"><block slot="content">发起群聊</block>
 		<block slot="right">
 		<uni-text @tap="tijiao()" style="font-size: 22px;color: #fff;margin-right: 14px;font-size: 30upx;background: #58BB46;padding:10upx 40upx;border-radius: 6upx;" class="lg text-gray ">创建</uni-text>
 		</block>
 		</cu-custom>
-		
-		
+
+
 		<view class="cu-bar bg-white search" >
 			<view class="search-form round">
 				<text class="cuIcon-search"></text>
@@ -30,7 +30,7 @@
 							<view class="cu-avatar round lg" :style="{'backgroundImage': 'url('+$store.state.img_url+ items.headpic +')' }"  style="width: 80upx;height: 80upx;background-size: 100% 100%;"></view>
 							<view class="content">
 								<view class="text-grey" style="float:left;">{{items.name}}</view>
-								<checkbox :checked="fid==items.member_uuid"  class='round blue '  :value="items.member_uuid"></checkbox>  
+								<checkbox :checked="fid==items.member_uuid"  class='round blue '  :value="items.member_uuid"></checkbox>
 								<!--
 								<view class="text-gray text-sm">
 									有{{sub+2}}个主子需要伺候
@@ -82,7 +82,7 @@
 				this.fid = e.fid;
 				this.ids.push(e.fid)
 			}
-			
+
 		},
 		mounted() {
 			let _this = this;
@@ -96,10 +96,10 @@
 			this.list = list;
 			this.listCur = list[0];
 			**/
-			
+
 			if(this.$store.state.friend_list.length<=0) {
 				console.log("进来了");
-				
+
 				_this.$http.post("/user/friend/list/v1",
 					{
 						header:{
@@ -109,44 +109,43 @@
 					}
 				).then(res=>{
 					let res_data = eval(res.data);
-					if(res_data.code==200) {  
+					if(res_data.code==200) {
 						_this.$store.commit("setFriend_list",res_data.body);
 						res_data.body.forEach(item=>{
 							let i = {};
 							i.name = item.h;
 							_this.list.push(i);
 						})
-						
+
 					}
 				})
-				
+
 				// uni.request({
 				// 	method:"POST",
-				// 	url: _this.$store.state.req_url + "/user/friend/list/v1",
 				// 	header:{
 				// 		"Content-Type":"application/x-www-form-urlencoded",
 				// 		"x-access-uid":user.id
 				// 	},
 				// 	success(res) {
 				// 		let res_data = eval(res.data);
-				// 		if(res_data.code==200) {  
+				// 		if(res_data.code==200) {
 				// 			_this.$store.commit("setFriend_list",res_data.body);
 				// 			res_data.body.forEach(item=>{
 				// 				let i = {};
 				// 				i.name = item.h;
 				// 				_this.list.push(i);
 				// 			})
-							
+
 				// 		}
 				// 	}
 				// })
 			}
-				
-			
-				
-			
-			
-			
+
+
+
+
+
+
 		},
 		computed:{
 			friend_list() {
@@ -158,9 +157,9 @@
 							let flag = false;
 							item.list = item.list.filter((item1)=>{
 								 if(item1.member_uuid=="-1") {
-									return false;							 
+									return false;
 								 }
-								 
+
 								 if(item1.name.indexOf(_this.kw.trim())>=0) {
 									 flag = true;
 									 return true;
@@ -169,13 +168,13 @@
 							 })
 							 return flag;
 					});
-					
+
 				} else {
 					nlist =	nlist.filter((item)=>{
 							let flag = false;
 							item.list = item.list.filter((item1)=>{
 								 if(item1.member_uuid=="-1") {
-									return false;							 
+									return false;
 								 }
 								 flag = true;
 								 return true;
@@ -200,7 +199,7 @@
 			uni.createSelectorQuery().select('.indexes').boundingClientRect(function(res) {
 				that.barTop = res.top
 			}).exec();
-			
+
 		},
 		methods: {
 			tijiao(){
@@ -213,8 +212,8 @@
 					});
 					return;
 				}
-				
-				
+
+
 				_this.$http.post("/room/json/createRoom",
 					{
 						mids:this.ids.toString()
@@ -228,7 +227,7 @@
 				).then(res=>{
 					console.log(res.data);
 					let res_data = eval(res.data);
-					if(res_data.code==200) {  
+					if(res_data.code==200) {
 						_this.$store.state.ar_list.push(res_data.body);
 						uni.showModal({
 						    title: '提示',
@@ -243,7 +242,7 @@
 						        }
 						    }
 						});
-						
+
 					} else {
 						uni.showToast({
 						    icon: 'none',
@@ -251,7 +250,7 @@
 						});
 					}
 				})
-				
+
 				// uni.request({
 				// 	method:"POST",
 				// 	url: _this.$store.state.req_url + "/room/json/createRoom",
@@ -265,7 +264,7 @@
 				// 	success(res) {
 				// 		console.log(res.data);
 				// 		let res_data = eval(res.data);
-				// 		if(res_data.code==200) {  
+				// 		if(res_data.code==200) {
 				// 			_this.$store.state.ar_list.push(res_data.body);
 				// 			uni.showModal({
 				// 			    title: '提示',
@@ -280,7 +279,7 @@
 				// 			        }
 				// 			    }
 				// 			});
-							
+
 				// 		} else {
 				// 			uni.showToast({
 				// 			    icon: 'none',
@@ -289,8 +288,8 @@
 				// 		}
 				// 	}
 				// })
-				
-				
+
+
 			},
 			radioChange(e) {
 				this.ids = e.target.value;
@@ -302,7 +301,7 @@
 				    title: "功能未开启"
 				});
 			},
-		
+
 			search() {
 				this.kw = this.kw1;
 			},
@@ -358,8 +357,8 @@
 	uni-checkbox{
 		float:right;
 	}
-		  
-	
+
+
 
 	.indexes {
 		position: relative;

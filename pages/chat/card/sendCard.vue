@@ -1,9 +1,9 @@
 <template>
-	<view> 
+	<view>
 		<cu-custom bgColor="bg-blue" :isBack="true" :nameToLeft="true"><block slot="content">选择朋友</block>
 		</cu-custom>
-		
-		
+
+
 		<view class="cu-bar bg-white search" >
 			<view class="search-form round">
 				<text class="cuIcon-search"></text>
@@ -52,7 +52,7 @@
 		<view v-show="!hidden" class="indexToast">
 			{{listCur}}
 		</view>
-		
+
 		<neil-modal :show="show" @close="closeModal" @confirm="sendConfirm"  confirm-text="发送" cancel-text="取消">
 		    <view style="min-height: 90upx;padding: 32upx 24upx;">
 				<view style="font-weight: 800;">发送给：</view>
@@ -63,7 +63,7 @@
 				<view style="margin-top: 14upx;clear:both;font-size: 24upx;color:#999;">[个人名片] {{selFriendBean.name}}</view>
 		    </view>
 		</neil-modal>
-		
+
 	</view>
 </template>
 
@@ -91,7 +91,7 @@
 				this.fid = e.fid;
 				this.ids.push(e.fid)
 			}
-			
+
 		},
 		mounted() {
 			let _this = this;
@@ -105,10 +105,10 @@
 			this.list = list;
 			this.listCur = list[0];
 			**/
-			
+
 			if(this.$store.state.friend_list.length<=0) {
 				console.log("进来了");
-				
+
 				_this.$http.post("/user/friend/list/v1",
 					{
 						header:{
@@ -116,47 +116,46 @@
 							"x-access-client":_this.$clientType
 						}
 					}
-					
+
 				).then(res=>{
 					let res_data = eval(res.data);
-					if(res_data.code==200) {  
+					if(res_data.code==200) {
 						_this.$store.commit("setFriend_list",res_data.body);
 						res_data.body.forEach(item=>{
 							let i = {};
 							i.name = item.h;
 							_this.list.push(i);
 						})
-						
+
 					}
 				});
-				
+
 				// uni.request({
 				// 	method:"POST",
-				// 	url: _this.$store.state.req_url + "/user/friend/list/v1",
 				// 	header:{
 				// 		"Content-Type":"application/x-www-form-urlencoded",
 				// 		"x-access-uid":user.id
 				// 	},
 				// 	success(res) {
 				// 		let res_data = eval(res.data);
-				// 		if(res_data.code==200) {  
+				// 		if(res_data.code==200) {
 				// 			_this.$store.commit("setFriend_list",res_data.body);
 				// 			res_data.body.forEach(item=>{
 				// 				let i = {};
 				// 				i.name = item.h;
 				// 				_this.list.push(i);
 				// 			})
-							
+
 				// 		}
 				// 	}
 				// })
 			}
-				
-			
-				
-			
-			
-			
+
+
+
+
+
+
 		},
 		computed:{
 			friend_list() {
@@ -168,10 +167,10 @@
 							let flag = false;
 							item.list.filter((item1)=>{
 								 if(item1.member_uuid=="-1") {
-									return false;							 
+									return false;
 								 }
 								 // if(item1.member_uuid==_this.$store.state.temp.bean.id) {
-								 // 	return false;							 
+								 // 	return false;
 								 // }
 								 if(item1.name.indexOf(_this.kw.trim())>=0) {
 									 flag = true;
@@ -181,16 +180,16 @@
 							 })
 							 return flag;
 					});
-					
+
 				} else {
 					nlist =	nlist.filter((item)=>{
 							let flag = false;
 							item.list.filter((item1)=>{
 								 if(item1.member_uuid=="-1") {
-									return false;							 
+									return false;
 								 }
 								 // if(item1.member_uuid==_this.$store.state.temp.bean.id) {
-								 // 	return false;							 
+								 // 	return false;
 								 // }
 								 flag = true;
 								 return true;
@@ -215,12 +214,12 @@
 			uni.createSelectorQuery().select('.indexes').boundingClientRect(function(res) {
 				that.barTop = res.top
 			}).exec();
-			
+
 		},
 		methods: {
 			sendConfirm() {
-				
-				
+
+
 				if(this.$store.state.temp.bean.roomUUID&&this.$store.state.temp.bean.roomUUID!="") {
 					//群
 					let v = {
@@ -238,16 +237,16 @@
 					}
 					this.$websocket.dispatch("WEBSOCKET_SEND", "{body:'"+JSON.stringify(v)+"',CMD:'CHAT_SEND_CARD'}");
 				}
-				
-				
-				
+
+
+
 				setTimeout(()=>{
 					uni.navigateBack();
 					setTimeout(()=>{
 						uni.$emit("scrollTopFn");
 					},200)
 				},100)
-				
+
 			},
 			closeModal() {
 				this.show = false;
@@ -267,9 +266,9 @@
 					});
 					return;
 				}
-				
-				
-				
+
+
+
 				_this.$http.post("/room/json/createRoom",
 					{
 						mids:this.ids.toString()
@@ -280,10 +279,10 @@
 							"x-access-client":_this.$clientType
 						}
 					}
-					
+
 				).then(res=>{
 					let res_data = eval(res.data);
-					if(res_data.code==200) {  
+					if(res_data.code==200) {
 						_this.$store.state.ar_list.push(res_data.body);
 						uni.showModal({
 						    title: '提示',
@@ -298,7 +297,7 @@
 						        }
 						    }
 						});
-						
+
 					} else {
 						uni.showToast({
 						    icon: 'none',
@@ -306,9 +305,9 @@
 						});
 					}
 				});
-				
-				
-				
+
+
+
 				// uni.request({
 				// 	method:"POST",
 				// 	url: _this.$store.state.req_url + "/room/json/createRoom",
@@ -322,7 +321,7 @@
 				// 	success(res) {
 				// 		console.log(res.data);
 				// 		let res_data = eval(res.data);
-				// 		if(res_data.code==200) {  
+				// 		if(res_data.code==200) {
 				// 			_this.$store.state.ar_list.push(res_data.body);
 				// 			uni.showModal({
 				// 			    title: '提示',
@@ -337,7 +336,7 @@
 				// 			        }
 				// 			    }
 				// 			});
-							
+
 				// 		} else {
 				// 			uni.showToast({
 				// 			    icon: 'none',
@@ -346,8 +345,8 @@
 				// 		}
 				// 	}
 				// })
-				
-				
+
+
 			},
 			radioChange(e) {
 				this.ids = e.target.value;
@@ -359,7 +358,7 @@
 				    title: "功能未开启"
 				});
 			},
-		
+
 			search() {
 				this.kw = this.kw1;
 			},
@@ -415,8 +414,8 @@
 	uni-checkbox{
 		float:right;
 	}
-		  
-	
+
+
 
 	.indexes {
 		position: relative;

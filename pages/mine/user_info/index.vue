@@ -165,7 +165,6 @@ import uQRCode from '@/common/uqrcode.js'
 
 			// uni.request({
 			// 	method:"POST",
-			// 	url: _this.$store.state.req_url + "/user/friend/list/v1",
 			// 	header:{
 			// 		"Content-Type":"application/x-www-form-urlencoded",
 			// 		"x-access-uid":user.id

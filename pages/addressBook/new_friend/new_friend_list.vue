@@ -1,6 +1,6 @@
 <template>
 	<view>
-		<view v-show="PageCur=='main'"> 
+		<view v-show="PageCur=='main'">
 			<view style="height: 45px;line-height: 45px;background: #eee;padding-left: 5px">
 				<text class="cuIcon-back" @click="goback" style="float:left; margin:0 5px; cursor: pointer;"></text>
 				新的好友
@@ -11,14 +11,14 @@
 				 <view v-if="list.length>0" style="margin-top:10px;padding:20upx 0;background: #fff;" class="cu-list menu"
 				  :class="[true?'sm-border':'',false?'card-menu ':'']" >
 					<view v-for="item in list" class="cu-item"  >
-						<view v-if="item.from_member_uuid==$store.state.user.id" class="content"> 
+						<view v-if="item.from_member_uuid==$store.state.user.id" class="content">
 							<view class="cu-avatar round lg" :style="{'backgroundImage': 'url('+$store.state.img_url+ item.to_headpic +')' }"  style="float:left;width: 80upx;height: 80upx;background-size: 100% 100%;"></view>
 							<text class="text-grey" style="float:left;margin-left: 10px;margin-top:15upx">{{item.to_name}}</text>
 							<text v-if="item.status=='wait'" style="float:right;margin-top:15upx;color:#999;font-size: 26upx;" >等待确认</text>
 							<text v-if="item.status=='success'" style="float:right;margin-top:15upx;color:#999;font-size: 26upx;" >已添加</text>
 							<text v-if="item.status=='faile'" style="float:right;margin-top:15upx;color:#999;font-size: 26upx;" >已拒绝</text>
 							<text v-if="item.status=='pass'" style="float:right;margin-top:15upx;color:#999;font-size: 26upx;" >已过期</text>
-							
+
 						</view>
 						<view v-if="item.to_member_uuid==$store.state.user.id"  class="content">
 							<view class="cu-avatar round lg" :style="{'backgroundImage': 'url('+$store.state.img_url+ item.from_headpic +')' }"  style="float:left;width: 80upx;height: 80upx;background-size: 100% 100%;"></view>
@@ -36,15 +36,15 @@
 							</view>
 							<text v-if="item.status=='pass'" style="float:right;margin-top:15upx;color:#999;font-size: 26upx;" >已过期</text>
 						</view>
-					</view>  
-				</view>	
+					</view>
+				</view>
 				<view v-else  style="height: 100upx;text-align: center;background: #fff;margin-top: 20upx;line-height: 100upx;color: #999;" >
 					暂无好友
 				</view>
 			</scroll-view>
 		</view>
 		<friendSearch v-show="PageCur=='search'"  @goBack="showGroup"></friendSearch>
-	</view>	
+	</view>
 </template>
 
 <script>
@@ -99,7 +99,7 @@
 					i.name = item.h;
 					_this.list.push(i);
 				})
-				
+
 				return nlist;
 			}
 		},
@@ -125,10 +125,10 @@
 							"x-access-client":_this.$clientType
 						}
 					}
-					
+
 				).then(res=>{
 					let res_data = eval(res.data);
-					if(res_data.code==200) {  
+					if(res_data.code==200) {
 						_this.list = res_data.body;
 						let c = 0;
 						_this.list.forEach(item=>{
@@ -154,7 +154,7 @@
 				    content: _t==2?'拒绝通过':'验证通过',
 				    success: function (res) {
 				        if (res.confirm) {
-							
+
 							_this.$http.post("/user/friend/verify/v1",
 								{id:_id,t: _t},
 								{
@@ -163,19 +163,19 @@
 										"x-access-client":_this.$clientType
 									}
 								}
-								
+
 							).then(res=>{
 								let res_data = eval(res.data);
-								if(res_data.code==200) {  
+								if(res_data.code==200) {
 									uni.showToast({
-									    icon: 'none', 
+									    icon: 'none',
 										position: 'bottom',
 									    title: "操作成功"
 									});
 									_this.$store.commit("setUnDoFriendAddCount",_this.$store.state.unDoFriendAddCount-1);
-									_this.initData(); 
+									_this.initData();
 									if(_t==1) {
-										
+
 										_this.$http.post("/user/friend/list/v1",
 											{
 												header:{
@@ -183,15 +183,15 @@
 													"x-access-client":_this.$clientType
 												}
 											}
-											
+
 										).then(res=>{
 											let res_data = eval(res.data);
-											if(res_data.code==200) {  
+											if(res_data.code==200) {
 												_this.$store.commit("setFriend_list",res_data.body);
 											}
 										});
-										
-									} 
+
+									}
 								} else {
 									uni.showToast({
 									    icon: 'none',
@@ -205,7 +205,7 @@
 				        }
 				    }
 				});
-				
+
 			},
 			goSearchFriend(){
 				this.PageCur = 'search';
@@ -272,7 +272,7 @@
 <style>
 	.content{
 		clear: both;
-	} 
+	}
 	.indexes {
 		position: relative;
 	}
