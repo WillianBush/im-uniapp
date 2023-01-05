@@ -1,9 +1,21 @@
 import Vue from 'vue'
 import App from './App'
-
+import VueI18n from 'vue-i18n'
 import home from './pages/home/index.vue'
+import en from '@/i18n/en.json'
+import zh from '@/i18n/zh.json'
 Vue.component('home',home)
+Vue.use(VueI18n)
+Vue.config.productuinTip = false
+const i18n = new VueI18n({
+	locale: 'zh-CN',
+	messages: {
+		'en-US': en,
+		'zh-CN': zh
+	}
+})
 
+Vue.prototype._i18n = i18n
 import addressBook from './pages/addressBook/index.vue'
 Vue.component('addressBook',addressBook)
 
@@ -108,7 +120,7 @@ Vue.prototype.$clientType = "H5"
 
 // uni.onSocketMessage(function (res_ws) {
 // 	heartCheck.reset();
-		
+
 // 	let user = uni.getStorageSync("USER");
 // 	let data = JSON.parse(res_ws.data);
 // 	if(data.CMD=="LOGIN") {
@@ -126,7 +138,7 @@ Vue.prototype.$clientType = "H5"
 // 			},
 // 			success(res) {
 // 				let res_data = eval(res.data);
-// 				if(res_data.code==200) {  
+// 				if(res_data.code==200) {
 // 					uni.clearStorageSync();
 // 					store.commit("clearData");
 // 					uni.showModal({
@@ -141,7 +153,7 @@ Vue.prototype.$clientType = "H5"
 // 					        }
 // 					    }
 // 					});
-					
+
 // 				}
 // 			}
 // 		})
@@ -160,7 +172,7 @@ Vue.prototype.$clientType = "H5"
 // 			},
 // 			success(res) {
 // 				let res_data = eval(res.data);
-// 				if(res_data.code==200) {  
+// 				if(res_data.code==200) {
 // 					uni.clearStorageSync();
 // 					store.commit("clearData");
 // 					uni.showToast({
@@ -184,7 +196,7 @@ Vue.prototype.$clientType = "H5"
 // 			},
 // 			success(res) {
 // 				let res_data = eval(res.data);
-// 				if(res_data.code==200) {  
+// 				if(res_data.code==200) {
 // 					uni.clearStorageSync();
 // 					store.commit("clearData");
 // 					uni.showToast({
@@ -214,7 +226,7 @@ Vue.prototype.$clientType = "H5"
 // 			},
 // 			success(res) {
 // 				let res_data = eval(res.data);
-// 				if(res_data.code==200) {  
+// 				if(res_data.code==200) {
 // 					store.commit("setFriend_list",res_data.body);
 // 				}
 // 			}
@@ -226,7 +238,7 @@ Vue.prototype.$clientType = "H5"
 // 		 } else {
 // 			 store.commit("setUnDoFriendAddCount",1);
 // 		 }
-// 	} 
+// 	}
 // 	else if(data.CMD=="AR_INSERT" || data.CMD=="AR_UPDATE") {
 // 		if(store.state.ar_list.length>0) {
 // 			let lastContent = "";
@@ -262,8 +274,8 @@ Vue.prototype.$clientType = "H5"
 // 				if(zhiding) {
 // 					item.top = 0;
 // 				}
-// 			}); 
-			
+// 			});
+
 // 			data.body.sort(function(a,b){
 // 				//除了top.如果TOP相等就按时间排
 // 				if(a.top==b.top) {
@@ -271,13 +283,13 @@ Vue.prototype.$clientType = "H5"
 // 				} else {
 // 					return a.top - b.top;
 // 				}
-				
+
 // 			})
-			
+
 // 			store.commit("setAr_list",data.body);
 // 		}
-		
-// 	} 
+
+// 	}
 // 	else if(data.CMD=="GROUP_MEMBER_REMOVE") {
 // 		let list = store.state.ar_list.filter(item=>{
 // 			if(item.id==data.body) {
@@ -286,17 +298,17 @@ Vue.prototype.$clientType = "H5"
 // 			return true;
 // 		})
 // 		store.commit("setAr_list",list);
-// 	}	
+// 	}
 // 	else if(data.CMD=="USER_CHAT_MESSAGE" || data.CMD=="GROUP_CHAT_MESSAGE") {
 // 		if(data.body[0].bean.fromUid!=store.state.user.id) {
 // 			let mp3_src = '/static/mp3/msg.mp3';
-// 			//实例化声音  
+// 			//实例化声音
 // 			const Audio = uni.createInnerAudioContext();
 // 			Audio.autoplay = true;
-// 			Audio.src = mp3_src; //音频地址  
-// 			Audio.play(); //执行播放 
+// 			Audio.src = mp3_src; //音频地址
+// 			Audio.play(); //执行播放
 // 		}
-		
+
 // 		 let str = uni.getStorageSync(user.id+"#"+data.body[0].chatid+'_CHAT_MESSAGE');
 // 		 if(str&&str!="") {
 // 			 var jsonObj = JSON.parse(str);
@@ -305,7 +317,7 @@ Vue.prototype.$clientType = "H5"
 // 				//  jsonObj.splice(0,jsonObj.length-50);
 // 			 // }
 // 			 uni.setStorageSync(user.id+"#"+data.body[0].chatid+'_CHAT_MESSAGE',JSON.stringify(jsonObj));
-			 
+
 // 			 // if(state.chatMessageMap.has(user.id+"#"+data.body[0].chatid)) {
 // 				//  let list = state.chatMessageMap.get(user.id+"#"+data.body[0].chatid);
 // 				//  list = list.concat(data.body);
@@ -321,16 +333,16 @@ Vue.prototype.$clientType = "H5"
 // 					key:user.id+"#"+data.body[0].chatid,
 // 					value:jsonObj
 // 				});
-					
+
 // 				if(store.state.cur_chat_entity&&store.state.cur_chat_entity.id==data.body[0].chatid) {
 // 					store.commit("setCur_chat_msg_list",jsonObj);
 // 				}
-				  
+
 // 				//store.state.chatMessageMap.set(user.id+"#"+data.body[0].chatid,jsonObj)
 // 			 // }
-			 
-			 
-			 
+
+
+
 // 		 } else {
 // 			  uni.setStorageSync(user.id+"#"+data.body[0].chatid+'_CHAT_MESSAGE',JSON.stringify(data.body));
 // 			  store.commit("updateChatMessageMap",{
@@ -340,16 +352,16 @@ Vue.prototype.$clientType = "H5"
 // 			  if(store.state.cur_chat_entity.id==data.body[0].chatid) {
 // 				  store.commit("setCur_chat_msg_list",data.body);
 // 			  }
-			  
+
 // 			 // store.commit("updateChatMessageMap",user.id+"#"+data.body[0].chatid,data.body);
 // 			// store.state.chatMessageMap.set(user.id+"#"+data.body[0].chatid,data.body)
 // 		 }
-		 
+
 // 		uni.removeStorageSync(user.id+"#"+data.body[0].chatid+'_CHAT_MESSAGE_LASTCONTENT');
 // 		 //更新联系记录最后一条显示内容和未读统计信息
-// 		let unreadCount = 0; 
+// 		let unreadCount = 0;
 // 		uni.setStorageSync(user.id+"#"+data.body[0].chatid+'_CHAT_MESSAGE_LASTCONTENT',data.body[0].bean.txt);
-		
+
 // 		let c = 0;//未读数量
 // 		let darao = uni.getStorageSync(data.body[0].chatid+"_darao");
 // 		if(!darao) {
@@ -363,10 +375,10 @@ Vue.prototype.$clientType = "H5"
 // 					 c = 1;
 // 					uni.setStorageSync(user.id+"#"+data.body[0].chatid+'_CHAT_MESSAGE_UNREAD',"1")
 // 				 }
-				 
-// 			 } 
+
+// 			 }
 // 		}
-		
+
 // 		// console.log(data.body[0]);
 // 		// console.log("***************");
 // 		store.state.ar_list.forEach(item=>{
@@ -388,9 +400,9 @@ Vue.prototype.$clientType = "H5"
 // 		store.commit("setUnReadMsgSum",unreadCount);
 // 		 // if(myConstants.scrollDelegate) {
 // 			//  myConstants.scrollDelegate.scrollBottom(true);
-// 		 // } 
-		 
-		 
+// 		 // }
+
+
 // 	}
 // });
 
@@ -405,8 +417,8 @@ Vue.config.productionTip = false
 App.mpType = 'app'
 
 const app = new Vue({
+	i18n,
 	...App
 })
 app.$mount()
 
- 

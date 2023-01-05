@@ -2,14 +2,15 @@
 	<view @tap="hideShowMenu()" style="padding-top:50upx;background-color: #fff;">
 		<view class="cu-bar bg-white solid-bottom">
 			<view class="action" style="font-size: 36upx;font-weight: 600;">
-				<text class="cuIcon-title text-orange "></text> 消息列表
+				<text class="cuIcon-title text-orange "></text> {{ i18n.MessageList }}
+				<text style="margin-left:30rpx;font-size:25rpx;font-weight:normal" @click="refresherrefresh">{{ i18n.refresh }}</text>
 			</view>
 			<text @tap.stop="showMenuFn()" style="float:right;font-size:48upx;color:#333;margin-top:6upx;margin-right:40upx" class="iconfont icon-jia"></text>
 		</view>
 		<view class="cu-bar bg-white search">
 			<view class="search-form round">
 				<text class="cuIcon-search"></text>
-				<input @input="search_list($event.target.value)" type="text" placeholder="输入搜索的关键词" confirm-type="search"></input>
+					<input @input="search_list($event.target.value)" type="text" :placeholder="i18n.plsinput" confirm-type="search"></input>
 			</view>
 
 		</view>
@@ -24,11 +25,11 @@
 				border-radius: 12upx;
 				color: #fff;
 				padding: 20upx;">
-				<view  @tap.stop="saoma()" style="float:left;width:98%;padding-bottom:10upx;" ><text style="float:left;font-size:46upx;margin-top:6upx;margin-left:10upx" class="iconfont icon-saoyisao"></text><text style="float:left;margin-top:10upx;margin-left:20upx;font-size: 28upx;">扫 一 扫</text></view>
-			 	<view  @tap.stop="createGroup()" style="border-top:1px solid #777;float:left;width:98%;padding-top:10upx;" ><text style="float:left;font-size:46upx;margin-top:6upx;margin-left:10upx" class="iconfont icon-liaotian1"></text><text style="float:left;margin-top:10upx;margin-left:20upx;font-size: 28upx;">发起群聊</text></view>
-				<view  @tap.stop="addFriend()" style="border-top:1px solid #777;float:left;width:98%;padding-top:10upx;"><text style="float:left;font-size:46upx;margin-top:6upx;margin-left:10upx" class="iconfont icon-tianjiahaoyou1"></text><text style="float:left;margin-top:10upx;margin-left:20upx;font-size: 28upx;">添加好友</text></view>
-				<view  @tap.stop="searchGroup()" style="border-top:1px solid #777;float:left;width:98%;padding-top:10upx;"><text style="float:left;font-size:46upx;margin-top:6upx;margin-left:10upx" class="iconfont icon-chazhao"></text><text style="float:left;margin-top:10upx;margin-left:20upx;font-size: 28upx;">查找群组</text></view>
-				<view  @tap.stop="searchUser" style="border-top:1px solid #777;float:left;width:98%;padding-top:10upx;"><text style="float:left;font-size:44upx;margin-top:6upx;margin-left:10upx" class="iconfont icon-zuoce-tongxun-gaoliang"></text><text style="float:left;margin-top:10upx;margin-left:20upx;font-size: 28upx;">超级通讯</text></view>
+				<view  @tap.stop="saoma()" style="float:left;width:98%;padding-bottom:10upx;" ><text style="float:left;font-size:46upx;margin-top:6upx;margin-left:10upx" class="iconfont icon-saoyisao"></text><text style="float:left;margin-top:10upx;margin-left:20upx;font-size: 28upx;">{{ i18n.scan }}</text></view>
+			 	<view  @tap.stop="createGroup()" style="border-top:1px solid #777;float:left;width:98%;padding-top:10upx;" ><text style="float:left;font-size:46upx;margin-top:6upx;margin-left:10upx" class="iconfont icon-liaotian1"></text><text style="float:left;margin-top:10upx;margin-left:20upx;font-size: 28upx;">{{ i18n.sponsor }}</text></view>
+				<view  @tap.stop="addFriend()" style="border-top:1px solid #777;float:left;width:98%;padding-top:10upx;"><text style="float:left;font-size:46upx;margin-top:6upx;margin-left:10upx" class="iconfont icon-tianjiahaoyou1"></text><text style="float:left;margin-top:10upx;margin-left:20upx;font-size: 28upx;">{{ i18n.add }}</text></view>
+				<view  @tap.stop="searchGroup()" style="border-top:1px solid #777;float:left;width:98%;padding-top:10upx;"><text style="float:left;font-size:46upx;margin-top:6upx;margin-left:10upx" class="iconfont icon-chazhao"></text><text style="float:left;margin-top:10upx;margin-left:20upx;font-size: 28upx;">{{i18n.search}}</text></view>
+				<view  @tap.stop="searchUser" style="border-top:1px solid #777;float:left;width:98%;padding-top:10upx;"><text style="float:left;font-size:44upx;margin-top:6upx;margin-left:10upx" class="iconfont icon-zuoce-tongxun-gaoliang"></text><text style="float:left;margin-top:10upx;margin-left:20upx;font-size: 28upx;">{{i18n.supertel}}</text></view>
 			 </view>
 		<!--#endif -->
 		<!--#ifdef H5 -->
@@ -42,10 +43,10 @@
 				border-radius: 12upx;
 				color: #fff;
 				padding: 20upx;">
-				<view  @tap.stop="createGroup()" style="float:left;width:98%;padding-bottom:10upx;" ><text style="float:left;font-size:46upx;margin-top:6upx;margin-left:10upx" class="iconfont icon-liaotian1"></text><text style="float:left;margin-top:10upx;margin-left:20upx;font-size: 28upx;">发起群聊</text></view>
-				<view  @tap.stop="addFriend()" style="border-top:1px solid #777;float:left;width:98%;padding-top:10upx;"><text style="float:left;font-size:46upx;margin-top:6upx;margin-left:10upx" class="iconfont icon-tianjiahaoyou1"></text><text style="float:left;margin-top:10upx;margin-left:20upx;font-size: 28upx;">添加好友</text></view>
-				<view  @tap.stop="searchGroup()" style="border-top:1px solid #777;float:left;width:98%;padding-top:10upx;"><text style="float:left;font-size:46upx;margin-top:6upx;margin-left:10upx" class="iconfont icon-chazhao"></text><text style="float:left;margin-top:10upx;margin-left:20upx;font-size: 28upx;">查找群组</text></view>
-				<view v-if="super_user==1" @tap.stop="searchUser" style="border-top:1px solid #777;float:left;width:98%;padding-top:10upx;"><text style="float:left;font-size:44upx;margin-top:6upx;margin-left:10upx" class="iconfont icon-zuoce-tongxun-gaoliang"></text><text style="float:left;margin-top:10upx;margin-left:20upx;font-size: 28upx;">超级通讯</text></view>
+				<view  @tap.stop="createGroup()" style="float:left;width:98%;padding-bottom:10upx;" ><text style="float:left;font-size:46upx;margin-top:6upx;margin-left:10upx" class="iconfont icon-liaotian1"></text><text style="float:left;margin-top:10upx;margin-left:20upx;font-size: 28upx;">{{ i18n.sponsor }}</text></view>
+				<view  @tap.stop="addFriend()" style="border-top:1px solid #777;float:left;width:98%;padding-top:10upx;"><text style="float:left;font-size:46upx;margin-top:6upx;margin-left:10upx" class="iconfont icon-tianjiahaoyou1"></text><text style="float:left;margin-top:10upx;margin-left:20upx;font-size: 28upx;">{{ i18n.add }}</text></view>
+				<view  @tap.stop="searchGroup()" style="border-top:1px solid #777;float:left;width:98%;padding-top:10upx;"><text style="float:left;font-size:46upx;margin-top:6upx;margin-left:10upx" class="iconfont icon-chazhao"></text><text style="float:left;margin-top:10upx;margin-left:20upx;font-size: 28upx;">{{ i18n.search }}</text></view>
+				<view v-if="super_user==1" @tap.stop="searchUser" style="border-top:1px solid #777;float:left;width:98%;padding-top:10upx;"><text style="float:left;font-size:44upx;margin-top:6upx;margin-left:10upx" class="iconfont icon-zuoce-tongxun-gaoliang"></text><text style="float:left;margin-top:10upx;margin-left:20upx;font-size: 28upx;">{{ i18n.supertel }}</text></view>
 			 </view>
 		<!--#endif -->
 
@@ -67,7 +68,7 @@
     background: #fff;
     height: 80px;
     line-height: 80px;
-    color: #999;" v-if="$store.state.ar_list_show.length<=0">暂无聊天信息</view>
+    color: #999;" v-if="$store.state.ar_list_show.length<=0">{{ i18n.nomore }}</view>
 				<view @tap="goChat(item)" class="cu-item" :class="modalName=='move-box-'+ index?'move-cur':''" v-for="(item,index) in $store.state.ar_list_show" :key="index"
 				 @touchstart="ListTouchStart" @touchmove="ListTouchMove" @touchend="ListTouchEnd" :data-target="'move-box-' + index">
 					<view v-if="chatCfg.showUserOnline==1" :class="{unline_pic:item.typeid=='2'&&item.online==0&&item.id!='-1'}" class="cu-avatar round lg" :style="{'backgroundImage': 'url('+$store.state.img_url+ item.img +')'}" >
@@ -81,10 +82,10 @@
 						-->
 					</view>
 					<view class="content">
-						<view class="text-black">{{item.title}}{{item.typeid == '1' ? '（群聊）' : ''}}</view>
+						<view class="text-black">{{item.title}}{{item.typeid == '1' ?  i18n.groupchat  : ''}}</view>
 						<view class="text-gray text-sm flex">
 							<view class="text-cut" style="position: relative;top: 4px;">
-								<text style="margin-right: 6px;" v-if="item.typeid=='2'&&item.online==0&&item.id!='-1'">最近登陆于{{item.lastLoginDate}} - </text>
+								<text style="margin-right: 6px;" v-if="item.typeid=='2'&&item.online==0&&item.id!='-1'">{{ i18n.lastlogin }}{{item.lastLoginDate}} - </text>
 								<text style="margin-right: 6px;color:red" v-if="item.aiteCount>0">[你有{{item.aiteCount}}条消息]</text>
 								{{item.content}}
 							</view> </view>
@@ -213,6 +214,15 @@
                 timer: null
 			};
 		},
+		computed: {
+
+			i18n () {
+				return this.$t('index')
+			}
+		},
+		watch:{
+
+		},
 		methods: {
 			refresherrefresh() {
 				console.log('自定义下拉刷新被触发');
@@ -265,8 +275,8 @@
 				if(user){
 					_this.$http.post("/user/accessRecord/json/listPage",
 							{
-								pageSize:pSize,//数量
-								pageNumber:pNumber//页数
+								pageSize:50,//数量
+								pageNumber:1//页数
 							},
 							{
 								header:{
@@ -299,10 +309,13 @@
 
 
 								let unRead = uni.getStorageSync(user.id+"#"+item.id+'_CHAT_MESSAGE_UNREAD');
+
 								if(unRead&&unRead!="") {
+									console.log('totop')
 									unreadSum+=parseInt(unRead);
 									item.unread = parseInt(unRead);
 								} else {
+									console.log('totop')
 									item.unread = 0;
 								}
 
@@ -325,7 +338,6 @@
 									return a.top - b.top;
 								}
 							})
-
 
 							_this.$store.commit("setAr_list",_this.$store.state.ar_list.concat(list))
 							_this.$store.commit("setUnReadMsgSum",unreadSum)

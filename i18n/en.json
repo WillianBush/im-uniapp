@@ -1,0 +1,16 @@
+{
+  "index": {
+    "MessageList": "Message List",
+    "game": "Game",
+    "refresh": "Refresh",
+    "plsinput": "Please enter key value",
+    "scan": "Scan QR code",
+    "add": "Add a friend",
+    "search": "search Group",
+    "supertel": "Communication",
+    "nomore": "No more news",
+    "groupchat": "group chat",
+    "lastlogin": "last login at",
+    "sponsor": "Sponsor Group"
+  }
+}

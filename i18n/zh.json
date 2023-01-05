@@ -1,0 +1,16 @@
+{
+  "index": {
+    "MessageList": "消息列表",
+    "invite": "邀请",
+    "refresh": "刷新",
+    "plsinput": "输入搜索的关键词",
+    "scan": "扫 一 扫",
+    "add": "添加好友",
+    "search": "查找群组",
+    "supertel": "超级通讯",
+    "nomore": "暂无更多信息",
+    "groupchat": "群聊",
+    "lastlogin": "最近登陆于",
+    "sponsor": "发起群聊"
+  }
+}
