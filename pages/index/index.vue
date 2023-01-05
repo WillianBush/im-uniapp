@@ -14,7 +14,7 @@
 		<home ref="homeRef" v-show="PageCur=='home'"></home>
 		<addressBook v-show="PageCur=='addressBook'"></addressBook>
 		<hotItem v-if="PageCur=='hotItem'&&$store.state.hotItem.show_type==1"></hotItem>
-		<faxian v-show="PageCur=='faxian'" :enterParam="pageConfigs"></faxian>
+		<faxian v-show="PageCur=='faxian'" ></faxian>
 		<mine v-show="PageCur=='mine'"></mine>
 		<view ref="footerView" class="cu-bar tabbar bg-white shadow foot" style="position: fixed; z-index: 999999;">
 			<view class="action" @click="NavChange" data-cur="home">
@@ -276,21 +276,9 @@
 
 
 					}
-					// // #ifdef H5
-					// _this.$store.commit("setHotItem_webViewStyle","flex:0");
-					// // #endif
-					//  // #ifdef APP-PLUS
-					// if(this.hot_wv) {
-					// 	this.hot_wv.setStyle({
-					// 		opacity:0,
-					// 		height:1,
-					// 	})
-					// }
-					// // #endif
 
 				}
 
-				// #ifdef H5
 
 				if(e.currentTarget.dataset.cur=="hotItem") {
 					console.log("11");
@@ -299,13 +287,10 @@
 					console.log("22");
 					_this.$store.commit("setHotItem_webView_show",false);
 				}
-				// #endif
 
-				setTimeout(function(){
 					_this.PageCur = e.currentTarget.dataset.cur;
-					if(_this.PageCur=="faxian") {
-
-						_this.$http.post("/fxs/json/getListWithMid",
+					if(e.currentTarget.dataset.cur=="faxian") {
+						 _this.$http.post("/fxs/json/getListWithMid",
 							{
 								header:{
 									"x-access-uid":_this.$store.state.user.id,
@@ -313,19 +298,11 @@
 								}
 							}
 						).then(res=>{
-							this.pageConfigs = res.data.body
+							 this.pageConfigs = res.data.body
+							 console.log('pageConfigs',this.pageConfigs)
 							_this.$store.commit("setFaxian_site_list",res.data.body);
-						}).catch(res=>{
-							uni.showToast({
-								icon: 'none',
-								title: "当前接口异常"
-							});
-							console.log('异常信息=>',res)
-							return;
 						})
-
 					}
-				},50)
 
 
 

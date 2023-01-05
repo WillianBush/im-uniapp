@@ -31,7 +31,6 @@
 
 <script>
 	export default {
-		props:['pageConfigs'],
 		data(){
 			return{
         currentUrl:'',
@@ -49,8 +48,7 @@
 				});
 			},
       checkIndex(){
-      	console.log('see=>',pageConfigs)
-			if(pageConfigs[0].status_user == 1){
+			if(this.$store.state.faxian_site_list[0].status_user == 1){
 				uni.navigateTo({
 					url: `/pages/faxian/webview?url=${this.$store.state.faxian_site_list[0].url}`
 				})
