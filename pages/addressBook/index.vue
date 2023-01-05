@@ -1,8 +1,8 @@
 <template>
-	<view> 
+	<view>
 		<cu-custom bgColor="bg-blue" :isBack="false"><block slot="content">通讯录({{memberList.length}})</block></cu-custom>
-		
-		
+
+
 		<view class="cu-bar bg-white search" >
 			<view class="search-form round">
 				<text class="cuIcon-search"></text>
@@ -10,35 +10,36 @@
 			</view>
 			<view class="action">
 				<button @tap="search()" style="background: #FFAA01;"   class="cu-btn bg-gradual-green shadow-blur round">搜索</button>
+				<button @tap="getRefresh()" style="margin-left:20rpx;background: #3F92F8;"   class="cu-btn bg-gradual-green shadow-blur round">刷新</button>
 			</view>
 		</view>
 		<scroll-view scroll-y class="indexes" :scroll-into-view="'indexes-'+ listCurID" :style="[{height:'calc(100vh - 100upx - 100upx - 150upx)'}]"
 		 :scroll-with-animation="true" :enable-back-to-top="true">
-		 
+
 		 <view style="margin-top:10px;" class="cu-list menu"
 		  :class="[true?'sm-border':'',false?'card-menu margin-top':'']">
 		    <view @tap="goNewFriends()" class="cu-item" :class="true?'arrow':''">
-		    	<view class="content"> 
+		    	<view class="content">
 				<!--
 		    		<svg style="float:left;"  t="1600767029316" class="icon" viewBox="0 0 1025 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="41145" width="30" height="30"><path d="M512.016875 999.03122" p-id="41146" fill="#FE9F57"></path><path d="M364.282945 427.613022c0-81.5526 66.112581-147.67643 147.67018-147.67643 81.54885 0 147.67268 66.123831 147.67268 147.67643 0 81.58635-66.118831 147.68518-147.67268 147.67143C430.395525 575.285702 364.282945 509.199372 364.282945 427.613022L364.282945 427.613022z" p-id="41147" fill="#FE9F57"></path><path d="M512.016875 0C229.23403 0 0 229.23403 0 512.016875 0 794.77597 229.23403 1024 512.016875 1024c282.774095 0 512.006875-229.22403 512.006875-511.983125C1024.025 229.23403 794.79097 0 512.016875 0zM749.229665 759.092177c-0.0225 0.33875-0.07 0.670001-0.115 1.002501l-0.0025 0.02375c0-0.00125 0-0.00125 0-0.0025-0.958751 6.840008-6.792508 12.072515-13.901267 12.072515-7.78751 0-14.702518-6.265008-14.702518-14.052517-27.113783-89.506359-110.195135-154.707689-208.556505-154.707689-98.36762 0-181.853972 68.311333-208.974005 157.827693-1.782502 7.257509-9.556262 10.932513-14.292517 10.932513-7.777509 0-14.062517-6.265008-14.062517-14.052517 0.37625-1.518752 0.463751-3.002504 0.893751-4.551256 0.13625-0.37625 0.2-0.791251 0.34625-1.171251 22.973778-78.605096 83.892602-140.997672 161.767697-165.641452-59.901323-28.027534-101.483874-88.662608-101.483874-159.155194 0-97.071368 78.706346-175.801465 175.805215-175.801465 97.071368 0 175.802715 78.726346 175.802715 175.801465 0 70.492586-41.626301 131.12766-101.508874 159.140194 77.881345 24.64878 138.788919 87.051356 161.762697 165.640202 0.17125 0.37625 1.157501 5.356257 1.270002 5.732507C749.478415 758.833426 749.365915 758.982176 749.229665 759.092177z" p-id="41148" fill="#FE9F57"></path></svg>
-				-->	
+				-->
 				<!--
 					<view  style="float:left;width: 44upx;height: 44upx;background-image: url(../../static/tb/addf.png);background-size: 100% 100%;"></view>
 				-->
-					<text style="float:left;color:#FCBF00;font-size:50upx" class="iconfont icon-tianjiahaoyou"></text>	
+					<text style="float:left;color:#FCBF00;font-size:50upx" class="iconfont icon-tianjiahaoyou"></text>
 		    		<text class="text-grey" style="float:left;margin-left: 10px;">新的朋友</text>
 					<view v-if="$store.state.unDoFriendAddCount>0" style="top: 38upx;right: 72upx" class="cu-tag badge">{{$store.state.unDoFriendAddCount}}</view>
-		    	</view> 
-		    </view>  
+		    	</view>
+		    </view>
 			<view @tap="goMyGroup()" class="cu-item" :class="true?'arrow':''">
-				<view class="content"> 
+				<view class="content">
 					<!--
 					<svg style="float:left;"  t="1600766851512" class="icon" viewBox="0 0 1025 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="34503" width="30" height="30"><path d="M626.157194 350.515823c0-64.432132-52.774425-116.866813-117.568096-116.866813-64.848799 0-117.583481 52.434681-117.583481 116.866813 0 64.438542 52.744938 116.873223 117.583481 116.873223C573.393026 467.389047 626.157194 414.954366 626.157194 350.515823z" p-id="34504" fill="#ED72B5"></path><path d="M508.619868 496.490365c-123.223231 0-223.447716 99.63474-223.447716 222.036175l0 38.019278 446.799277 0 0-38.019278C731.962455 596.125105 631.771304 496.490365 508.619868 496.490365z" p-id="34505" fill="#ED72B5"></path><path d="M512.009615 0C229.232338 0 0 229.232338 0 512.009615c0 282.768303 229.232338 511.990385 512.009615 511.990385 282.768303 0 511.999359-229.222082 511.999359-511.990385C1024.010256 229.232338 794.777918 0 512.009615 0zM203.325896 677.698284c-1.457694 9.632063-2.393593 19.346178-2.824363 29.092344l-35.92825 0c-8.117959 0-14.733352-6.530777-14.733352-14.555146l0-40.655179c0-74.569324 41.160308-142.041203 107.442442-176.146374l13.621812-7.006419-10.326936-11.317963c-20.207718-22.155156-31.360296-50.661602-31.360296-80.283434 0-60.60264 45.597493-110.842446 104.497567-118.670661-7.151291 10.887193-12.99617 22.526951-17.443612 34.741069-34.679531 13.637197-57.571867 46.650058-57.571867 83.929592 0 35.426967 21.003872 67.798803 53.515452 82.461642l0.341026 0.160257 0.344872 0.135898c6.255136 2.338464 10.276936 7.582061 10.276936 13.330786 0 5.829494-4.211544 11.167963-10.556423 13.446171l-4.757698 1.147437c-75.685992 19.000024-128.565546 86.428313-128.565546 164.075846l0 26.111571L203.325896 677.69572zM761.459928 771.083017c0 8.053856-6.610265 14.583352-14.753865 14.583352l-476.282648 0c-8.117959 0-14.733352-6.529495-14.733352-14.583352L255.690064 718.51372c0-51.066731 15.448737-100.298844 44.69621-142.236076 28.56542-41.010308 68.238547-72.441116 114.698862-90.880883l19.029511-7.551292-16.130789-12.580785c-35.882096-28.014138-56.460327-69.835985-56.460327-114.75399 0-80.507793 65.970595-145.988644 147.055312-145.988644 81.075743 0 147.015569 65.480851 147.015569 145.988644 0 44.912877-20.578231 86.739852-56.425712 114.75399l-16.130789 12.580785 18.994896 7.551292c46.479545 18.439767 86.168057 49.875703 114.733477 90.851396 29.242344 41.966719 44.691082 91.170627 44.691082 142.266845L761.457364 771.083017zM867.013906 692.236764c0 8.024369-6.605136 14.555146-14.723095 14.555146l-35.947481 0c-0.405129-9.747448-1.376925-19.466691-2.808978-29.092344l23.998748 0 0-26.111571c0-77.643687-52.855194-145.077105-128.541187-164.075846l-4.773083-1.147437c-6.315393-2.283336-10.532064-7.626933-10.532064-13.446171 0-5.748725 4.032056-10.987193 10.271808-13.330786l0.355129-0.151282 0.315385-0.144872c32.521836-14.662839 53.535964-47.034674 53.535964-82.461642 0-37.279534-22.887208-70.292396-57.566739-83.929592-4.457698-12.219246-10.306423-23.853876-17.447458-34.741069 58.914176 7.842318 104.48731 58.068021 104.48731 118.670661 0 29.621832-11.123091 58.128278-31.344911 80.283434l-10.326936 11.317963 13.606427 7.006419c66.26675 34.109017 107.442442 101.575768 107.442442 176.146374L867.015188 692.236764z" p-id="34506" fill="#ED72B5"></path><path d="M512.009615 999.034584" p-id="34507" fill="#ED72B5"></path></svg>
 					-->
 					<!--
 					<view  style="float:left;width: 44upx;height: 44upx;background-image: url(../../static/tb/group3.png);background-size: 100% 100%;"></view>
 					-->
-					<text style="color:#009FE8;font-size:50upx" class="iconfont icon-qunzhong"></text>	
+					<text style="color:#009FE8;font-size:50upx" class="iconfont icon-qunzhong"></text>
 					<text class="text-grey" style="margin-left: 10px;">群聊</text>
 					<view v-if="$store.state.unDoRoomAddCount>0" style="top: 38upx;right: 72upx" class="cu-tag badge">{{$store.state.unDoRoomAddCount}}</view>
 				</view>
@@ -51,12 +52,12 @@
 					<!--
 					<view  style="float:left;width: 44upx;height: 44upx;background-image: url(../../static/tb/hei.png);background-size: 100% 100%;"></view>
 					-->
-					<text style="color:#999;font-size:50upx" class="iconfont icon-heimingdan"></text>	
+					<text style="color:#999;font-size:50upx" class="iconfont icon-heimingdan"></text>
 					<text class="text-grey" style="margin-left: 10px;">黑名单</text>
 				</view>
 			</view>
-		</view>	
-		 
+		</view>
+
 			<block v-for="(item,index) in friend_list" :key="index">
 				<view :class="'indexItem-' + item.h" :id="'indexes-' + item.h" :data-index="item.h">
 					<view class="padding">{{item.h}}</view>
@@ -113,8 +114,6 @@
 			};
 		},
 		mounted() {
-			let _this = this;
-			let user = uni.getStorageSync("USER");
 			/**
 			let list = [{}];
 			for (let i = 0; i < 26; i++) {
@@ -124,65 +123,12 @@
 			this.list = list;
 			this.listCur = list[0];
 			**/
-				
-			
-				
-			if(this.$store.state.friend_list.length<=0) {
-				console.log("进来了");
-				
-				
-				_this.$http.post("/user/friend/list/v1",
-					{
-						header:{
-							"x-access-uid":user.id,
-							"x-access-client":_this.$clientType
-						}
-					}
-					
-				).then(res=>{
-					let res_data = eval(res.data);
-					if(res_data.code==200) {  
-						_this.$store.commit("setFriend_list",res_data.body);
-						res_data.body.forEach(item=>{
-							let i = {};
-							i.name = item.h;
-							_this.list.push(i);
-						})
+			this.init()
 
 
-						res.data.body.forEach((item, index) => { //循环拿到聊天人员列表name。根据name长度获取人数
-							item.list.forEach((item, index) => {
-								this.memberList.push(item.name)
-							})
-						})
-						this.$store.state.memberLength = this.memberList.length
-					}
-				});
-				
-				
-				// uni.request({
-				// 	method:"POST",
-				// 	url: _this.$store.state.req_url + "/user/friend/list/v1",
-				// 	header:{
-				// 		"Content-Type":"application/x-www-form-urlencoded",
-				// 		"x-access-uid":user.id
-				// 	},
-				// 	success(res) {
-				// 		let res_data = eval(res.data);
-				// 		if(res_data.code==200) {  
-				// 			_this.$store.commit("setFriend_list",res_data.body);
-				// 			res_data.body.forEach(item=>{
-				// 				let i = {};
-				// 				i.name = item.h;
-				// 				_this.list.push(i);
-				// 			})
-							
-				// 		}
-				// 	}
-				// })
-			}
-			
-			
+
+
+
 		},
 		computed:{
 			friend_list() {
@@ -208,13 +154,13 @@
 					let i = {};
 					i.name = item.h;
 					_this.list.push(i);
-					
+
 				})
-				
+
 				return nlist;
 			}
 		},
-		
+
 		onReady() {
 			let that = this;
 			uni.createSelectorQuery().select('.indexBar-box').boundingClientRect(function(res) {
@@ -223,9 +169,78 @@
 			uni.createSelectorQuery().select('.indexes').boundingClientRect(function(res) {
 				that.barTop = res.top
 			}).exec();
-			
+
 		},
 		methods: {
+			init(){
+				let _this = this;
+				let user = uni.getStorageSync("USER");
+					_this.$http.post("/user/friend/list/v1",
+							{
+								header:{
+									"x-access-uid":user.id,
+									"x-access-client":_this.$clientType
+								}
+							}
+
+					).then(res=>{
+						let res_data = eval(res.data);
+						if(res_data.code==200) {
+							_this.$store.commit("setFriend_list",res_data.body);
+							res_data.body.forEach(item=>{
+								let i = {};
+								i.name = item.h;
+								_this.list.push(i);
+							})
+
+
+							res.data.body.forEach((item, index) => { //循环拿到聊天人员列表name。根据name长度获取人数
+								item.list.forEach((item, index) => {
+									this.memberList.push(item.name)
+								})
+							})
+							this.$store.state.memberLength = this.memberList.length
+						}
+					});
+
+			},
+			getRefresh(){
+				this.kw1 = ""
+				uni.showLoading({
+					title: '加载中'
+				});
+				let _this = this;
+				let user = uni.getStorageSync("USER");
+					_this.$http.post("/user/friend/list/v1",
+							{
+								header:{
+									"x-access-uid":user.id,
+									"x-access-client":_this.$clientType
+								}
+							}
+
+					).then(res=>{
+						uni.hideLoading()
+						let res_data = eval(res.data);
+						if(res_data.code==200) {
+							_this.$store.commit("setFriend_list",res_data.body);
+							res_data.body.forEach(item=>{
+								let i = {};
+								i.name = item.h;
+								_this.list.push(i);
+							})
+
+
+							res.data.body.forEach((item, index) => { //循环拿到聊天人员列表name。根据name长度获取人数
+								item.list.forEach((item, index) => {
+									this.memberList.push(item.name)
+								})
+							})
+							this.$store.state.memberLength = this.memberList.length
+						}
+					});
+
+			},
 			goBlacklist() {
 				uni.navigateTo({
 					url:"/pages/addressBook/blacklist/index"

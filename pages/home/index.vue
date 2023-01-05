@@ -2,8 +2,8 @@
 	<view @tap="hideShowMenu()" style="padding-top:50upx;background-color: #fff;">
 		<view class="cu-bar bg-white solid-bottom">
 			<view class="action" style="font-size: 36upx;font-weight: 600;">
-				<text class="cuIcon-title text-orange "></text> {{ i18n.MessageList }}
-				<text style="margin-left:30rpx;font-size:25rpx;font-weight:normal" @click="refresherrefresh">{{ i18n.refresh }}</text>
+				<text class="cuIcon-title text-green "></text> {{ i18n.MessageList }}
+				<button @tap="refresherrefresh()" style="background: #FFAA01;margin-left:30rpx;font-size:25rpx;font-weight:normal;height:22px"   class="cu-btn bg-gradual-green shadow-blur round">{{ i18n.refresh }}</button>
 			</view>
 			<text @tap.stop="showMenuFn()" style="float:right;font-size:48upx;color:#333;margin-top:6upx;margin-right:40upx" class="iconfont icon-jia"></text>
 		</view>
