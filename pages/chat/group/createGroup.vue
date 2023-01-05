@@ -154,25 +154,7 @@
 			friend_list() {
 				let _this = this;
 				let user = uni.getStorageSync("USER");
-				_this.$http.post("/user/friend/list/v1",
-						{
-							header:{
-								"x-access-uid":user.id,
-								"x-access-client":_this.$clientType
-							}
-						}
-				).then(res=>{
-					let res_data = eval(res.data);
-					if(res_data.code==200) {
-						_this.$store.commit("setFriend_list",res_data.body);
-						res_data.body.forEach(item=>{
-							let i = {};
-							i.name = item.h;
-							_this.list.push(i);
-						})
 
-					}
-				})
 
 
 				let nlist = [];
