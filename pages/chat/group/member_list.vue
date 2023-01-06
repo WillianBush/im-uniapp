@@ -1,6 +1,6 @@
 <template>
 	<view>
-		<view v-show="PageCur=='main'">
+		<view v-show="PageCur=='main'" style="overflow: scroll">
 			<view style="height: 45px;line-height: 45px;background: #eee;padding-left: 5px; color:#000">
 				<text class="cuIcon-back" @click="goback" style="float:left; margin:0 5px; cursor: pointer;"></text>
 				群组成员({{list.length}}人)
@@ -19,17 +19,14 @@
 
 			<view style="background: #fff;width: 96%;
 		margin: auto auto;
-		margin-top: 10px;" class="margin-top">
+		margin-top: 10px;" class="ultra-cover">
 
 
-				<view style=" width:100%">
-						<view   style="padding-top:30upx;padding-bottom:30upx;">
+				<view class="modal-cover">
 							<view @tap="goUserDetail(item.id)" style="display: inline-block;width:20%;margin-bottom:20upx;text-align: center;" v-for="(item,index) in list1">
 								<view  class="cu-avatar round" :style="'height:100upx;width:100upx;background-image:url('+$store.state.img_url+item.headpic+');'"></view>
 								<view    style="margin:auto auto;color: #999;font-size:24upx;text-align: center;margin-top:8upx;overflow: hidden;height:68upx;width:100upx;word-wrap: break-word; word-break: normal">{{item.nickName}}</view>
-
 							</view>
-						</view>
 				</view>
 
 
@@ -51,14 +48,14 @@
 				kw:"",
 				PageCur: 'main',
 				randomKeyId: 0
-				
+
 			}
 		},
 		onLoad() {
 			let _this = this;
 			let user = uni.getStorageSync("USER");
-			
-			
+
+
 			_this.$http.post("/room/json/getMemberList",
 				{roomid:_this.$store.state.cur_chat_entity.id},
 				{
@@ -69,7 +66,7 @@
 				}
 			).then(res=>{
 				let res_data = eval(res.data);
-				if(res_data.code==200) {  
+				if(res_data.code==200) {
 					_this.list = res_data.body;
 					_this.list.forEach((item1)=>{
 						let s = uni.getStorageSync(item1.id+"_NOTE");
@@ -132,8 +129,8 @@
 			},
 			goUserDetail(_id){
 				let _this = this;
-				
-				
+
+
 				_this.$http.post("/sysConfig/json/getRoomCfg",
 					{
 						header:{
@@ -143,7 +140,7 @@
 					}
 				).then(res=>{
 					let res_data = eval(res.data);
-					if(res_data.code==200) {  
+					if(res_data.code==200) {
 						let flag = false;
 						//哪个角色可查看群成员详细 0全体 1仅群主 2群主和群管理员
 						if(res_data.body.lookGroupMemberDetailForRole==0) {
@@ -158,8 +155,8 @@
 								flag = true;
 							}
 						}
-						
-							
+
+
 						if(flag) {
 							this.PageCur = 'user_detail';
 							this.randomKeyId = parseInt(Math.random()*100000000);
@@ -170,12 +167,12 @@
 							// uni.navigateTo({
 							// 	url:"/pages/chat/user_detail?id="+_id+"&room_id="+_this.$store.state.cur_chat_entity.id
 							// })
-						}	
-						
+						}
+
 					}
 				})
-				
-				
+
+
 				// uni.request({
 				// 	method:"POST",
 				// 	url: this.$store.state.req_url + "/sysConfig/json/getRoomCfg",
@@ -184,7 +181,7 @@
 				// 	},
 				// 	success(res) {
 				// 		let res_data = eval(res.data);
-				// 		if(res_data.code==200) {  
+				// 		if(res_data.code==200) {
 				// 			let flag = false;
 				// 			//哪个角色可查看群成员详细 0全体 1仅群主 2群主和群管理员
 				// 			if(res_data.body.lookGroupMemberDetailForRole==0) {
@@ -199,19 +196,19 @@
 				// 					flag = true;
 				// 				}
 				// 			}
-							
-								
+
+
 				// 			if(flag) {
 				// 				uni.navigateTo({
 				// 					url:"/pages/chat/user_detail?id="+_id+"&room_id="+_this.$store.state.cur_chat_entity.id
 				// 				})
-				// 			}	
-							
+				// 			}
+
 				// 		}
 				// 	}
 				// })
-				
-				
+
+
 			}
 		},
 		computed: {},
@@ -220,5 +217,33 @@
 </script>
 
 <style>
+	.ultra-cover{
+		height:500px;
+		overflow: scroll;
+	}
+	.-webkit-scrollbar {
+		/* 隐藏默认的滚动条 */
+		-webkit-appearance: none;
+	}
+	.-webkit-scrollbar:vertical {
+		/* 设置垂直滚动条宽度 */
+		width: 2px;
+	}
 
+
+	/* 这里不需要用到这个 */
+	.-webkit-scrollbar:horizontal{
+		/* 设置水平滚动条厚度 */
+		height: 2px;
+	}
+
+	.-webkit-scrollbar-thumb {
+		/* 滚动条的其他样式定制，注意，这个一定也要定制，否则就是一个透明的滚动条 */
+		border-radius: 8px;
+		border: 2px solid rgba(255,255,255,.4);
+		background-color: rgba(0, 0, 0, .5);
+	}
+.modal-cover{
+	width:100%;padding-top:30upx;padding-bottom:30upx;
+}
 </style>
