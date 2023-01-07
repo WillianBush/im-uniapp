@@ -810,25 +810,7 @@
 					_this.chatCfg = res_data.body;
 				}
 			})
-
-			// uni.request({
-			// 	method:"POST",
-			// 	url: _this.$store.state.req_url + "/sysConfig/json/getChatCfg",
-			// 	header:{
-			// 		"Content-Type":"application/x-www-form-urlencoded",
-			// 		"x-access-uid":_this.$store.state.user.id
-			// 	},
-			// 	success(res) {
-			// 		let res_data = eval(res.data);
-			// 		if(res_data.code==200) {
-			// 			_this.chatCfg = res_data.body;
-			// 		}
-			// 	}
-			// })
-
-
-
-
+			this.refresherrefresh()
 		}
 	}
 </script>

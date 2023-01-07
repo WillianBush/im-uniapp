@@ -561,18 +561,44 @@
 						}
 					}
 				).then(res=>{
-
 					_this.isRotate=false
 					let res_data = eval(res.data);
 					if(res_data.code==200) {
 						//console.log(res_data.body);
-            uni.showToast({
-              icon: 'none',
-              position: 'bottom',
-              title: '注册成功'
-            });
-						this.logins()
+						_this.$store.commit("setUser",res_data.body)
+						uni.setStorageSync("USER",res_data.body);
+						_this.$store.commit("setUnDoRoomAddCount",res_data.body.unDoRoomAddCount);
+						_this.$store.commit("setUnDoFriendAddCount",res_data.body.unDoFriendAddCount);
+						//_this.$websocket.dispatch("WEBSOCKET_SEND", "{body:'"+res_data.body.id+"',CMD:'PUTSESSION'}");
+						let v = {
+							user_id:res_data.body.id,
+							app_uuid:_this.$store.state.app_uuid,
+						}
 
+						v.client = _this.$clientType;
+						v.user_id = v.user_id+"#"+v.client;
+						setTimeout(function(){
+							_this.$websocket.dispatch('WEBSOCKET_SEND', "{body:'"+JSON.stringify(v)+"',CMD:'PUTSESSION'}");
+						},10000);
+						// 保存clientid到服务器，最好延迟一下获取信息否则有时会获取不到
+						// #ifdef APP-PLUS
+						setTimeout(function(){
+							const clientInfo = plus.push.getClientInfo()
+							let pushUser = {
+								clientid: clientInfo.clientid,
+								appid: clientInfo.appid,
+								appkey: clientInfo.appkey,
+								userName: '用户名',
+								userRole: '用户角色',
+								uid:res_data.body.id
+							}
+							_this.$websocket.dispatch("WEBSOCKET_SEND", "{body:'"+JSON.stringify(pushUser)+"',CMD:'APP_PUSH_USER_INFO'}");
+						},10000);
+						// #endif
+
+						uni.navigateTo({
+							url:"/pages/index/index"
+						})
 					} else {
 						uni.showToast({
 							icon: 'none',
