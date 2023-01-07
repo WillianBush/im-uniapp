@@ -1036,26 +1036,7 @@
 			};
 		},
 
-		computed:{
-			msgList(){
-				return this.$store.state.cur_chat_msg_list
-			}
-		},
 		watch: {
-			// msgToGroupId: function(newVal,oldVal){
-			// console.log('进入group')
-			// this.toid = newVal;
-			// },
-			// msgToId: function(newVal,oldVal){
-			// 	console.log('进入usr')
-			// 	this.toid = newVal;
-			// },
-			msgList(val){
-				val.forEach((item) => {
-					item.uuid = item.bean.uuid
-				});
-				store.commit("setCur_chat_msg_list",this.unique(val, "uuid")); //数组去重后放回
-			},
 			isRandom: function(newVal,oldVal){
 				this.txt = "" //重新选择置空
 				if(this.isGroupChat){
