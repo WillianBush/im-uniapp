@@ -4,6 +4,7 @@
 			<view class="cu-bar bg-white solid-bottom">
 				<view class="action" style="font-size: 36upx;font-weight: 600;">
 					<text class="cuIcon-title text-orange " style="color: green"></text> 消息列表
+					<button class="refresh-btn" @click="refresherrefresh">刷新</button>
 				</view>
 				<text @tap.stop="showMenuFn()"
 					style="float:right;font-size:48upx;cursor: pointer;color:#333;margin-top:6upx;margin-right:40upx"
@@ -101,27 +102,7 @@
 						</view>
 					</view>
 				</view>
-				<!--
-				<view class="cu-list menu-avatar">
-					<view class="cu-item" :class="modalName=='move-box-'+ index?'move-cur':''" v-for="(item,index) in 4" :key="index"
-					 @touchstart="ListTouchStart" @touchmove="ListTouchMove" @touchend="ListTouchEnd" :data-target="'move-box-' + index">
-						<view class="cu-avatar round lg" :style="[{backgroundImage:'url(https://ossweb-img.qq.com/images/lol/web201310/skin/big2100'+ (index+2) +'.jpg)'}]"></view>
-						<view class="content">
-							<view class="text-grey">文晓港</view>
-							<view class="text-gray text-sm">
-								<text class="cuIcon-infofill text-red  margin-right-xs"></text> 消息未送达</view>
-						</view>
-						<view class="action">
-							<view class="text-grey text-xs">22:20</view>
-							<view class="cu-tag round bg-grey sm">5</view>
-						</view>
-						<view class="move">
-							<view class="bg-grey">置顶</view>
-							<view class="bg-red">删除</view>
-						</view>
-					</view>
-				</view>
-				-->
+
 			</scroll-view>
 		</view>
 		<view v-show="!msgToId && !msgToGroupId && isBlank" style="height: 100vh;width: 80%; float: left; border-left: 1px solid #ddd; background:#eee">
@@ -855,5 +836,8 @@
 	.unline_pic {
 		-webkit-filter: grayscale(100%);
 		filter: grayscale(100%);
+	}
+	.refresh-btn{
+
 	}
 </style>
