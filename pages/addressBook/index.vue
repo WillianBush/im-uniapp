@@ -9,7 +9,8 @@
 						<input v-model="kw1"  type="text" placeholder="输入搜索的关键词" confirm-type="search"></input>
 					</view>
 					<view class="action">
-						<button @tap="search()" style="background: #FFAA01;"   class="cu-btn bg-gradual-green shadow-blur round">搜索</button>
+						<button @tap="search()" style="background: #FFAA01;margin-right:2px"   class="cu-btn bg-gradual-green shadow-blur round">搜索</button>
+						<button @tap="refresherrefresh()" style="background: #4FA2FE;"   class="cu-btn bg-gradual-green shadow-blur round">刷新</button>
 					</view>
 				</view>
 				<scroll-view scroll-y class="indexes" :scroll-into-view="'indexes-'+ listCurID" :style="[{height:'calc(100vh - 100upx - 100upx - 150upx)'}]"
@@ -416,5 +417,8 @@
 	}
 	.text-grey {
 		color:#333
+	}
+	.cu-btn{
+		line-height:28px;
 	}
 </style>

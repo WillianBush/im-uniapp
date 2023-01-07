@@ -4,7 +4,7 @@
 			<view class="cu-bar bg-white solid-bottom">
 				<view class="action" style="font-size: 36upx;font-weight: 600;">
 					<text class="cuIcon-title text-orange " style="color: green"></text> 消息列表
-					<button class="refresh-btn" @click="refresherrefresh">刷新</button>
+					<button class="refresh-btn" @click="refresherrefresh"  >刷新</button>
 				</view>
 				<text @tap.stop="showMenuFn()"
 					style="float:right;font-size:48upx;cursor: pointer;color:#333;margin-top:6upx;margin-right:40upx"
@@ -239,7 +239,6 @@
 				this.roomid = id;
 			},
  			refresherrefresh() {
-				console.log('自定义下拉刷新被触发');
 				let _this = this;
 				if (_this._refresherTriggered) {
 					return;
@@ -252,13 +251,11 @@
 				this.loadStoreData();
 			},
 			refresherrestore() {
-				console.log('自定义下拉刷新被复位');
 				let _this = this;
 				_this.refresherTriggered = false;
 				_this._refresherTriggered = false;
 			},
 			refresherabort() {
-				console.log('自定义下拉刷新被中止');
 				let _this = this;
 				_this.refresherTriggered = false;
 				_this._refresherTriggered = false;
@@ -838,6 +835,7 @@
 		filter: grayscale(100%);
 	}
 	.refresh-btn{
-
+		background: #FFAA01;margin-left:30rpx;font-size:25rpx;font-weight:normal;line-height:18px;
+		color:white;
 	}
 </style>
