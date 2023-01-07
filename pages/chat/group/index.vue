@@ -1038,6 +1038,7 @@
 
 		watch: {
 			isRandom: function(newVal,oldVal){
+				console.log('msgToId=>',this.msgToId)
 				this.txt = "" //重新选择置空
 				if(this.isGroupChat){
 					this.toid = this.msgToGroupId;
@@ -1114,7 +1115,6 @@
 				});
 
 				let s = uni.getStorageSync(this.toid+"_NOTE");
-				console.log('fuck', this.toid, s)
 				if(s&&s!="") {
 					_this.$store.state.chatShowName = s;
 				}
@@ -1201,7 +1201,6 @@
 			},
 			loadOrRefreshDate2(){
 				var _this = this;
-				console.log("去除小红点1 user",_this.entity)
 
 				_this.$http.post("/user/json/loadById/v1",
 						{id:_this.toid},
@@ -1240,10 +1239,8 @@
 							uni.setStorageSync(_this.$store.state.user.id+"#"+_this.toid+'_CHAT_MESSAGE_UNREAD',"0");
 							_this.$store.commit("setUnReadMsgSum",_this.$store.state.unReadMsgSum - parseInt(unRead))
 						}
-						console.log("去除小红点3",_this.$store.state.ar_list_show)
 						_this.$store.state.ar_list_show.forEach(item=>{
 							if(item.id==_this.entity.id) {
-								console.log("去除小红点","进来了")
 								item.unread = 0;
 								return;
 							}
@@ -1253,7 +1250,6 @@
 			},
 			loadOrRefreshDate(){
 				var _this = this;
-				console.log("去除小红点2 group",_this.entity)
 
 				_this.$http.post("/room/json/load/v1",
 						{roomid:_this.toid},
@@ -1278,10 +1274,8 @@
 								uni.setStorageSync(_this.$store.state.user.id+"#"+_this.toid+'_CHAT_MESSAGE_UNREAD',"0");
 								_this.$store.commit("setUnReadMsgSum",_this.$store.state.unReadMsgSum - parseInt(unRead))
 							}
-							console.log("去除小红点3",_this.$store.state.ar_list_show)
 							_this.$store.state.ar_list_show.forEach(item=>{
 								if(item.id==_this.entity.id) {
-									console.log("去除小红点","进来了")
 									item.unread = 0;
 									return;
 								}

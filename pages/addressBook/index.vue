@@ -44,7 +44,7 @@
 						<view :class="'indexItem-' + item.h" :id="'indexes-' + item.h" :data-index="item.h">
 							<view class="padding">{{item.h}}</view>
 							<view class="cu-list menu-avatar no-padding">
-								<view @tap="goUserDetail(items.member_uuid)" class="cu-item" v-for="(items,index1) in item.list" :key="index1">
+								<view @tap="goUserDetail(items)" class="cu-item" v-for="(items,index1) in item.list" :key="index1">
 									<view class="cu-avatar round lg" :style="{'backgroundImage': 'url('+$store.state.img_url+ items.headpic +')' }"  style="width: 60upx;height: 60upx;background-size: 100% 100%;"></view>
 									<view class="content">
 										<view class="text-grey">{{items.name}}</view>
@@ -74,45 +74,36 @@
 		<view v-show="!msgToId && isBlank" style="height: 100vh;width: 80%; float: left; border-left: 1px solid #ddd; background:#eee">
 			<img src="../../static/logo1.png" width="100px" height="100px" style="margin-top: calc(50vh - 50px);margin-left: calc(50% - 50px);"></img>
 		</view>
-		<view v-show="isGroupChat" style="height: calc(100vh - 50upx);width: 80%; float: left; border-left: 1px solid #ddd">
+		<view style="height: calc(100vh - 50upx);width: 80%; float: left; border-left: 1px solid #ddd">
 			<scroll-view :scroll-y="modalName==null"
 						 style="width: 100%"
-						 class="page" :class="modalName!=null?'show':''" :refresher-enabled="true"
-						 :refresher-triggered="refresherTriggered" @refresherrefresh="refresherrefresh"
-						 @refresherrestore="refresherrestore" @refresherabort="refresherabort">
-				<GroupChat :msgToGroupId="msgToGroupId"  @openModal="openModal"></GroupChat>
-			</scroll-view>
-		</view>
-		<view v-show="msgToId && !isGroupChat" style="height: calc(100vh - 50upx);width: 80%; float: left; border-left: 1px solid #ddd">
-			<scroll-view :scroll-y="modalName==null"
-						 style="width: 100%"
-						 class="page" :class="modalName!=null?'show':''" :refresher-enabled="true"
-						 :refresher-triggered="refresherTriggered" @refresherrefresh="refresherrefresh"
-						 @refresherrestore="refresherrestore" @refresherabort="refresherabort">
-				<UserChat :msgToId="msgToId" @openModal="openModal"></UserChat>
+						 class="page" :class="modalName!=null?'show':''">
+				<GroupChat :msgToGroupId="msgToGroupId" :isGroupChat="isGroupChat" :isRandom="random" :msgToId="msgToId"  @openModal="openModal" @openAtModal="openAtModal"></GroupChat>
 			</scroll-view>
 		</view>
 
-		<view v-show="visiable" style="width: 100%; height: 100%;color:#fff;background-color: #0006; position: fixed;left: 0;top:0; z-index: 10;">
+
+		<view v-if="visiable" style="width: 100%; height: 100%;color:#fff;background-color: #0006; position: fixed;left: 0;top:0; z-index: 10;">
 			<text @click="closeModal" class="cuIcon-close" style="font-size: 36px; cursor: pointer; position:absolute; top:15px; right: 15px"></text>
-			<UserMgr v-show="mgrType=='user'"  :visiable="randomnum" :mgrId="mgrId" :msgToId="msgToId"></UserMgr>
-			<GroupMgr v-show="mgrType=='group'" :mgrId="mgrId" :msgToId="msgToId"></GroupMgr>
+			<UserMgr v-show="mgrType=='user'" :mgrId="mgrId" :friendPic="friendPic" :toid="toId"></UserMgr>
+			<GroupMgr v-show="mgrType=='group'" :mgrId="mgrId" :toid="toId"></GroupMgr>
+			<Aite v-show="mgrType=='at'" :roomid="roomid" @closeModal="closeModal"></Aite>
+			<CreateGroup v-show="mgrType=='createGroup'"></CreateGroup>
 		</view>
 	</view>
 </template>
 
 <script>
-	import UserChat from '@/pages/chat/user/index.vue';
 	import GroupChat from '@/pages/chat/group/index.vue';
 
 	export default {
 		components:{
-			UserChat,
 			GroupChat
 		},
 		props:['isBlank'],
 		data() {
 			return {
+				random:0,
 				randomnum:'',
 				StatusBar: this.StatusBar,
 				CustomBar: this.CustomBar,
@@ -125,9 +116,7 @@
 				listCur: '',
 				kw:"",
 				kw1:"",
-				isGroupChat: false,
-				msgToId: '',
-				ChatTypeId: 0,
+				roomid: '',
 				PageCur: 'tongxunlu',
 				keyid: 0,
 				isGroupChat: false,
@@ -190,7 +179,6 @@
 					});
 				}
 				this.list = [];
-				console.log(nlist);
 				nlist.forEach(item=>{
 					let i = {};
 					i.name = item.h;
@@ -214,13 +202,11 @@
 		},
 		methods: {
 			refresherrestore() {
-				console.log('自定义下拉刷新被复位');
 				let _this = this;
 				_this.refresherTriggered = false;
 				_this._refresherTriggered = false;
 			},
 			refresherrefresh() {
-				console.log('自定义下拉刷新被触发');
 				let _this = this;
 				if (_this._refresherTriggered) {
 					return;
@@ -233,7 +219,6 @@
 				this.loadStoreData();
 			},
 			refresherabort() {
-				console.log('自定义下拉刷新被中止    ');
 				let _this = this;
 				_this.refresherTriggered = false;
 				_this._refresherTriggered = false;
@@ -244,15 +229,21 @@
 			openModal(obj) {
 				this.mgrId = obj.id;
 				this.mgrType = obj.type;
-				this.randomnum = Math.random();
+				this.friendPic= obj.friendPic;
+				this.toId = obj.toId;
+				this.visiable = true;
+			},
+			openAtModal(id){
+				this.visiable = true;
+				this.mgrType = 'at';
+				this.roomid = id;
 			},
 			showMain() {
 				this.PageCur = 'tongxunlu';
 			},
 			goGroupChat(_id) {
-				console.log('tom wang 666',_id)
 				this.isGroupChat = true;
-				this.msgToGroupId = _id;
+				this.mgrId = _id;
 			},
 			goBlacklist() {
 				this.PageCur = 'heimingdan';
@@ -268,12 +259,23 @@
 					title: "功能未开启"
 				});
 			},
-			goUserDetail(_id){
+			goUserDetail(item){
+				setTimeout(()=>{
+				},1000);
 				this.isGroupChat = false;
-				this.msgToId = _id;
-				// uni.navigateTo({
-				// 	url:"/pages/chat/user_detail?id="+_id
-				// })
+				this.msgToId = item.member_uuid;
+				this.random = this.random +1
+			},
+			goChat(item) {
+				if (item.id == "-1" || item.typeid == "2") {
+					this.msgToId = item.id;
+					this.isGroupChat = false;
+					this.random = this.random +1
+				} else {
+					this.msgToGroupId = item.id;
+					this.isGroupChat = true;
+					this.random = this.random +1
+				}
 			},
 			goNewFriends() {
 				this.PageCur = 'xinpengyou';

@@ -435,6 +435,7 @@
 				this.logShow = false
 			},
 		  mgrId: function(newVal,oldVal){
+			  console.log('newid2====>',newVal)
 			this.id = newVal;
 		    this.onShowMethod();
 			this.onLoadMethod();

@@ -446,12 +446,12 @@
 		},
 		watch: {
 			mgrId: function(newVal, oldVal) {
+				console.log('newid====>',newVal)
 				this.id = newVal;
 				this.onLoadMethod();
 			},
 		},
 		methods: {
-
 			loadmore(){ //页码更换
 				this.pageNumber ++;
 				this.tongbuMsg() //recall pagination datas.

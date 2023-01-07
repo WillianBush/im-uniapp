@@ -967,7 +967,6 @@
 		},
 		watch: {
 			isRandom: function(newVal,oldVal){
-					this.toid = this.msgToGroupId;
 					this.onShowMethod();
 					this.onLoadMethod();
 					this.loadOrRefreshDate();
@@ -990,7 +989,6 @@
 		methods: {
 			loadOrRefreshDate(){
 				var _this = this;
-				console.log("去除小红点1 user",_this.entity)
 
 				_this.$http.post("/user/json/loadById/v1",
 						{id:_this.toid},
@@ -1020,10 +1018,8 @@
 							// uni.removeStorageSync(_this.$store.state.user.id+"#"+_this.toid+'_CHAT_MESSAGE_UNREAD');
 							_this.$store.commit("setUnReadMsgSum",_this.$store.state.setUnReadMsgSum - parseInt(unRead))
 						}
-						console.log("去除小红点3",_this.$store.state.ar_list_show)
 						_this.$store.state.ar_list_show.forEach(item=>{
 							if(item.id==_this.entity.id) {
-								console.log("去除小红点","进来了")
 								item.unread = 0;
 								return;
 							}
@@ -1158,7 +1154,6 @@
 				});
 
 				let s = uni.getStorageSync(this.toid+"_NOTE");
-				console.log('fuck', this.toid, s)
 				if(s&&s!="") {
 					this.showname = s;
 				}

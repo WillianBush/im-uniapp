@@ -136,11 +136,9 @@
 </template>
 
 <script>
-	import UserChat from '@/pages/chat/user/index.vue';
 	import GroupChat from '@/pages/chat/group/index.vue';
 	export default {
 		components:{
-			UserChat,
 			GroupChat
 		},
 		props:['isBlank'],
@@ -244,7 +242,6 @@
 				this.visiable = true;
 			},
 			openAtModal(id){
-				console.log('top',id)
 				this.visiable = true;
 				this.mgrType = 'at';
 				this.roomid = id;
@@ -284,7 +281,6 @@
 						let res_data_1 = eval(res_1.data);
 						if (res_data_1.code == 200) {
 							let unreadSum = 0;
-							console.log("---=====----===" + res_data_1.body.length);
 							res_data_1.body.forEach(item => {
 								let s = uni.getStorageSync(item.id + "_NOTE");
 								if (s && s != "") {
@@ -358,8 +354,6 @@
 				// 允许从相机和相册扫码
 				uni.scanCode({
 					success: function(res) {
-				 	//console.log('条码类型：' + res.scanType);
-						console.log('条码内容：' + res.result);
 						if (res.result.indexOf("#group#") == 0) {
 							let roomid = res.result.split("#")[2];
 
@@ -391,42 +385,10 @@
 								}
 							})
 
-							// uni.request({
-							// 	method:"POST",
-							// 	url: _this.$store.state.req_url + "/room/json/isRoomMember",
-							// 	data:{
-							// 		roomid:roomid
-							// 	},
-							// 	header:{
-							// 		"Content-Type":"application/x-www-form-urlencoded",
-							// 		"x-access-uid":user.id
-							// 	},
-							// 	success(res) {
-							// 		console.log(res.data);
-							// 		let res_data = eval(res.data);
-							// 		if(res_data.code==200) {
-							// 			if(res_data.msg=="1") {
-							// 				uni.navigateTo({
-							// 					url:"/pages/chat/group/index?toid="+roomid
-							// 				})
-							// 			} else {
-							// 				uni.navigateTo({
-							// 					url:"../addressBook/group/group_detail?id="+roomid
-							// 				})
-							// 			}
-							// 		} else {
-							// 			uni.showToast({
-							// 			    icon: 'none',
-							// 			    title: res_data.msg
-							// 			});
-							// 		}
-							// 	}
-							// })
 						} else if (res.result.indexOf("#member#") == 0) {
 							let member_id = res.result.split("#")[2];
 							//如果是自己的二维码
 							if (member_id == _this.$store.state.user.id) {
-								console.log("进来这里");
 								uni.navigateTo({
 									url: "/pages/index/index"
 								})
@@ -442,7 +404,6 @@
 									"x-access-client": _this.$clientType
 								}
 							}).then(res => {
-								console.log(res.data);
 								let res_data = eval(res.data);
 								if (res_data.code == 200) {
 									if (res_data.msg == "1") {
@@ -461,38 +422,6 @@
 									});
 								}
 							})
-
-							// uni.request({
-							// 	method:"POST",
-							// 	url: _this.$store.state.req_url + "/user/friend/isMyFri/v1",
-							// 	data:{
-							// 		uid:member_id
-							// 	},
-							// 	header:{
-							// 		"Content-Type":"application/x-www-form-urlencoded",
-							// 		"x-access-uid":user.id
-							// 	},
-							// 	success(res) {
-							// 		console.log(res.data);
-							// 		let res_data = eval(res.data);
-							// 		if(res_data.code==200) {
-							// 			if(res_data.msg=="1") {
-							// 				uni.navigateTo({
-							// 					url:"/pages/chat/user/index?toid="+member_id
-							// 				})
-							// 			} else {
-							// 				uni.navigateTo({
-							// 					url:"/pages/chat/user_detail?id="+member_id
-							// 				})
-							// 			}
-							// 		} else {
-							// 			uni.showToast({
-							// 			    icon: 'none',
-							// 			    title: res_data.msg
-							// 			});
-							// 		}
-							// 	}
-							// })
 						} else if (res.result.indexOf("http") == 0) {
 							uni.navigateTo({
 								url: "/pages/faxian/site/site?url=" + encodeURIComponent(res.result)
@@ -687,15 +616,12 @@
 			search_list() {
 				let _this = this;
 				let list = this.$store.state.ar_list;
-				console.log('-------------list', list)
 				list = list.filter((item) => {
 					return item.title.indexOf(_this.kw.trim()) >= 0 || item.subname.indexOf(_this.kw.trim()) >= 0
 				});
 				this.$store.commit("setAr_list_show", list);
 			},
-			goChat(item) {
-				console.log('tom', item.id)
-				console.log('typeid', item.typeid)
+			goChat(item) { //打开用户聊天详情
 				setTimeout(()=>{
 				},1000);
 				if (item.id == "-1" || item.typeid == "2") {
@@ -740,12 +666,10 @@
 
 			// ListTouch计算方向
 			ListTouchMove(e) {
-				//console.log(uni.upx2px(-100));
 				if ((e.touches[0].pageX - this.listTouchStart) <= uni.upx2px(-100)) {
 					this.listTouchDirection = e.touches[0].pageX - this.listTouchStart > 0 ? 'right' : 'left'
 				}
 
-				//console.log("e.touches[0].pageX - this.listTouchStart:"+(e.touches[0].pageX - this.listTouchStart));
 			},
 
 			// ListTouch计算滚动
@@ -763,7 +687,6 @@
 		//因为这个home/index.vue是组件形式显示的。所有没有页面的生命周期只有mounted等
 		mounted() {
 
-			console.log('insideornot=>',this.isBlank)
 			let _this = this;
 			let user = uni.getStorageSync("USER");
 			_this.$http.post("/sysConfig/json/getChatCfg", {
