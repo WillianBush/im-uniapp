@@ -85,10 +85,10 @@
 
 		<view v-if="visiable" style="width: 100%; height: 100%;color:#fff;background-color: #0006; position: fixed;left: 0;top:0; z-index: 10;">
 			<text @click="closeModal" class="cuIcon-close" style="font-size: 36px; cursor: pointer; position:absolute; top:15px; right: 15px"></text>
-			<UserMgr v-show="mgrType=='user'" :mgrId="mgrId" :friendPic="friendPic" :toid="toId"></UserMgr>
-			<GroupMgr v-show="mgrType=='group'" :mgrId="mgrId" :toid="toId"></GroupMgr>
-			<Aite v-show="mgrType=='at'" :roomid="roomid" @closeModal="closeModal"></Aite>
-			<CreateGroup v-show="mgrType=='createGroup'"></CreateGroup>
+			<UserMgr v-if="mgrType=='user'" :mgrId="mgrId" :friendPic="friendPic" :toid="toId"></UserMgr>
+			<GroupMgr v-if="mgrType=='group'" :mgrId="mgrId" :toid="toId"></GroupMgr>
+			<Aite v-if="mgrType=='at'" :roomid="roomid" @closeModal="closeModal"></Aite>
+			<CreateGroup v-if="mgrType=='createGroup'"></CreateGroup>
 		</view>
 	</view>
 </template>
