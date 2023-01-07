@@ -424,7 +424,6 @@
 				switchA:false,
 				switchB:false,
 				switchC:false,
-				id:"",
 				cur_user:{'nickname':'1'},
 				super_user:0,
 				user_note:"",
@@ -437,7 +436,6 @@
 			},
 		  mgrId: function(newVal,oldVal){
 			this.id = newVal;
-			console.log("kkkkkkkkk",newVal+"==="+oldVal)
 		    this.onShowMethod();
 			this.onLoadMethod();
 		  },
@@ -463,7 +461,6 @@
 			notesSubmits() {
 				let _this = this;
 				let user = this.$store.state.user;
-				console.log("net333333333",_this.$store.state.cur_chat_entity.id)
 				uni.setStorageSync(_this.$store.state.cur_chat_entity.id+"_NOTE",this.notes);
 				_this.$store.state.chatShowName = this.notes;
 				let list = this.$store.state.ar_list;
@@ -811,7 +808,7 @@
 
 
 						_this.$http.post("/user/friend/removeFriends",
-							{uid:_this.id},
+							{uid:_this.mgrId},
 							{
 								header:{
 									"x-access-uid":_this.$store.state.user.id,
