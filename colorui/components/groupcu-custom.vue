@@ -57,8 +57,8 @@
 				default: ''
 			},
 			isGroupChat: {
-				type: String,
-				default: ''
+				type: Boolean,
+				default: false
 			},
 			bgImage: {
 				type: String,

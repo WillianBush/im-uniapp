@@ -17,7 +17,7 @@
 						<rich-text  :nodes="item.bean.txt"></rich-text>
 					</view>
 				</block>
-					 
+
 					<block v-else-if="item.type=='USER_CARD'">
 								<view   v-if="item.bean.fromUid==$store.state.user.id" class="cu-item self" >
 									<view class="main">
@@ -69,24 +69,24 @@
 								</view>
 
 					</block>
-					
+
 				<block v-else-if="item.type=='USER_TRANSFER'" >
 							<view   v-if="item.bean.fromUid==$store.state.user.id" class="cu-item self" >
 								<view class="main">
 									<view :style="item.bean.status&&item.bean.status==1?'opacity: .6;':''"  @tap="clickTransfer(item.bean)"  style="background-color: #FC9105;width:380upx;height:150upx;border-radius: 6px;">
 										<view style="float:left;height:150upx;">
 											<view style="float: left;margin-top: 40upx;margin-left: 20upx;">
-												<text :class="item.bean.status&&item.bean.status==1?'icon-chenggong1':'icon-zhuanzhang'"   class="iconfont " style="font-size: 68upx; color: #f6f6f6;"><span></span></text>	
+												<text :class="item.bean.status&&item.bean.status==1?'icon-chenggong1':'icon-zhuanzhang'"   class="iconfont " style="font-size: 68upx; color: #f6f6f6;"><span></span></text>
 											</view>
 											<view style="float:left;">
-												
+
 												<view v-if="item.bean.status&&item.bean.status==1"  style="text-align: left; color: #f6f6f6; margin-top: 30upx; margin-left: 20upx;font-size: 28upx;
-												overflow: hidden;width: 250upx;height: 44upx;">已收款</view> 
+												overflow: hidden;width: 250upx;height: 44upx;">已收款</view>
 												<view v-else-if="item.bean.status&&item.bean.status==2"  style="text-align: left; color: #f6f6f6; margin-top: 30upx; margin-left: 20upx;font-size: 28upx;
-												overflow: hidden;width: 250upx;height: 44upx;">转账已过期</view> 
+												overflow: hidden;width: 250upx;height: 44upx;">转账已过期</view>
 												<view v-else style="text-align: left; color: #f6f6f6; margin-top: 30upx; margin-left: 20upx;font-size: 28upx;
-												overflow: hidden;width: 250upx;height: 44upx; word-break: keep-all;text-overflow: ellipsis;">{{item.bean.descri}}</view> 
-												
+												overflow: hidden;width: 250upx;height: 44upx; word-break: keep-all;text-overflow: ellipsis;">{{item.bean.descri}}</view>
+
 												<view style="text-align: left;color: #f6f6f6; margin-top: 4upx; margin-left: 20upx;font-size: 32upx;">¥{{item.bean.money}}</view>
 											</view>
 										</view>
@@ -104,7 +104,7 @@
 									<view :style="item.bean.status&&item.bean.status==1?'opacity: .6;':''" @tap="clickTransfer(item.bean)" style="background-color: #FC9105;width:380upx;height:150upx;border-radius: 6px;">
 										<view style="float:left;height:150upx;">
 											<view style="float: left;margin-top: 40upx;margin-left: 20upx;">
-												<text :class="item.bean.status&&item.bean.status==1?'icon-chenggong1':'icon-zhuanzhang'"    class="iconfont " style="font-size: 68upx; color: #f6f6f6;"><span></span></text>	
+												<text :class="item.bean.status&&item.bean.status==1?'icon-chenggong1':'icon-zhuanzhang'"    class="iconfont " style="font-size: 68upx; color: #f6f6f6;"><span></span></text>
 											</view>
 											<view style="float:left;">
 												<view v-if="item.bean.status&&item.bean.status==1" style="text-align: left; color: #f6f6f6; margin-top: 30upx; margin-left: 20upx;font-size: 28upx;
@@ -123,8 +123,8 @@
 								</view>
 								<view class="date "> {{item.bean.date}}</view>
 							</view>
-							
-							
+
+
 				</block>
 				<block v-else-if="item.type=='USER_RED'">
 							<view   v-if="item.bean.fromUid==$store.state.user.id" class="cu-item self" >
@@ -132,7 +132,7 @@
 									<view :style="item.bean.opened&&item.bean.opened==1?'opacity: .6;':''" @tap="clickHongbao(item.bean)" style="background-color: #FF3A36;width:380upx;height:150upx;border-radius: 6px;">
 										<view style="float:left;height:150upx;">
 											<view style="float: left;margin-top: 40upx;margin-left: 20upx;">
-												<text   class="iconfont icon-lingquhongbao" style="font-size: 64upx; color: #FCBF00;"><span></span></text>	
+												<text   class="iconfont icon-lingquhongbao" style="font-size: 64upx; color: #FCBF00;"><span></span></text>
 											</view>
 											<view style="float:left;">
 												<view style="text-align: left; color: #f6f6f6; margin-top: 52upx; margin-left: 20upx;font-size: 28upx;
@@ -156,7 +156,7 @@
 									<view :style="item.bean.opened&&item.bean.opened==1?'opacity: .6;':''" @tap="clickHongbao(item.bean)" style="background-color: #FF3A36;width:380upx;height:150upx;border-radius: 6px;">
 										<view style="float:left;height:150upx;">
 											<view style="float: left;margin-top: 40upx;margin-left: 20upx;">
-												<text   class="iconfont icon-lingquhongbao" style="font-size: 64upx; color: #FCBF00;"><span></span></text>	
+												<text   class="iconfont icon-lingquhongbao" style="font-size: 64upx; color: #FCBF00;"><span></span></text>
 											</view>
 											<view style="float:left;">
 												<view style="text-align: left; color: #f6f6f6; margin-top: 52upx; margin-left: 20upx;font-size: 28upx;
@@ -173,8 +173,8 @@
 								</view>
 								<view class="date "> {{item.bean.date}}</view>
 							</view>
-							
-							
+
+
 				</block>
 				<block v-else>
 					<view  v-if="item.bean.fromUid==$store.state.user.id" class="cu-item self" >
@@ -195,13 +195,13 @@
 								</view>
 								<video  direction="0"   v-else-if="item.bean.psr=='video'" :src="$store.state.img_url+item.bean.txt"></video>
 								<rich-text v-else   :nodes="item.bean.txt"></rich-text>
-								
+
 							</view>
 						</view>
 						<view class="cu-avatar radius" :style="'background-image:url('+$store.state.img_url+item.bean.fromHeadpic+');'"></view>
 						<view class="date">{{item.bean.date}}</view>
 					</view>
-					
+
 					<view v-else class="cu-item"  >
 						<view @tap.stop="goUserDetail(item.bean.fromUid)" class="cu-avatar radius" :style="'background-image:url('+$store.state.img_url+item.bean.fromHeadpic+');'" ></view>
 						<view class="main">
@@ -221,11 +221,11 @@
 						<view class="date "> {{item.bean.date}}</view>
 					</view>
 				</block>
-				
-				
+
+
 			</block>
 			<!--
-			<view class="cu-item self" > 
+			<view class="cu-item self" >
 				<view class="main">
 					<view class="content bg-green shadow">
 						<text>喵喵喵！喵喵喵！喵喵喵！喵喵！喵喵！！喵！喵喵喵！</text>
@@ -234,9 +234,9 @@
 				<view class="cu-avatar radius" style="background-image:url(https://ossweb-img.qq.com/images/lol/web201310/skin/big107000.jpg);"></view>
 				<view class="date">2018年3月23日 13:23</view>
 			</view>
-			
+
 			<view class="cu-info round">对方撤回一条消息!</view>
-			
+
 			<view class="cu-item" @tap="goUserDetail()">
 				<view class="cu-avatar radius" style="background-image:url(https://ossweb-img.qq.com/images/lol/web201310/skin/big143004.jpg);"></view>
 				<view class="main">
@@ -246,11 +246,11 @@
 				</view>
 				<view class="date "> 13:23</view>
 			</view>
-			
+
 			<view class="cu-info">
 				<text class="cuIcon-roundclosefill text-red "></text> 对方拒绝了你的消息
 			</view>
-			
+
 			<view class="cu-info">
 				对方开启了好友验证，你还不是他(她)的好友。请先发送好友验证请求，对方验证通过后，才能聊天。
 				<text class="text-blue">发送好友验证</text>
@@ -274,7 +274,7 @@
 				<view class="cu-avatar radius" style="background-image:url(https://ossweb-img.qq.com/images/lol/web201310/skin/big107000.jpg);"></view>
 				<view class="date">13:23</view>
 			</view>
-			
+
 			<view class="cu-item self">
 				<view class="main">
 					<view class="action">
@@ -288,11 +288,11 @@
 				<view class="date">13:23</view>
 			</view>
 			-->
-			
-			
+
+
 		</view>
 
-	
+
 <openRed @hide="hideOpenRed" @openRedDetail="openRedDetail" v-show="showOpenRed" ></openRed>
 
 	</view>
@@ -331,8 +331,8 @@
 					mitemHeight: 0
 				},
 				sendCount:0,//这里为了。第一次发送需要延迟拉下拉
-				
-				RECORDER:uni.getRecorderManager(),
+
+				RECORDER:"",
 				AUDIO:uni.createInnerAudioContext(),
 				recordTimer:null,
 				recordLength:0,
@@ -376,7 +376,7 @@
 					// jsonObj.splice(0,jsonObj.length-50);
 				 //  }
 			}
-			
+
 			setTimeout(()=>{
 				uni.pageScrollTo({
 				    scrollTop: 9999999999,
@@ -401,7 +401,7 @@
 				this.showPop = false;
 				this.showItem = 0;
 				this.InputBottom=0;
-				
+
 				uni.navigateTo({
 					url:"/pages/chat/card/sendCard"
 				})
@@ -431,7 +431,7 @@
 				console.log(bean);
 				let _this = this;
 				let user = uni.getStorageSync("USER");
-				
+
 				let str = uni.getStorageSync(user.id+'_RED_MUST_UPDATE_MAP');
 				if(str&&str!="") {
 					var arrs = JSON.parse(str);
@@ -439,7 +439,7 @@
 					if(arrs[bean.redUUID]) {
 						bean = arrs[bean.redUUID];
 					}
-				} 
+				}
 				this.temp_bean = bean;
 				this.showOpenRed = true;
 				this.$store.state.temp.bean = this.temp_bean;
@@ -455,14 +455,14 @@
 					if(arrs[bean.utid]) {
 						bean = arrs[bean.utid];
 					}
-				} 
+				}
 				this.temp_bean = bean;
 				this.$store.state.temp.bean = this.temp_bean;
-				
+
 				uni.navigateTo({
 					url:"../transfer/transfer_receive"
 				})
-				
+
 			},
 			sendRed(){
 				this.showPop = false;
@@ -489,7 +489,7 @@
 					    duration: 0
 					});
 				},100)
-			},	
+			},
 			clickVoice(_vpath,_index) {
 				let _this = this;
 				if(this.selVoiceIndex == _index) {
@@ -502,15 +502,15 @@
 				}
 				//_vpath = "http://39.98.129.168:8080/images/upload/chat/voice/277c7e2561ff45d5b54e0760ae3b039b.amr";
 				console.log(_vpath);
-				this.selVoiceIndex = _index; 
+				this.selVoiceIndex = _index;
 				//this.voicePath = _vpath;
 				this.player = plus.audio.createPlayer(_vpath);
-				this.player.play(function(){  
+				this.player.play(function(){
 					_this.selVoiceIndex = -1;
 					console.log("播放完了");
-				}, function(e) {  
+				}, function(e) {
 				        console.log("播放失败")
-				}); 
+				});
 			},
 			/* 获取窗口尺寸 */
 			getWindowSize() {

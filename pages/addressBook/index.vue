@@ -13,7 +13,7 @@
 						<button @tap="refresherrefresh()" style="background: #4FA2FE;"   class="cu-btn bg-gradual-green shadow-blur round">刷新</button>
 					</view>
 				</view>
-				<scroll-view scroll-y class="indexes" :scroll-into-view="'indexes-'+ listCurID" :style="[{height:'calc(100vh - 100upx - 100upx - 150upx)'}]"
+				<scroll-view scroll-y class="indexes" :scroll-into-view="'indexes-'+ listCurID" :style="[{height:'calc(100vh - 100upx - 150upx)'}]"
 							 :scroll-with-animation="true" :enable-back-to-top="true">
 
 					<view style="margin-top:10px;" class="cu-list menu"

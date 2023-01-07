@@ -9,7 +9,7 @@
 				暂无聊天记录
 			</view>
 			<block  v-for="(item,index) in list">
-				
+
 				<block v-if="item.opt&&item.opt=='undo'">
 					<!-- <view v-if="item.opt_uid==$store.state.user.id"  class="cu-info round">撤回一条消息</view>
 					<view v-else  class="cu-info round">{{item.name}} 撤回一条消息</view> -->
@@ -70,16 +70,16 @@
 								</view>
 								<view class="date "> {{item.bean.date}}</view>
 							</view>
-							
-							
-				</block>	
+
+
+				</block>
 				<block v-else-if="item.type=='USER_RED'">
 							<view   v-if="item.bean.fromUid==$store.state.user.id" class="cu-item self" >
 								<view class="main">
 									<view :style="item.bean.opened&&item.bean.opened==1?'opacity: .6;':''" @tap="clickHongbao(item.bean)" style="background-color: #FF3A36;width:380upx;height:150upx;border-radius: 6px;">
 										<view style="float:left;height:150upx;">
 											<view style="float: left;margin-top: 40upx;margin-left: 20upx;">
-												<text   class="iconfont icon-lingquhongbao" style="font-size: 64upx; color: #FCBF00;"><span></span></text>	
+												<text   class="iconfont icon-lingquhongbao" style="font-size: 64upx; color: #FCBF00;"><span></span></text>
 											</view>
 											<view style="float:left;">
 												<view style="text-align: left; color: #f6f6f6; margin-top: 52upx; margin-left: 20upx;font-size: 28upx;
@@ -104,7 +104,7 @@
 									<view :style="item.bean.opened&&item.bean.opened==1?'opacity: .6;':''" @tap="clickHongbao(item.bean)" style="background-color: #FF3A36;width:380upx;height:150upx;border-radius: 6px;">
 										<view style="float:left;height:150upx;">
 											<view style="float: left;margin-top: 40upx;margin-left: 20upx;">
-												<text   class="iconfont icon-lingquhongbao" style="font-size: 64upx; color: #FCBF00;"><span></span></text>	
+												<text   class="iconfont icon-lingquhongbao" style="font-size: 64upx; color: #FCBF00;"><span></span></text>
 											</view>
 											<view style="float:left;">
 												<view style="text-align: left; color: #f6f6f6; margin-top: 52upx; margin-left: 20upx;font-size: 28upx;
@@ -121,9 +121,9 @@
 								</view>
 								<view class="date "> {{item.bean.date}}</view>
 							</view>
-							
-							
-				</block>	
+
+
+				</block>
 				<block v-else>
 					<view  v-if="item.bean.fromUid==$store.state.user.id" class="cu-item self" >
 						<view class="main">
@@ -138,13 +138,13 @@
 								</view>
 								<video  direction="0"   v-else-if="item.bean.psr=='video'" :src="$store.state.img_url+item.bean.txt"></video>
 								<rich-text v-else   :nodes="item.bean.txt"></rich-text>
-								
+
 							</view>
 						</view>
 						<view class="cu-avatar radius" :style="'background-image:url('+$store.state.img_url+item.bean.fromHeadpic+');'"></view>
 						<view class="date">{{item.bean.date}}</view>
 					</view>
-					
+
 					<view v-else class="cu-item"  >
 						<view @tap.stop="goUserDetail(item.bean.fromUid)" class="cu-avatar radius" :style="'background-image:url('+$store.state.img_url+item.bean.fromHeadpic+');'" ></view>
 						<view class="main" style="display: block!important;">
@@ -212,8 +212,8 @@
 					mitemHeight: 0
 				},
 				sendCount:0,//这里为了。第一次发送需要延迟拉下拉
-				
-				RECORDER:uni.getRecorderManager(),
+
+				RECORDER:"",
 				AUDIO:uni.createInnerAudioContext(),
 				recordTimer:null,
 				recordLength:0,
@@ -254,7 +254,7 @@
 			}
 		},
 		onLoad(option) {
-			
+
 		},
 		methods: {
 			initData() {
@@ -265,7 +265,7 @@
 					 var jsonObj = JSON.parse(str);
 					 _this.list = jsonObj;
 				}
-				
+
 				setTimeout(()=>{
 					uni.pageScrollTo({
 					    scrollTop: 9999999999,
@@ -294,7 +294,7 @@
 				this.showPop = false;
 				this.showItem = 0;
 				this.InputBottom=0;
-				
+
 				uni.navigateTo({
 					url:"/pages/chat/card/sendCard"
 				})
@@ -312,7 +312,7 @@
 			clickHongbao(bean) {
 				let _this = this;
 				let user = uni.getStorageSync("USER");
-				 
+
 				let str = uni.getStorageSync(user.id+'_RED_MUST_UPDATE_MAP');
 				if(str&&str!="") {
 					var arrs = JSON.parse(str);
@@ -320,7 +320,7 @@
 					if(arrs[bean.redUUID]) {
 						bean = arrs[bean.redUUID];
 					}
-				} 
+				}
 				this.temp_bean = bean;
 				this.showOpenRed = true;
 				this.$store.state.temp.bean = this.temp_bean;
@@ -337,15 +337,15 @@
 				}
 				//_vpath = "http://39.98.129.168:8080/images/upload/chat/voice/277c7e2561ff45d5b54e0760ae3b039b.amr";
 				console.log(_vpath);
-				this.selVoiceIndex = _index; 
+				this.selVoiceIndex = _index;
 				//this.voicePath = _vpath;
 				this.player = plus.audio.createPlayer(_vpath);
-				this.player.play(function(){  
+				this.player.play(function(){
 					_this.selVoiceIndex = -1;
 					console.log("播放完了");
-				}, function(e) {  
+				}, function(e) {
 				        console.log("播放失败")
-				}); 
+				});
 			},
 			goUserDetail(_id){
 				uni.navigateTo({
@@ -389,15 +389,15 @@
 				}
 				//_vpath = "http://39.98.129.168:8080/images/upload/chat/voice/277c7e2561ff45d5b54e0760ae3b039b.amr";
 				console.log(_vpath);
-				this.selVoiceIndex = _index; 
+				this.selVoiceIndex = _index;
 				//this.voicePath = _vpath;
 				this.player = plus.audio.createPlayer(_vpath);
-				this.player.play(function(){  
+				this.player.play(function(){
 					_this.selVoiceIndex = -1;
 					console.log("播放完了");
-				}, function(e) {  
+				}, function(e) {
 				        console.log("播放失败")
-				}); 
+				});
 			},
 			scrollToBottom: function () {
 				setTimeout(()=>{
@@ -417,13 +417,13 @@
 			// 		let t = 100;
 			// 		if(that.sendCount==1) {
 			// 			t = 1000;
-			// 		} 
+			// 		}
 			// 		setTimeout(() => {
 			// 			if (that.style.mitemHeight > (that.style.contentViewHeight - 100)) {   //判断子元素高度是否大于显示高度
 			// 				that.scrollTop = that.style.mitemHeight - that.style.contentViewHeight    //用子元素的高度减去显示的高度就获益获得序言滚动的高度
 			// 			}
 			// 		}, t)
-					
+
 			// 　　　
 			// 　　})
 			},

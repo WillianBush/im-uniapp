@@ -839,7 +839,7 @@
 				},
 				sendCount:0,//这里为了。第一次发送需要延迟拉下拉
 
-				RECORDER:uni.getRecorderManager(),
+				RECORDER:"",
 				AUDIO:uni.createInnerAudioContext(),
 				recordTimer:null,
 				recordLength:0,
@@ -1305,7 +1305,7 @@
 
 						},400);
 					} else if(res_data.code==200) {
-					
+
 
 					}
 				})
