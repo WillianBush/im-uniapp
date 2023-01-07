@@ -130,34 +130,7 @@
 		},
 		mounted() {
 
-			let _this = this;
-			let user = uni.getStorageSync("USER");
-			if(this.$store.state.friend_list.length<=0) {
-				_this.$http.post("/user/friend/list/v1",
-						{
-							header:{
-								"x-access-uid":user.id,
-								"x-access-client":_this.$clientType
-							}
-						}
-				).then(res=>{
-					let res_data = eval(res.data);
-					res.data.body.forEach((item, index) => { //循环拿到聊天人员列表name。根据name长度获取人数
-						item.list.forEach((item, index) => {
-							this.memberList.push(item.name)
-						})
-					})
-					this.$store.state.memberLength = this.memberList.length
-					if(res_data.code==200) {
-						_this.$store.commit("setFriend_list",res_data.body);
-						res_data.body.forEach(item=>{
-							let i = {};
-							i.name = item.h;
-							_this.list.push(i);
-						})
-					}
-				});
-			}
+			this.loadStoreData()
 
 		},
 		computed:{
@@ -223,6 +196,35 @@
 				_this.refresherTriggered = false;
 				_this._refresherTriggered = false;
 			},
+			loadStoreData(){
+				let _this = this;
+				let user = uni.getStorageSync("USER");
+					_this.$http.post("/user/friend/list/v1",
+							{
+								header:{
+									"x-access-uid":user.id,
+									"x-access-client":_this.$clientType
+								}
+							}
+					).then(res=>{
+						let res_data = eval(res.data);
+						res.data.body.forEach((item, index) => { //循环拿到聊天人员列表name。根据name长度获取人数
+							item.list.forEach((item, index) => {
+								this.memberList.push(item.name)
+							})
+						})
+						this.$store.state.memberLength = this.memberList.length
+						if(res_data.code==200) {
+							_this.$store.commit("setFriend_list",res_data.body);
+							res_data.body.forEach(item=>{
+								let i = {};
+								i.name = item.h;
+								_this.list.push(i);
+							})
+						}
+					});
+			},
+
 			closeModal() {
 				this.visiable = false;
 			},
