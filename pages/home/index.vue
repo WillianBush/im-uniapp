@@ -3,9 +3,15 @@
 		<view @tap="hideShowMenu()" style="padding-top:50upx;background-color: #fff;width: 20%;float: left">
 			<view class="cu-bar bg-white solid-bottom">
 				<view class="action" style="font-size: 36upx;font-weight: 600;">
-					<text class="cuIcon-title text-orange " style="color: green"></text> 消息列表
-					<button class="refresh-btn" @click="refresherrefresh"  >刷新</button>
+					<text class="cuIcon-title text-orange " style="color: green"></text>
+					<text style="min-width:73px;">
+						消息列表
+					</text>
+
 				</view>
+				<div class="auto-refresh">
+					<switch v-if="$store.state.isEmployee" @change="isOpenRefresh"></switch>
+				</div>
 				<text @tap.stop="showMenuFn()"
 					style="float:right;font-size:48upx;cursor: pointer;color:#333;margin-top:6upx;margin-right:40upx"
 					class="iconfont icon-jia"></text>
@@ -16,6 +22,7 @@
 					<input v-model="kw" @input="search_list()" type="text" placeholder="输入搜索的关键词"
 						confirm-type="search"></input>
 				</view>
+				<button class="refresh-btn" @click="refresherrefresh"  >刷新</button>
 
 			</view>
 			<!--#ifdef H5 -->
@@ -222,6 +229,10 @@
 		},
 
 		methods: {
+			isOpenRefresh(e){
+				let _this = this;
+				_this.$store.state.isOpenRefresh = e.detail.value;
+			},
 			closeModal() {
 				this.visiable = false;
 			},
@@ -766,7 +777,7 @@
 					_this.chatCfg = res_data.body;
 				}
 			})
-
+			this.refresherrefresh()
 			// uni.request({
 			// 	method:"POST",
 			// 	url: _this.$store.state.req_url + "/sysConfig/json/getChatCfg",
@@ -835,7 +846,12 @@
 		filter: grayscale(100%);
 	}
 	.refresh-btn{
-		background: #FFAA01;margin-left:30rpx;font-size:25rpx;font-weight:normal;line-height:18px;
+		background: #FFAA01;margin-right:20rpx;font-size:25rpx;font-weight:normal;line-height:25px;
 		color:white;
+	}
+	.auto-refresh{
+		margin-left:10rpx;
+		font-size:25rpx;
+		font-weight:normal;
 	}
 </style>
