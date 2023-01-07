@@ -1035,6 +1035,12 @@
 				viewId:"",
 			};
 		},
+
+		computed:{
+			msgList(){
+				return this.$store.state.cur_chat_msg_list
+			}
+		},
 		watch: {
 			// msgToGroupId: function(newVal,oldVal){
 			// console.log('进入group')
@@ -1044,6 +1050,12 @@
 			// 	console.log('进入usr')
 			// 	this.toid = newVal;
 			// },
+			msgList(val){
+				val.forEach((item) => {
+					item.uuid = item.bean.uuid
+				});
+				store.commit("setCur_chat_msg_list",this.unique(val, "uuid")); //数组去重后放回
+			},
 			isRandom: function(newVal,oldVal){
 				this.txt = "" //重新选择置空
 				if(this.isGroupChat){
@@ -1085,9 +1097,6 @@
 		// 	this.onLoadMethod();
 		// },
 
-		computed:{
-
-		},
 		mounted() {
 			document.oncontextmenu = function (e) { return false; }
 			// this.domHeight = document.documentElement.clientHeight
@@ -1095,6 +1104,10 @@
 		},
 
 		methods: {
+			unique(arr, val) {
+				const res = new Map()
+				return arr.filter((item) => !res.has(item[val]) && res.set(item[val], 1))
+			},
 			onShowMethod2() {
 				let _this = this;
 				uni.$on("scrollTopFn",()=>{

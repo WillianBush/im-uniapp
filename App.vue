@@ -208,7 +208,7 @@
         if (_this.$store.state.isEmployee && _this.$store.state.isOpenRefresh) {
           _this.loadStoreData();
         }
-      },20000);
+      },10000);
 
 		},
 		onHide: function() {
