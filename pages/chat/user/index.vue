@@ -8,7 +8,7 @@
 		</block><block slot="right">
 			<uni-text @tap="goMgr(entity.id)" style="font-size: 22px;color: #fff;margin-right: 14px;" class="lg text-gray cuIcon-more"><span></span></uni-text>
 		</block></cu-custom>
-		<scroll-view @scroll="scrollFn"  :scroll-top="scrollTop" scroll-y="true"    ref="chatVew" @tap="clickChat()"  class="cu-chat" :style="'height: calc(100vh - '+CustomBar+'px - '+(120+InputBottom)+'upx)'" >
+		<scroll-view @scroll="scrollFn" @scrolltoupper="loadmore"   :scroll-top="scrollTop" scroll-y="true"    ref="chatVew" @tap="clickChat()"  class="cu-chat" :style="'height: calc(100vh - '+CustomBar+'px - '+(120+InputBottom)+'upx)'" >
 			<block  v-for="(item,index) in $store.state.cur_chat_msg_list">
 				<block v-if="item.opt&&item.opt=='undo'">
 					<!-- <view v-if="item.opt_uid==$store.state.user.id"  class="cu-info round">撤回一条消息</view>
@@ -188,7 +188,6 @@
 
 								<block  v-if="$store.state.WAIT_SEND_MSG.indexOf(item.bean.uuid)<0">
 									<block v-if="chatCfg.showUserMsgReadStatus==1">
-										<view v-if="item.bean.read==0&&chatCfg.showUserMsgReadStatus==1" style="margin-right:30upx;color: #999;font-size: 24upx;">未读</view>
 										<view v-if="item.bean.read==1&&chatCfg.showUserMsgReadStatus==1" style="margin-right:30upx;color: #999;font-size: 24upx;">已读</view>
 									</block>
 								</block>
@@ -240,7 +239,6 @@
 
 								<block  v-if="$store.state.WAIT_SEND_MSG.indexOf(item.bean.uuid)<0">
 									<block v-if="chatCfg.showUserMsgReadStatus==1">
-										<view v-if="item.bean.read==0&&chatCfg.showUserMsgReadStatus==1" style="margin-right:30upx;color: #999;font-size: 24upx;">未读</view>
 										<view v-if="item.bean.read==1&&chatCfg.showUserMsgReadStatus==1" style="margin-right:30upx;color: #999;font-size: 24upx;">已读</view>
 									</block>
 								</block>
@@ -887,6 +885,7 @@
 
 	//#ifdef H5
 	import h5Copy from '@/common/junyi-h5-copy.js'
+	import store from "../../../store";
 	//#endif
 
 	export default {
@@ -924,10 +923,15 @@
 				},
 				sendCount:0,//这里为了。第一次发送需要延迟拉下拉
 
-				RECORDER:uni.getRecorderManager(),
+				// RECORDER:uni.getRecorderManager(),
+				RECORDER:'',
 				AUDIO:uni.createInnerAudioContext(),
 				recordTimer:null,
 				recordLength:0,
+				pageParams:{
+					pageNumber:'1',
+					pageCount:'30',
+				},
 				voicePath: "",
 				isRecord: false, // 记录状态,录音中或者是未开始
 				intervalTime: 0,
@@ -936,6 +940,8 @@
 				/* 窗口尺寸 */
 				winSize: {},
 				/* 显示遮罩 */
+				chatLogs:[],
+				syncMessageArr:[],
 				showShade: false,
 				/* 显示操作弹窗 */
 				showPop: false,
@@ -967,11 +973,6 @@
 			uni.$off("scrollTopFn");
 		},
 		onShow() {
-
-
-			console.log("mmmmmmmmmmmnnnnnnnnnn1",this.$store.state.cur_chat_msg_list.length)
-			console.log("mmmmmmmmmmmnnnnnnnnnn2",this.$store.state.cur_chat_msg_list)
-
 			let _this = this;
 			uni.$on("scrollTopFn",()=>{
 				console.log("触发了-scrollTopFn");
@@ -1009,18 +1010,7 @@
 			this.$store.commit("setCur_chat_msg_list",[]);
 			this.$store.commit("setChat_my_loadding",false);
 
-			// #ifndef H5
-			//录音开始事件
-			this.RECORDER.onStart((e)=>{
-				this.recordBegin(e);
-			})
-			//录音结束事件
-			this.RECORDER.onStop((e)=>{
-				this.recordEnd(e);
-			})
-			// #endif
 
-			//this.vindex = "v"+(this.$store.state.cur_chat_msg_list.length)
 			let _this = this;
 			this.toid = option.toid;
 			let user = uni.getStorageSync("USER");
@@ -1242,84 +1232,37 @@
 				}
 			})
 
-			// uni.request({
-			// 	method:"POST",
-			// 	url: _this.$store.state.req_url + "/sysConfig/json/getChatCfg",
-			// 	header:{
-			// 		"Content-Type":"application/x-www-form-urlencoded",
-			// 		"x-access-uid":_this.$store.state.user.id
-			// 	},
-			// 	success(res) {
-			// 		let res_data = eval(res.data);
-			// 		if(res_data.code==200) {
-			// 			_this.chatCfg = res_data.body;
-			// 		}
-			// 	}
-			// })
 
-			// recorderManager.onStop(function(res) {
-			// 	uni.request({
-			// 		data:{
-			// 			t:1
-			// 		},
-			// 		method:"GET",
-			// 		url:_this.$store.state.req_url+"/test1",
-			// 		success(res) {
-			// 		}
-			// 	})
-			//   console.log("录音停止了" + JSON.stringify(res)); //返回录音的临时保存地址, 可用于后面的播放
-			//   _this.voicePath = res.tempFilePath;
-
-			//   uni.request({
-			//   	data:{
-			//   		t:_this.voicePath
-			//   	},
-			//   	method:"GET",
-			//   	url:_this.$store.state.req_url+"/test1",
-			//   	success(res) {
-			//   	}
-			//   })
-			//   _this.$store.commit("setChat_my_loadding",true);
-			//   setTimeout(()=>{
-			//   	uni.pageScrollTo({
-			//   	    scrollTop: 9999999999,
-			//   	    duration: 0
-			//   	});
-			//   },100)
-			//   var uper = uni.uploadFile({
-			// 		 // 需要上传的地址
-			// 		 url:_this.$store.state.req_url+ '/user/file/uploadVoice',
-			// 		 header:{
-			// 			// "Content-Type":"multipart/form-data",
-			// 			"x-access-uid":_this.$store.state.user.id
-			// 		 },
-			// 		 // filePath  需要上传的文件
-			// 		 formData: {
-			// 			 file: _this.voicePath
-			// 		 },
-			// 		 fileType: 'video',
-			// 		 filePath: _this.voicePath ,
-			// 		 name: 'file',
-			// 		 success(res1) {
-			// 			 let json = eval("("+res1.data+")");
-			// 			 // 显示上传信息
-			// 			 if(json.code==200) {
-			// 				let v = {
-			// 					txt:json.msg,
-			// 					toUid:_this.toid,
-			// 					fromUid:_this.$store.state.user.id
-			// 				}
-			// 				_this.$websocket.dispatch("WEBSOCKET_SEND", "{body:'"+JSON.stringify(v)+"',CMD:'USER_CHAT_SEND_VOICE'}");
-			// 			 }
-			// 		 }
-			//   });
-			// });
 		},
 		mounted() {
-			 //this.domHeight = document.documentElement.clientHeight
+			this.tongbuMsg();
 		},
 
 		methods: {
+			loadmore() { //加载更多
+				this.pageParams.pageNumber++
+				this.tongbuMsg(this.pageParams.pageCount,this.pageParams.pageNumber);
+			},
+			refresherrefresh() {
+				let _this = this;
+				if (_this._refresherTriggered) {
+					return;
+				}
+				_this._refresherTriggered = true;
+				//界面下拉触发，triggered可能不是true，要设为true
+				if (!_this.refresherTriggered) {
+					_this.refresherTriggered = true;
+				}
+				//pageNum + 1
+				this.pageParams.pageNumber++;
+				this.loadStoreData(this.pageParams.pageCount,this.pageParams.pageNumber);
+			},
+
+			unique(arr, val) { //数组去重方法
+
+				const res = new Map()
+				return arr.filter((item) => !res.has(item[val]) && res.set(item[val], 1))
+			},
 			lineFeed () {
 				console.log('换行')
 				console.log(this.txt)
@@ -1358,31 +1301,32 @@
 					}
 				})
 			},
-			tongbuMsg(){
+			tongbuMsg(){ //当前页面聊天记录&页码请求
 				let _this = this;
-
-				_this.$store.state.chatMessageMap.delete(_this.$store.state.user.id+"#"+_this.toid);
-				uni.removeStorageSync(_this.$store.state.user.id+"#"+_this.toid+'_CHAT_MESSAGE');
-				_this.$store.commit("setCur_chat_msg_list",[]);
-				uni.removeStorageSync(_this.$store.state.user.id+"#"+_this.toid+'_CHAT_MESSAGE_LASTCONTENT');
-				uni.removeStorageSync(_this.$store.state.user.id+"#"+_this.toid+'_CHAT_MESSAGE_UNREAD');
+				// _this.$store.state.chatMessageMap.delete(_this.$store.state.user.id+"#"+_this.toid);
+				// uni.removeStorageSync(_this.$store.state.user.id+"#"+_this.toid+'_CHAT_MESSAGE');
+				// // _this.$store.commit("setCur_chat_msg_list",[]); //Dont know why set null, noted.
+				// uni.removeStorageSync(_this.$store.state.user.id+"#"+_this.toid+'_CHAT_MESSAGE_LASTCONTENT');
+				// uni.removeStorageSync(_this.$store.state.user.id+"#"+_this.toid+'_CHAT_MESSAGE_UNREAD');
 
 				uni.showLoading()
 				_this.$http.post("/chat_msg/syncMsgData",
-					{
-						chatid:_this.toid
-					},
-					{
-						header:{
-							"x-access-uid":_this.$store.state.user.id,
-							"x-access-client":_this.$clientType
+						{
+							chatid:_this.toid,
+							pageNumber:this.pageParams.pageNumber,
+						},
+						{
+							header:{
+								"x-access-uid":_this.$store.state.user.id,
+								"x-access-client":_this.$clientType
+							}
 						}
-					}
 				).then(res=>{
 					let res_data = eval(res.data);
 					if(res_data.code==201) {
 						//没缓存数据，把加载取消
 						setTimeout(()=>{
+							this.moreShow = false
 							uni.hideLoading();
 							uni.showToast({
 								title:"没有云端数据",
@@ -1391,12 +1335,55 @@
 
 						},400);
 					} else if(res_data.code==200) {
+						if(res_data.body && res_data.body.list.length != 0){
+							let cList = [];
+							for (let i = 0; i < res_data.body.list.length; i++){ //从[0]中取出
+								cList.push(res_data.body.list[i][0])
+							} //遍历
+							_this.syncMessageArr.unshift.apply(_this.syncMessageArr,cList)
+
+							let user = uni.getStorageSync("USER");
+							//1：先清楚和刷新当前显示列表
+							_this.$store.commit("setCur_chat_msg_list",[]);
+							this.$store.state.cur_chat_msg_list = _this.syncMessageArr;
+							//2：再清除和刷新大消息列表当前聊天对象数据
+							if(this.$store.state.chatMessageMap.has(user.id+"#"+this.toid)) {
+								this.$store.commit("updateChatMessageMap",{
+									key:user.id+"#"+this.toid,
+									value:this.$store.state.cur_chat_msg_list
+								});
+							}
+							//3:设置最后一个信息
+							if(this.$store.state.cur_chat_msg_list.length != 0){
+								this.$store.state.cur_chat_msg_list[this.$store.state.cur_chat_msg_list.length - 1].bean.simple_content;
+							}
+							//4：刷新本地存储的数据
+							uni.setStorageSync(user.id+"#"+this.toid+'_CHAT_MESSAGE',JSON.stringify(this.$store.state.cur_chat_msg_list));
+						}
+
+						this.pageParams = res_data.body
+						if(this.pageParams.pageNumber > 1){
+							for (let i = 0; i < res_data.body.list.length; i++){ //从[0]中取出
+								res_data.body.list[i] = res_data.body.list[i][0].bean
+							} //遍历拿出数组bean
+							// _this.chatLogs = _this.chatLogs.concat(res_data.body.list);
+							_this.chatLogs.unshift.apply(_this.chatLogs,res_data.body.list)
+							uni.hideLoading();
+						}else{
+							uni.hideLoading();
+							this.chatLogs = res_data.body.list
+						}
+						for (let i = 0; i < this.chatLogs.length; i++){ //从[0]中取出
+							this.chatLogs[i] = this.chatLogs[i][0].bean
+						} //遍历拿出数组bean
 						setTimeout(()=>{
 							uni.hideLoading();
 
 						},400);
 
 					}
+				}).catch(err=>{
+					console.log('err=>',err)
 				})
 			},
 			redOpened4My(_red) {
