@@ -2,10 +2,15 @@
 	<view ref="topVew" v-if="$store.state.cur_chat_entity"   :style="chatCfg.chatBackgroundImage&&chatCfg.chatBackgroundImage!=''?'background-image: url('+$store.state.img_url+chatCfg.chatBackgroundImage+')':''" style="background-size: 100%;min-height: 100vh;" >
 		<cu-custom backUrl="/pages/index/index" bgColor="bg-blue"  :isBack="true" :nameToLeft="true">
 			<block slot="backText"></block>
-			<block slot="content">{{$store.state.cur_chat_entity.name}}({{$store.state.cur_chat_entity.memberCount}}人)</block><block slot="right">
-			<uni-text @tap="goMgr(entity.id)" style="font-size: 22px;color: #fff;margin-right: 14px;" class="lg text-gray cuIcon-more"><span></span></uni-text>
-		</block></cu-custom>
-		<uni-notice-bar showIcon="" speed="35" scrollable="true" single="true" v-if="$store.state.cur_chat_entity" :text="$store.state.cur_chat_entity.descri"></uni-notice-bar>
+			<block slot="content">{{$store.state.cur_chat_entity.name}}({{$store.state.cur_chat_entity.memberCount}})人</block>
+			<block slot="right">
+				<view>
+					<image @click="justRefresh" style="float:left;width:60rpx;height:60rpx;margin-right:10px" src="/static/tabbar/synchronize.png"></image>
+					<uni-text @tap="goMgr(entity.id)" style="font-size: 22px;color: #fff;margin-right: 14px;" class="lg text-gray cuIcon-more">
+						<span></span></uni-text>
+				</view>
+			</block></cu-custom>
+		<uni-notice-bar showIcon=""  scrollable="true" single="true" v-if="$store.state.cur_chat_entity" :text="$store.state.cur_chat_entity.descri"></uni-notice-bar>
 		<scroll-view @scroll="scrollFn" :scroll-into-view="viewId" :scroll-top="scrollTop" scroll-y="true"    ref="chatVew" @tap="clickChat()"  class="cu-chat" :style="'height: calc(100vh - '+CustomBar+'px - '+(120+InputBottom)+'upx)'" >
 			<block  v-for="(item,index) in $store.state.cur_chat_msg_list">
 
@@ -934,6 +939,7 @@
 <script>
 	import uParse from '@/components/u-parse/u-parse.vue'
 	import openRed from '@/components/hongbao/open.vue'
+	import store from "../../../store";
 	//const recorderManager = uni.getRecorderManager();
 	const innerAudioContext = uni.createInnerAudioContext();
 	//innerAudioContext.autoplay = true;
@@ -1077,13 +1083,13 @@
 			this.getWindowSize();
 			// #ifndef H5
 			//录音开始事件
-			this.RECORDER.onStart((e)=>{
-				this.recordBegin(e);
-			})
-			//录音结束事件
-			this.RECORDER.onStop((e)=>{
-				this.recordEnd(e);
-			})
+			// this.RECORDER.onStart((e)=>{  2023-1-8注释 修复app私聊 群聊无法打开报错bug
+			// 	this.recordBegin(e);
+			// })
+			// //录音结束事件
+			// this.RECORDER.onStop((e)=>{
+			// 	this.recordEnd(e);
+			// })
 			// #endif
 
 
@@ -1464,7 +1470,9 @@
 
 		mounted() {
 			// this.domHeight = document.documentElement.clientHeight
-			this.tongbuMsg();
+		if(!this.$store.state.cur_chat_msg_list){
+				this.tongbuMsg();
+			}
 		},
 
 		methods: {
@@ -1475,6 +1483,13 @@
 			loadmore() { //加载更多
 				this.pageParams.pageNumber++
 				this.tongbuMsg(this.pageParams.pageCount,this.pageParams.pageNumber);
+			},
+			justRefresh() {
+				this.tongbuMsg(this.pageParams.pageCount,this.pageParams.pageNumber);
+				uni.showToast({
+					title:"完全な記録については、右上隅のクエリをクリックしてください",
+					icon:"none"
+				})
 			},
 			refresherrefresh() {
 				let _this = this;

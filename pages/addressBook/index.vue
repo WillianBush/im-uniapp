@@ -229,13 +229,6 @@
 								i.name = item.h;
 								_this.list.push(i);
 							})
-
-
-							res.data.body.forEach((item, index) => { //循环拿到聊天人员列表name。根据name长度获取人数
-								item.list.forEach((item, index) => {
-									this.memberList.push(item.name)
-								})
-							})
 							this.$store.state.memberLength = this.memberList.length
 						}
 					});

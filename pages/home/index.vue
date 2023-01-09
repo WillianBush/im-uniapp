@@ -275,8 +275,8 @@
 				if(user){
 					_this.$http.post("/user/accessRecord/json/listPage",
 							{
-								pageSize:50,//数量
-								pageNumber:1//页数
+								pageSize:pSize,//数量
+								pageNumber:pNumber//页数
 							},
 							{
 								header:{

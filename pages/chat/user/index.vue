@@ -2,13 +2,22 @@
 	<!-- <view style="background: red;height: 100%;" > -->
 	<view  ref="topVew"  :style="chatCfg.chatBackgroundImage&&chatCfg.chatBackgroundImage!=''?'background-image: url('+$store.state.img_url+chatCfg.chatBackgroundImage+')':''" style="background-size: 100%;min-height: 100vh;" >
 		<cu-custom backUrl="/pages/index/index" bgColor="bg-blue"  :isBack="true" :nameToLeft="true"><block slot="backText"></block><block slot="content">
-		{{showname}} <text v-if="chatCfg.showUserOnline==1">{{entity.online==0?' (离线)':' (在线)'}}</text>
-		<text v-show="$store.state.temp.input_ing" style="font-size: 26upx;margin-left:10upx;">- 正在输入...</text>
+
+			<view class="topname">
+				<text class="topname-showname">{{showname}} <text v-if="chatCfg.showUserOnline==1">{{entity.online==0?' (オフライン)':' (オンライン)'}}</text>
+				</text>
+
+			<text v-show="$store.state.temp.input_ing" style="font-size: 26upx;margin-left:10upx;">- タイピング...</text>
 			<text v-show="toIP" style="font-size: 14upx; color: #FFCC99; margin-left:10upx;">{{toIP}}</text>
+			</view>
 		</block><block slot="right">
-			<uni-text @tap="goMgr(entity.id)" style="font-size: 22px;color: #fff;margin-right: 14px;" class="lg text-gray cuIcon-more"><span></span></uni-text>
+			<view>
+			<image @click="justRefresh" style="float:left;width:60rpx;height:60rpx;margin-right:10px" src="/static/tabbar/synchronize.png"></image>
+			<uni-text @tap="goMgr(entity.id)" style="font-size: 22px;color: #fff;margin-right: 14px;" class="lg text-gray cuIcon-more">
+				<span></span></uni-text>
+			</view>
 		</block></cu-custom>
-		<scroll-view @scroll="scrollFn" @scrolltoupper="loadmore"   :scroll-top="scrollTop" scroll-y="true"    ref="chatVew" @tap="clickChat()"  class="cu-chat" :style="'height: calc(100vh - '+CustomBar+'px - '+(120+InputBottom)+'upx)'" >
+		<scroll-view @scroll="scrollFn"   :scroll-top="scrollTop" scroll-y="true"    ref="chatVew" @tap="clickChat()"  class="cu-chat" :style="'height: calc(100vh - '+CustomBar+'px - '+(120+InputBottom)+'upx)'" >
 			<block  v-for="(item,index) in $store.state.cur_chat_msg_list">
 				<block v-if="item.opt&&item.opt=='undo'">
 					<!-- <view v-if="item.opt_uid==$store.state.user.id"  class="cu-info round">撤回一条消息</view>
@@ -300,6 +309,9 @@
 
 
 		</scroll-view>
+		<view style="position:absolute;bottom:50px;width:100%;text-align:center">
+			<image @click="deduplication()" style="width:80rpx;height:80rpx;" src="/static/tabbar/bottom.png"></image>
+		</view>
 		<view class="cu-bar foot input" :style="[{bottom:InputBottom+'upx'}]" >
 			<!-- #ifndef H5 -->
 			<view @tap="selType(2)" v-show="c_type==1"  class="action">
@@ -1091,37 +1103,6 @@
 			})
 
 
-			// uni.request({
-			// 	method:"POST",
-			// 	url: _this.$store.state.req_url + "/user/json/loadById/v1",
-			// 	data:{id:_this.toid},
-			// 	header:{
-			// 		"Content-Type":"application/x-www-form-urlencoded",
-			// 		"x-access-uid":_this.$store.state.user.id
-			// 	},
-			// 	success(res) {
-			// 		let res_data = eval(res.data);
-			// 		if(res_data.code==200) {
-			// 			_this.entity = res_data.body;
-			// 			_this.$store.commit("setCur_chat_entity",_this.entity);
-			// 			//主要是为了让onshow检查是否已设置备注，如果已设置备注则不需要使用用户原昵称
-			// 			setTimeout(function(){
-			// 				if(_this.showname=="") {
-			// 					_this.showname = _this.entity.nickName;
-			// 				}
-			// 			},100)
-
-
-			// 		}
-			// 		let unRead = uni.getStorageSync(user.id+"#"+_this.toid+'_CHAT_MESSAGE_UNREAD');
-			// 		if(unRead&&unRead!="") {
-			// 			uni.removeStorageSync(user.id+"#"+_this.toid+'_CHAT_MESSAGE_UNREAD');
-			// 			_this.$store.commit("setUnReadMsgSum",_this.$store.state.setUnReadMsgSum - parseInt(unRead))
-			// 		}
-
-
-			// 	}
-			// })
 
 
 			_this.$http.post("/user/accessRecord/json/saveOrUpdate",
@@ -1166,55 +1147,7 @@
 				}
 			})
 
-			// uni.request({
-			// 	method:"POST",
-			// 	url: _this.$store.state.req_url + "/user/accessRecord/json/saveOrUpdate",
-			// 	data:{type:2,eid:this.toid},
-			// 	header:{
-			// 		"Content-Type":"application/x-www-form-urlencoded",
-			// 		"x-access-uid":_this.$store.state.user.id
-			// 	},
-			// 	success(res) {
-			// 		let res_data = eval(res.data);
-			// 		if(res_data.code==200) {
-			// 			//更新消息列表
 
-			// 			// let list = _this.$store.state.ar_list.filter(item=>{
-			// 			// 	if(item.id==res_data.body.id) return false;
-			// 			// })
-			// 			// list.splice(0,0,res_data.body);
-			// 			// _this.$store.commit("setAr_list",list);
-
-			// 		} else {
-			// 			uni.showModal({
-			// 			    title: '信息提示',
-			// 			    content: res_data.msg,
-			// 				showCancel:false,
-			// 			    success: function (res) {
-			// 			        if (res.confirm) {
-			// 			            uni.navigateBack({
-			// 			            	delta:1
-			// 			            })
-			// 			        }
-			// 			    }
-			// 			});
-
-
-			// 			// uni.showToast({
-			// 			//     icon: 'none',
-			// 			// 	position: 'bottom',
-			// 			//     title: res_data.msg
-			// 			// });
-			// 		}
-			// 	}
-			// })
-
-			// this.$store.state.ar_list.forEach(item=>{
-			// 	if(item.id==option.toid) {
-			// 		_this.entity = item;
-			// 		return;
-			// 	}
-			// })
 			this.scrollToBottom();
 
 
@@ -1235,13 +1168,23 @@
 
 		},
 		mounted() {
-			this.tongbuMsg();
+
+			if(!this.$store.state.cur_chat_msg_list.length>0){
+				this.tongbuMsg();
+			}
 		},
 
 		methods: {
 			loadmore() { //加载更多
 				this.pageParams.pageNumber++
 				this.tongbuMsg(this.pageParams.pageCount,this.pageParams.pageNumber);
+			},
+			justRefresh() {
+				this.tongbuMsg(this.pageParams.pageCount,this.pageParams.pageNumber);
+				uni.showToast({
+					title:"请点击右上角获取完整记录同步",
+					icon:"none"
+				})
 			},
 			refresherrefresh() {
 				let _this = this;
@@ -1271,7 +1214,6 @@
 
 			scrollFn(e) {
 				//console.log(e.detail);
-				this.scrollDetail = e.detail;
 			},
 			tongbuMsg_1stInNoData(){
 				let _this = this;
@@ -1340,7 +1282,7 @@
 							for (let i = 0; i < res_data.body.list.length; i++){ //从[0]中取出
 								cList.push(res_data.body.list[i][0])
 							} //遍历
-							_this.syncMessageArr.unshift.apply(_this.syncMessageArr,cList)
+							_this.syncMessageArr = cList
 
 							let user = uni.getStorageSync("USER");
 							//1：先清楚和刷新当前显示列表
@@ -1983,11 +1925,23 @@
 						value:newList
 					});
 					if(this.$store.state.cur_chat_entity&&this.$store.state.cur_chat_entity.id==v.toUid) {
-						this.$store.commit("setCur_chat_msg_list",newList);
+
+						this.$store.commit("setCur_chat_msg_list",this.unique(newList,"uuid"));
+
 					}
 					 //uni.setStorageSync(this.$store.state.user.id+"#"+msgbean.chatid+'_CHAT_MESSAGE_LASTCONTENT',"");
 				}
+				//2023-1-8 修复数组去重 拉到最下面
+					this.deduplication()
+				//
+			},
+			deduplication(){
 				this.$store.commit("setChat_my_loadding",false);
+				this.$store.state.cur_chat_msg_list.forEach((item) => {
+					item.uuid = item.bean.uuid
+				});
+				this.$store.commit("setCur_chat_msg_list",this.unique(this.$store.state.cur_chat_msg_list, "uuid"));
+				this.scrollToBottom();
 			},
 			altOrShiftEnter(){
 				this.input_is_focus = false;
@@ -2749,5 +2703,15 @@
 	uni-page-body{height:100%}
 	.cu-chat .cu-info {
 		display: table;
+	}
+	.topname{
+		width:70%;
+	}
+	.topname-showname{
+		width:30%;
+		float:left;
+		overflow:hidden; //超出的文本隐藏
+		text-overflow:ellipsis; //溢出用省略号显示
+		white-space:nowrap; //溢出不换行
 	}
 </style>

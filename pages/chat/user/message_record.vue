@@ -232,12 +232,7 @@
 
 				</block>
 
-				<view @click="loadmore" v-if="moreShow" style="color:rgb(170, 170, 170);text-align:center;margin-top:30rpx;margin-bottom:20rpx">
-					点击加载更多...
-				</view>
-				<view  v-if="!moreShow"  style="color:rgb(170, 170, 170);text-align:center;margin-top:30rpx;margin-bottom:20rpx">
-					暂无更多...
-				</view>
+
 			</scroll-view>
 			<!--
 			<view class="cu-item self" >
@@ -329,6 +324,7 @@
 				toid:"",
 				list:[],
 				allList:[],
+				scrollTop:0,
 				player:null,
 				selVoiceIndex:-1,
 				domHeight:0,
@@ -407,12 +403,9 @@
 		methods: {
 			loadmore() {
 				this.pageParams.pageNumber++
-				console.log('watch=>',this.pageParams.pageNumber)
-				console.log('watch=>',this.pageParams.pageNumber + '1')
 				this.tongbuMsg(this.pageParams.pageCount,this.pageParams.pageNumber);
 			},
 			refresherrefresh() {
-				console.log('自定义下拉刷新被触发');
 				let _this = this;
 				if (_this._refresherTriggered) {
 					return;
@@ -743,5 +736,4 @@
 </script>
 
 <style scoped>
-
 </style>
