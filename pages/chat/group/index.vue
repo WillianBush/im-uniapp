@@ -332,7 +332,9 @@
 					<text @tap="clickAite(item)" v-for="item in $store.state.cur_chat_aiteToMyList">{{item.fromName}} </text> 提到了你
 					<text @tap.stop="clearAiteToMy" class="cuIcon-close text-red " style="margin-left: 16upx;"></text>
 		</view>
-
+		<view style="position:absolute;bottom:50px;width:100%;text-align:center">
+			<image @click="deduplication()" style="width:80rpx;height:80rpx;" src="/static/tabbar/bottom.png"></image>
+		</view>
 		<view class="cu-bar foot input" :style="[{bottom:InputBottom+'upx'}]" >
 			<!-- #ifndef H5 -->
 			<view @tap="selType(2)" v-show="c_type==1"  class="action">
@@ -1470,8 +1472,10 @@
 
 		mounted() {
 			// this.domHeight = document.documentElement.clientHeight
-		if(!this.$store.state.cur_chat_msg_list){
+			if(!this.$store.state.cur_chat_msg_list.length>0){
 				this.tongbuMsg();
+			}else{
+				this.deduplication()
 			}
 		},
 
@@ -1486,6 +1490,7 @@
 			},
 			justRefresh() {
 				this.tongbuMsg(this.pageParams.pageCount,this.pageParams.pageNumber);
+				this.scrollToBottom();
 				uni.showToast({
 					title:"完全な記録については、右上隅のクエリをクリックしてください",
 					icon:"none"

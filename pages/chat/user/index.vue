@@ -981,9 +981,6 @@
 			this.$store.commit("setCur_chat_entity",null);
 			this.$store.commit("setCur_chat_msg_list",[]);
 		},
-		onHide() {
-			uni.$off("scrollTopFn");
-		},
 		onShow() {
 			let _this = this;
 			uni.$on("scrollTopFn",()=>{
@@ -1171,6 +1168,8 @@
 
 			if(!this.$store.state.cur_chat_msg_list.length>0){
 				this.tongbuMsg();
+			}else{
+				this.deduplication()
 			}
 		},
 
@@ -1181,6 +1180,7 @@
 			},
 			justRefresh() {
 				this.tongbuMsg(this.pageParams.pageCount,this.pageParams.pageNumber);
+				this.scrollToBottom();
 				uni.showToast({
 					title:"请点击右上角获取完整记录同步",
 					icon:"none"
