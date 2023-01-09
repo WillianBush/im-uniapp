@@ -85,7 +85,11 @@ export default new Vuex.Store({
 					clearTimeout(this.si);
 					// this.st = null;
 					console.log("clearTimeout");
-				}
+				},
+				unique:function(arr, val) { //数组去重方法
+					const res = new Map()
+					return arr.filter((item) => !res.has(item[val]) && res.set(item[val], 1))
+				},
 			}
 
 
@@ -1010,23 +1014,17 @@ export default new Vuex.Store({
 
 
 
-
 				}
 				else if(data.CMD=="USER_CHAT_MESSAGE" || data.CMD=="GROUP_CHAT_MESSAGE" || data.CMD=="CHAT_SEND_RED_SUCCESS"
 							||data.CMD=="CHAT_SYS_TXT"||data.CMD=="CHAT_SEND_TRANSFER_SUCCESS") {
 					console.log("返回了:"+new Date());
-					console.log(data.body[0]);
 
 
-					if(data.body[0].bean) {
-						console.log("data.body[0].bean.psr:"+data.body[0].bean.psr);
-					}
+					// if(data.body[0].bean.fromUid!=store.state.user.id) {
 
-					//if(data.body[0].bean.fromUid!=store.state.user.id) {
-
-					//消息遗留检查【重发检查机制】
+					// 消息遗留检查【重发检查机制】
 					// let tnmus = uni.getStorageSync(data.body[0].chatid+"_THE_NEW_MSG_UUIDS");
-					// console.log("tnmus:"+tnmus);
+					// console.log("消息遗留检查:"+tnmus);
 					// if(null!=tnmus&&tnmus!="") {
 					// 	if(tnmus.indexOf(data.body[0].bean.uuid)>=0) return;
 					// 	console.log("添加信息了");
@@ -1062,15 +1060,15 @@ export default new Vuex.Store({
 
 					// //用户间聊天，接收方也可以自动拉到下面
 					// console.log(store.state.temp.chatVew);
-					// if(store.state.cur_chat_entity&&store.state.temp.chatVew) {
-					// 	let sp = store.state.temp.chatVew.getScrollPosition();
-					// 	let sp_bottom = sp.scrollHeight - sp.scrollTop - store.state.temp.chatVew.$el.clientHeight;
-					// 	console.log("sp_bottom:"+sp_bottom);
-					// 	if(sp_bottom<300) {
-					// 		console.log("来到这里了");
-					// 		store.state.temp.chatVew.scrollTo(9999999999);
-					// 	}
-					// }
+					if(store.state.cur_chat_entity&&store.state.temp.chatVew) {
+						let sp = store.state.temp.chatVew.getScrollPosition();
+						let sp_bottom = sp.scrollHeight - sp.scrollTop - store.state.temp.chatVew.$el.clientHeight;
+						console.log("sp_bottom:"+sp_bottom);
+						if(sp_bottom<300) {
+							console.log("来到这里了");
+							store.state.temp.chatVew.scrollTo(9999999999);
+						}
+					}
 
 					uni.$emit("scrollTopFn");
 
@@ -1078,7 +1076,6 @@ export default new Vuex.Store({
 					let darao = uni.getStorageSync(data.body[0].chatid+"_darao");
 					console.log("darao:"+darao);
 					if(data.body[0].bean.fromUid!=store.state.user.id) {
-						console.log("11111111->"+data.act);
 						if(!darao&&data.act=="none") {
 							console.log("播放了1："+store.state.temp.msg_mp3_playtime);
 							if(store.state.temp.msg_mp3_playtime==0||(new Date().getTime() - store.state.temp.msg_mp3_playtime)>1000) {
@@ -1219,15 +1216,6 @@ export default new Vuex.Store({
 						 	jsonObj.splice(0,jsonObj.length-100);
 						 }
 
-						 uni.setStorageSync(user.id+"#"+data.body[0].chatid+'_CHAT_MESSAGE',JSON.stringify(jsonObj));
-						 // if(state.chatMessageMap.has(user.id+"#"+data.body[0].chatid)) {
-							//  let list = state.chatMessageMap.get(user.id+"#"+data.body[0].chatid);
-							//  list = list.concat(data.body);
-							//  if(list.length>50) {
-							//  	list.splice(0,list.length-50);
-							//  }
-							// store.commit("updateChatMessageMap",user.id+"#"+data.body[0].chatid,list);
-						 // } else {
 
 							store.commit("updateChatMessageMap",{
 								key:user.id+"#"+data.body[0].chatid,
@@ -1235,8 +1223,12 @@ export default new Vuex.Store({
 							});
 
 							if(store.state.cur_chat_entity&&store.state.cur_chat_entity.id==data.body[0].chatid) {
-								store.commit("setCur_chat_msg_list",jsonObj);
-								console.log("---->3");
+								//1-9修正 把直接赋值改为先去重
+								jsonObj.forEach((item) => {
+									item.uuid = item.bean.uuid
+								});
+								store.commit("setCur_chat_msg_list",this.heartCheck.unique(jsonObj, "uuid"));
+								// store.commit("setCur_chat_msg_list",jsonObj);
 								let v = {
 									toUid:data.body[0].chatid,
 									fromUid:store.state.user.id
@@ -1380,6 +1372,7 @@ export default new Vuex.Store({
 
 			state.lock = false;
 		},
+		
 		WEBSOCKET_SEND(state, p) {
 			let _this = this;
 			// let user = uni.getStorageSync("USER");
