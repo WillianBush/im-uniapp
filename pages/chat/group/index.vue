@@ -1584,7 +1584,7 @@
 							for (let i = 0; i < res_data.body.list.length; i++){ //从[0]中取出
 								cList.push(res_data.body.list[i][0])
 							} //遍历
-							_this.syncMessageArr.unshift.apply(_this.syncMessageArr,cList)
+							_this.syncMessageArr = cList
 
 							let user = uni.getStorageSync("USER");
 							//1：先清楚和刷新当前显示列表
