@@ -42,12 +42,17 @@
 	export default {
 		data() {
 			return {
+				refresherTriggered: false, //下拉刷新状态
+				_refresherTriggered: false, //防止异步操作
 				id:"",
-				list:[],
-				list1:[],
-				kw:"",
-				PageCur: 'main',
-				randomKeyId: 0
+				totalAllListCount: 0,
+				totalList:[],
+				numPag: 1, // 第一页
+				allPageNum: 10000, // 总页数
+				pageSize: 50,//50条
+				status: "more", // 加载状态
+				timer: null,
+				inputText:""
 
 			}
 		},
@@ -56,42 +61,99 @@
 			let user = uni.getStorageSync("USER");
 
 
-			_this.$http.post("/room/json/getMemberList",
-				{roomid:_this.$store.state.cur_chat_entity.id},
-				{
-					header:{
-						"x-access-uid":_this.$store.state.user.id,
-						"x-access-client":_this.$clientType
-					}
-				}
-			).then(res=>{
-				let res_data = eval(res.data);
-				if(res_data.code==200) {
-					_this.list = res_data.body;
-					_this.list.forEach((item1)=>{
-						let s = uni.getStorageSync(item1.id+"_NOTE");
-						if(s&&s!="") {
-							item1.nickName=s;
-						}
-					 })
-					 _this.list1 = _this.list;
-				}
-			})
+
+			this.loadStoreData(this.pageSize,this.numPag);
+
 		},
 		methods: {
-			search(){
-				this.search_list();
+			searchP(a){
+				if(typeof a !== 'undefined' && a != null && a !== ''){
+					let _this = this;
+					_this.$http.post("/room/json/getMember",
+							{
+								roomid:_this.$store.state.cur_chat_entity.id,
+								nickname:a,
+							},
+							{
+								header:{
+									"x-access-uid":_this.$store.state.user.id,
+									"x-access-client":_this.$clientType
+								}
+							}
+					).then(res=>{
+						let res_data = eval(res.data);
+						if(res_data.code==200) {
+							let item = res_data.body;
+							if(item){
+								// let s = uni.getStorageSync(item.id+"_NOTE");
+								// if(s&&s!="") {
+								// 	item.nickName=s;
+								// }
+								_this.totalList = [];
+								_this.totalList = item;
+								console.log("搜索进来啦2",_this.totalList)
+							}
+						}
+					})
+				}else {
+					this.refresherrefresh();
+				}
 			},
-			showGroup() {
-				this.PageCur = 'main';
-			},
-			loadData(){
+			refresherrefresh() {
+				console.log('自定义下拉刷新被触发');
 				let _this = this;
-				let user = uni.getStorageSync("USER");
+				if (_this._refresherTriggered) {
+					return;
+				}
+				_this._refresherTriggered = true;
+				//界面下拉触发，triggered可能不是true，要设为true
+				if (!_this.refresherTriggered) {
+					_this.refresherTriggered = true;
+				}
+				//清空
+				this.totalList=[];
+				this.numPag = 1;
+				this.loadStoreData(this.pageSize,this.numPag);
+			},
+			refresherrestore() {
+				console.log('自定义下拉刷新被复位');
+				let _this = this;
+				_this.refresherTriggered = false;
+				_this._refresherTriggered = false;
+			},
+			refresherabort() {
+				console.log('自定义下拉刷新被中止    ');
+				let _this = this;
+				_this.refresherTriggered = false;
+				_this._refresherTriggered = false;
+			},
+			scrollLower() {
+				console.log('我滚动到底部了')
+				if (this.numPag >= this.allNum) {
+					this.status = "noMore"
+					return
+				} else {
+					this.status = "loading"
+				}
+				this.numPag = this.numPag + 1;
+				this.timer = setTimeout(() => {
+					console.log('我滚动到底部了2'+this.numPag)
+					this.loadStoreData(this.pageSize,this.numPag);
 
-
-				_this.$http.post("/room/json/getMemberList",
-						{roomid:_this.$store.state.cur_chat_entity.id},
+				}, 1000);
+			},
+			closeRefresh(){
+				this.refresherTriggered = false; //触发onRestore，并关闭刷新图标
+				this._refresherTriggered = false;
+			},
+			loadStoreData(pSize,pNumber) {
+				let _this = this;
+				_this.$http.post("/room/json/getMemberListPage",
+						{
+							roomid:_this.$store.state.cur_chat_entity.id,
+							pageSize:pSize,//数量
+							pageNumber:pNumber//页数
+						},
 						{
 							header:{
 								"x-access-uid":_this.$store.state.user.id,
@@ -160,7 +222,7 @@
 						if(flag) {
 							this.PageCur = 'user_detail';
 							this.randomKeyId = parseInt(Math.random()*100000000);
-
+//2023-1-9 notes
 							this.$refs.userdetail.loadData(_id, _this.$store.state.cur_chat_entity.id);//调用上面子类UserDetail里面的方法
 
 
