@@ -66,7 +66,7 @@
 
 		},
 		methods: {
-			searchP(a){
+			search(a){
 				if(typeof a !== 'undefined' && a != null && a !== ''){
 					let _this = this;
 					_this.$http.post("/room/json/getMember",
