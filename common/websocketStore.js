@@ -1227,7 +1227,7 @@ export default new Vuex.Store({
 								jsonObj.forEach((item) => {
 									item.uuid = item.bean.uuid
 								});
-								store.commit("setCur_chat_msg_list",this.heartCheck.unique(jsonObj, "uuid"));
+								store.commit("setCur_chat_msg_list",heartCheck.unique(jsonObj, "uuid"));
 								// store.commit("setCur_chat_msg_list",jsonObj);
 								let v = {
 									toUid:data.body[0].chatid,
