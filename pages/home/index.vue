@@ -209,7 +209,7 @@
 				}],
 				modalName: null,
 				gridCol: 3,
-				random:0,
+				random:1,
 				gridBorder: false,
 				menuBorder: false,
 				menuArrow: false,

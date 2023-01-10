@@ -30,8 +30,6 @@ export default {
   },
   methods: {
 	deal(v) {
-		console.log('hhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhh-----------', v)
-		console.log('this.node', this.node)
 		if (typeof v === 'string') {
 			return v;
 		} else {
@@ -41,7 +39,7 @@ export default {
 					src = o.match(/>(\S*)</)[1];
 					return;
 				}
-			})	
+			})
 			console.log('src', src)
 			return src;
 		}

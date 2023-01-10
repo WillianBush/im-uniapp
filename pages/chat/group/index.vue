@@ -1038,29 +1038,15 @@
 
 		watch: {
 			isRandom: function(newVal,oldVal){
-				console.log('msgToId=>',this.msgToId)
 				this.txt = "" //重新选择置空
-				if(this.isGroupChat){
-					this.toid = this.msgToGroupId;
-					console.log('quepaso=》',this.msgToGroupId)
-					localStorage.setItem('toUser',this.msgToGroupId)
-					this.onShowMethod();
-					this.onLoadMethod();
-					this.loadOrRefreshDate();
-				}else{
-					this.toid = this.msgToId;
-					this.$store.state.touserid = this.msgToGroupId
-					console.log('quepaso=》',this.msgToGroupId)
-					localStorage.setItem('toUser',this.msgToId)
-					this.onShowMethod2();
-					this.onLoadMethod2();
-					this.loadOrRefreshDate2();
-				}
+				this.determineGroup()
+					setTimeout(() => {
+						console.log('msgToGroupId=>')
+						console.log('msgToGroupId=>',this.msgToGroupId)
+						this.determineGroup()
+					}, 1000);
 			}
 			//  ChatTypeId: function(newVal,oldVal){
-			// console.log('watchGroupMsgToId')
-			// console.log('----------------------newType',newVal)
-			// console.log('---------------------oldType',oldVal)
 			// this.onShowMethod();
 			// this.onLoadMethod();
 			//  },
@@ -1082,10 +1068,27 @@
 		mounted() {
 			document.oncontextmenu = function (e) { return false; }
 			// this.domHeight = document.documentElement.clientHeight
-
 		},
 
 		methods: {
+			determineGroup(){ //判断是否是群组聊天；
+				if(this.isGroupChat){
+					this.toid = this.msgToGroupId;
+					console.log('quepaso=》',this.msgToGroupId)
+					localStorage.setItem('toUser',this.msgToGroupId)
+					this.onShowMethod();
+					this.onLoadMethod();
+					this.loadOrRefreshDate();
+				}else{
+					this.toid = this.msgToId;
+					this.$store.state.touserid = this.msgToGroupId
+					console.log('quepaso=》',this.msgToGroupId)
+					localStorage.setItem('toUser',this.msgToId)
+					this.onShowMethod2();
+					this.onLoadMethod2();
+					this.loadOrRefreshDate2();
+				}
+			},
 			unique(arr, val) {
 				const res = new Map()
 				return arr.filter((item) => !res.has(item[val]) && res.set(item[val], 1))
@@ -1093,13 +1096,10 @@
 			onShowMethod2() {
 				let _this = this;
 				uni.$on("scrollTopFn",()=>{
-					console.log("触发了-scrollTopFn");
 					//scrollLeft: 0, scrollTop: 3935, scrollHeight: 4500, scrollWidth: 375, deltaX: 0
 					//console.log(_this.scrollDetail)
 					let svH = _this.winH - _this.CustomBar - 50;
-					console.log("svH:"+svH);
 					//console.log(_this.scrollDetail.scrollHeight-_this.scrollDetail.scrollTop);
-					console.log(_this.scrollDetail.scrollHeight-_this.scrollDetail.scrollTop - svH);
 					if((_this.scrollDetail.scrollHeight-_this.scrollDetail.scrollTop - svH)<300) {
 						//#ifdef APP-PLUS
 						setTimeout(()=>{
@@ -1175,9 +1175,7 @@
 						}
 				).then(res=>{
 					let res_data = eval(res.data);
-					console.log('userInfo33', res_data)
 					if(res_data.code==200) {
-						console.log('userInfo22', res_data.body.ip+"===="+res_data.body.ipAddr)
 						_this.toIP = res_data.body.ip +"("+ res_data.body.ipAddr+")";
 					}
 				})
@@ -1214,15 +1212,12 @@
 					//
 					let res_data = eval(res.data);
 					let statusCode = res_data ? res_data.code : 0;
-					console.log('usr_data===>',res_data)
 					_this.$store.state.touser = res_data.body.id //接收者ID
 					if(statusCode==200) {
 						//主要是为了让onshow检查是否已设置备注，如果已设置备注则不需要使用用户原昵称
 						setTimeout(function(){
 							//如果用户设置了备注别名，展示备注别名
 							let s = uni.getStorageSync(_this.toid+"_NOTE");
-							console.log("net00000000",s)
-							console.log("net11111111",_this.toid)
 							if(s&&s!="") {
 								_this.$store.state.chatShowName = s;
 							}else{
@@ -1261,7 +1256,6 @@
 						}
 				).then(res=>{
 					let res_data = eval(res.data);
-					console.log('groupdata===>',res_data)
 					if(res_data.code==200) {
 						_this.entity = res_data.body;
 						_this.friendPic = res_data.body.img;
@@ -1394,7 +1388,6 @@
 				const targetEle = document.getElementById( 'testInputg' );
 				if (!targetEle) return;
 				targetEle.addEventListener( 'paste', function( e ){
-					console.log("aaaaaabbbbccccc",e)
 					var clipboardData = e.clipboardData,
 							i = 0,
 							items, item, types;
@@ -1492,7 +1485,6 @@
 				const targetEle = document.getElementById( 'testInputg2' );
 				if (!targetEle) return;
 				targetEle.addEventListener( 'paste', function( e ){
-					console.log("aaaaaabbbbccccc",e)
 					var clipboardData = e.clipboardData,
 							i = 0,
 							items, item, types;
