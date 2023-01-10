@@ -15,13 +15,13 @@
 		<view class="cu-modal" :class="isShowModal?'show':''">
 			<view class="cu-dialog">
 				<view class="cu-bar bg-white justify-end">
-					<view class="content">提示</view>
+					<view class="content">{{i18n.tips}}</view>
 					<view class="action" @tap="hideModal">
-						<text class="text-red">关闭</text>
+						<text class="text-red">{{i18n.close}}</text>
 					</view>
 				</view>
 				<view class="padding-xl">
-					功能暂未开放，敬请期待！
+					{{i18n.notyet}}
 				</view>
 			</view>
 		</view>
@@ -44,7 +44,7 @@
 				uni.showToast({
 					icon: 'none',
 					position: 'top',
-					title: '请联系接待人员'
+					title: i18n.plscontact
 				});
 			},
       checkIndex(){
@@ -56,7 +56,7 @@
 				uni.showToast({
 					icon: 'none',
 					position: 'top',
-					title: '请联系接待人员'
+					title: i18n.plscontact
 				});
 			}
 
@@ -73,7 +73,7 @@
         uni.showToast({
           icon: 'none',
           position: 'top',
-          title: '请先添加指导员'
+          title: i18n.plsaddguide
         });
       },
       goShop(){
@@ -102,8 +102,6 @@
 				// 允许从相机和相册扫码
 				uni.scanCode({
 				    success: function (res) {
-				        //console.log('条码类型：' + res.scanType);
-				        console.log('条码内容：' + res.result);
 						if(res.result.indexOf("#group#")==0) {
 							let roomid = res.result.split("#")[2];
 
@@ -172,7 +170,6 @@
 							let member_id = res.result.split("#")[2];
 							//如果是自己的二维码
 							if(member_id==_this.$store.state.user.id) {
-								console.log("进来这里");
 								uni.navigateTo({
 									url:"/pages/index/index"
 								})
