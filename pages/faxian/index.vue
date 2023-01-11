@@ -39,12 +39,18 @@
 		},
 		onload(){
 		},
+		computed: {
+
+			i18n () {
+				return this.$t('index')
+			}
+		},
 		methods:{
 			plsContact(){
 				uni.showToast({
 					icon: 'none',
 					position: 'top',
-					title: i18n.plscontact
+					title:"请联系接待员"
 				});
 			},
       checkIndex(){
@@ -56,7 +62,7 @@
 				uni.showToast({
 					icon: 'none',
 					position: 'top',
-					title: i18n.plscontact
+					title:"请联系接待员"
 				});
 			}
 
@@ -73,7 +79,7 @@
         uni.showToast({
           icon: 'none',
           position: 'top',
-          title: i18n.plsaddguide
+          title:"请先添加指导员"
         });
       },
       goShop(){
