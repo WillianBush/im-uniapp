@@ -1,5 +1,6 @@
 import Vue from 'vue'
 import App from './App'
+import {activeConfig} from "@/common/appConfig";
 import VueI18n from 'vue-i18n'
 import home from './pages/home/index.vue'
 import en from '@/i18n/en.json'
@@ -8,7 +9,7 @@ Vue.component('home',home)
 Vue.use(VueI18n)
 Vue.config.productuinTip = false
 const i18n = new VueI18n({
-	locale: 'zh-CN',
+	locale: activeConfig.language,
 	messages: {
 		'en-US': en,
 		'zh-CN': zh

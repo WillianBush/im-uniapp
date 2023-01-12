@@ -15,6 +15,7 @@ const configLive1= {
 		"https://media.ve9gj.pw/config_sys/domains-prod.txt"],
 	loginIcon : "/static/logo12.png",
 	registerIcon : "/static/logo12.png",
+	language: "zh-CN",
 	setupPicture : "/static/splash.jpg"
 }
 
