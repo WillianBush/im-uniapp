@@ -1,10 +1,10 @@
 <template>
 	<view>
-		<cu-custom bgColor="bg-blue" :isBack="true"><block slot="content">VIP</block></cu-custom>
+		<vip-custom bgColor="bg-blue" :isBack="true">
+			<block slot="content">VIP</block></vip-custom>
 		<web-view :src="url" style="height:93.2vh;top:50px"></web-view>
 	</view>
 </template>
-
 <script>
 	export default {
 		data() {

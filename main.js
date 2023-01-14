@@ -31,6 +31,8 @@ Vue.component('mine',mine)
 
 import cuCustom from './colorui/components/cu-custom.vue'
 Vue.component('cu-custom',cuCustom)
+import vipCustom from './colorui/components/vip-custom.vue'
+Vue.component('vip-custom',vipCustom)
 
 import number_jpan from './components/numberJpan/numberJpan.vue'
 Vue.component('number-jpan',number_jpan)
