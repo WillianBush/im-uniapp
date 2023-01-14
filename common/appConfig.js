@@ -3,8 +3,8 @@
 const configJapan= {
 	appName : "香り",
 	requestUrl: ["https://media.qweac.link/config_sys/domains-prod.txt"],
-	loginIcon : "/static/logo12.png",
-	registerIcon : "/static/logo12.png",
+	loginIcon : "/static/logo.png",
+	registerIcon : "/static/logo.png",
 	setupPicture : "/static/splash.jpg"
 }
 
@@ -13,16 +13,16 @@ const configLive1= {
 	requestUrl: ["https://media.8jkiy.pw/config_sys/domains-prod.txt",
 		"https://media.33fwj.pw/config_sys/domains-prod.txt",
 		"https://media.ve9gj.pw/config_sys/domains-prod.txt"],
-	loginIcon : "/static/logo12.png",
-	registerIcon : "/static/logo12.png",
+	loginIcon : "/static/logo.png",
+	registerIcon : "/static/logo.png",
 	setupPicture : "/static/splash.png"
 }
 
 const config9113= {
 	appName : "触感",
 	requestUrl: ["https://piao-01.oss-cn-hongkong.aliyuncs.com/config_sys/domains-prod.txt"],
-	loginIcon : "/static/logo12.png",
-	registerIcon : "/static/logo12.png",
+	loginIcon : "/static/logo.png",
+	registerIcon : "/static/logo.png",
 	setupPicture : "/static/splash.jpg"
 }
 const fangyuan= {
@@ -40,8 +40,8 @@ const fangyuan= {
 		"https://config.l8x754.xyz/config_sys/domains-prod.txt",
 		"https://config.jsrmz6.xyz/config_sys/domains-prod.txt",
 		"https://dasiifdfcc.oss-cn-hongkong.aliyuncs.com/config_sys/domains-prod.txt"], //约伴线上 域名映射 oss
-	loginIcon : "/static/logo12.png",
-	registerIcon : "/static/logo12.png",
+	loginIcon : "/static/logo.png",
+	registerIcon : "/static/logo.png",
 	setupPicture : "/static/splash.jpg"
 }
 
