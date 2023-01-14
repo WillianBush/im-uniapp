@@ -139,7 +139,7 @@
         "router" : {
             "base" : "/"
         },
-        "title" : "触感",
+        "title" : "好物通",
         "optimization" : {
             "treeShaking" : {
                 "enable" : true
