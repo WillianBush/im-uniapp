@@ -1,6 +1,8 @@
 {
   "index": {
     "add": "Add a friend",
+	"submit":"submit",
+	"originalnickname":"original nickname",
 	"delete":"delete",
 	"clearallchat":"clear all chat",
 	"clearchat":"clear chat history",
