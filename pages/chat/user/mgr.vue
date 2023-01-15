@@ -35,17 +35,17 @@
 				<switch @change="SwitchA" :class="switchA?'checked':''" :checked="switchA?true:false"></switch>
 			</view>
 			<view class="cu-item cu-form-group">
-				<view class="title">置顶聊天</view>
+				<view class="title">{{i18n.stickychat}}</view>
 				<switch @change="SwitchB" :class="switchB?'checked':''" :checked="switchB?true:false"></switch>
 			</view>
 			<view class="cu-item cu-form-group">
-				<view class="title">加入黑名单</view>
+				<view class="title">{{i18n.addblacklist}}</view>
 				<switch @change="SwitchC" :class="switchC?'checked':''" :checked="switchC?true:false"></switch>
 			</view>
 
 			<view class="cu-item margin-top arrow" @tap="clearChatMsg()" >
 				<view class="content">
-					<text class="text-grey" style="color:#333">清空聊天记录</text>
+					<text class="text-grey" style="color:#333">{{i18n.clearchat}}</text>
 				</view>
 			</view>
 			<view v-if="super_user==1" class="cu-item arrow" @tap="clearChatMsgBoth()" >

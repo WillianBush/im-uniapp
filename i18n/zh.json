@@ -1,6 +1,9 @@
 {
   "index": {
     "add": "添加好友",
+	"clear chat":"清空聊天记录",
+	"addblacklist":"加入黑名单",
+	"stickychat":"置顶聊天",
 	"nodisurb":"消息免打扰",
 	"sychronize":"同步/查看聊天记录",
 	"remark":"备注",

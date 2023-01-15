@@ -1,6 +1,9 @@
 {
   "index": {
     "add": "Add a friend",
+	"clearchat":"clear chat history",
+	"addblacklist":"add to blacklist",
+	"stickyChat":"Sticky chat",
 	"nodisurb":"no disurb",
 	"sychronize":"sychronize",
 	"remark":"remark",
