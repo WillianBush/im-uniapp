@@ -18,25 +18,25 @@
 					<block v-if="$store.state.signInCnf">
 						<view v-if="$store.state.signInCnf.useSignIn==1" @tap="goSignIn" style="    position: absolute;top: 14px;right: 20px;">
 							<text class="iconfont icon-qiandao" style="color: #fff;    font-size: 56upx;"></text>
-						</view>	
+						</view>
 					</block>
 
 				</view>
-  
- 
-  
+
+
+
 				<view style="border-top-left-radius: 20px;border-top-right-radius: 20px;margin-top:10px;background: #F1F1F1;" class="cu-list menu"
 				 :class="[true?'sm-border':'',false?'card-menu margin-top':'']">
-				 
+
 					<view v-show="false" @tap="goWallet()" class="cu-item" :class="true?'arrow':''">
 						<view class="content">
-							
+
 							<!--<view  style="float:left;width: 44upx;height: 44upx;background-image: url(../../static/tb/qianbao.png);background-size: 100% 100%;"></view>-->
 							<text style="color:#EC3A4E" class="iconfont icon-qianbao"></text>
 							<text class="text-black" style="margin-left: 10px;">我的钱包</text>
 						</view>
 					</view>
-					
+
 					<view v-if="$store.state.shimingCfg.shiming==1"  @tap="goShiming()" class="cu-item" :class="true?'arrow':''">
 						<view class="content">
 							<!--
@@ -45,8 +45,8 @@
 							<text style="color:#EF4023;font-size:44upx" class="iconfont icon-shimingrenzheng"></text>
 							<text class="text-black" style="margin-left: 10px;">实名认证</text>
 						</view>
-					</view> 
-				
+					</view>
+
 					<view  v-show="false" @tap="goBill()" class="cu-item" :class="true?'arrow':''">
 						<view class="content">
 							<!--
@@ -68,15 +68,15 @@
 							</view>
 						</view>
 					</view>
-					
+
 					<view  @tap="goFavourite()" class="cu-item" :class="true?'arrow':''">
 						<view class="content">
 							<text style="color:#FF99BB;font-size:44upx" class="iconfont icon-shoucang"></text>
 							<text class="text-black" style="margin-left: 10px;">收藏</text>
 						</view>
-					</view> 
+					</view>
 
-					
+
 					<!-- <view @tap="goUserInfo()" class="cu-item t1" style="border:0px;" :class="true?'arrow':''">
 						<view class="content">
 							<text style="color:#F5BC50;font-size:46upx" class="iconfont icon-shezhi"></text>
@@ -84,10 +84,10 @@
 						</view>
 					</view> -->
 					<view @tap="goQrcode"  class="cu-item arrow" >
-						<view class="content"> 
+						<view class="content">
 						<text style="color:#F5BC50;font-size:46upx;float: left; position: relative; left: -6px;" class="lg  cuIcon-qr_code"><span></span></text>
 							<text class="text-black" style="margin-left: -6px;" >二维码</text>
-							
+
 						</view>
 					</view>
 
@@ -119,7 +119,7 @@
 					</view>
 
 					<view class="cu-item" @tap="logout()" >
-						<view class="content"> 
+						<view class="content">
 						<!--
 							<view  style="float:left;width: 44upx;height: 44upx;background-image: url(../../static/tb/logout.png);background-size: 100% 100%;"></view>
 						-->
@@ -216,6 +216,11 @@
 				nickName: "",
 			}
 		},
+		computed:{
+			i18n () {
+				return this.$t('index')
+			}
+		},
 		mounted() {
 			let _this = this;
 			_this.$http.post("/user/employeeDefaultMessage/json/isEmployee",
@@ -252,7 +257,7 @@
 			goSignIn(){
 				uni.navigateTo({
 					url:"/pages/mine/signIn"
-				}) 
+				})
 			},
 			checkUpdate(){
 				let _this = this;
@@ -268,7 +273,7 @@
 			goShiming() {
 				uni.navigateTo({
 					url:"/pages/mine/shiming"
-				}) 
+				})
 			},
 			goFavourite() {
 				uni.navigateTo({
@@ -282,7 +287,7 @@
 			goBill() {
 				uni.navigateTo({
 					url:"/pages/mine/wallet/bill"
-				}) 
+				})
 			},
 			goQrcode() {
 				uni.navigateTo({
@@ -350,7 +355,7 @@
 				// 	},
 				// 	success(res) {
 				// 		let res_data = eval(res.data);
-				// 		if(res_data.code==200) {  
+				// 		if(res_data.code==200) {
 				// 			//uni.clearStorageSync();
 				// 			uni.removeStorageSync("USER");
 				// 			_this.$store.commit("clearData");
@@ -360,8 +365,8 @@
 				// 		}
 				// 	}
 				// })
-				
-				
+
+
 			},
 			getGreetingMsg(_this) {
 				let user = this.$store.state.user;
@@ -396,7 +401,7 @@
 	.iconfont{
 		font-size: 38upx;
 	}
-		
+
 	.t1:after {
 		border:0px!important;
 	}
