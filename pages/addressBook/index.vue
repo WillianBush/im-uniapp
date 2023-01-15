@@ -4,9 +4,7 @@
 
 
 		<view class="cu-bar bg-white search" >
-			<view class="search-form round"
-			
-			
+			<view class="search-form round">
 				<text class="cuIcon-search"></text>
 				<input v-model="kw1"  type="text" placeholder="输入搜索的关键词" confirm-type="search"></input>
 			</view>
