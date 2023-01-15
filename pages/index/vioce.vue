@@ -40,6 +40,10 @@ export default {
     intIntervalTime() {
       // 用于显示整数的秒数
       return Math.round(this.intervalTime);
+    },
+
+    i18n () {
+      return this.$t('index')
     }
   },
 
@@ -65,8 +69,8 @@ export default {
 			this.endRecord();
 		}
       }, 500);
-	  
-	  
+
+
     },
 
     endRecord() {

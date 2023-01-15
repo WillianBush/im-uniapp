@@ -75,6 +75,11 @@
 		onLoad(e) {
 			this.registerIcon = activeConfig.registerIcon
 		},
+		computed:{
+			i18n () {
+				return this.$t('index')
+			}
+		},
 		mounted() {
 			_this= this;
 			//this.isLogin();

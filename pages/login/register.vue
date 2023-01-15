@@ -119,6 +119,12 @@
 		onLoad(e) {
 			this.registerIcon = activeConfig.registerIcon
 		},
+
+		computed:{
+			i18n () {
+				return this.$t('index')
+			}
+		},
 		onShow() {
 			let _this = this;
 
