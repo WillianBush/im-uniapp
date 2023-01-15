@@ -1,16 +1,18 @@
 <template>
 	<view>
-		<cu-custom bgColor="bg-blue" :isBack="false"><block slot="content">通讯录({{memberList.length}})</block></cu-custom>
+		<cu-custom bgColor="bg-blue" :isBack="false"><block slot="content">{{i18n.addressbook}}({{memberList.length}})</block></cu-custom>
 
 
 		<view class="cu-bar bg-white search" >
-			<view class="search-form round">
+			<view class="search-form round"
+			
+			
 				<text class="cuIcon-search"></text>
 				<input v-model="kw1"  type="text" placeholder="输入搜索的关键词" confirm-type="search"></input>
 			</view>
 			<view class="action">
-				<button @tap="search()" style="background: #FFAA01;"   class="cu-btn bg-gradual-green shadow-blur round">搜索</button>
-				<button @tap="getRefresh()" style="margin-left:20rpx;background: #3F92F8;"   class="cu-btn bg-gradual-green shadow-blur round">刷新</button>
+				<button @tap="search()" style="background: #FFAA01;"   class="cu-btn bg-gradual-green shadow-blur round">{{i18n.refresh}}</button>
+				<button @tap="getRefresh()" style="margin-left:20rpx;background: #3F92F8;"   class="cu-btn bg-gradual-green shadow-blur round">{{i18n.refresh}}</button>
 			</view>
 		</view>
 		<scroll-view scroll-y class="indexes" :scroll-into-view="'indexes-'+ listCurID" :style="[{height:'calc(100vh - 100upx - 100upx - 150upx)'}]"
@@ -27,7 +29,7 @@
 					<view  style="float:left;width: 44upx;height: 44upx;background-image: url(../../static/tb/addf.png);background-size: 100% 100%;"></view>
 				-->
 					<text style="float:left;color:#FCBF00;font-size:50upx" class="iconfont icon-tianjiahaoyou"></text>
-		    		<text class="text-grey" style="float:left;margin-left: 10px;">新的朋友</text>
+		    		<text class="text-grey" style="float:left;margin-left: 10px;">{{i18n.anewfriend}}</text>
 					<view v-if="$store.state.unDoFriendAddCount>0" style="top: 38upx;right: 72upx" class="cu-tag badge">{{$store.state.unDoFriendAddCount}}</view>
 		    	</view>
 		    </view>
@@ -40,7 +42,7 @@
 					<view  style="float:left;width: 44upx;height: 44upx;background-image: url(../../static/tb/group3.png);background-size: 100% 100%;"></view>
 					-->
 					<text style="color:#009FE8;font-size:50upx" class="iconfont icon-qunzhong"></text>
-					<text class="text-grey" style="margin-left: 10px;">群聊</text>
+					<text class="text-grey" style="margin-left: 10px;">{{i18n.group}}</text>
 					<view v-if="$store.state.unDoRoomAddCount>0" style="top: 38upx;right: 72upx" class="cu-tag badge">{{$store.state.unDoRoomAddCount}}</view>
 				</view>
 			</view>
@@ -53,7 +55,7 @@
 					<view  style="float:left;width: 44upx;height: 44upx;background-image: url(../../static/tb/hei.png);background-size: 100% 100%;"></view>
 					-->
 					<text style="color:#999;font-size:50upx" class="iconfont icon-heimingdan"></text>
-					<text class="text-grey" style="margin-left: 10px;">黑名单</text>
+					<text class="text-grey" style="margin-left: 10px;">{{i18n.blacklist}}</text>
 				</view>
 			</view>
 		</view>
@@ -83,7 +85,7 @@
     margin-top: 20upx;
     line-height: 100upx;
     color: #999;" v-if="friend_list.length<=0">
-				暂无好友
+				{{i18n.nofriend}}
 			</view>
 		</scroll-view>
 		<view style="bottom:50upx" class="indexBar" :style="[{height:'calc(100vh - ' + CustomBar + 'px - 50px)'}]">
