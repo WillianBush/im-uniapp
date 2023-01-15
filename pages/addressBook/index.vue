@@ -158,6 +158,9 @@
 				})
 
 				return nlist;
+			},
+			i18n () {
+				return this.$t('index')
 			}
 		},
 
