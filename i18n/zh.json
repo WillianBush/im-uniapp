@@ -1,6 +1,7 @@
 {
   "index": {
     "add": "添加好友",
+	"group":"群聊",
 	"anewfriend":"新的朋友",
     "addressbook":"通讯录",
 	"blacklist":"黑名单",

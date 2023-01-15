@@ -1,6 +1,7 @@
 {
   "index": {
     "add": "Add a friend",
+	"group":"group",
 	"anewfriend":"Add new friend",
 	"addressbook":"Address book",
 	"blacklist":"black list",
