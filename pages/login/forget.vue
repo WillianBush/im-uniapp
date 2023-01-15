@@ -1,6 +1,6 @@
 <template>
 	<view class="forget" style="background: #fff;height:100vh">
-		
+
 		<view class="content">
 			<view @tap="back" style="position: relative;
 			top: 14px;
@@ -25,11 +25,11 @@
 					isShowPass
 				></wInput>
 			</view>
-			
-			<wButton 
+
+			<wButton
 				class="wbutton"
 				text="重置密码"
-				:rotate="isRotate" 
+				:rotate="isRotate"
 				@click.native="startRePass()"
 			></wButton>
 
@@ -56,6 +56,12 @@
 		mounted() {
 			_this= this;
 		},
+
+		computed:{
+			i18n () {
+				return this.$t('index')
+			}
+		},
 		methods: {
 			back() {
 				uni.navigateBack({
@@ -79,7 +85,7 @@
 					position: 'bottom',
 				    title: '模拟倒计时触发'
 				});
-				
+
 				setTimeout(function(){
 					_this.$refs.runCode.$emit('runCode',0); //假装模拟下需要 终止倒计时
 				},3000)
@@ -107,7 +113,7 @@
 			        });
 			        return false;
 			    }
-				
+
 				_this.isRotate=true
 				/***
 				uni.request({
@@ -118,8 +124,8 @@
 					},
 					success(res) {
 						let res_data = eval(res.data);
-						if(res_data.code==200) {  
-							
+						if(res_data.code==200) {
+
 							_this.isRotate=false
 						}
 					}
@@ -155,9 +161,9 @@
 					}
 
 				})
-			
-				
-				
+
+
+
 			}
 		}
 	}

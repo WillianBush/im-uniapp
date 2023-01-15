@@ -10,11 +10,11 @@
 				<view class="cu-avatar radius margin-left" :style="'height:100upx;width:100upx;background-image:url('+$store.state.img_url+cur_user.headpic+');'"></view>
 				<view style="margin:auto auto;color: #999;font-size:24upx;text-align: center;margin-top:8upx;overflow: hidden;height:34upx;width:100upx;">{{cur_user.nickName}}</view>
 			</view>
-			
+
 			<text @tap="createGroup()" style="font-size: 120upx;margin-top:20upx;color:#999;margin-left:20upx" class="iconfont icon-tianjiatupian"></text>
-			 
-		</view> 
-		
+
+		</view>
+
 		<view style="clear: both;  width: 96%;
     margin: auto auto;
     margin-top: 10px!important;" class="cu-list menu">
@@ -29,7 +29,7 @@
 					<text class="text-grey" style="color:#333">同步/查看聊天记录</text>
 				</view>
 			</view>
-			
+
 			<view class="cu-form-group margin-top">
 				<view class="title">消息免打扰</view>
 				<switch @change="SwitchA" :class="switchA?'checked':''" :checked="switchA?true:false"></switch>
@@ -42,7 +42,7 @@
 				<view class="title">加入黑名单</view>
 				<switch @change="SwitchC" :class="switchC?'checked':''" :checked="switchC?true:false"></switch>
 			</view>
-			
+
 			<view class="cu-item margin-top arrow" @tap="clearChatMsg()" >
 				<view class="content">
 					<text class="text-grey" style="color:#333">清空聊天记录</text>
@@ -53,15 +53,15 @@
 					<text class="text-grey" style="color:#333">双向清除聊天记录</text>
 				</view>
 			</view>
-			
-			
+
+
 			<view class="cu-item margin-top" style="margin-bottom: 80upx;" @tap="removeFriend()" >
 				<view class="content" style="text-align: center;">
 					<text class="text-grey" style="color:#FF2442;">删除</text>
 				</view>
 			</view>
-			
-		</view>	
+
+		</view>
 	</view>
 </template>
 
@@ -84,10 +84,16 @@
 				this.user_note = s;
 			}
 		},
+
+		computed:{
+			i18n () {
+				return this.$t('index')
+			}
+		},
 		onLoad(e) {
 			this.id = e.id;
 			let _this = this;
-			
+
 			_this.$http.post("/user/json/loadById/v1",
 				{id:this.id},
 				{
@@ -98,7 +104,7 @@
 				}
 			).then(res=>{
 				let res_data = eval(res.data);
-				if(res_data.code==200) {  
+				if(res_data.code==200) {
 					_this.cur_user = res_data.body;
 					let s = uni.getStorageSync(_this.id+"_NOTE");
 					if(s&&s!="") {
@@ -106,7 +112,7 @@
 					}
 				}
 			})
-			
+
 			// uni.request({
 			// 	method:"POST",
 			// 	url: _this.$store.state.req_url + "/user/json/loadById/v1",
@@ -116,7 +122,7 @@
 			// 	},
 			// 	success(res) {
 			// 		let res_data = eval(res.data);
-			// 		if(res_data.code==200) {  
+			// 		if(res_data.code==200) {
 			// 			_this.cur_user = res_data.body;
 			// 			let s = uni.getStorageSync(_this.id+"_NOTE");
 			// 			if(s&&s!="") {
@@ -125,9 +131,9 @@
 			// 		}
 			// 	}
 			// })
-			
+
 			//是否超级用户
-			
+
 			_this.$http.post("/user/json/isSuperUser",
 				{
 					header:{
@@ -137,11 +143,11 @@
 				}
 			).then(res=>{
 				let res_data = eval(res.data);
-				if(res_data.code==200) {  
+				if(res_data.code==200) {
 					_this.super_user = parseInt(res_data.msg);
 				}
 			})
-			
+
 			// uni.request({
 			// 	method:"POST",
 			// 	url: _this.$store.state.req_url + "/user/json/isSuperUser",
@@ -151,12 +157,12 @@
 			// 	},
 			// 	success(res) {
 			// 		let res_data = eval(res.data);
-			// 		if(res_data.code==200) {  
+			// 		if(res_data.code==200) {
 			// 			_this.super_user = parseInt(res_data.msg);
 			// 		}
 			// 	}
 			// })
-			
+
 			_this.$http.post("/user/json/isBlack",
 				{uid:this.id},
 				{
@@ -167,13 +173,13 @@
 				}
 			).then(res=>{
 				let res_data = eval(res.data);
-				if(res_data.code==200) {  
+				if(res_data.code==200) {
 					if(res_data.msg == "1") {
 						_this.switchC = true;
 					} else {
 						_this.switchC = false;
 					}
-					
+
 				} else {
 					uni.showToast({
 						title: res_data.msg,
@@ -181,7 +187,7 @@
 					});
 				}
 			})
-			
+
 			// uni.request({
 			// 	method:"POST",
 			// 	url: _this.$store.state.req_url + "/user/json/isBlack",
@@ -192,13 +198,13 @@
 			// 	},
 			// 	success(res) {
 			// 		let res_data = eval(res.data);
-			// 		if(res_data.code==200) {  
+			// 		if(res_data.code==200) {
 			// 			if(res_data.msg == "1") {
 			// 				_this.switchC = true;
 			// 			} else {
 			// 				_this.switchC = false;
 			// 			}
-						
+
 			// 		} else {
 			// 			uni.showToast({
 			// 				title: res_data.msg,
@@ -207,12 +213,12 @@
 			// 		}
 			// 	}
 			// })
-			
+
 			let darao = uni.getStorageSync(this.id+"_darao");
 			if(darao&&darao!="") {
 				this.switchA = darao;
 			}
-			
+
 			let zhiding = uni.getStorageSync(this.id+"_zhiding");
 			if(zhiding&&zhiding!="") {
 				this.switchB = zhiding;
@@ -226,8 +232,8 @@
 				    itemList: ['删除并清除聊天记录'],
 				    success: function (res) {
 				        //console.log('选中了第' + (res.tapIndex + 1) + '个按钮');
-						
-						
+
+
 						_this.$http.post("/user/friend/removeFriends",
 							{uid:_this.id},
 							{
@@ -238,13 +244,13 @@
 							}
 						).then(res=>{
 							let res_data = eval(res.data);
-							if(res_data.code==200) { 
+							if(res_data.code==200) {
 								uni.showToast({
 								    title: "删除成功",
 								    duration: 800
 								});
 								setTimeout(()=>{
-									
+
 									_this.$store.state.chatMessageMap.delete(user.id+"#"+_this.id);
 									uni.removeStorageSync(user.id+"#"+_this.id+'_CHAT_MESSAGE');
 									_this.$store.commit("setCur_chat_msg_list",[]);
@@ -270,11 +276,11 @@
 										return true;
 									})
 									_this.$store.commit("setFriend_list",list_1);
-									
+
 									uni.navigateTo({
 										url:"/pages/index/index"
 									})
-									
+
 								},800);
 							} else {
 								uni.showToast({
@@ -283,8 +289,8 @@
 								});
 							}
 						})
-						
-						
+
+
 						// uni.request({
 						// 	method:"POST",
 						// 	url: _this.$store.state.req_url + "/user/friend/removeFriends",
@@ -295,13 +301,13 @@
 						// 	},
 						// 	success(res) {
 						// 		let res_data = eval(res.data);
-						// 		if(res_data.code==200) { 
+						// 		if(res_data.code==200) {
 						// 			uni.showToast({
 						// 			    title: "删除成功",
 						// 			    duration: 800
 						// 			});
 						// 			setTimeout(()=>{
-										
+
 						// 				_this.$store.state.chatMessageMap.delete(user.id+"#"+_this.id);
 						// 				uni.removeStorageSync(user.id+"#"+_this.id+'_CHAT_MESSAGE');
 						// 				_this.$store.commit("setCur_chat_msg_list",[]);
@@ -327,11 +333,11 @@
 						// 					return true;
 						// 				})
 						// 				_this.$store.commit("setFriend_list",list_1);
-										
+
 						// 				uni.navigateTo({
 						// 					url:"/pages/index/index"
 						// 				})
-										
+
 						// 			},800);
 						// 		} else {
 						// 			uni.showToast({
@@ -341,8 +347,8 @@
 						// 		}
 						// 	}
 						// })
-						
-						
+
+
 				    },
 				    fail: function (res) {
 						console.log("按取消");
@@ -382,15 +388,15 @@
 							    title: '清除成功',
 							    duration: 2000
 							});
-							
+
 							//清空云数据
 							// if(_this.$store.state.isEmployee){
 								_this.$websocket.dispatch("WEBSOCKET_SEND", "{body:'"+(user.id+"#"+_this.id)+"',CMD:'CLEARCHATMSG_SINGLE_CLOUD'}");
 							// }
-						} 
+						}
 					},
-				});	
-				
+				});
+
 			},
 			clearChatMsgBoth(){
 				let _this = this;
@@ -411,10 +417,10 @@
 							});
 							//通知对方清空数据
 							_this.$websocket.dispatch("WEBSOCKET_SEND", "{body:'"+(user.id+"#"+_this.id)+"',CMD:'CLEARCHATMSG'}");
-						} 
+						}
 					},
-				});	
-				
+				});
+
 			},
 			SwitchA(e) {
 				this.switchA = e.detail.value;
@@ -428,10 +434,10 @@
 				if(this.switchC) {
 					actionName = "addBlack";
 				} else {
-					actionName = "removeBlack";				
+					actionName = "removeBlack";
 				}
-				
-				
+
+
 				_this.$http.post("/user/json/"+actionName,
 					{uid:this.id},
 					{
@@ -442,8 +448,8 @@
 					}
 				).then(res=>{
 					let res_data = eval(res.data);
-					if(res_data.code==200) {  
-						
+					if(res_data.code==200) {
+
 					} else {
 						uni.showToast({
 						    title: res_data.msg,
@@ -451,8 +457,8 @@
 						});
 					}
 				})
-				
-				
+
+
 				// uni.request({
 				// 	method:"POST",
 				// 	url: _this.$store.state.req_url + "/user/json/"+actionName,
@@ -463,8 +469,8 @@
 				// 	},
 				// 	success(res) {
 				// 		let res_data = eval(res.data);
-				// 		if(res_data.code==200) {  
-							
+				// 		if(res_data.code==200) {
+
 				// 		} else {
 				// 			uni.showToast({
 				// 			    title: res_data.msg,
@@ -473,12 +479,12 @@
 				// 		}
 				// 	}
 				// })
-				
+
 			},
 			SwitchB(e) {
 				this.switchB = e.detail.value;
 				uni.setStorageSync(this.id+"_zhiding",e.detail.value);
-				
+
 				let l = this.$store.state.ar_list;
 				let list1 = [];	//没有置顶的
 				let list2 = [];//置顶的
@@ -497,9 +503,9 @@
 				list2.sort(function(a,b){
 					return b.createDateTime-a.createDateTime;
 				})
-				
+
 				this.$store.commit("setAr_list_show",list2.concat(list1));
-				
+
 			},
 		}
 	}

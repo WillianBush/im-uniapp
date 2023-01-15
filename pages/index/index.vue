@@ -113,9 +113,11 @@
 				time_t:new Date().getTime(),
 			}
 		},
-		onLoad() {
-			let _this = this;
+		computed: {
 
+			i18n () {
+				return this.$t('index')
+			}
 		},
 		methods: {
 			goSignIn() {

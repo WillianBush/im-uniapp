@@ -399,7 +399,11 @@
 			let _this = this;
 			this.tongbuMsg(this.pageParams.pageCount,this.pageParams.pageNumber);
 		},
-
+		computed:{
+			i18n () {
+				return this.$t('index')
+			}
+		},
 		methods: {
 			loadmore() {
 				this.pageParams.pageNumber++

@@ -981,6 +981,12 @@
 			this.$store.commit("setCur_chat_entity",null);
 			this.$store.commit("setCur_chat_msg_list",[]);
 		},
+
+		computed:{
+			i18n () {
+				return this.$t('index')
+			}
+		},
 		onShow() {
 			let _this = this;
 			uni.$on("scrollTopFn",()=>{
