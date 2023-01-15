@@ -1,7 +1,7 @@
 <!--聊天对象页面，点击右上角设置-->
 <template>
 	<view>
-		<cu-custom bgColor="bg-blue"  :isBack="true" :nameToLeft="true"><block slot="backText"></block><block slot="content">设置</block><block slot="right">
+		<cu-custom bgColor="bg-blue"  :isBack="true" :nameToLeft="true"><block slot="backText"></block><block slot="content">{{i18n.setting}}</block><block slot="right">
 		</block></cu-custom>
 		<view style="background: #fff;display: flex;  width: 96%;
     margin: auto auto;
@@ -20,18 +20,18 @@
     margin-top: 10px!important;" class="cu-list menu">
 		<view @tap="editNote()" class="cu-item arrow" >
 			<view class="content">
-				<text class="text-grey" style="color:#333;float:left;">备注</text>
+				<text class="text-grey" style="color:#333;float:left;">{{i18n.remark}}</text>
 				<text class="text-grey text-sm" style="float:right;color:#aaa;font-size: 26upx;">{{user_note}}</text>
 			</view>
 		</view>
 			<view @tap="goMsgRecord()" class="cu-item arrow" >
 				<view class="content">
-					<text class="text-grey" style="color:#333">同步/查看聊天记录</text>
+					<text class="text-grey" style="color:#333">{{i18n.sychronize}}</text>
 				</view>
 			</view>
 
 			<view class="cu-form-group margin-top">
-				<view class="title">消息免打扰</view>
+				<view class="title">{{i18n.nodisurb}}</view>
 				<switch @change="SwitchA" :class="switchA?'checked':''" :checked="switchA?true:false"></switch>
 			</view>
 			<view class="cu-item cu-form-group">

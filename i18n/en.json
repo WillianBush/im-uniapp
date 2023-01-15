@@ -1,6 +1,10 @@
 {
   "index": {
     "add": "Add a friend",
+	"nodisurb":"no disurb",
+	"sychronize":"sychronize",
+	"remark":"remark",
+	"setting":"setting",
 	"chathistory":"Chat history",
 	"nochat":"No chat",
 	"receivedmoney":"received money",
