@@ -50,14 +50,14 @@
 			</view>
 			<view v-if="super_user==1" class="cu-item arrow" @tap="clearChatMsgBoth()" >
 				<view class="content">
-					<text class="text-grey" style="color:#333">双向清除聊天记录</text>
+					<text class="text-grey" style="color:#333">{{i18n.clearallchat}}</text>
 				</view>
 			</view>
 
 
 			<view class="cu-item margin-top" style="margin-bottom: 80upx;" @tap="removeFriend()" >
 				<view class="content" style="text-align: center;">
-					<text class="text-grey" style="color:#FF2442;">删除</text>
+					<text class="text-grey" style="color:#FF2442;">{{i18n.delete}}</text>
 				</view>
 			</view>
 
