@@ -1,6 +1,10 @@
 {
   "index": {
     "add": "添加好友",
+	"receivedmoney":"已收钱",
+	"transferexpired":"转账已过期",
+	"paid":"已收款",
+	"personalcard":"个人名片",
 	"group":"群聊",
 	"anewfriend":"新的朋友",
     "addressbook":"通讯录",

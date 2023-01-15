@@ -49,7 +49,7 @@
 													text-align: left;
 													font-size: 23upx;
 													padding-left: 20upx;
-													color: #777;">个人名片</view>
+													color: #777;">{{i18n.personalcard}}</view>
 										</view>
 									</view>
 									<view class="cu-avatar radius" :style="'background-image:url('+$store.state.img_url+item.bean.fromHeadpic+');'"></view>
@@ -74,7 +74,7 @@
 													text-align: left;
 													font-size: 23upx;
 													padding-left: 20upx;
-													color: #777;">个人名片</view>
+													color: #777;">{{i18n.personalcard}}</view>
 										</view>
 									</view>
 									<view class="date "> {{item.bean.date}}</view>
@@ -93,9 +93,9 @@
 											<view style="float:left;">
 
 												<view v-if="item.bean.status&&item.bean.status==1"  style="text-align: left; color: #f6f6f6; margin-top: 30upx; margin-left: 20upx;font-size: 28upx;
-												overflow: hidden;width: 250upx;height: 44upx;">已收款</view>
+												overflow: hidden;width: 250upx;height: 44upx;">{{i18n.paid}}</view>
 												<view v-else-if="item.bean.status&&item.bean.status==2"  style="text-align: left; color: #f6f6f6; margin-top: 30upx; margin-left: 20upx;font-size: 28upx;
-												overflow: hidden;width: 250upx;height: 44upx;">转账已过期</view>
+												overflow: hidden;width: 250upx;height: 44upx;">{{i18n.transferexpired}}</view>
 												<view v-else style="text-align: left; color: #f6f6f6; margin-top: 30upx; margin-left: 20upx;font-size: 28upx;
 												overflow: hidden;width: 250upx;height: 44upx; word-break: keep-all;text-overflow: ellipsis;">{{item.bean.descri}}</view>
 
@@ -120,9 +120,9 @@
 											</view>
 											<view style="float:left;">
 												<view v-if="item.bean.status&&item.bean.status==1" style="text-align: left; color: #f6f6f6; margin-top: 30upx; margin-left: 20upx;font-size: 28upx;
-												overflow: hidden;width: 250upx;height: 44upx;">已收钱</view>
+												overflow: hidden;width: 250upx;height: 44upx;">{{i18n.receivedmoney}}</view>
 												<view v-else-if="item.bean.status&&item.bean.status==2" style="text-align: left; color: #f6f6f6; margin-top: 30upx; margin-left: 20upx;font-size: 28upx;
-												overflow: hidden;width: 250upx;height: 44upx;">转账已过期</view>
+												overflow: hidden;width: 250upx;height: 44upx;">{{i18n.transferexpired}}</view>
 												<view v-else style="text-align: left; color: #f6f6f6; margin-top: 30upx; margin-left: 20upx;font-size: 28upx;
 												overflow: hidden;width: 250upx;height: 44upx;word-break: keep-all;text-overflow: ellipsis;">{{item.bean.descri}}</view>
 												<view style="text-align: left;color: #f6f6f6; margin-top: 4upx; margin-left: 20upx;font-size: 32upx;">¥{{item.bean.money}}</view>

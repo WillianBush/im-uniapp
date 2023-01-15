@@ -1,6 +1,10 @@
 {
   "index": {
     "add": "Add a friend",
+	"receivedmoney":"received money",
+	"transferexpired":"Transfer expired",
+	"paid":"paid",
+	"personalcard":"personal card",
 	"group":"group",
 	"anewfriend":"Add new friend",
 	"addressbook":"Address book",
