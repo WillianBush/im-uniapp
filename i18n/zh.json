@@ -1,6 +1,8 @@
 {
   "index": {
     "add": "添加好友",
+	"chathistory":"历史聊天记录",
+	"nochat":"暂无聊天记录",
 	"receivedmoney":"已收钱",
 	"transferexpired":"转账已过期",
 	"paid":"已收款",

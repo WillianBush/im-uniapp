@@ -1,6 +1,8 @@
 {
   "index": {
     "add": "Add a friend",
+	"chathistory":"Chat history",
+	"nochat":"No chat",
 	"receivedmoney":"received money",
 	"transferexpired":"Transfer expired",
 	"paid":"paid",

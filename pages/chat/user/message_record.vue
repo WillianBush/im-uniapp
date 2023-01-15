@@ -1,10 +1,10 @@
 <template>
 	<view>
-		<cu-custom bgColor="bg-blue"  :isBack="true" :nameToLeft="true"><block slot="backText"></block><block slot="content">历史聊天记录</block><block slot="right">
+		<cu-custom bgColor="bg-blue"  :isBack="true" :nameToLeft="true"><block slot="backText"></block><block slot="content">{{i18n.chathistory}}</block><block slot="right">
 		</block></cu-custom>
 		<view class="cu-chat">
 			<view v-if="chatLogs.length<=0" style="text-align: center;color:#aaa;margin-top:60upx;font-size: 28upx;">
-				暂无聊天记录
+				{{i18n.nochat}}
 			</view>
 
 			<scroll-view   :scroll-y="true"
