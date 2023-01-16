@@ -4,7 +4,7 @@
 		</block></cu-custom>
 		
 		<view class="margin-top" style="text-align: center;margin-top: 50upx;color:#aaa">
-				暂无相关记录
+				{{i18n.norelatedrecords}}
 			</view>
 	
 			

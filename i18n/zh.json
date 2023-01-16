@@ -1,6 +1,7 @@
 {
   "index": {
     "add": "添加好友",
+	"norelatedrecords":"暂无相关记录",
 	"noinformation":"暂无信息",
 	"mycollection":"我的收藏",
 	"protocol":"协议",
