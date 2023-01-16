@@ -1,6 +1,8 @@
 {
   "index": {
     "add": "添加好友",
+	"registeraccount":"注册账号",
+	"retrievepassword":"找回密码",
 	"submit":"提交",
 	"originalnickname":"原昵称",
 	"delete":"删除",

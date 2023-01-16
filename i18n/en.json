@@ -1,6 +1,8 @@
 {
   "index": {
     "add": "Add a friend",
+	"registeraccount":"register an account",
+	"retrievepassword":"retrieve password",
 	"submit":"submit",
 	"originalnickname":"original nickname",
 	"delete":"delete",

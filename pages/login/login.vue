@@ -44,9 +44,9 @@
 			<view class="footer" style="    width: 80%;
     margin: auto auto;
     margin-top: 14px;    display: block;">
-				<navigator v-if="false" style="float:left;" url="forget" open-type="navigate">找回密码</navigator>
+				<navigator v-if="false" style="float:left;" url="forget" open-type="navigate">{{i18n.retrievepassword}}</navigator>
 
-				<navigator  style="float:right;" url="register" open-type="navigate">注册账号</navigator>
+				<navigator  style="float:right;" url="register" open-type="navigate">{{i18n.registeraccount}}</navigator>
 			</view>
 		</view>
 	</view>
