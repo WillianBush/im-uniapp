@@ -10,7 +10,7 @@
 				</view>
 			<!-- 主体 -->
 			<view class="main" style="margin-top:40upx;">
-				<view class="tips">若你忘记了密码，可在此重置新密码。</view>
+				<view class="tips">{{i18n.ifyouforgetyourpasswordyoucanresetnewpasswordhere}}</view>
 				<wInput
 					v-model="oldPassData"
 					type="text"

@@ -1,6 +1,9 @@
 {
   "index": {
     "add": "Add a friend",
+	"protocol":"protocol",
+	"agree":"agree",
+	"ifyouforgetyourpasswordyoucanresetnewpasswordhere":"If you forget your password you can reset a new password here",
 	"registeraccount":"register an account",
 	"retrievepassword":"retrieve password",
 	"submit":"submit",

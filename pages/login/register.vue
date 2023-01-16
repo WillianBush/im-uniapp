@@ -73,9 +73,9 @@
 					@tap="isShowAgree"
 					class="cuIcon"
 					:class="showAgree?'cuIcon-radiobox':'cuIcon-round'"
-				> 同意</text>
+				> {{i18n.agree}}</text>
 				<!-- 协议地址 -->
-				<navigator url="" open-type="navigate">《协议》</navigator>
+				<navigator url="" open-type="navigate">{{i18n.protocol}}</navigator>
 			</view>
 
 		</view>
