@@ -1,6 +1,7 @@
 {
   "index": {
     "add": "添加好友",
+	"quit":"退出",
 	"checkupdates":"检查更新",
 	"qrcode":"二维码",
 	"collect":"收藏",

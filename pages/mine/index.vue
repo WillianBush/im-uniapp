@@ -124,7 +124,7 @@
 							<view  style="float:left;width: 44upx;height: 44upx;background-image: url(../../static/tb/logout.png);background-size: 100% 100%;"></view>
 						-->
 							<text style="color:#FA9B4E;font-size:44upx" class="iconfont icon-tuichu"></text>
-							<text class="text-black" style="margin-left: 10px;">退出</text>
+							<text class="text-black" style="margin-left: 10px;">{{i18n.quit}}</text>
 						</view>
 					</view>
 					<!--

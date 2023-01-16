@@ -1,6 +1,7 @@
 {
   "index": {
     "add": "Add a friend",
+	"quit":"quit",
 	"checkupdates":"Check for updates",
 	"qrcode":"QR code",
 	"collect":"collect",
