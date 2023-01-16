@@ -1,6 +1,8 @@
 {
   "index": {
     "add": "Add a friend",
+	"noinformation":"no information",
+	"mycollection":"my collection",
 	"protocol":"protocol",
 	"agree":"agree",
 	"ifyouforgetyourpasswordyoucanresetnewpasswordhere":"If you forget your password you can reset a new password here",

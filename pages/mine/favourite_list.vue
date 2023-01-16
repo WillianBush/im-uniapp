@@ -2,7 +2,7 @@
 	<view @tap="clickChat"> 
 		<cu-custom bgColor="bg-blue" :isBack="true" :nameToLeft="true">
 			<block slot="backText"></block>
-			<block slot="content">我的收藏</block>
+			<block slot="content">{{i18n.mycollection}}</block>
 		</cu-custom>
 		
 		
@@ -27,7 +27,7 @@
     margin-top: 20upx;
     line-height: 100upx;
     color: #999;" v-if="list.length<=0">
-				暂无信息
+				{{i18n.noinformation}}
 			</view>
 		</scroll-view>
 	
