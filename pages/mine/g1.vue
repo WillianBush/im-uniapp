@@ -1,6 +1,6 @@
 <template>
 	<view>
-		<cu-custom bgColor="bg-blue"  :isBack="true" :nameToLeft="true"><block slot="backText"></block><block slot="content">资金明细</block><block slot="right">
+		<cu-custom bgColor="bg-blue"  :isBack="true" :nameToLeft="true"><block slot="backText"></block><block slot="content">{{i18n.fundingdetails}}</block><block slot="right">
 		</block></cu-custom>
 		
 		<view class="margin-top" style="text-align: center;margin-top: 50upx;color:#aaa">

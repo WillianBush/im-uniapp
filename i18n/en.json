@@ -1,7 +1,14 @@
 {
   "index": {
     "add": "Add a friend",
+	"checkupdates":"Check for updates",
+	"qrcode":"QR code",
+	"collect":"collect",
+	"openrefresh":"open refresh",
+	"verified":"Verified",
+	"mypurse":"my purse",
 	"norelatedrecords":"No related records",
+	"fundingdetails":"Funding details",
 	"noinformation":"no information",
 	"mycollection":"my collection",
 	"protocol":"protocol",

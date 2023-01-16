@@ -33,7 +33,7 @@
 
 							<!--<view  style="float:left;width: 44upx;height: 44upx;background-image: url(../../static/tb/qianbao.png);background-size: 100% 100%;"></view>-->
 							<text style="color:#EC3A4E" class="iconfont icon-qianbao"></text>
-							<text class="text-black" style="margin-left: 10px;">我的钱包</text>
+							<text class="text-black" style="margin-left: 10px;">{{i18n.mypurse}}</text>
 						</view>
 					</view>
 
@@ -43,7 +43,7 @@
 							<view  style="float:left;width: 44upx;height: 44upx;background-image: url(../../static/tb/zijin.png);background-size: 100% 100%;"></view>
 							-->
 							<text style="color:#EF4023;font-size:44upx" class="iconfont icon-shimingrenzheng"></text>
-							<text class="text-black" style="margin-left: 10px;">实名认证</text>
+							<text class="text-black" style="margin-left: 10px;">{{i18n.verified}}</text>
 						</view>
 					</view>
 
@@ -53,7 +53,7 @@
 							<view  style="float:left;width: 44upx;height: 44upx;background-image: url(../../static/tb/zijin.png);background-size: 100% 100%;"></view>
 							-->
 							<text style="color:#2588C4;font-size:44upx" class="iconfont icon-ziyuan"></text>
-							<text class="text-black" style="margin-left: 10px;">资金明细</text>
+							<text class="text-black" style="margin-left: 10px;">{{i18n.fundingdetails}}</text>
 						</view>
 					</view>
 
@@ -63,7 +63,7 @@
 						<view class="content">
 
 							<view class="cu-form-group margin-top">
-								<text class="text-black">开启刷新</text>-->
+								<text class="text-black">{{i18n.openrefresh}}</text>-->
 								<switch @change="isOpenRefresh"></switch>
 							</view>
 						</view>
@@ -72,7 +72,7 @@
 					<view  @tap="goFavourite()" class="cu-item" :class="true?'arrow':''">
 						<view class="content">
 							<text style="color:#FF99BB;font-size:44upx" class="iconfont icon-shoucang"></text>
-							<text class="text-black" style="margin-left: 10px;">收藏</text>
+							<text class="text-black" style="margin-left: 10px;">{{i18n.collect}}</text>
 						</view>
 					</view>
 
@@ -86,7 +86,7 @@
 					<view @tap="goQrcode"  class="cu-item arrow" >
 						<view class="content">
 						<text style="color:#F5BC50;font-size:46upx;float: left; position: relative; left: -6px;" class="lg  cuIcon-qr_code"><span></span></text>
-							<text class="text-black" style="margin-left: -6px;" >二维码</text>
+							<text class="text-black" style="margin-left: -6px;" >{{i18n.qrcode}}</text>
 
 						</view>
 					</view>
@@ -113,7 +113,7 @@
 					<view @tap="checkUpdate()" class="cu-item arrow " style="padding-right:70upx;margin-top:20upx;">
 						<view class="content">
 							<text style="color:#FF2D2D;font-size:44upx" class="iconfont icon-app_icons--"></text>
-							<text class="text-black" style="margin-left: 10px;">检查更新</text>
+							<text class="text-black" style="margin-left: 10px;">{{i18n.checkupdates}}</text>
 							<text class="text-grey" style="float:right;font-size: 26upx;color: #bbb;">当前版本：{{$store.state.SYS_VERSION}}</text>
 						</view>
 					</view>
