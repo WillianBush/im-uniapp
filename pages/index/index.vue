@@ -188,7 +188,7 @@
 
 
 				} else if(e.currentTarget.dataset.cur=="mine") {
-						console.log('watch=>',uni.getStorageSync('locale'))
+						console.log('watch=>',uni.getStorageSync('system_info'))
 					_this.$http.post("/sysConfig/json/getShimingCfg",
 						{
 							header:{

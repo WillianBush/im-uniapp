@@ -49,8 +49,8 @@
         },
 	    onLoad(e) {
 		    this.setupPicture = activeConfig.setupPicture
-            console.log('wattewtaew=>',uni.getStorageSync('locale'))
-            if(!uni.getStorageSync('locale')){
+            console.log('wattewtaew=>',uni.getStorageSync('system_info'))
+            if(!uni.getStorageSync('system_info')){
             	this.langShow = true
             }
 	    },
@@ -65,9 +65,8 @@
         methods: {
 	        slidePick(e){
 		        this.langShow = false
-		        uni.setStorageSync('locale', e.value)
+		        uni.setStorageSync('system_info', e.value)
 		        this.selectedLang = e.value //当前选中语言 item详细信息
-		        this.$forceUpdate()
 
 	        },
             countDown() {

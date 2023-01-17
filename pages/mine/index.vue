@@ -291,15 +291,15 @@
 			}
 		},
 		onLoad(){
-			this.selectedLang = uni.getStorageSync('locale')
-			console.log('watchlang=>',this.selectedLang)
+			this.selectedLang = uni.getStorageSync('system_info')
 		},
 		methods:{
 			slidePick(e){
 				this.langShow = false
-				uni.setStorageSync('locale', e.value)
+				const system_info = uni.getStorageSync('system_info')
+				console.log('getnow=>',e.value)
+				e.value === 'en-US' ? system_info.language = this._i18n.system_info = 'en-US' : system_info.language = this._i18n.system_info = 'zh_CN'
 				this.selectedLang = e.value //当前选中语言 item详细信息
-				this.$forceUpdate()
 
 			},
 			langPick(){

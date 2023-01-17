@@ -8,7 +8,7 @@ import {configLive1} from "../common/appConfig";
 Vue.use(VueI18n)
 store.commit("setLang",activeConfig.language);
 const i18n = new VueI18n({
-	locale: store.state.lang,
+	system_info: store.state.lang,
 	messages: {
 		'en-US': en,
 		'zh-CN': zh
