@@ -116,7 +116,7 @@
 						<view class="content">
 							<text style="color:#F5BC50;font-size:46upx;float: left; position: relative; left: -6px;" class="lg  cuIcon-link"><span></span></text>
 							<text class="text-black" style="margin-left: -6px;"  >{{i18n.language}}
-							<text style="color: rgb(187, 187, 187);font-size:24rpx;float:right">{{selectedLang.text}}</text>
+							<text style="color: rgb(187, 187, 187);font-size:24rpx;float:right">{{selectedLang}}</text>
 							</text>
 						</view>
 					</view>
@@ -246,7 +246,7 @@
 			return {
 				langShow: false,
 				langList: [{"value": 'zh-CN',"text": "中文",	},{"value": "en-US","text": "En"}],
-				selectedLang:{"value": 'zh-CN',"text": "中文",	},
+				selectedLang:"",
 				nickName: "",
 				columns: [
 					['中国', '美国', '日本']
@@ -290,12 +290,17 @@
 				this.nickName = _this.$store.state.user.nickName;
 			}
 		},
+		onLoad(){
+			this.selectedLang = uni.getStorageSync('locale')
+			console.log('watchlang=>',this.selectedLang)
+		},
 		methods:{
 			slidePick(e){
 				this.langShow = false
-				this.$store.commit("setLang",e.value);
-				console.log('awwwtwtataw',this.$store.state.lang)
-				this.selectedLang = e //当前选中语言 item详细信息
+				uni.setStorageSync('locale', e.value)
+				this.selectedLang = e.value //当前选中语言 item详细信息
+				this.$forceUpdate()
+
 			},
 			langPick(){
 				this.langShow = true
@@ -391,27 +396,6 @@
 						}
 					}
 				})
-
-				// uni.request({
-				// 	method:"POST",
-				// 	url: _this.$store.state.req_url + "/user/json/logout",
-				// 	header:{
-				// 		"Content-Type":"application/x-www-form-urlencoded",
-				// 		"x-access-uid":_this.$store.state.user.id
-				// 	},
-				// 	success(res) {
-				// 		let res_data = eval(res.data);
-				// 		if(res_data.code==200) {
-				// 			//uni.clearStorageSync();
-				// 			uni.removeStorageSync("USER");
-				// 			_this.$store.commit("clearData");
-				// 			uni.navigateTo({
-				// 				url:"/pages/login/login"
-				// 			})
-				// 		}
-				// 	}
-				// })
-
 
 			},
 			getGreetingMsg(_this) {

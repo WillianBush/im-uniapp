@@ -188,7 +188,7 @@
 
 
 				} else if(e.currentTarget.dataset.cur=="mine") {
-
+						console.log('watch=>',uni.getStorageSync('locale'))
 					_this.$http.post("/sysConfig/json/getShimingCfg",
 						{
 							header:{
@@ -201,19 +201,6 @@
 							_this.$store.commit("setShimingCfg",res.data.body);
 						}
 					})
-
-					// uni.request({
-					// 	method:"POST",
-					// 	url: this.$store.state.req_url + "/sysConfig/json/getShimingCfg",
-					// 	header:{
-					// 		"Content-Type":"application/x-www-form-urlencoded"
-					// 	},
-					// 	success(res) {
-					// 		if(res.data.code==200) {
-					// 			_this.$store.commit("setShimingCfg",res.data.body);
-					// 		}
-					// 	}
-					// })
 				} else {
 					if(e.currentTarget.dataset.cur=="addressBook") {
 
@@ -241,30 +228,6 @@
 
 								}
 							})
-
-							// uni.request({
-							// 	method:"POST",
-							// 	url: _this.$store.state.req_url + "/user/friend/list/v1",
-							// 	header:{
-							// 		"Content-Type":"application/x-www-form-urlencoded",
-							// 		"x-access-uid":user.id
-							// 	},
-							// 	success(res) {
-							// 		let res_data = eval(res.data);
-							// 		if(res_data.code==200) {
-							// 			_this.$store.commit("setFriend_list",res_data.body);
-							// 			_this.$store.state.friend_list.forEach((item)=>{
-							// 				item.list.forEach((item1)=>{
-							// 					let s = uni.getStorageSync(item1.member_uuid+"_NOTE");
-							// 					if(s&&s!="") {
-							// 						item1.name=s;
-							// 					}
-							// 				 })
-							// 			 })
-
-							// 		}
-							// 	}
-							// })
 						} else {
 							this.$store.state.friend_list.forEach((item)=>{
 								item.list.forEach((item1)=>{
@@ -275,8 +238,6 @@
 								 })
 							 })
 						}
-
-
 					}
 
 				}

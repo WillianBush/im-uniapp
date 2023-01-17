@@ -1,6 +1,28 @@
 <template>
     <view class="start-wrap">
         <image class="start-img"  :src="setupPicture" mode="aspectFill" @load="loadImage"></image>
+        <view class="cu-modal" v-if="langShow" :class="langShow?'show':''">
+            <view class="cu-dialog">
+                <view class="cu-bar bg-white justify-end">
+                    <view class="content">
+                        <text>{{i18n.select}}{{i18n.currentLang}}:</text>
+
+                    </view>
+                    <view class="action" @tap="langShow = false">
+                        <text style="color:darkred">{{i18n.close}}</text>
+                    </view>
+                </view>
+                <view class="padding-xl" style="padding-top:15px">
+                    <view style="margin-bottom:10px;display:block">
+                        {{i18n.currentLang}}:
+                        <text style="color:darkred;font-weight: bold">{{selectedLang.text}}</text>
+                    </view>
+                    <view v-for="(item,index) in langList">
+                        <view class="langs" @click="slidePick(item)">{{item.text}}</view>
+                    </view>
+                </view>
+            </view>
+        </view>
         <view class="wraper-row" @click="jump">{{count}}跳过</view>
         <updatepage ref="updatepage"></updatepage>
     </view>
@@ -16,6 +38,9 @@
         },
         data() {
             return {
+	            langShow: false,
+	            langList: [{"value": 'zh-CN',"text": "中文",	},{"value": "en-US","text": "En"}],
+	            selectedLang:"",
                 autoJump:true,
 	            setupPicture:'',
                 count:'',
@@ -24,6 +49,10 @@
         },
 	    onLoad(e) {
 		    this.setupPicture = activeConfig.setupPicture
+            console.log('wattewtaew=>',uni.getStorageSync('locale'))
+            if(!uni.getStorageSync('locale')){
+            	this.langShow = true
+            }
 	    },
 	    computed:{
 		    i18n () {
@@ -34,6 +63,13 @@
             this.countDown() // 倒计时
         },
         methods: {
+	        slidePick(e){
+		        this.langShow = false
+		        uni.setStorageSync('locale', e.value)
+		        this.selectedLang = e.value //当前选中语言 item详细信息
+		        this.$forceUpdate()
+
+	        },
             countDown() {
                 const TIME_COUNT = 5
                 if (!this.timer) {
@@ -48,7 +84,6 @@
                             if(!this.canDoNext){
                                 return;
                             }
-
                             if(this.autoJump){
                                 this.jump();
                             }
@@ -304,6 +339,12 @@
         position: absolute;
         color: white;
         font-size: small;
+    }
+    .langs{
+        color: #999;
+        font-family: pingfang;
+        font-weight: 600;
+        line-height:40px;
     }
 </style>
 
