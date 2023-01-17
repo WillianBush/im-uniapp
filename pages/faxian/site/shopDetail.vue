@@ -80,7 +80,7 @@
         autoplay: false,
         interval: 2000,
         duration: 500,
-				isShowModal:false
+        isShowModal:false
 			}
 		},
 		onLoad: function (option) { //option为object类型，会序列化上个页面传递的参数

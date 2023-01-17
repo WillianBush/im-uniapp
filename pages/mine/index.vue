@@ -1,5 +1,27 @@
 <template>
 	<view style="background-color: #fff;">
+		<view class="cu-modal" v-if="langShow" :class="langShow?'show':''">
+			<view class="cu-dialog">
+				<view class="cu-bar bg-white justify-end">
+					<view class="content">
+						<text>{{i18n.select}}{{i18n.currentLang}}:</text>
+
+						</view>
+					<view class="action" @tap="langShow = false">
+						<text style="color:darkred">{{i18n.close}}</text>
+					</view>
+				</view>
+				<view class="padding-xl" style="padding-top:15px">
+					<view style="margin-bottom:10px;display:block">
+					{{i18n.currentLang}}:
+					<text style="color:darkred;font-weight: bold">{{selectedLang.text}}</text>
+					</view>
+					<view v-for="(item,index) in langList">
+						<view class="langs" @click="slidePick(item)">{{item.text}}</view>
+					</view>
+				</view>
+			</view>
+		</view>
 		<scroll-view style="height: calc(100vh - 100upx);" class="page" >
 			<view class="bg-blue" >
 				<view @tap="goUserInfo()" style="width:100%;height:340upx;padding-top:130upx">
@@ -94,8 +116,8 @@
 						<view class="content">
 							<text style="color:#F5BC50;font-size:46upx;float: left; position: relative; left: -6px;" class="lg  cuIcon-link"><span></span></text>
 							<text class="text-black" style="margin-left: -6px;"  >{{i18n.language}}
+							<text style="color: rgb(187, 187, 187);font-size:24rpx;float:right">{{selectedLang.text}}</text>
 							</text>
-<!--							<u-picker :show="langShow" :columns="columns"></u-picker>-->
 						</view>
 					</view>
 
@@ -215,13 +237,16 @@
 
 <script>
 	import updatepage from "@/components/user/updatepage/updatepage.vue";
+	import store from "../../store";
 	export default {
 		components: {
 		  updatepage
 		},
 		data() {
 			return {
-				langShow: true,
+				langShow: false,
+				langList: [{"value": 'zh-CN',"text": "中文",	},{"value": "en-US","text": "En"}],
+				selectedLang:{"value": 'zh-CN',"text": "中文",	},
 				nickName: "",
 				columns: [
 					['中国', '美国', '日本']
@@ -266,6 +291,12 @@
 			}
 		},
 		methods:{
+			slidePick(e){
+				this.langShow = false
+				this.$store.commit("setLang",e.value);
+				console.log('awwwtwtataw',this.$store.state.lang)
+				this.selectedLang = e //当前选中语言 item详细信息
+			},
 			langPick(){
 				this.langShow = true
 			},
@@ -428,5 +459,11 @@
 		white-space: normal !important;
 		-webkit-line-clamp: 2;
 		-webkit-box-orient: vertical;
+	}
+	.langs{
+		color: #999;
+		font-family: pingfang;
+		font-weight: 600;
+		line-height:40px;
 	}
 </style>

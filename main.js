@@ -1,20 +1,10 @@
 import Vue from 'vue'
 import App from './App'
-import {activeConfig} from "@/common/appConfig";
-import VueI18n from 'vue-i18n'
 import home from './pages/home/index.vue'
-import en from '@/i18n/en.json'
-import zh from '@/i18n/zh.json'
+import store from "./store"//使用vuex对状态进行管理
+import i18n from 'i18n/switch'
 Vue.component('home',home)
-Vue.use(VueI18n)
 Vue.config.productuinTip = false
-const i18n = new VueI18n({
-	locale: activeConfig.language,
-	messages: {
-		'en-US': en,
-		'zh-CN': zh
-	}
-})
 
 Vue.prototype._i18n = i18n
 import addressBook from './pages/addressBook/index.vue'
@@ -37,7 +27,6 @@ Vue.component('vip-custom',vipCustom)
 import number_jpan from './components/numberJpan/numberJpan.vue'
 Vue.component('number-jpan',number_jpan)
 
-import store from "./store"//使用vuex对状态进行管理
 Vue.prototype.$store = store;
 
 /*这里是为了从domian拿到数据后，再进行app启动，防止接口访问时，domian未获取到*/

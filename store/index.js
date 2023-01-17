@@ -14,12 +14,13 @@ const state = {
 	signInCnf:null,//签到配置
 	WAIT_SEND_MSG:"",//发送失败，等待重头发送信息
 	user_token:"",//user_token
+	lang:"",//默认语言
 	user:{},//保存用户对象
 	unReadMsgSum:0,//未读消息总数
 	ar_list:[],//消息列表
-	ar_list_show:[],//消息列表用于显示 
+	ar_list_show:[],//消息列表用于显示
 	friend_list:[],//好友列表
-	group_list:[],//群聊列表 
+	group_list:[],//群聊列表
 	unDoFriendAddCount:0,//未处理好友添加
 	unDoRoomAddCount:0,//未处理群成员申请
 	isEmployee: "",
@@ -32,9 +33,9 @@ const state = {
 	appShow:false,
 	appNeedUpdate:false,
 	chat_my_loadding:false,
-	faxian_site_list:[],//发现自定义站点  
+	faxian_site_list:[],//发现自定义站点
 	hotItem:{},//底部热门导航
-	shimingCfg:{},//实名配置 
+	shimingCfg:{},//实名配置
 	footerViewHeight:0,//footer高度 当H5时才有并效
 	hotItem_webView_show:false,//为了解决切换导航时web_view的隐藏问题
 	/**当flex: 0时是为了可以切换导航,flex: 1时显示web_view,因为此时web_view才有宽度和高度**/
@@ -50,8 +51,8 @@ const state = {
 	greetingpic_5:"",
 	greetingList:[],
 	memberLength:"",
-	//临时属性    
-	temp:{  
+	//临时属性
+	temp:{
 		base64:"",//【作用于群二维码发给朋友临时存等等，因为直接使用带参数页面跳转会导致特殊符号过滤掉】
 		content:"",
 		bean:{},
@@ -60,7 +61,7 @@ const state = {
 		msg_mp3_playtime:0,
 		chatVew:null,//当前聊天窗口scroll-view
 	}
-	 
+
 }
 
 //mutations：这里可以改变state状态，并且是响应式的，也只有在这里改变state才能做到响应式，注意：这里同步的并不能执行异步操作
@@ -73,7 +74,7 @@ const store = new  Vuex.Store({
 	getter,
 	module
 });
- 
+
 
 
 export default store
