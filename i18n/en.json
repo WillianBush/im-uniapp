@@ -4,6 +4,7 @@
 	"quit":"quit",
 	"checkupdates":"Check for updates",
 	"qrcode":"QR code",
+    "language": "Lang",
 	"collect":"collect",
 	"openrefresh":"open refresh",
 	"verified":"Verified",

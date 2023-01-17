@@ -85,9 +85,17 @@
 					</view> -->
 					<view @tap="goQrcode"  class="cu-item arrow" >
 						<view class="content">
-						<text style="color:#F5BC50;font-size:46upx;float: left; position: relative; left: -6px;" class="lg  cuIcon-qr_code"><span></span></text>
+							<text style="color:#F5BC50;font-size:46upx;float: left; position: relative; left: -6px;" class="lg  cuIcon-qr_code"><span></span></text>
 							<text class="text-black" style="margin-left: -6px;" >{{i18n.qrcode}}</text>
 
+						</view>
+					</view>
+					<view @click="langPick"  class="cu-item arrow" >
+						<view class="content">
+							<text style="color:#F5BC50;font-size:46upx;float: left; position: relative; left: -6px;" class="lg  cuIcon-link"><span></span></text>
+							<text class="text-black" style="margin-left: -6px;"  >{{i18n.language}}
+							</text>
+<!--							<u-picker :show="langShow" :columns="columns"></u-picker>-->
 						</view>
 					</view>
 
@@ -213,7 +221,11 @@
 		},
 		data() {
 			return {
+				langShow: true,
 				nickName: "",
+				columns: [
+					['中国', '美国', '日本']
+				],
 			}
 		},
 		computed:{
@@ -254,6 +266,9 @@
 			}
 		},
 		methods:{
+			langPick(){
+				this.langShow = true
+			},
 			goSignIn(){
 				uni.navigateTo({
 					url:"/pages/mine/signIn"
