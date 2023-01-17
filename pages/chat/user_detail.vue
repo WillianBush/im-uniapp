@@ -60,6 +60,9 @@
 			}
 		},
 		computed:{
+				i18n () {
+					return this.$t('index')
+			},
 			showGroupStopSpeak() {
 				if(this.$store.state.cur_chat_entity&&this.$store.state.cur_chat_entity.owner_UUID&&
 					(this.$store.state.cur_chat_entity.owner_UUID==this.id||this.$store.state.cur_chat_entity.memberMgr_ids.indexOf(this.id)>=0)) {

@@ -2,19 +2,19 @@
 	<view style="background-color: #F6F8FA;">
 		<cu-custom bgColor="bg-blue"  :isBack="true" ><block slot="backText"></block><block slot="content">我的钱包</block><block slot="right">
 		</block></cu-custom>
-		
+
 		<scroll-view style="height: calc(100vh - 100upx);" class="page" >
 			<view class="bg-blue" >
 				<view style="width:100%;padding-top:40upx;    padding-left: 52upx;">
-				
+
 				  <view>我的零钱</view>
 				  <view style="font-size: 80upx;margin-top: 16upx;">{{money}}</view>
-					
 
-					
+
+
 
 				</view>
-				
+
 				<view style="width: 80%;
     margin: auto auto;
     height: 160upx;
@@ -39,25 +39,25 @@
 							<view style="color:#aaa;font-size: 24upx;">银行卡提现</view>
 						</view>
 					</view>
-					
+
 				</view>
 
 			</view>
-			
-			
-			
+
+
+
 			<view style="width:96%;margin:auto;margin-top:150upx;clear: both;" class="cu-list menu"
 					 :class="[true?'sm-border':'',false?'card-menu margin-top':'']">
-					 
+
 						<view @tap="goBill()" class="cu-item" >
 							<view class="content">
-								
+
 								<!--<view  style="float:left;width: 44upx;height: 44upx;background-image: url(../../static/tb/qianbao.png);background-size: 100% 100%;"></view>-->
 								<text style="color:#FC9105;font-size: 44upx;" class="iconfont icon-zhangdan1"></text>
 								<text class="text-grey" style="margin-left: 10px;color: #222;">我的账单</text>
 							</view>
 						</view>
-					
+
 						<view @tap="goPayPwdSet()" class="cu-item" >
 							<view class="content">
 								<!--
@@ -67,9 +67,9 @@
 								<text class="text-grey" style="margin-left: 10px;color: #222;">修改支付密码</text>
 							</view>
 						</view>
-						
-			
-						
+
+
+
 						<view @tap="forgetPayPwd()" class="cu-item" >
 							<view class="content">
 								<!--
@@ -79,7 +79,7 @@
 								<text class="text-grey" style="margin-left: 10px;color: #222;">忘记支付密码</text>
 							</view>
 						</view>
-						
+
 						<view @tap="goBankList()" class="cu-item" >
 							<view class="content">
 								<!--
@@ -89,8 +89,8 @@
 								<text class="text-grey" style="margin-left: 10px;color: #222;">我的银行卡</text>
 							</view>
 						</view>
-						
-					
+
+
 						<!--
 			<view class="cu-item" :class="menuArrow?'arrow':''">
 				<button class="cu-btn content" open-type="contact">
@@ -161,14 +161,14 @@
 				</view>
 			</view>
 			-->
-			
+
 					</view>
-			
-			
+
+
 		</scroll-view>
-		
+
 		<number-jpan :length="6" @closeChange="closeChange($event)" :showNum="false" ref="numberPad"></number-jpan>
-		
+
 	</view>
 </template>
 
@@ -179,11 +179,16 @@
 				money:"0.00"
 			}
 		},
+		computed:{
+			i18n () {
+				return this.$t('index')
+			}
+		},
 		onShow() {
 			let _this = this;
 			let user = this.$store.state.user;
-			
-			
+
+
 			_this.$http.post("/user/json/money/v1",
 				{
 					header:{
@@ -193,11 +198,11 @@
 				}
 			).then(res=>{
 				let res_data = eval(res.data);
-				if(res_data.code==200) {  
+				if(res_data.code==200) {
 					_this.money = res_data.msg;
 				}
 			})
-			
+
 			// uni.request({
 			// 	method:"POST",
 			// 	url: _this.$store.state.req_url + "/user/json/money/v1",
@@ -207,7 +212,7 @@
 			// 	},
 			// 	success(res) {
 			// 		let res_data = eval(res.data);
-			// 		if(res_data.code==200) {  
+			// 		if(res_data.code==200) {
 			// 			_this.money = res_data.msg;
 			// 		}
 			// 	}
@@ -221,7 +226,7 @@
 			},
 			closeChange(e){
 				let _this = this;
-				
+
 				_this.$http.post("/user/json/paypwdCheck",
 					{pay_pwd:e},
 					{
@@ -232,7 +237,7 @@
 					}
 				).then(res=>{
 					let res_data = eval(res.data);
-					if(res_data.code==200) {  
+					if(res_data.code==200) {
 						if(res_data.msg == "1") {
 							uni.navigateTo({
 								url:"/pages/mine/wallet/pay_pwd_set?paypwd_old="+e
@@ -250,7 +255,7 @@
 									}
 								}
 							});
-							
+
 						}
 					} else {
 						uni.showToast({
@@ -260,7 +265,7 @@
 						});
 					}
 				})
-				
+
 				// uni.request({
 				// 	method:"POST",
 				// 	url: _this.$store.state.req_url + "/user/json/paypwdCheck",
@@ -269,9 +274,9 @@
 				// 		"Content-Type":"application/x-www-form-urlencoded",
 				// 		"x-access-uid":_this.$store.state.user.id
 				// 	},
-				// 	success(res) { 
+				// 	success(res) {
 				// 		let res_data = eval(res.data);
-				// 		if(res_data.code==200) {  
+				// 		if(res_data.code==200) {
 				// 			if(res_data.msg == "1") {
 				// 				uni.navigateTo({
 				// 					url:"/pages/mine/wallet/pay_pwd_set?paypwd_old="+e
@@ -289,7 +294,7 @@
 				// 						}
 				// 					}
 				// 				});
-								
+
 				// 			}
 				// 		} else {
 				// 			uni.showToast({
@@ -303,8 +308,8 @@
 			},
 			goPayPwdSet() {
 				let _this = this;
-				
-				
+
+
 				_this.$http.post("/user/json/hasPaypwd",
 					{
 						header:{
@@ -314,7 +319,7 @@
 					}
 				).then(res=>{
 					let res_data = eval(res.data);
-					if(res_data.code==200) {  
+					if(res_data.code==200) {
 						if(res_data.msg == "1") {
 							_this.$refs.numberPad.open();
 						} else {
@@ -330,7 +335,7 @@
 						});
 					}
 				})
-				
+
 				// uni.request({
 				// 	method:"POST",
 				// 	url: _this.$store.state.req_url + "/user/json/hasPaypwd",
@@ -338,9 +343,9 @@
 				// 		"Content-Type":"application/x-www-form-urlencoded",
 				// 		"x-access-uid":_this.$store.state.user.id
 				// 	},
-				// 	success(res) { 
+				// 	success(res) {
 				// 		let res_data = eval(res.data);
-				// 		if(res_data.code==200) {  
+				// 		if(res_data.code==200) {
 				// 			if(res_data.msg == "1") {
 				// 				_this.$refs.numberPad.open();
 				// 			} else {
@@ -357,8 +362,8 @@
 				// 		}
 				// 	}
 				// })
-				
-				
+
+
 			},
 			goCz() {
 				uni.navigateTo({

@@ -46,6 +46,11 @@
 				isRoomMember:false,
 			}
 		},
+		computed:{
+			i18n () {
+				return this.$t('index')
+			}
+		},
 		onLoad(e) {
 			let _this = this;
 			let user = uni.getStorageSync("USER");

@@ -5,8 +5,8 @@
 		<view style="background: #fff;width: 96%;
     margin: auto auto;
     margin-top: 10px;" class="margin-top">
-	
-			
+
+
 			<view style=" width:100%">
 					<view   style="padding-top:30upx;padding-bottom:30upx;">
 						<view v-if="item.id!=$store.state.user.id" style="display: inline-block;width:25%;margin-bottom:30upx;text-align: center;" v-for="(item,index) in list">
@@ -17,14 +17,14 @@
 						<view v-if="list.length<=0" style="text-align: center;color:#aaa">
 							<uni-view  class="padding">暂无可移除的黑名单</uni-view>
 						</view>
-						
+
 					</view>
 			</view>
-			
-			 
-		</view> 
-		
-	
+
+
+		</view>
+
+
 	</view>
 </template>
 
@@ -39,7 +39,7 @@
 		onLoad() {
 			let _this = this;
 			let user = uni.getStorageSync("USER");
-			
+
 			this.$http.post("/user/json/getBlackList",
 				{
 					header:{
@@ -47,14 +47,14 @@
 						"x-access-client":_this.$clientType
 					}
 				}
-				
+
 			).then(res=>{
 				let res_data = eval(res.data);
-				if(res_data.code==200) {  
+				if(res_data.code==200) {
 					_this.list = res_data.body;
 				}
 			});
-		
+
 			// uni.request({
 			// 	method:"POST",
 			// 	url: _this.$store.state.req_url + "/user/json/getBlackList",
@@ -65,12 +65,17 @@
 			// 	success(res) {
 			// 		//console.log(res.data);
 			// 		let res_data = eval(res.data);
-			// 		if(res_data.code==200) {  
+			// 		if(res_data.code==200) {
 			// 			_this.list = res_data.body;
 			// 		}
 			// 	}
 			// })
-			
+
+		},
+		computed:{
+			i18n () {
+				return this.$t('index')
+			}
 		},
 		methods: {
 			removeBlack(_id) {
@@ -81,7 +86,7 @@
 				    content: '要移出此用户吗?',
 				    success: function (res) {
 				        if (res.confirm) {
-							
+
 							this.$http.post("/user/json/removeBlack",
 								{uid:_id},
 								{
@@ -90,10 +95,10 @@
 										"x-access-client":_this.$clientType
 									}
 								}
-								
+
 							).then(res=>{
 								let res_data = eval(res.data);
-								if(res_data.code==200) {  
+								if(res_data.code==200) {
 									uni.showToast({
 									    title: '移除成功',
 									    duration: 2000
@@ -107,7 +112,7 @@
 									_this.list = nlist;
 								}
 							});
-							
+
 				           // uni.request({
 				           // 	method:"POST",
 				           // 	url: _this.$store.state.req_url + "/user/json/removeBlack",
@@ -120,7 +125,7 @@
 				           // 	},
 				           // 	success(res) {
 				           // 		let res_data = eval(res.data);
-				           // 		if(res_data.code==200) {  
+				           // 		if(res_data.code==200) {
 				           // 			uni.showToast({
 				           // 			    title: '移除成功',
 				           // 			    duration: 2000
@@ -135,7 +140,7 @@
 				           // 		}
 				           // 	}
 				           // })
-				        } 
+				        }
 				    }
 				});
 			}

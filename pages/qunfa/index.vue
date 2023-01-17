@@ -16,7 +16,7 @@
 				</view>
 				<scroll-view :scroll-y="true"  style="color: #000; margin:25px 0; height: 120px;overflow: auto;">
 					<checkbox-group @change="handleChange">
-						<view v-for="item in list" :key="item.member_uuid" style="width: 100%;height:28px;font-size:12px">	
+						<view v-for="item in list" :key="item.member_uuid" style="width: 100%;height:28px;font-size:12px">
 							<text>{{item.name}}</text>
 							<checkbox :value="String(item.member_uuid)" :checked="checkedArr.includes(String(item.member_uuid))" :class="{'checked':checkedArr.includes(String(item.member_uuid))}" style="float: right; margin-right: 10px"></checkbox>
 						</view>
@@ -37,6 +37,11 @@
 			keyid: {
 				type: Number,
 				default: 0
+			}
+		},
+		computed:{
+			i18n () {
+				return this.$t('index')
 			}
 		},
 		data() {
@@ -73,7 +78,7 @@
 			uni.createSelectorQuery().select('.indexes').boundingClientRect(function(res) {
 				that.barTop = res.top
 			}).exec();
-			
+
 		},
 		methods: {
 			fetchFriendList() {
@@ -92,17 +97,17 @@
 								"x-access-client":_this.$clientType
 							}
 						}
-						
+
 					).then(res=>{
 						let res_data = eval(res.data);
-						if(res_data.code==200) {  
+						if(res_data.code==200) {
 							_this.$store.commit("setFriend_list",res_data.body);
 							res_data.body.forEach(item=>{
 								_this.list.push(...item.list);
 							})
 						}
 					});
-					
+
 				}
 			},
 			handleChange(e) {
@@ -126,7 +131,7 @@
 						if(!this.checkedArr.includes(itemVal)){
 							this.checkedArr.push(itemVal);
 						}
-					}					
+					}
 				}else{
 					// 取消全选
 					this.selectText = '全选';

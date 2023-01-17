@@ -27,9 +27,9 @@
 			<view class="title" style="padding-left:30upx;">银行卡号</view>
 			<input v-model="cardCode" placeholder="请输入银行卡号" name="input"></input>
 		</view>
-		
+
 		<view style="background-color: #eee;height:20upx;"> </view>
-		
+
 		<button v-show="loading" @tap="tijiao" style="width: 94%;margin: auto auto;margin-top:60upx;background-color: #1AA034" class="cu-btn block bg-red margin-tb-sm lg" loading>修改</button>
 		<button v-show="!loading" @tap="tijiao" style="width: 94%;margin: auto auto;margin-top:60upx;background-color: #1AA034;" class="cu-btn block bg-red margin-tb-sm lg">修改</button>
 		 <button  @tap="remove" style="width: 94%;margin: auto auto;margin-top:40upx;" class="cu-btn block bg-red lg" >删除</button>
@@ -49,11 +49,16 @@
 				id:"",
 			}
 		},
+		computed:{
+			i18n () {
+				return this.$t('index')
+			}
+		},
 		onLoad(e) {
 			let _this = this;
 			let user = this.$store.state.user;
 			this.id = e.id;
-			
+
 			_this.$http.post("/user/bank/json/load",
 				{id:e.id},
 				{
@@ -64,7 +69,7 @@
 				}
 			).then(res=>{
 				let res_data = eval(res.data);
-				if(res_data.code==200) {  
+				if(res_data.code==200) {
 					let o = res_data.body;
 					if(o.code == "ICBC"){_this.index = 0;}
 					else if(o.code == "BOC"){_this.index = 1;}
@@ -75,7 +80,7 @@
 					else if(o.code == "GDB"){_this.index = 6;}
 					_this.belonger = o.belonger;
 					_this.cardCode = o.cardCode;
-					
+
 				} else {
 					uni.showToast({
 					    icon: 'none',
@@ -84,7 +89,7 @@
 					});
 				}
 			})
-			
+
 			// uni.request({
 			// 	method:"POST",
 			// 	url: _this.$store.state.req_url + "/user/bank/json/load",
@@ -95,7 +100,7 @@
 			// 	},
 			// 	success(res) {
 			// 		let res_data = eval(res.data);
-			// 		if(res_data.code==200) {  
+			// 		if(res_data.code==200) {
 			// 			let o = res_data.body;
 			// 			if(o.code == "ICBC"){_this.index = 0;}
 			// 			else if(o.code == "BOC"){_this.index = 1;}
@@ -106,7 +111,7 @@
 			// 			else if(o.code == "GDB"){_this.index = 6;}
 			// 			_this.belonger = o.belonger;
 			// 			_this.cardCode = o.cardCode;
-						
+
 			// 		} else {
 			// 			uni.showToast({
 			// 			    icon: 'none',
@@ -118,7 +123,7 @@
 			// })
 		},
 		methods: {
-			remove() { 
+			remove() {
 				let _this = this;
 				let user = this.$store.state.user;
 				uni.showModal({
@@ -126,7 +131,7 @@
 				    content: '确认删除吗?',
 				    success: function (res) {
 				        if (res.confirm) {
-							
+
 							_this.$http.post("/user/bank/json/remove",
 								{id:_this.id},
 								{
@@ -138,19 +143,19 @@
 							).then(res=>{
 								_this.loading = false;
 								let res_data = eval(res.data);
-								if(res_data.code==200) {  
-									
+								if(res_data.code==200) {
+
 									uni.showToast({
 										icon:"none",
 									    title: "删除成功",
 									    duration: 300
 									});
-									
+
 									setTimeout(()=>{
 										uni.navigateBack();
 									},300);
-									
-									
+
+
 								} else {
 									uni.showToast({
 									    icon: 'none',
@@ -159,7 +164,7 @@
 									});
 								}
 							})
-							
+
 							// uni.request({
 							// 	method:"POST",
 							// 	url: _this.$store.state.req_url + "/user/bank/json/remove",
@@ -171,19 +176,19 @@
 							// 	success(res) {
 							// 		_this.loading = false;
 							// 		let res_data = eval(res.data);
-							// 		if(res_data.code==200) {  
-										
+							// 		if(res_data.code==200) {
+
 							// 			uni.showToast({
 							// 				icon:"none",
 							// 			    title: "删除成功",
 							// 			    duration: 300
 							// 			});
-										
+
 							// 			setTimeout(()=>{
 							// 				uni.navigateBack();
 							// 			},300);
-										
-										
+
+
 							// 		} else {
 							// 			uni.showToast({
 							// 			    icon: 'none',
@@ -195,8 +200,8 @@
 							// })
 						}
 					},
-				});	
-				
+				});
+
 			},
 			PickerChange(e) {
 				this.index = e.detail.value
@@ -204,7 +209,7 @@
 			tijiao() {
 				let _this = this;
 				let user = this.$store.state.user;
-				
+
 				if(this.index==-1) {
 					uni.showToast({
 					    icon: 'none',
@@ -229,7 +234,7 @@
 					});
 					return;
 				}
-				
+
 				let v = {
 					name:this.picker[this.index],
 					code:this.bankCode[this.index],
@@ -238,7 +243,7 @@
 					id:this.id
 				}
 				this.loading = true;
-				
+
 				_this.$http.post("/user/bank/json/update",
 					v,
 					{
@@ -250,18 +255,18 @@
 				).then(res=>{
 					_this.loading = false;
 					let res_data = eval(res.data);
-					if(res_data.code==200) {  
-						
+					if(res_data.code==200) {
+
 						uni.showToast({
 						    title: "更新成功",
 						    duration: 800
 						});
-						
+
 						setTimeout(()=>{
 							uni.navigateBack();
 						},800);
-						
-						
+
+
 					} else {
 						uni.showToast({
 						    icon: 'none',
@@ -270,7 +275,7 @@
 						});
 					}
 				})
-				
+
 				// uni.request({
 				// 	method:"POST",
 				// 	url: _this.$store.state.req_url + "/user/bank/json/update",
@@ -282,18 +287,18 @@
 				// 	success(res) {
 				// 		_this.loading = false;
 				// 		let res_data = eval(res.data);
-				// 		if(res_data.code==200) {  
-							
+				// 		if(res_data.code==200) {
+
 				// 			uni.showToast({
 				// 			    title: "更新成功",
 				// 			    duration: 800
 				// 			});
-							
+
 				// 			setTimeout(()=>{
 				// 				uni.navigateBack();
 				// 			},800);
-							
-							
+
+
 				// 		} else {
 				// 			uni.showToast({
 				// 			    icon: 'none',
@@ -303,14 +308,14 @@
 				// 		}
 				// 	}
 				// })
-				
+
 			}
 		}
 	}
 </script>
 
 <style>
-		
+
 	.cu-form-group .title {
 		min-width: calc(4em + 15px);
 	}

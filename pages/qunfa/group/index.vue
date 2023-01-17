@@ -906,7 +906,9 @@
 		// },
 
 		computed:{
-
+			i18n () {
+				return this.$t('index')
+			}
 		},
 		mounted() {
 			// this.domHeight = document.documentElement.clientHeight
@@ -1305,7 +1307,7 @@
 
 						},400);
 					} else if(res_data.code==200) {
-					
+
 
 					}
 				})

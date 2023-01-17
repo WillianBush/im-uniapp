@@ -24,7 +24,7 @@
 					<view style="color:#888;font-size:24upx;margin-top:10upx;">{{item.datestr}}</view>
 				</view>
 			</view>
-			
+
 		 </scroll-view>
 	</view>
 </template>
@@ -33,6 +33,11 @@
 	export default {
 		data() {
 			return {
+			}
+		},
+		computed:{
+			i18n () {
+				return this.$t('index')
 			}
 		},
 		methods: {

@@ -66,11 +66,16 @@
 			this.initData();
 		},
 		onReady() {},
+		computed:{
+			i18n () {
+				return this.$t('index')
+			}
+		},
 		methods: {
 			initData() {
 				let _this = this;
 				let user = uni.getStorageSync("USER");
-				
+
 				this.$http.post("/room/json/verify_list",
 					{
 						header:{
@@ -78,14 +83,14 @@
 							"x-access-client":_this.$clientType
 						}
 					}
-					
+
 				).then(res=>{
 					let res_data = eval(res.data);
 					if (res_data.code == 200) {
 						_this.list = res_data.body
 					}
 				});
-				
+
 				// uni.request({
 				// 	method: "POST",
 				// 	url: _this.$store.state.req_url + "/room/json/verify_list",
@@ -110,7 +115,7 @@
 					 content: _t==2?'拒绝通过':'验证通过',
 					success: function(r) {
 						if (r.confirm) {
-							
+
 							_this.$http.post("/room/json/verifyDo",
 								{
 									raid: _id,
@@ -122,7 +127,7 @@
 										"x-access-client":_this.$clientType
 									}
 								}
-								
+
 							).then(res=>{
 								let res_data = eval(res.data);
 								if (res_data.code == 200) {
@@ -147,12 +152,12 @@
 												item.img = res_data.body.img;
 												//item.top5Hp = _this.$store.state.cur_chat_entity.top5Hp;
 												return;
-											} 
+											}
 										})
 									} else if (_t == 2) {
-										//拒绝	
+										//拒绝
 									}
-								
+
 								} else {
 									uni.showToast({
 										icon: 'none',
@@ -161,7 +166,7 @@
 									});
 								}
 							});
-							
+
 							// uni.request({
 							// 	method: "POST",
 							// 	url: _this.$store.state.req_url + "/room/json/verifyDo",
@@ -197,10 +202,10 @@
 							// 						item.img = res_data.body.img;
 							// 						//item.top5Hp = _this.$store.state.cur_chat_entity.top5Hp;
 							// 						return;
-							// 					} 
+							// 					}
 							// 				})
 							// 			} else if (_t == 2) {
-							// 				//拒绝	
+							// 				//拒绝
 							// 			}
 
 							// 		} else {

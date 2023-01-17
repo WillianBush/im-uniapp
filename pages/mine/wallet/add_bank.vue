@@ -27,12 +27,12 @@
 			<view class="title" style="padding-left:30upx;">银行卡号</view>
 			<input v-model="cardCode" placeholder="请输入银行卡号" name="input"></input>
 		</view>
-		
+
 		<view style="background-color: #eee;height:20upx;"> </view>
-		
+
 		<button v-show="loading" @tap="tijiao" style="width: 94%;margin: auto auto;margin-top:60upx;" class="cu-btn block bg-red margin-tb-sm lg" loading>提交</button>
 		<button v-show="!loading" @tap="tijiao" style="width: 94%;margin: auto auto;margin-top:60upx;" class="cu-btn block bg-red margin-tb-sm lg">提交</button>
-		
+
 	</view>
 </template>
 
@@ -48,6 +48,11 @@
 				loading:false,
 			}
 		},
+		computed:{
+			i18n () {
+				return this.$t('index')
+			}
+		},
 		methods: {
 			PickerChange(e) {
 				this.index = e.detail.value
@@ -55,7 +60,7 @@
 			tijiao() {
 				let _this = this;
 				let user = this.$store.state.user;
-				
+
 				if(this.index==-1) {
 					uni.showToast({
 					    icon: 'none',
@@ -80,7 +85,7 @@
 					});
 					return;
 				}
-				
+
 				let v = {
 					name:this.picker[this.index],
 					code:this.bankCode[this.index],
@@ -88,7 +93,7 @@
 					cardCode:this.cardCode,
 				}
 				this.loading = true;
-				
+
 				_this.$http.post("/user/bank/json/add",
 					v,
 					{
@@ -100,18 +105,18 @@
 				).then(res=>{
 					_this.loading = false;
 					let res_data = eval(res.data);
-					if(res_data.code==200) {  
-						
+					if(res_data.code==200) {
+
 						uni.showToast({
 						    title: "添加成功",
 						    duration: 800
 						});
-						
+
 						setTimeout(()=>{
 							uni.navigateBack();
 						},800);
-						
-						
+
+
 					} else {
 						uni.showToast({
 						    icon: 'none',
@@ -120,8 +125,8 @@
 						});
 					}
 				})
-				
-				
+
+
 				// uni.request({
 				// 	method:"POST",
 				// 	url: _this.$store.state.req_url + "/user/bank/json/add",
@@ -133,18 +138,18 @@
 				// 	success(res) {
 				// 		_this.loading = false;
 				// 		let res_data = eval(res.data);
-				// 		if(res_data.code==200) {  
-							
+				// 		if(res_data.code==200) {
+
 				// 			uni.showToast({
 				// 			    title: "添加成功",
 				// 			    duration: 800
 				// 			});
-							
+
 				// 			setTimeout(()=>{
 				// 				uni.navigateBack();
 				// 			},800);
-							
-							
+
+
 				// 		} else {
 				// 			uni.showToast({
 				// 			    icon: 'none',
@@ -154,14 +159,14 @@
 				// 		}
 				// 	}
 				// })
-				
+
 			}
 		}
 	}
 </script>
 
 <style>
-		
+
 	.cu-form-group .title {
 		min-width: calc(4em + 15px);
 	}

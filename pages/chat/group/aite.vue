@@ -1,9 +1,9 @@
 <template>
-	<view> 
+	<view>
 		<cu-custom bgColor="bg-blue" :isBack="true" :nameToLeft="true"><block slot="content">选择@群成员</block>
 		</cu-custom>
-		
-		
+
+
 		<view class="cu-bar bg-white search" >
 			<view class="search-form round">
 				<text class="cuIcon-search"></text>
@@ -15,7 +15,7 @@
 		</view>
 		<scroll-view  scroll-y class="indexes margin-top" :scroll-into-view="'indexes-'+ listCurID" :style="[{height:'calc(100vh - '+CustomBar+'px - 130upx)'}]"
 		 :scroll-with-animation="true" :enable-back-to-top="true">
-		 
+
 		 <view class="cu-list menu-avatar no-padding" style="    margin-top: 0upx;">
 		 	<view  @tap="selMember({t:'all'})"  class="cu-item" >
 		 		<view class="content" style="left:40upx;font-weight: 800;color: #EB3941;font-size: 32upx;">
@@ -23,7 +23,7 @@
 		 		</view>
 		 	</view>
 		 </view>
-		 
+
 			<block v-for="(item,index) in member_list" :key="index">
 				<view class="cu-list menu-avatar no-padding" style="    margin-top: 0upx;">
 					<view @tap="selMember(item)"  class="cu-item" >
@@ -41,7 +41,7 @@
 				暂无成员
 			</view>
 		</scroll-view>
-		
+
 	</view>
 </template>
 
@@ -68,7 +68,7 @@
 			let _this = this;
 			if(e.roomid&&e.roomid!="") {
 				this.roomid = e.roomid;
-				
+
 				_this.$http.post("/room/json/getMemberList",
 					{roomid:_this.roomid},
 					{
@@ -79,7 +79,7 @@
 					}
 				).then(res=>{
 					let res_data = eval(res.data);
-					if(res_data.code==200) {  
+					if(res_data.code==200) {
 						let list = res_data.body;
 						list.forEach((item1)=>{
 							let s = uni.getStorageSync(item1.id+"_NOTE");
@@ -88,14 +88,17 @@
 							}
 						 })
 						 _this.list = list;
-						
+
 					}
 				})
-				
+
 			}
-			
+
 		},
 		computed:{
+				i18n () {
+					return this.$t('index')
+				},
 			member_list() {
 				let _this = this;
 				let nlist = [];
@@ -108,7 +111,7 @@
 							}
 							return false;
 					});
-					
+
 				}
 				console.log("nlist2",nlist.length);
 				return nlist;
@@ -116,7 +119,7 @@
 		},
 		onReady() {
 			let that = this;
-			
+
 		},
 		methods: {
 			selMember(item) {
@@ -134,8 +137,8 @@
 	uni-checkbox{
 		float:right;
 	}
-		  
-	
+
+
 
 	.indexes {
 		position: relative;

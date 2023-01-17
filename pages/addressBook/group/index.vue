@@ -60,6 +60,11 @@
 
 			};
 		},
+		computed:{
+			i18n () {
+				return this.$t('index')
+			}
+		},
 		mounted() {
 			let _this = this;
 			let user = uni.getStorageSync("USER");

@@ -1,12 +1,12 @@
 <template>
-	<view> 
+	<view>
 		<cu-custom bgColor="bg-blue" :isBack="true" :nameToLeft="true"><block slot="content">邀请加入群组</block>
 		<block slot="right">
 		<uni-text @tap="tijiao()" style="font-size: 22px;color: #fff;margin-right: 14px;font-size: 30upx;background: #58BB46;padding:10upx 40upx;border-radius: 6upx;" class="lg text-gray ">邀请</uni-text>
 		</block>
 		</cu-custom>
-		
-		 
+
+
 		<view class="cu-bar bg-white search" >
 			<view class="search-form round">
 				<text class="cuIcon-search"></text>
@@ -30,7 +30,7 @@
 									<view class="cu-avatar round lg" :style="{'backgroundImage': 'url('+$store.state.img_url+ items.headpic +')' }"  style="width: 80upx;height: 80upx;background-size: 100% 100%;"></view>
 									<view class="content">
 										<view class="text-grey" style="float:left;">{{items.name}}</view>
-										<checkbox :checked="fid==items.member_uuid"  class='round blue '  :value="items.member_uuid"></checkbox>  
+										<checkbox :checked="fid==items.member_uuid"  class='round blue '  :value="items.member_uuid"></checkbox>
 										<!--
 										<view class="text-gray text-sm">
 											有{{sub+2}}个主子需要伺候
@@ -49,7 +49,7 @@
 				暂无可转发的对象
 			</view>
 		</scroll-view>
-	
+
 	</view>
 </template>
 
@@ -83,11 +83,11 @@
 			this.list = list;
 			this.listCur = list[0];
 			**/
-			
+
 			if(this.$store.state.friend_list.length<=0) {
 				console.log("进来了");
-				
-				
+
+
 				_this.$http.post("/user/friend/list/v1",
 					{
 						header:{
@@ -95,20 +95,20 @@
 							"x-access-client":_this.$clientType
 						}
 					}
-					
+
 				).then(res=>{
 					let res_data = eval(res.data);
-					if(res_data.code==200) {  
+					if(res_data.code==200) {
 						_this.$store.commit("setFriend_list",res_data.body);
 						res_data.body.forEach(item=>{
 							let i = {};
 							i.name = item.h;
 							_this.list.push(i);
 						})
-						
+
 					}
 				});
-				
+
 				// uni.request({
 				// 	method:"POST",
 				// 	url: _this.$store.state.req_url + "/user/friend/list/v1",
@@ -118,26 +118,29 @@
 				// 	},
 				// 	success(res) {
 				// 		let res_data = eval(res.data);
-				// 		if(res_data.code==200) {  
+				// 		if(res_data.code==200) {
 				// 			_this.$store.commit("setFriend_list",res_data.body);
 				// 			res_data.body.forEach(item=>{
 				// 				let i = {};
 				// 				i.name = item.h;
 				// 				_this.list.push(i);
 				// 			})
-							
+
 				// 		}
 				// 	}
 				// })
 			}
-				
-			
-				
-			
-			
-			
+
+
+
+
+
+
 		},
 		computed:{
+				i18n () {
+					return this.$t('index')
+			},
 			friend_list() {
 				let _this = this;
 				let nlist = [];
@@ -147,12 +150,12 @@
 							let flag = false;
 							item.list = item.list.filter((item1)=>{
 								 if(item1.member_uuid=="-1") {
-									return false;							 
+									return false;
 								 }
 								 if(_this.$store.state.cur_chat_entity.member_ids.indexOf(item1.member_uuid+"#")>=0) {
 									 return false;
 								 }
-								 
+
 								 if(item1.name.indexOf(_this.kw.trim())>=0) {
 									 flag = true;
 									 return true;
@@ -166,12 +169,12 @@
 							let flag = false;
 							item.list = item.list.filter((item1)=>{
 								 if(item1.member_uuid=="-1") {
-									return false;							 
+									return false;
 								 }
 								 if(_this.$store.state.cur_chat_entity.member_ids.indexOf(item1.member_uuid+"#")>=0) {
 								 	return false;
 								 }
-								 
+
 								 flag = true;
 								 return true;
 							 })
@@ -189,8 +192,8 @@
 		},
 		onReady() {
 			let that = this;
-			
-			
+
+
 		},
 		methods: {
 			GenerateUUID() {
@@ -202,7 +205,7 @@
 				s[14] = "4"; // bits 12-15 of the time_hi_and_version field to 0010
 				s[19] = hexDigits.substr((s[19] & 0x3) | 0x8, 1); // bits 6-7 of the clock_seq_hi_and_reserved to 01
 				s[8] = s[13] = s[18] = s[23] = "-";
-			
+
 				var uuid = s.join("");
 				return uuid;
 			},
@@ -226,8 +229,8 @@
 					fromUid:_this.$store.state.user.id
 				}
 				//_this.$websocket.dispatch("WEBSOCKET_SEND", "{body:'"+JSON.stringify(v)+"',CMD:'ROOM_YAOQI'}");
-				
-				
+
+
 				_this.$http.post("/room/json/yaoqiJoinRoom",
 					v,
 					{
@@ -236,10 +239,10 @@
 							"x-access-client":_this.$clientType
 						}
 					}
-					
+
 				).then(res=>{
 					let res_data = eval(res.data);
-					if(res_data.code==200) {  
+					if(res_data.code==200) {
 						uni.showToast({
 							icon:"success",
 							title:"操作成功",
@@ -253,7 +256,7 @@
 						});
 					}
 				});
-				
+
 				// uni.request({
 				// 	method:"POST",
 				// 	url: _this.$store.state.req_url + "/room/json/yaoqiJoinRoom",
@@ -264,21 +267,21 @@
 				// 	},
 				// 	success(res) {
 				// 		let res_data = eval(res.data);
-				// 		if(res_data.code==200) {  
+				// 		if(res_data.code==200) {
 				// 			_this.$store.state.cur_chat_entity = res_data.body;
-							
+
 				// 		}
 				// 	}
 				// })
-				
-				
-				
+
+
+
 				setTimeout(()=>{
 					uni.navigateBack();
 				},800)
-				
-				
-				
+
+
+
 			},
 			radioChange(e) {
 				this.ids = e.target.value;
@@ -290,7 +293,7 @@
 				    title: "功能未开启"
 				});
 			},
-		
+
 			search() {
 				this.kw = this.kw1;
 			},
@@ -346,8 +349,8 @@
 	uni-checkbox{
 		float:right;
 	}
-		  
-	
+
+
 
 	.indexes {
 		position: relative;

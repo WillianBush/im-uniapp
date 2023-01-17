@@ -39,13 +39,13 @@
 			</view>
 			<view class="tip">仅显示近半年内的收支记录</view>
 		</scroll-view>
-	
-			
-			
-		</view>	
-	</view> 
+
+
+
+		</view>
+	</view>
 </template>
- 
+
 <script>
 	export default {
 		data() {
@@ -69,7 +69,7 @@
 					{
 						name: '本月账单'
 					},
-					
+
 					{
 						name: '今日收入'
 					},
@@ -86,29 +86,34 @@
 			}
 		},
 		onLoad(e) {
-			
+
 		},
 		onShow() {
 			let e = {};
 			e.index = 0;
 			this.changeTab(e);
 		},
+		computed:{
+			i18n () {
+				return this.$t('index')
+			}
+		},
 		methods: {
 			changeTab(e) {
 				let _this = this;
 				let user = this.$store.state.user;
-				
+
 				this.currentTab = e.index;
 				this.is_withdraw = false;
 				this.is_recharge = false;
-				
+
 				if(this.currentTab==0) {
-					
+
 					if(this.list1.length == 0) {
-						uni.showLoading({ 
+						uni.showLoading({
 						    title: '加载中'
 						});
-						
+
 						_this.$http.post("/mdr/json/list",
 							{dateType:1},
 							{
@@ -120,14 +125,14 @@
 						).then(res=>{
 							uni.hideLoading();
 							let res_data = eval(res.data);
-							if(res_data.code==200) {  
+							if(res_data.code==200) {
 								console.log(res_data.body);
 								_this.list1 = res_data.body;
 								_this.list = _this.list1;
 							}
 						})
-						
-						
+
+
 						// uni.request({
 						// 	method:"POST",
 						// 	url: _this.$store.state.req_url + "/mdr/json/list",
@@ -139,7 +144,7 @@
 						// 	success(res) {
 						// 		uni.hideLoading();
 						// 		let res_data = eval(res.data);
-						// 		if(res_data.code==200) {  
+						// 		if(res_data.code==200) {
 						// 			console.log(res_data.body);
 						// 			_this.list1 = res_data.body;
 						// 			_this.list = _this.list1;
@@ -149,15 +154,15 @@
 					} else {
 						this.list = this.list1;
 					}
-					
+
 				} else if(this.currentTab==1) {
-					
-					
+
+
 					if(this.list2.length == 0) {
 						uni.showLoading({
 						    title: '加载中'
 						});
-						
+
 						_this.$http.post("/mdr/json/list",
 							{moneyType:"1",dateType:2},
 							{
@@ -169,13 +174,13 @@
 						).then(res=>{
 							uni.hideLoading();
 							let res_data = eval(res.data);
-							if(res_data.code==200) {  
+							if(res_data.code==200) {
 								console.log(res_data.body);
 								_this.list2 = res_data.body;
 								_this.list = _this.list2;
 							}
 						})
-						
+
 						// uni.request({
 						// 	method:"POST",
 						// 	url: _this.$store.state.req_url + "/mdr/json/list",
@@ -187,7 +192,7 @@
 						// 	success(res) {
 						// 		uni.hideLoading();
 						// 		let res_data = eval(res.data);
-						// 		if(res_data.code==200) {  
+						// 		if(res_data.code==200) {
 						// 			console.log(res_data.body);
 						// 			_this.list2 = res_data.body;
 						// 			_this.list = _this.list2;
@@ -197,15 +202,15 @@
 					} else {
 						this.list = this.list2;
 					}
-					
-					
+
+
 				} else if(this.currentTab==2) {
-					
+
 					if(this.list3.length == 0) {
 						uni.showLoading({
 						    title: '加载中'
 						});
-						
+
 						_this.$http.post("/mdr/json/list",
 							{moneyType:"1",dateType:3},
 							{
@@ -217,14 +222,14 @@
 						).then(res=>{
 							uni.hideLoading();
 							let res_data = eval(res.data);
-							if(res_data.code==200) {  
+							if(res_data.code==200) {
 								console.log(res_data.body);
 								_this.list3 = res_data.body;
 								_this.list = _this.list3;
 							}
 						})
-						
-						
+
+
 						// uni.request({
 						// 	method:"POST",
 						// 	url: _this.$store.state.req_url + "/mdr/json/list",
@@ -236,7 +241,7 @@
 						// 	success(res) {
 						// 		uni.hideLoading();
 						// 		let res_data = eval(res.data);
-						// 		if(res_data.code==200) {  
+						// 		if(res_data.code==200) {
 						// 			console.log(res_data.body);
 						// 			_this.list3 = res_data.body;
 						// 			_this.list = _this.list3;
@@ -246,15 +251,15 @@
 					} else {
 						this.list = this.list3;
 					}
-					
-					
+
+
 				} else if(this.currentTab==3) {
 					this.is_withdraw = true;
 					if(this.list4.length == 0) {
 						uni.showLoading({
 						    title: '加载中'
 						});
-						
+
 						_this.$http.post("/user/json/txList/v1",
 							{
 								header:{
@@ -265,12 +270,12 @@
 						).then(res=>{
 							uni.hideLoading();
 							let res_data = eval(res.data);
-							if(res_data.code==200) {  
+							if(res_data.code==200) {
 								_this.list4 = res_data.body;
 								_this.list = _this.list4;
 							}
 						})
-						
+
 						// uni.request({
 						// 	method:"POST",
 						// 	url: _this.$store.state.req_url + "/user/json/txList/v1",
@@ -281,23 +286,23 @@
 						// 	success(res) {
 						// 		uni.hideLoading();
 						// 		let res_data = eval(res.data);
-						// 		if(res_data.code==200) {  
+						// 		if(res_data.code==200) {
 						// 			_this.list4 = res_data.body;
 						// 			_this.list = _this.list4;
 						// 		}
 						// 	}
 						// })
-					} else { 
+					} else {
 						this.list = this.list4;
 					}
-					
+
 				} else if(this.currentTab==4) {
 					this.is_recharge = true;
 					if(this.list5.length == 0) {
 						uni.showLoading({
 						    title: '加载中'
 						});
-						
+
 						_this.$http.post("/user/json/rechargeList/v1",
 							{
 								header:{
@@ -308,16 +313,16 @@
 						).then(res=>{
 							uni.hideLoading();
 							let res_data = eval(res.data);
-							if(res_data.code==200) {  
+							if(res_data.code==200) {
 								_this.list5 = res_data.body;
 								_this.list = _this.list5;
 							}
 						})
-						
+
 					} else {
 						this.list = this.list5;
 					}
-					
+
 				}
 			},
 			loadMore() {
@@ -345,8 +350,8 @@
 					uni.showLoading({
 					    title: '加载中'
 					});
-					
-					
+
+
 					_this.$http.post("/user/json/txList/v1",
 						{
 							p:this.p4
@@ -360,14 +365,14 @@
 					).then(res=>{
 						uni.hideLoading();
 						let res_data = eval(res.data);
-						if(res_data.code==200) {  
+						if(res_data.code==200) {
 							if(res_data.body.length<=0) {
 								_this.p4 = -1;
 							} else {
 								_this.list4 = _this.list4.concat(res_data.body);
 								_this.list = _this.list4;
 							}
-							
+
 						}
 						_this.loadMoreing = false;
 					})
@@ -381,8 +386,8 @@
 					uni.showLoading({
 					    title: '加载中'
 					});
-					
-					
+
+
 					_this.$http.post("/user/json/rechargeList/v1",
 						{
 							p:this.p5
@@ -396,19 +401,19 @@
 					).then(res=>{
 						uni.hideLoading();
 						let res_data = eval(res.data);
-						if(res_data.code==200) {  
+						if(res_data.code==200) {
 							if(res_data.body.length<=0) {
 								_this.p5 = -1;
 							} else {
 								_this.list5 = _this.list5.concat(res_data.body);
 								_this.list = _this.list45;
 							}
-							
+
 						}
 						_this.loadMoreing = false;
 					})
 				}
-			}	
+			}
 		}
 	}
 </script>

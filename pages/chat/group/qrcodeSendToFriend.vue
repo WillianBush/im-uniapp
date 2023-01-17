@@ -1,12 +1,12 @@
 <template>
-	<view> 
+	<view>
 		<cu-custom bgColor="bg-blue" :isBack="true" :nameToLeft="true"><block slot="content">请选择好友</block>
 		<block slot="right">
 		<uni-text @tap="tijiao()" style="font-size: 22px;color: #fff;margin-right: 14px;font-size: 30upx;background: #58BB46;padding:10upx 40upx;border-radius: 6upx;" class="lg text-gray ">发送</uni-text>
 		</block>
 		</cu-custom>
-		
-		
+
+
 		<view class="cu-bar bg-white search" >
 			<view class="search-form round">
 				<text class="cuIcon-search"></text>
@@ -30,7 +30,7 @@
 							<view class="cu-avatar round lg" :style="{'backgroundImage': 'url('+$store.state.img_url+ items.headpic +')' }"  style="width: 80upx;height: 80upx;background-size: 100% 100%;"></view>
 							<view class="content">
 								<view class="text-grey" style="float:left;">{{items.name}}</view>
-								<checkbox :checked="fid==items.member_uuid"  class='round blue '  :value="items.member_uuid"></checkbox>  
+								<checkbox :checked="fid==items.member_uuid"  class='round blue '  :value="items.member_uuid"></checkbox>
 								<!--
 								<view class="text-gray text-sm">
 									有{{sub+2}}个主子需要伺候
@@ -91,9 +91,9 @@
 			this.list = list;
 			this.listCur = list[0];
 			**/
-			
+
 			if(this.$store.state.friend_list.length<=0) {
-				
+
 				_this.$http.post("/user/friend/list/v1",
 					{
 						header:{
@@ -101,20 +101,20 @@
 							"x-access-client":_this.$clientType
 						}
 					}
-					
+
 				).then(res=>{
 					let res_data = eval(res.data);
-					if(res_data.code==200) {  
+					if(res_data.code==200) {
 						_this.$store.commit("setFriend_list",res_data.body);
 						res_data.body.forEach(item=>{
 							let i = {};
 							i.name = item.h;
 							_this.list.push(i);
 						})
-						
+
 					}
 				})
-				
+
 				// uni.request({
 				// 	method:"POST",
 				// 	url: _this.$store.state.req_url + "/user/friend/list/v1",
@@ -124,45 +124,48 @@
 				// 	},
 				// 	success(res) {
 				// 		let res_data = eval(res.data);
-				// 		if(res_data.code==200) {  
+				// 		if(res_data.code==200) {
 				// 			_this.$store.commit("setFriend_list",res_data.body);
 				// 			res_data.body.forEach(item=>{
 				// 				let i = {};
 				// 				i.name = item.h;
 				// 				_this.list.push(i);
 				// 			})
-							
+
 				// 		}
 				// 	}
 				// })
 			}
-				
-			
-				
-			
-			
-			
+
+
+
+
+
+
 		},
 		computed:{
+				i18n () {
+					return this.$t('index')
+			},
 			friend_list() {
 				let _this = this;
 				let nlist = this.$store.state.friend_list;
-				
-				
-				
+
+
+
 				nlist = nlist.filter((item)=>{
 					let l = item.list.filter((item1)=>{
 						let flag = true;
 						if(this.kw.trim()!="") {
 							if(item1.member_uuid=="-1") {
-								return false;							 
+								return false;
 							}
 							if(item1.name.indexOf(_this.kw.trim())<0) {
 								 flag = false;
 							}
 						} else {
 							if(item1.member_uuid=="-1") {
-								return false;							 
+								return false;
 							}
 						}
 						 return flag;
@@ -170,11 +173,11 @@
 					 console.log("l:"+l.length);
 					if(l.length>0) return true;
 					else return false;
-					 
+
 				});
-				
-				
-				
+
+
+
 				this.list = [];
 				nlist.forEach(item=>{
 					let i = {};
@@ -187,8 +190,8 @@
 						}
 					 })
 				})
-				
-				
+
+
 				return nlist;
 			}
 		},
@@ -200,7 +203,7 @@
 			uni.createSelectorQuery().select('.indexes').boundingClientRect(function(res) {
 				that.barTop = res.top
 			}).exec();
-			
+
 		},
 		methods: {
 			tijiao(){
@@ -214,7 +217,7 @@
 					return;
 				}
 				// console.log(_this.$store.state.temp.base64);
-				
+
 				_this.$http.post("/chat/sendQrcode",
 					{
 						mids:this.ids.toString(),
@@ -226,10 +229,10 @@
 							"x-access-client":_this.$clientType
 						}
 					}
-					
+
 				).then(res=>{
 					let res_data = eval(res.data);
-					if(res_data.code==200) { 
+					if(res_data.code==200) {
 						_this.$store.state.temp.base64 = "";//清空
 						uni.showToast({
 							icon:"none",
@@ -246,7 +249,7 @@
 						});
 					}
 				})
-				
+
 				// uni.request({
 				// 	method:"POST",
 				// 	url: _this.$store.state.req_url + "/chat/sendQrcode",
@@ -260,7 +263,7 @@
 				// 	},
 				// 	success(res) {
 				// 		let res_data = eval(res.data);
-				// 		if(res_data.code==200) { 
+				// 		if(res_data.code==200) {
 				// 			_this.$store.state.temp.base64 = "";//清空
 				// 			uni.showToast({
 				// 				icon:"none",
@@ -278,8 +281,8 @@
 				// 		}
 				// 	}
 				// })
-				
-				
+
+
 			},
 			radioChange(e) {
 				this.ids = e.target.value;
@@ -291,7 +294,7 @@
 				    title: "功能未开启"
 				});
 			},
-		
+
 			search() {
 				this.kw = this.kw1;
 			},
@@ -347,8 +350,8 @@
 	uni-checkbox{
 		float:right;
 	}
-		  
-	
+
+
 
 	.indexes {
 		position: relative;

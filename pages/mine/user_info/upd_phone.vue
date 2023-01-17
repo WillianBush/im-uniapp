@@ -29,6 +29,11 @@
 		onLoad(e) {
 
 		},
+		computed:{
+			i18n () {
+				return this.$t('index')
+			}
+		},
 		methods: {
 			tijiao() {
 				let _this = this;

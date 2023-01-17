@@ -16,8 +16,8 @@
 							<uni-view  class="padding">暂无可移除的黑名单</uni-view>
 						</view>
 					</view>
-			</view>			 
-		</view> 
+			</view>
+		</view>
 	</view>
 </template>
 
@@ -33,6 +33,11 @@
 			return {
 				id:"",
 				list:[]
+			}
+		},
+		computed:{
+			i18n () {
+				return this.$t('index')
 			}
 		},
 		watch: {
@@ -53,10 +58,10 @@
 							"x-access-client":_this.$clientType
 						}
 					}
-					
+
 				).then(res=>{
 					let res_data = eval(res.data);
-					if(res_data.code==200) {  
+					if(res_data.code==200) {
 						_this.list = res_data.body;
 					}
 				});
@@ -72,7 +77,7 @@
 				    content: '要移出此用户吗?',
 				    success: function (res) {
 				        if (res.confirm) {
-							
+
 							this.$http.post("/user/json/removeBlack",
 								{uid:_id},
 								{
@@ -81,10 +86,10 @@
 										"x-access-client":_this.$clientType
 									}
 								}
-								
+
 							).then(res=>{
 								let res_data = eval(res.data);
-								if(res_data.code==200) {  
+								if(res_data.code==200) {
 									uni.showToast({
 									    title: '移除成功',
 									    duration: 2000
@@ -98,7 +103,7 @@
 									_this.list = nlist;
 								}
 							});
-				        } 
+				        }
 				    }
 				});
 			}

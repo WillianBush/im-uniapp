@@ -96,6 +96,9 @@
 
 		},
 		computed:{
+				i18n () {
+					return this.$t('index')
+			},
 			member_list() {
 				let _this = this;
 				let nlist = [];

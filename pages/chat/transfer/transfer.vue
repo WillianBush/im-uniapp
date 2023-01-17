@@ -3,7 +3,7 @@
 		<cu-custom bgColor="bg-blue"  :isBack="true" :nameToLeft="true" ><block slot="backText"></block><block slot="content">转账给朋友</block><block slot="right">
 		</block></cu-custom>
 		<view class="withdraw">
-			
+
 			<view class="withdraw-head" style="text-align: center;">
 				<view style="margin:auto auto;">
 					<view class="cu-avatar radius" :style="'height:100upx;width:100upx;background-image:url('+$store.state.img_url+$store.state.temp.bean.headpic+');'"></view>
@@ -11,7 +11,7 @@
 				</view>
 			</view>
 			<view class="withdraw-body">
-				<text>转账金额</text> 
+				<text>转账金额</text>
 				<view class="input-money">
 					<text class="rmb">￥</text>
 					<input v-model.number="extract" type="text" @focus.prevent="stopKeyborad" class="t-input" />
@@ -35,11 +35,11 @@
 				<view class="keyboard-item delte" @tap="keyboradDel()"><image class="img" src="@/static/images/del.png" mode="aspectFill" :lazy-load="true"></image></view>
 			</view>
 
-			
+
 		</view>
-		
+
 		<number-jpan @close="hideNumber" :length="6" @closeChange="verifyPayPwd($event)" :showNum="false" ref="numberPad"></number-jpan>
-		
+
 	</view>
 </template>
 
@@ -69,6 +69,11 @@ export default {
 			});
 		},100)
 	},
+	computed:{
+		i18n () {
+			return this.$t('index')
+		}
+	},
 	methods: {
 		stopKeyborad() {
 			uni.hideKeyboard();
@@ -85,7 +90,7 @@ export default {
 				this.checkMoney();
 			}
 		},
-		
+
 		checkMoney() {
 			// if (!this.extract || this.extract < this.moneyMin|| this.extract > this.moneyMax) {
 			// 	this.is_post = false;
@@ -108,7 +113,7 @@ export default {
 		},
 		verifyPayPwd(e){
 			let _this = this;
-			
+
 			_this.$http.post("/user/json/paypwdCheck",
 				{pay_pwd:e},
 				{
@@ -119,7 +124,7 @@ export default {
 				}
 			).then(res=>{
 				let res_data = eval(res.data);
-				if(res_data.code==200) {  
+				if(res_data.code==200) {
 					if(res_data.msg == "1") {
 						let v = {
 						   toUid:_this.$store.state.temp.bean.id,
@@ -142,7 +147,7 @@ export default {
 								}
 							}
 						});
-						
+
 					}
 				} else {
 					uni.showToast({
@@ -152,8 +157,8 @@ export default {
 					});
 				}
 			})
-			
-			
+
+
 			// uni.request({
 			// 	method:"POST",
 			// 	url: _this.$store.state.req_url + "/user/json/paypwdCheck",
@@ -162,9 +167,9 @@ export default {
 			// 		"Content-Type":"application/x-www-form-urlencoded",
 			// 		"x-access-uid":_this.$store.state.user.id
 			// 	},
-			// 	success(res) { 
+			// 	success(res) {
 			// 		let res_data = eval(res.data);
-			// 		if(res_data.code==200) {  
+			// 		if(res_data.code==200) {
 			// 			if(res_data.msg == "1") {
 			// 				let v = {
 			// 				   toUid:_this.$store.state.temp.bean.id,
@@ -187,7 +192,7 @@ export default {
 			// 						}
 			// 					}
 			// 				});
-							
+
 			// 			}
 			// 		} else {
 			// 			uni.showToast({
@@ -210,10 +215,10 @@ export default {
 			console.log("333");
 			this.isRefuse = true;
 			this.is_post = true;
-			
+
 			_this.$refs.numberPad.open();
-			
-			
+
+
 		}
 	},
 	onPullDownRefresh() {
@@ -224,8 +229,8 @@ export default {
 			uni.stopPullDownRefresh();
 		}, 500);
 	}
-}; 
-</script> 
+};
+</script>
 
 <style lang="scss" scoped>
 page {

@@ -21,6 +21,11 @@
             }
         },
         // navigate.vue页面接受参数
+	    computed:{
+		    i18n () {
+			    return this.$t('index')
+		    }
+	    },
         onLoad: function (option) {
             let _this = this;
             if (option.item) {

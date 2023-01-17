@@ -3,14 +3,14 @@
 		<cu-custom bgColor="bg-blue"  :isBack="true" :nameToLeft="true" ><block slot="backText"></block><block slot="content">余额提现</block><block slot="right">
 		</block></cu-custom>
 		<view class="withdraw">
-			
+
 			<view class="withdraw-head">
 				<view class="withdraw-head-to">到账渠道</view>
 				<view class="withdraw-head-way">
 					<view @tap="selBank" class="withdraw-head-way-1">
 						<image class="way-icon" :src="$store.state.req_url+'/img_sys/bank_logo/'+ bank.code + '.png'"></image>
 						<text class="way-text">{{bank.name}}</text>
-						<text style=" 
+						<text style="
     overflow: hidden;
     margin-top: 4upx;
     " class="way-text">({{bank.simpleCardCode}})</text>
@@ -19,7 +19,7 @@
 				</view>
 			</view>
 			<view class="withdraw-body">
-				<text>提现金额</text> 
+				<text>提现金额</text>
 				<view class="input-money">
 					<text class="rmb">￥</text>
 					<input v-model.number="extract" type="text" @focus.prevent="stopKeyborad" class="t-input" />
@@ -114,10 +114,15 @@ export default {
 	watch: {
 		extract(oldVal, newVal) {}
 	},
+	computed:{
+		i18n () {
+			return this.$t('index')
+		}
+	},
 	onLoad(e) {
 		let _this = this;
 		let user = uni.getStorageSync("USER");
-		
+
 		this.loadData();
 		let bank_id = "";
 		if(e.bank_id&&e.bank_id.trim()!="") {
@@ -128,7 +133,7 @@ export default {
 				bank_id = str;
 			}
 		}
-		
+
 		_this.$http.post("/user/bank/json/getDefault",
 			{id:bank_id},
 			{
@@ -139,19 +144,19 @@ export default {
 			}
 		).then(res=>{
 			let res_data = eval(res.data);
-			if(res_data.code==200) {  
+			if(res_data.code==200) {
 				_this.bank = res_data.body;
-			} else if(res_data.code==201) {  
+			} else if(res_data.code==201) {
 				uni.showToast({
 					icon:"none",
 				    title: "请先添加银行卡",
 				    duration: 1000
 				});
-				
+
 				setTimeout(()=>{
 					uni.navigateBack();
 				},1000);
-				
+
 			} else {
 				uni.showToast({
 					icon: 'none',
@@ -160,7 +165,7 @@ export default {
 				});
 			}
 		})
-		
+
 		// uni.request({
 		// 	method:"POST",
 		// 	url: _this.$store.state.req_url + "/user/bank/json/getDefault",
@@ -171,19 +176,19 @@ export default {
 		// 	},
 		// 	success(res) {
 		// 		let res_data = eval(res.data);
-		// 		if(res_data.code==200) {  
+		// 		if(res_data.code==200) {
 		// 			_this.bank = res_data.body;
-		// 		} else if(res_data.code==201) {  
+		// 		} else if(res_data.code==201) {
 		// 			uni.showToast({
 		// 				icon:"none",
 		// 			    title: "请先添加银行卡",
 		// 			    duration: 1000
 		// 			});
-					
+
 		// 			setTimeout(()=>{
 		// 				uni.navigateBack();
 		// 			},1000);
-					
+
 		// 		} else {
 		// 			uni.showToast({
 		// 				icon: 'none',
@@ -193,16 +198,16 @@ export default {
 		// 		}
 		// 	}
 		// })
-		
-		
-		
+
+
+
 	},
 	methods: {
 		selBank(){
 			uni.redirectTo({
 				url:"../sel_bank_list"
 			})
-		}, 
+		},
 		async loadData() {
 			let _this = this;
 			let user = uni.getStorageSync("USER");
@@ -210,7 +215,7 @@ export default {
 			//this.lowest = res.least_money;
 			//this.fee = res.fee;
 			//this.pool = res.pool;
-			
+
 			_this.$http.post("/user/json/getTxData",
 				{
 					header:{
@@ -220,7 +225,7 @@ export default {
 				}
 			).then(res=>{
 				let res_data = eval(res.data);
-				if(res_data.code==200) {  
+				if(res_data.code==200) {
 					_this.lowest = res_data.body.txMoneyMin;
 					_this.fee = res_data.body.txFee;
 					_this.pool = res_data.body.money;
@@ -231,7 +236,7 @@ export default {
 					});
 				}
 			})
-			
+
 			// uni.request({
 			// 	method:"POST",
 			// 	url: _this.$store.state.req_url + "/user/json/getTxData",
@@ -241,7 +246,7 @@ export default {
 			// 	},
 			// 	success(res) {
 			// 		let res_data = eval(res.data);
-			// 		if(res_data.code==200) {  
+			// 		if(res_data.code==200) {
 			// 			_this.lowest = res_data.body.txMoneyMin;
 			// 			_this.fee = res_data.body.txFee;
 			// 			_this.pool = res_data.body.money;
@@ -253,13 +258,13 @@ export default {
 			// 		}
 			// 	}
 			// })
-				
+
 			setTimeout(()=>{
 				_this.$nextTick(() => {
 					_this.keyboradShow = true;
 				});
 			},100)
-			
+
 		},
 		stopKeyborad() {
 			uni.hideKeyboard();
@@ -313,12 +318,12 @@ export default {
 		getMoney() {
 			let _this = this;
 			let user = uni.getStorageSync("USER");
-			
+
 			this.showModal = false;
 			if (this.isRefuse) return;
 			this.isRefuse = true;
-			
-			
+
+
 			_this.$http.post("/user/json/txAdd/v1",
 				{
 					pay:"3",
@@ -337,10 +342,10 @@ export default {
 				}
 			).then(res=>{
 				let res_data = eval(res.data);
-				if(res_data.code==200) {  
+				if(res_data.code==200) {
 					_this.pool = _this.pool - parseFloat(_this.extract)
 					_this.extract = '';
-					
+
 					uni.showModal({
 					    title: '提示',
 						showCancel:false,
@@ -360,7 +365,7 @@ export default {
 					});
 				}
 			})
-			
+
 			// uni.request({
 			// 	method:"POST",
 			// 	url: _this.$store.state.req_url + "/user/json/txAdd/v1",
@@ -376,13 +381,13 @@ export default {
 			// 	header:{
 			// 		"Content-Type":"application/x-www-form-urlencoded",
 			// 		"x-access-uid":user.id
-			// 	}, 
+			// 	},
 			// 	success(res) {
 			// 		let res_data = eval(res.data);
-			// 		if(res_data.code==200) {  
+			// 		if(res_data.code==200) {
 			// 			_this.pool = _this.pool - parseFloat(_this.extract)
 			// 			_this.extract = '';
-						
+
 			// 			uni.showModal({
 			// 			    title: '提示',
 			// 				showCancel:false,
@@ -415,8 +420,8 @@ export default {
 			uni.stopPullDownRefresh();
 		}, 500);
 	}
-}; 
-</script> 
+};
+</script>
 
 <style lang="scss" scoped>
 page {

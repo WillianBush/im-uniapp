@@ -3,7 +3,7 @@
 		<cu-custom bgColor="bg-blue"  :isBack="true" :nameToLeft="true" ><block slot="backText"></block><block slot="content">余额充值</block><block slot="right">
 		</block></cu-custom>
 		<view class="withdraw">
-			
+
 			<view class="withdraw-head">
 				<view class="withdraw-head-to">充值方式</view>
 				<view class="withdraw-head-way">
@@ -12,13 +12,13 @@
 						<view class="way-text">{{bank.bankName}}</view>
 						<view class="way-text">{{bank.bankCardNum}}</view>
 						<view class="way-text">{{bank.bankAccountrer}}</view>
-						
+
 					</view>
 					<view class="withdraw-head-way-2">金额最低{{ moneyMin }}元,最高{{moneyMax}}元</view>
 				</view>
 			</view>
 			<view class="withdraw-body">
-				<text>充值金额</text> 
+				<text>充值金额</text>
 				<view class="input-money">
 					<text class="rmb">￥</text>
 					<input v-model.number="extract" type="text" @focus.prevent="stopKeyborad" class="t-input" />
@@ -42,7 +42,7 @@
 				<view class="keyboard-item delte" @tap="keyboradDel()"><image class="img" src="@/static/images/del.png" mode="aspectFill" :lazy-load="true"></image></view>
 			</view>
 
-			
+
 		</view>
 	</view>
 </template>
@@ -69,12 +69,17 @@ export default {
 		let _this = this;
 		let user = uni.getStorageSync("USER");
 		this.loadData();
-		
-		
-		
+
+
+
+	},
+	computed:{
+		i18n () {
+			return this.$t('index')
+		}
 	},
 	methods: {
-		
+
 		async loadData() {
 			let _this = this;
 			let user = uni.getStorageSync("USER");
@@ -82,7 +87,7 @@ export default {
 			//this.lowest = res.least_money;
 			//this.fee = res.fee;
 			//this.pool = res.pool;
-			
+
 			_this.$http.post("/user/json/getCzData",
 				{
 					header:{
@@ -92,7 +97,7 @@ export default {
 				}
 			).then(res=>{
 				let res_data = eval(res.data);
-				if(res_data.code==200) {  
+				if(res_data.code==200) {
 					_this.moneyMin = res_data.body.moneyMin;
 					_this.moneyMax = res_data.body.moneyMax;
 				} else {
@@ -102,8 +107,8 @@ export default {
 					});
 				}
 			})
-			
-			
+
+
 			_this.$http.post("/sysConfig/json/getBankInfo",
 				{
 					header:{
@@ -113,7 +118,7 @@ export default {
 				}
 			).then(res=>{
 				let res_data = eval(res.data);
-				if(res_data.code==200) {  
+				if(res_data.code==200) {
 					_this.bank = res_data.body;
 				} else {
 					uni.showToast({
@@ -122,9 +127,9 @@ export default {
 					});
 				}
 			})
-			
-			
-			
+
+
+
 			// uni.request({
 			// 	method:"POST",
 			// 	url: _this.$store.state.req_url + "/user/json/getCzData",
@@ -134,7 +139,7 @@ export default {
 			// 	},
 			// 	success(res) {
 			// 		let res_data = eval(res.data);
-			// 		if(res_data.code==200) {  
+			// 		if(res_data.code==200) {
 			// 			_this.moneyMin = res_data.body.moneyMin;
 			// 			_this.moneyMax = res_data.body.moneyMax;
 			// 		} else {
@@ -145,13 +150,13 @@ export default {
 			// 		}
 			// 	}
 			// })
-				
+
 			setTimeout(()=>{
 				_this.$nextTick(() => {
 					_this.keyboradShow = true;
 				});
 			},100)
-			
+
 		},
 		stopKeyborad() {
 			uni.hideKeyboard();
@@ -168,7 +173,7 @@ export default {
 				this.checkMoney();
 			}
 		},
-		
+
 		checkMoney() {
 			if (!this.extract || this.extract < this.moneyMin|| this.extract > this.moneyMax) {
 				this.is_post = false;
@@ -183,14 +188,14 @@ export default {
 				})
 			}
 		},
-		
+
 		tijiao() {
 			if(!this.is_post) return;
 			let _this = this;
 			let user = uni.getStorageSync("USER");
 			this.showModal = false;
 			if (this.isRefuse) return;
-			
+
 			_this.$http.post("/user/pay/offlinecz",
 				{price:_this.extract},
 				{
@@ -201,7 +206,7 @@ export default {
 				}
 			).then(res=>{
 				let res_data = eval(res.data);
-				if(res_data.code==200) {  
+				if(res_data.code==200) {
 					uni.showModal({
 					    title: '信息提示',
 					    content: res_data.msg,
@@ -219,12 +224,12 @@ export default {
 					    title: res_data.msg,
 					    duration: 2000
 					});
-				}	
+				}
 			})
-			
+
 			this.isRefuse = true;
 			this.is_post = true;
-			
+
 		}
 	},
 	onPullDownRefresh() {
@@ -235,8 +240,8 @@ export default {
 			uni.stopPullDownRefresh();
 		}, 500);
 	}
-}; 
-</script> 
+};
+</script>
 
 <style lang="scss" scoped>
 page {

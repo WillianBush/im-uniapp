@@ -18,13 +18,13 @@
     margin-top: 40px;
     color: #999;" v-else>暂无签到记录</view>
 		</scroll-view>
-	
-			
-			
-		</view>	
-	</view> 
+
+
+
+		</view>
+	</view>
 </template>
- 
+
 <script>
 	export default {
 		data() {
@@ -37,7 +37,7 @@
 			}
 		},
 		onLoad(e) {
-			
+
 		},
 		onShow() {
 			let _this = this;
@@ -52,25 +52,30 @@
 			).then(res=>{
 				uni.hideLoading();
 				let res_data = eval(res.data);
-				if(res_data.code==200) {  
+				if(res_data.code==200) {
 					_this.list1 = res_data.body;
 					_this.list = _this.list1;
 				}
 			})
 		},
+		computed:{
+			i18n () {
+				return this.$t('index')
+			}
+		},
 		methods: {
-			
+
 			loadMore() {
 				if(this.loadMoreing) return;
 				this.loadMoreing = true;
-				
+
 				let _this = this;
 				let user = this.$store.state.user;
-				
+
 				this.list = this.list1;
 				this.p1 = this.p1 + 1;
-				
-				
+
+
 				_this.$http.post("/user/signin/getList",
 					{
 						p:this.p1
@@ -83,7 +88,7 @@
 					}
 				).then(res=>{
 					let res_data = eval(res.data);
-					if(res_data.code==200) {  
+					if(res_data.code==200) {
 						if(res_data.body.length<=0) {
 							_this.p1 = -1;
 						} else {
@@ -93,9 +98,9 @@
 					}
 					_this.loadMoreing = false;
 				})
-				
-				
-			}	
+
+
+			}
 		}
 	}
 </script>

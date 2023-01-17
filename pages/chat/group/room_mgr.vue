@@ -5,8 +5,8 @@
 		<view style="background: #fff;width: 96%;
     margin: auto auto;
     margin-top: 10px;" class="margin-top">
-	
-			
+
+
 			<view style=" width:100%">
 					<view   style="padding-top:30upx;padding-bottom:30upx;">
 						<view v-if="item.id!=$store.state.user.id"  style="display: inline-block;width:25%;margin-bottom:30upx;text-align: center;" v-for="(item,index) in list">
@@ -17,16 +17,16 @@
 						<view v-if="list.length<1" style="text-align: center;color:#aaa">
 							<uni-view  class="padding">暂无群管理</uni-view>
 						</view>
-						
+
 					</view>
 			</view>
-			
-			 
-		</view> 
-		
-		
-		
-	
+
+
+		</view>
+
+
+
+
 	</view>
 </template>
 
@@ -38,10 +38,15 @@
 				list:[]
 			}
 		},
+		computed:{
+			i18n () {
+				return this.$t('index')
+			}
+		},
 		onLoad() {
 			let _this = this;
 			let user = uni.getStorageSync("USER");
-			
+
 			_this.$http.post("/room/json/getRoomMgrList",
 				{roomid:_this.$store.state.cur_chat_entity.id},
 				{
@@ -50,10 +55,10 @@
 						"x-access-client":_this.$clientType
 					}
 				}
-				
+
 			).then(res=>{
 				let res_data = eval(res.data);
-				if(res_data.code==200) {  
+				if(res_data.code==200) {
 					_this.list = res_data.body;
 					_this.list.forEach((item1)=>{
 						let s = uni.getStorageSync(item1.id+"_NOTE");
@@ -63,8 +68,8 @@
 					 })
 				}
 			});
-			
-		
+
+
 			// uni.request({
 			// 	method:"POST",
 			// 	url: _this.$store.state.req_url + "/room/json/getRoomMgrList",
@@ -75,7 +80,7 @@
 			// 	},
 			// 	success(res) {
 			// 		let res_data = eval(res.data);
-			// 		if(res_data.code==200) {  
+			// 		if(res_data.code==200) {
 			// 			_this.list = res_data.body;
 			// 			_this.list.forEach((item1)=>{
 			// 				let s = uni.getStorageSync(item1.id+"_NOTE");
@@ -86,7 +91,7 @@
 			// 		}
 			// 	}
 			// })
-			
+
 		},
 		methods: {
 			goUserDetail(_id){
@@ -103,7 +108,7 @@
 				    content: '要移除此管理员吗?',
 				    success: function (res) {
 				        if (res.confirm) {
-							
+
 							_this.$http.post("/room/json/removeRoomMgr",
 								{
 									roomid:_this.$store.state.cur_chat_entity.id,
@@ -115,10 +120,10 @@
 										"x-access-client":_this.$clientType
 									}
 								}
-								
+
 							).then(res=>{
 								let res_data = eval(res.data);
-								if(res_data.code==200) {  
+								if(res_data.code==200) {
 									uni.showToast({
 									    title: '移除成功',
 									    duration: 2000
@@ -133,7 +138,7 @@
 									_this.$store.commit("setCur_chat_entity",res_data.body);
 								}
 							});
-							
+
 				     //       uni.request({
 				     //       	method:"POST",
 				     //       	url: _this.$store.state.req_url + "/room/json/removeRoomMgr",
@@ -147,7 +152,7 @@
 				     //       	},
 				     //       	success(res) {
 				     //       		let res_data = eval(res.data);
-				     //       		if(res_data.code==200) {  
+				     //       		if(res_data.code==200) {
 				     //       			uni.showToast({
 				     //       			    title: '移除成功',
 				     //       			    duration: 2000
@@ -163,7 +168,7 @@
 				     //       		}
 				     //       	}
 				     //       })
-				        } 
+				        }
 				    }
 				});
 			}

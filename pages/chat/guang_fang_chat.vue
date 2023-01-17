@@ -702,6 +702,11 @@
 				v_base64:"",
 			};
 		},
+		computed:{
+			i18n () {
+				return this.$t('index')
+			}
+		},
 		mounted() {
 			// this.domHeight = document.documentElement.clientHeight
 		},

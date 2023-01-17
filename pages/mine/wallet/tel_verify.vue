@@ -6,7 +6,7 @@
 		<text @tap="tijiao()" style="font-size: 22px;color: #fff;margin-right: 14px;font-size: 30upx;" class="lg text-gray ">提交</text></block>
 		-->
 		</cu-custom>
-		 
+
 		<view style="    font-size: 52upx;
     text-align: center;
     margin-top: 80upx;
@@ -15,13 +15,13 @@
 		</view>
 		<view class="cu-form-group" style="width: 94%;margin: auto auto;
 				border-radius: 5px;margin-top:50upx;border-bottom: 1px solid #eee;" >
-			<view class="title">验证码</view> 
+			<view class="title">验证码</view>
 			<input v-model="code" style="" placeholder="输入手机验证码" name="input"></input>
 			<button @tap="getVerCode" class='cu-btn bg-green shadow'>{{getVerCodeSecond}}</button>
 		</view>
-		
+
 		<button @tap="verifySmsCode" style="width: 94%;margin: auto auto;margin-top:50upx;" class="cu-btn block bg-red margin-tb-sm lg" :loading="loading">提交验证</button>
-		
+
 	</view>
 </template>
 
@@ -39,6 +39,9 @@
 			}
 		},
 		computed:{
+				i18n () {
+					return this.$t('index')
+			},
 			_setTime() {
 				//处理值
 				const setTime = Number(this.setTime)
@@ -55,9 +58,9 @@
 						return this.second+" s";
 					}
 				}
-				
+
 			}
-		},	
+		},
 		methods: {
 			runCode(){
 				//开始倒计时
@@ -68,8 +71,8 @@
 				}
 				this.isRunCode= true
 				this.second = this._setTime //倒数秒数
-				
-				
+
+
 				countDown = setInterval(function(){
 					_this.second--;
 					if(_this.second==0){
@@ -103,7 +106,7 @@
 				).then(res=>{
 					this.loading = false;
 					let res_data = eval(res.data);
-					if(res_data.code==200) {  
+					if(res_data.code==200) {
 						uni.navigateTo({
 							url:"/pages/mine/wallet/pay_pwd_set?forget_token="+res_data.msg
 						})
@@ -114,14 +117,14 @@
 						});
 					}
 				})
-				
+
 			},
 			getVerCode(){
 				let _this = this;
-				
-					
+
+
 				if(!this.isRunCode) {
-					
+
 					_this.$http.post("/user/json/sendSms/v1",
 						{
 							tel:_this.$store.state.user.telphone
@@ -134,7 +137,7 @@
 						}
 					).then(res=>{
 						let res_data = eval(res.data);
-						if(res_data.code==200) {  
+						if(res_data.code==200) {
 							_this.runCode();
 						}  else {
 							uni.showToast({
@@ -143,12 +146,12 @@
 							});
 						}
 					})
-					
-					
+
+
 				}
-				
-				
-				
+
+
+
 			}
 		}
 	}

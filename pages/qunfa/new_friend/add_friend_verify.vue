@@ -1,9 +1,9 @@
 <template>
-	<view> 
+	<view>
 		<cu-custom bgColor="bg-blue"  :isBack="true" :nameToLeft="true"><block slot="backText"></block><block slot="content">申请验证</block><block slot="right">
 			<uni-text @tap="sendVerify()" style="font-size: 22px;color: #fff;margin-right: 14px;font-size: 30upx;" class="lg text-gray ">发送</uni-text>
 		</block></cu-custom>
-		
+
 		<view class="cu-form-group margin-top" style="width: 96%;
     margin: auto auto;
     margin-top: 15px;">
@@ -14,9 +14,9 @@
 		    color: #999;
 		    margin-top: .4rem;
 		    font-size: .3rem">你需要发送验证申请，等待对方通过</view>
-		
-	
-		
+
+
+
 	</view>
 </template>
 
@@ -33,9 +33,14 @@
 				uuid:""
 			};
 		},
-		
+
 		onLoad(e) {
 			this.uuid = e.uuid;
+		},
+		computed:{
+			i18n () {
+				return this.$t('index')
+			}
 		},
 		methods: {
 			sendVerify(){
@@ -45,7 +50,7 @@
 					txt:this.kw==''?"我是"+user.nickName:this.kw,
 					mid:this.uuid
 				}
-				
+
 				this.$http.post("/user/friend/sendVerify/v1",
 					v,
 					{
@@ -54,22 +59,22 @@
 							"x-access-client":_this.$clientType
 						}
 					}
-					
+
 				).then(res=>{
 					console.log(res.data);
 					let res_data = eval(res.data);
-					if(res_data.code==200) {  
+					if(res_data.code==200) {
 						// uni.navigateTo({
 						// 	url:"/pages/addressBook/new_friend/new_friend_list"
 						// })
 						//let pages = getCurrentPages(); // 当前页面
-						///let beforePage = pages[pages.length - 3];  
-						
+						///let beforePage = pages[pages.length - 3];
+
 						uni.showToast({
 						    title: "发送成功",
 						    duration: 800
 						});
-						
+
 						setTimeout(()=>{
 							uni.navigateBack({
 								delta: 2,
@@ -78,8 +83,8 @@
 								},
 							});
 						},800);
-						
-						
+
+
 					} else {
 						uni.showToast({
 						    icon: 'none',
@@ -88,7 +93,7 @@
 						});
 					}
 				});
-				
+
 				// uni.request({
 				// 	method:"POST",
 				// 	url: _this.$store.state.req_url + "/user/friend/sendVerify/v1",
@@ -100,18 +105,18 @@
 				// 	success(res) {
 				// 		console.log(res.data);
 				// 		let res_data = eval(res.data);
-				// 		if(res_data.code==200) {  
+				// 		if(res_data.code==200) {
 				// 			// uni.navigateTo({
 				// 			// 	url:"/pages/addressBook/new_friend/new_friend_list"
 				// 			// })
 				// 			//let pages = getCurrentPages(); // 当前页面
-				// 			///let beforePage = pages[pages.length - 3];  
-							
+				// 			///let beforePage = pages[pages.length - 3];
+
 				// 			uni.showToast({
 				// 			    title: "发送成功",
 				// 			    duration: 800
 				// 			});
-							
+
 				// 			setTimeout(()=>{
 				// 				uni.navigateBack({
 				// 					delta: 2,
@@ -120,8 +125,8 @@
 				// 					},
 				// 				});
 				// 			},800);
-							
-							
+
+
 				// 		} else {
 				// 			uni.showToast({
 				// 			    icon: 'none',
@@ -131,7 +136,7 @@
 				// 		}
 				// 	}
 				// })
-				
+
 			},
 			goSearchFriend(){
 				uni.navigateTo({
@@ -155,7 +160,7 @@
 					return;
 				}
 				this.kw = this.kw1;
-				
+
 				this.$http.post("/user/friend/searchByTelOrName/v1",
 					{
 						txt:this.kw
@@ -166,15 +171,15 @@
 							"x-access-client":_this.$clientType
 						}
 					}
-					
+
 				).then(res=>{
 					let res_data = eval(res.data);
-					if(res_data.code==200) {  
+					if(res_data.code==200) {
 						_this.list = res_data.body
 					}
 				});
-				
-				
+
+
 				// uni.request({
 				// 	method:"POST",
 				// 	url: _this.$store.state.req_url + "/user/friend/searchByTelOrName/v1",
@@ -188,7 +193,7 @@
 				// 	success(res) {
 				// 		console.log(res.data);
 				// 		let res_data = eval(res.data);
-				// 		if(res_data.code==200) {  
+				// 		if(res_data.code==200) {
 				// 			_this.list = res_data.body
 				// 		}
 				// 	}

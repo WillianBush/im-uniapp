@@ -1,9 +1,9 @@
 <template>
-	<view> 
+	<view>
 		<cu-custom bgColor="bg-blue"  :isBack="true" :nameToLeft="true"><block slot="backText"></block><block slot="content">查找群组</block><block slot="right">
-			
+
 		</block></cu-custom>
-		
+
 		<view class="cu-bar bg-white search" >
 			<view class="search-form round">
 				<text class="cuIcon-search"></text>
@@ -13,34 +13,34 @@
 				<button @tap="search()"  class="cu-btn bg-gradual-green shadow-blur round">查找</button>
 			</view>
 		</view>
-		
+
 		<scroll-view scroll-y class="indexes" :style="[{height:'calc(100vh - 100upx)'}]"
 		 :scroll-with-animation="true" :enable-back-to-top="true">
-		 
+
 		 <view v-if="list.length>0" style="margin-top:10px;" class="cu-list menu"
 		  :class="[true?'sm-border':'',false?'card-menu ':'']">
-		  
+
 		    <view v-for="item in list" class="cu-item" >
-		    	<view  class="content" style="height:120upx;padding-top:18upx;" > 
+		    	<view  class="content" style="height:120upx;padding-top:18upx;" >
 					<view class="cu-avatar round lg" :style="{'backgroundImage': 'url('+$store.state.img_url+ item.img +')' }"  style="float:left;width: 80upx;height: 80upx;background-size: 100% 100%;"></view>
 					<view style="float:left;">
 						<view class="text-grey" style="margin-left: 10px;">{{item.name}}</view>
 						<view class="text-grey" style="color:#999;font-size: 24upx; margin-left: 10px;">
 						创建者：{{item.owner}}</view>
 					</view>
-		    		
+
 					<button @tap="goVerify(item.id)" style="float:right;margin-top:8upx" v-if="item.status==0" class="cu-btn">申请加入</button>
 					<text v-else-if="item.status==1" style="float:right;margin-top:15upx;color:#999;font-size: 26upx;" v-else>已加入</text>
 					<text v-else-if="item.status==2" style="float:right;margin-top:15upx;color:#999;font-size: 26upx;" v-else>等待验证</text>
 		    	</view>
-		    </view>  
-			
-				
+		    </view>
 
 
-		</view>	
-		 
-			
+
+
+		</view>
+
+
 			<view v-else  style="height: 100upx;text-align: center;background: #fff;
     margin-top: 20upx;
     line-height: 100upx;
@@ -48,7 +48,7 @@
 				暂无信息
 			</view>
 		</scroll-view>
-		
+
 	</view>
 </template>
 
@@ -64,10 +64,15 @@
 				kw1:""
 			};
 		},
-		
+
+		computed:{
+			i18n () {
+				return this.$t('index')
+			}
+		},
 		onReady() {
-		
-			
+
+
 		},
 		methods: {
 			goVerify(_uuid){
@@ -97,7 +102,7 @@
 					return;
 				}
 				this.kw = this.kw1;
-				
+
 				this.$http.post("/room/json/search_list",
 					{
 						kw:this.kw
@@ -108,10 +113,10 @@
 							"x-access-client":_this.$clientType
 						}
 					}
-					
+
 				).then(res=>{
 					let res_data = eval(res.data);
-					if(res_data.code==200) {  
+					if(res_data.code==200) {
 						_this.list = res_data.body
 					} else {
 						uni.showToast({
@@ -120,7 +125,7 @@
 						});
 					}
 				});
-				
+
 				// uni.request({
 				// 	method:"POST",
 				// 	url: _this.$store.state.req_url + "/room/json/search_list",
@@ -133,7 +138,7 @@
 				// 	},
 				// 	success(res) {
 				// 		let res_data = eval(res.data);
-				// 		if(res_data.code==200) {  
+				// 		if(res_data.code==200) {
 				// 			_this.list = res_data.body
 				// 		} else {
 				// 			uni.showToast({

@@ -1,28 +1,28 @@
 <template>
-	<view> 
+	<view>
 		<cu-custom bgColor="bg-blue"   :isBack="true" :nameToLeft="true"><block slot="backText"></block><block slot="content">新的好友</block><block slot="right">
 			<text @tap="goSearchFriend()" style="font-size: 22px;color: #fff;margin-right: 14px;font-size: 30upx;" class="lg text-gray ">添加朋友</text>
 		</block></cu-custom>
-		
-		
+
+
 
 		<scroll-view scroll-y class="indexes" :style="[{height:'calc(100vh - 100upx)'}]"
 		 :scroll-with-animation="true" :enable-back-to-top="true">
-		 
+
 		 <view v-if="list.length>0" style="margin-top:10px;padding:20upx 0;background: #fff;" class="cu-list menu"
 		  :class="[true?'sm-border':'',false?'card-menu ':'']" >
-		  
+
 		    <view v-for="item in list" class="cu-item"  >
-		    	<view v-if="item.from_member_uuid==$store.state.user.id" class="content"> 
+		    	<view v-if="item.from_member_uuid==$store.state.user.id" class="content">
 					<view class="cu-avatar round lg" :style="{'backgroundImage': 'url('+$store.state.img_url+ item.to_headpic +')' }"  style="float:left;width: 80upx;height: 80upx;background-size: 100% 100%;"></view>
 		    		<text class="text-grey" style="float:left;margin-left: 10px;margin-top:15upx">{{item.to_name}}</text>
 					<text v-if="item.status=='wait'" style="float:right;margin-top:15upx;color:#999;font-size: 26upx;" >等待确认</text>
 					<text v-if="item.status=='success'" style="float:right;margin-top:15upx;color:#999;font-size: 26upx;" >已添加</text>
 					<text v-if="item.status=='faile'" style="float:right;margin-top:15upx;color:#999;font-size: 26upx;" >已拒绝</text>
 					<text v-if="item.status=='pass'" style="float:right;margin-top:15upx;color:#999;font-size: 26upx;" >已过期</text>
-					
+
 		    	</view>
-				
+
 				<view v-if="item.to_member_uuid==$store.state.user.id"  class="content">
 					<view class="cu-avatar round lg" :style="{'backgroundImage': 'url('+$store.state.img_url+ item.from_headpic +')' }"  style="float:left;width: 80upx;height: 80upx;background-size: 100% 100%;"></view>
 					<text class="text-grey" style="float:left;margin-left: 10px;margin-top:15upx">{{item.from_name}}</text>
@@ -42,17 +42,17 @@
 					</view>
 					<text v-if="item.status=='pass'" style="float:right;margin-top:15upx;color:#999;font-size: 26upx;" >已过期</text>
 				</view>
-				
-		    </view>  
-			
-	 
-			
-			
+
+		    </view>
 
 
-		</view>	
-		 
-			
+
+
+
+
+		</view>
+
+
 			<view v-else  style="height: 100upx;text-align: center;background: #fff;
     margin-top: 20upx;
     line-height: 100upx;
@@ -60,7 +60,7 @@
 				暂无好友
 			</view>
 		</scroll-view>
-		
+
 	</view>
 </template>
 
@@ -78,10 +78,13 @@
 		},
 		onShow() {
 			this.initData();
-			
-			
+
+
 		},
 		computed:{
+				i18n () {
+					return this.$t('index')
+				},
 			friend_list() {
 				let _this = this;
 				let nlist = this.$store.state.friend_list;
@@ -104,7 +107,7 @@
 					i.name = item.h;
 					_this.list.push(i);
 				})
-				
+
 				return nlist;
 			}
 		},
@@ -123,7 +126,7 @@
 			initData(){
 				let _this = this;
 				let user = uni.getStorageSync("USER");
-				
+
 				this.$http.post("/user/friend/add/list/v1",
 					{
 						header:{
@@ -131,10 +134,10 @@
 							"x-access-client":_this.$clientType
 						}
 					}
-					
+
 				).then(res=>{
 					let res_data = eval(res.data);
-					if(res_data.code==200) {  
+					if(res_data.code==200) {
 						_this.list = res_data.body;
 						let c = 0;
 						_this.list.forEach(item=>{
@@ -145,8 +148,8 @@
 						_this.$store.commit("setUnDoFriendAddCount",c);
 					}
 				});
-				
-				
+
+
 				// uni.request({
 				// 	method:"POST",
 				// 	url: _this.$store.state.req_url + "/user/friend/add/list/v1",
@@ -156,7 +159,7 @@
 				// 	},
 				// 	success(res) {
 				// 		let res_data = eval(res.data);
-				// 		if(res_data.code==200) {  
+				// 		if(res_data.code==200) {
 				// 			_this.list = res_data.body;
 				// 			let c = 0;
 				// 			_this.list.forEach(item=>{
@@ -177,7 +180,7 @@
 				    content: _t==2?'拒绝通过':'验证通过',
 				    success: function (res) {
 				        if (res.confirm) {
-							
+
 							_this.$http.post("/user/friend/verify/v1",
 								{id:_id,t: _t},
 								{
@@ -186,19 +189,19 @@
 										"x-access-client":_this.$clientType
 									}
 								}
-								
+
 							).then(res=>{
 								let res_data = eval(res.data);
-								if(res_data.code==200) {  
+								if(res_data.code==200) {
 									uni.showToast({
-									    icon: 'none', 
+									    icon: 'none',
 										position: 'bottom',
 									    title: "操作成功"
 									});
 									_this.$store.commit("setUnDoFriendAddCount",_this.$store.state.unDoFriendAddCount-1);
-									_this.initData(); 
+									_this.initData();
 									if(_t==1) {
-										
+
 										_this.$http.post("/user/friend/list/v1",
 											{
 												header:{
@@ -206,14 +209,14 @@
 													"x-access-client":_this.$clientType
 												}
 											}
-											
+
 										).then(res=>{
 											let res_data = eval(res.data);
-											if(res_data.code==200) {  
+											if(res_data.code==200) {
 												_this.$store.commit("setFriend_list",res_data.body);
 											}
 										});
-										
+
 										// uni.request({
 										// 	method:"POST",
 										// 	url: _this.$store.state.req_url + "/user/friend/list/v1",
@@ -223,12 +226,12 @@
 										// 	},
 										// 	success(res) {
 										// 		let res_data = eval(res.data);
-										// 		if(res_data.code==200) {  
+										// 		if(res_data.code==200) {
 										// 			_this.$store.commit("setFriend_list",res_data.body);
 										// 		}
 										// 	}
 										// })
-									} 
+									}
 								} else {
 									uni.showToast({
 									    icon: 'none',
@@ -237,7 +240,7 @@
 									});
 								}
 							});
-							
+
 				     //       uni.request({
 				     //       	method:"POST",
 				     //       	url: _this.$store.state.req_url + "/user/friend/verify/v1",
@@ -248,14 +251,14 @@
 				     //       	},
 				     //       	success(res) {
 				     //       		let res_data = eval(res.data);
-				     //       		if(res_data.code==200) {  
+				     //       		if(res_data.code==200) {
 				     //       			uni.showToast({
-				     //       			    icon: 'none', 
+				     //       			    icon: 'none',
 				     //       				position: 'bottom',
 				     //       			    title: "操作成功"
 				     //       			});
 									// _this.$store.commit("setUnDoFriendAddCount",_this.$store.state.unDoFriendAddCount-1);
-									// _this.initData(); 
+									// _this.initData();
 				     //       			if(_t==1) {
 									// 	uni.request({
 									// 		method:"POST",
@@ -266,12 +269,12 @@
 									// 		},
 									// 		success(res) {
 									// 			let res_data = eval(res.data);
-									// 			if(res_data.code==200) {  
+									// 			if(res_data.code==200) {
 									// 				_this.$store.commit("setFriend_list",res_data.body);
 									// 			}
 									// 		}
 									// 	})
-									// } 
+									// }
 				     //       		} else {
 				     //       			uni.showToast({
 				     //       			    icon: 'none',
@@ -286,7 +289,7 @@
 				        }
 				    }
 				});
-				
+
 			},
 			goSearchFriend(){
 				uni.navigateTo({
@@ -352,7 +355,7 @@
 <style>
 	.content{
 		clear: both;
-	} 
+	}
 	.indexes {
 		position: relative;
 	}

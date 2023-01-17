@@ -38,7 +38,7 @@
 					</view>
 				</view>
 			</view>
-			
+
 			<view class="cu-item cu-item1" :class="false?'arrow':''"
 				style="background: #fff;display: flex;height:160upx;margin-bottom:20upx;">
 				<view class="content">
@@ -51,7 +51,7 @@
 					</view>
 				</view>
 			</view>
-			
+
 			<view class="cu-item cu-item1" :class="false?'arrow':''"
 				style="background: #fff;display: flex;height:160upx;margin-bottom:20upx;">
 				<view class="content">
@@ -64,7 +64,7 @@
 					</view>
 				</view>
 			</view>
-			
+
 			<view class="cu-item cu-item1" :class="false?'arrow':''"
 				style="background: #fff;display: flex;height:160upx;margin-bottom:20upx;">
 				<view class="content">
@@ -77,28 +77,28 @@
 					</view>
 				</view>
 			</view>
-			
+
 			<view style="margin-top: 15px;">
 				<text style="margin-left: 15px;color: #666">问候语1</text>
 				<view class="cu-form-group" style="margin: auto auto; margin-top: 5px;">
 					<input maxlength="-1" v-model="txt_1" placeholder="问候语1" />
 				</view>
 			</view>
-			
+
 			<view style="margin-top: 15px;">
 				<text style="margin-left: 15px;color: #666">问候语2</text>
 				<view class="cu-form-group" style="margin: auto auto; margin-top: 5px;">
 					<input maxlength="-1" v-model="txt_2" placeholder="问候语2" />
 				</view>
 			</view>
-			
+
 			<view style="margin-top: 15px;">
 				<text style="margin-left: 15px;color: #666">问候语3</text>
 				<view class="cu-form-group" style="margin: auto auto; margin-top: 5px;">
 					<input maxlength="-1" v-model="txt_3" placeholder="问候语3" />
 				</view>
 			</view>
-			
+
 		</view>
 	</view>
 	</view>
@@ -117,6 +117,11 @@
 		},
 		mounted() {
 			let _this = this;
+		},
+		computed:{
+			i18n () {
+				return this.$t('index')
+			}
 		},
 		// navigate.vue页面接受参数
 		onLoad: function (option) {
@@ -163,7 +168,7 @@
 					}
 				).then(res=>{
 					let res_data = eval(res.data);
-					if(res_data.code==200) {  
+					if(res_data.code==200) {
 						uni.showToast({
 						    icon: 'success',
 							position: 'bottom',

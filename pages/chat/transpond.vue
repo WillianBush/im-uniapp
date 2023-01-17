@@ -1,12 +1,12 @@
 <template>
-	<view> 
+	<view>
 		<cu-custom bgColor="bg-blue" :isBack="true" :nameToLeft="true"><block slot="content">转发</block>
 		<block slot="right">
 		<uni-text @tap="tijiao()" style="font-size: 22px;color: #fff;margin-right: 14px;font-size: 30upx;background: #58BB46;padding:10upx 40upx;border-radius: 6upx;" class="lg text-gray ">发送</uni-text>
 		</block>
 		</cu-custom>
-		
-		
+
+
 		<view class="cu-bar bg-white search" >
 			<view class="search-form round">
 				<text class="cuIcon-search"></text>
@@ -27,7 +27,7 @@
 							<view class="cu-avatar round lg" :style="{'backgroundImage': 'url('+$store.state.img_url+ items.img +')' }"  style="width: 80upx;height: 80upx;background-size: 100% 100%;"></view>
 							<view class="content">
 								<view class="text-grey" style="float:left;">{{items.title}}</view>
-								<checkbox   class='round blue '  :value="items.id"></checkbox>  
+								<checkbox   class='round blue '  :value="items.id"></checkbox>
 								<!--
 								<view class="text-gray text-sm">
 									有{{sub+2}}个主子需要伺候
@@ -35,7 +35,7 @@
 								-->
 							</view>
 						</view>
-						
+
 					</view>
 			</checkbox-group>
 			<view style="height: 100upx;text-align: center;background: #fff;
@@ -45,7 +45,7 @@
 				暂无可转发的对象
 			</view>
 		</scroll-view>
-	
+
 	</view>
 </template>
 
@@ -72,6 +72,9 @@
 			let user = uni.getStorageSync("USER");
 		},
 		computed:{
+				i18n () {
+					return this.$t('index')
+			},
 			friend_list() {
 				let _this = this;
 				let nlist = this.$store.state.ar_list_show;
@@ -79,14 +82,14 @@
 				nlist = nlist.filter((item)=>{
 					if(this.kw.trim()!="") {
 						if(item.id=="-1") {
-							return false;							 
+							return false;
 						}
 						if(item.title.indexOf(_this.kw.trim())<0) {
-							return false;			
+							return false;
 						}
 					} else {
 						if(item.id=="-1") {
-							return false;							 
+							return false;
 						}
 					}
 					return true;
@@ -97,12 +100,12 @@
 		},
 		onReady() {
 			let that = this;
-			
-			
+
+
 		},
 		methods: {
 			sendBaseDo(v) {
-				
+
 				v.fromHeadpic = this.$store.state.user.headpic;
 				let date = new Date();
 				v.date = this.dateFormat("Y/m/d H:M", date);
@@ -133,16 +136,16 @@
 						key:this.$store.state.user.id+"#"+msgbean.chatid,
 						value:jsonObj
 					});
-						
+
 					if(this.$store.state.cur_chat_entity&&this.$store.state.cur_chat_entity.id==v.toUid) {
 						this.$store.commit("setCur_chat_msg_list",jsonObj);
-						
+
 						let v1 = {
 							toUid:msgbean.chatid,
 							fromUid:this.$store.state.user.id
 						}
 						this.$websocket.dispatch("WEBSOCKET_SEND", "{body:'"+JSON.stringify(v1)+"',CMD:'CHAT_MSG_READED'}");
-						
+
 					}
 					uni.setStorageSync(this.$store.state.user.id+"#"+msgbean.chatid+'_CHAT_MESSAGE_LASTCONTENT',jsonObj[jsonObj.length-1].bean.simple_content);
 				} else {
@@ -156,7 +159,7 @@
 					}
 					 uni.setStorageSync(this.$store.state.user.id+"#"+msgbean.chatid+'_CHAT_MESSAGE_LASTCONTENT',"");
 				}
-				this.$store.commit("setChat_my_loadding",false); 
+				this.$store.commit("setChat_my_loadding",false);
 			},
 			dateFormat(fmt, date) {
 			    let ret;
@@ -186,7 +189,7 @@
 				s[14] = "4"; // bits 12-15 of the time_hi_and_version field to 0010
 				s[19] = hexDigits.substr((s[19] & 0x3) | 0x8, 1); // bits 6-7 of the clock_seq_hi_and_reserved to 01
 				s[8] = s[13] = s[18] = s[23] = "-";
-			
+
 				var uuid = s.join("");
 				return uuid;
 			},
@@ -227,8 +230,8 @@
 									_this.$websocket.dispatch("WEBSOCKET_SEND", "{body:'"+JSON.stringify(v)+"',CMD:'GROUP_CHAT_SEND_TXT'}");
 									_this.sendBaseDo(v);
 								}
-								
-								
+
+
 								_this.$http.post("/user/accessRecord/json/saveOrUpdate",
 									{type:1,eid:id},
 									{
@@ -238,10 +241,10 @@
 										}
 									}
 								).then(res=>{
-									
+
 								})
-								
-								
+
+
 								// uni.request({
 								// 	method:"POST",
 								// 	url: _this.$store.state.req_url + "/user/accessRecord/json/saveOrUpdate",
@@ -252,7 +255,7 @@
 								// 	},
 								// 	success(res) {}
 								// })
-								
+
 							} else {
 								//好友
 								let v = {};
@@ -273,8 +276,8 @@
 									}
 									_this.$websocket.dispatch("WEBSOCKET_SEND", "{body:'"+JSON.stringify(v)+"',CMD:'USER_CHAT_SEND_TXT'}");
 									_this.sendBaseDo(v);
-								}	
-								
+								}
+
 								_this.$http.post("/user/accessRecord/json/saveOrUpdate",
 									{type:2,eid:id},
 									{
@@ -284,9 +287,9 @@
 										}
 									}
 								).then(res=>{
-									
+
 								})
-								
+
 								// uni.request({
 								// 	method:"POST",
 								// 	url: _this.$store.state.req_url + "/user/accessRecord/json/saveOrUpdate",
@@ -297,15 +300,15 @@
 								// 	},
 								// 	success(res) {}
 								// })
-								
+
 							}
 						}
 					});
 				})
-				
-				
-				
-				
+
+
+
+
 				uni.showToast({
 					icon:"success",
 					title:"转发成功",
@@ -314,9 +317,9 @@
 				setTimeout(()=>{
 					uni.navigateBack();
 				},800)
-				
-				
-				
+
+
+
 			},
 			radioChange(e) {
 				this.ids = e.target.value;
@@ -328,7 +331,7 @@
 				    title: "功能未开启"
 				});
 			},
-		
+
 			search() {
 				this.kw = this.kw1;
 			},
@@ -384,8 +387,8 @@
 	uni-checkbox{
 		float:right;
 	}
-		  
-	
+
+
 
 	.indexes {
 		position: relative;

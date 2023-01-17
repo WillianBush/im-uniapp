@@ -25,6 +25,11 @@
 	    onLoad(e) {
 		    this.setupPicture = activeConfig.setupPicture
 	    },
+	    computed:{
+		    i18n () {
+			    return this.$t('index')
+		    }
+	    },
         created() {
             this.countDown() // 倒计时
         },

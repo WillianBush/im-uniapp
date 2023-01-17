@@ -10,6 +10,11 @@
             return {
             };
         },
+	    computed:{
+		    i18n () {
+			    return this.$t('index')
+		    }
+	    },
         methods: {
             loadImage() {},
             goback () {

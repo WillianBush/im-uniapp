@@ -3,15 +3,15 @@
 		<cu-custom bgColor="bg-orange"  :isBack="true" :nameToLeft="true"><block slot="backText">签到</block><block slot="content"></block><block  slot="right">
 			<text @tap="goSignInRecord" style="font-size: 48upx;color: #555;margin-right: 14px;font-size: 30upx;color:#fff" class="lg text-gray">签到记录</text>
 		</block></cu-custom>
-		 
+
 		<view style="padding-top:50upx;" >
 			<siginIn :sign_list="sign_list" ></siginIn>
-		</view> 
-		
-		
-		
-		
-		
+		</view>
+
+
+
+
+
 	</view>
 </template>
 
@@ -24,11 +24,16 @@
 		data() {
 			return {
 				sign_list: [
-					
+
 				]
 			}
 		},
-		
+
+		computed:{
+			i18n () {
+				return this.$t('index')
+			}
+		},
 		onLoad(e) {
 			let _this = this;
 			let arrs = [];
@@ -48,8 +53,8 @@
 					_this.sign_list = arrs;
 				}
 			}
-			
-			
+
+
 		},
 		methods: {
 			goSignInRecord() {
@@ -57,7 +62,7 @@
 					url:"/pages/mine/signInRecord"
 				})
 			}
-			
+
 		}
 	}
 </script>

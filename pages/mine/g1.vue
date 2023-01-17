@@ -2,17 +2,17 @@
 	<view>
 		<cu-custom bgColor="bg-blue"  :isBack="true" :nameToLeft="true"><block slot="backText"></block><block slot="content">{{i18n.fundingdetails}}</block><block slot="right">
 		</block></cu-custom>
-		
+
 		<view class="margin-top" style="text-align: center;margin-top: 50upx;color:#aaa">
 				{{i18n.norelatedrecords}}
 			</view>
-	
-			
-			
-		</view>	
-	</view> 
+
+
+
+		</view>
+	</view>
 </template>
- 
+
 <script>
 	export default {
 		data() {
@@ -21,13 +21,18 @@
 			}
 		},
 		onLoad(e) {
-			
+
+		},
+		computed:{
+			i18n () {
+				return this.$t('index')
+			}
 		},
 		methods: {
 			tijiao() {
 				let _this = this;
 				let user = this.$store.state.user;
-				
+
 				_this.$http.post("/user/json/updateNickName",
 					{
 						nickName:this.txt,
@@ -41,7 +46,7 @@
 					}
 				).then(res=>{
 					let res_data = eval(res.data);
-					if(res_data.code==200) {  
+					if(res_data.code==200) {
 						uni.showToast({
 						    icon: 'success',
 							position: 'bottom',
@@ -56,7 +61,7 @@
 						});
 					}
 				})
-				
+
 				// uni.request({
 				// 	method:"POST",
 				// 	url: _this.$store.state.req_url + "/user/json/updateNickName",
@@ -70,7 +75,7 @@
 				// 	},
 				// 	success(res) {
 				// 		let res_data = eval(res.data);
-				// 		if(res_data.code==200) {  
+				// 		if(res_data.code==200) {
 				// 			uni.showToast({
 				// 			    icon: 'success',
 				// 				position: 'bottom',
@@ -87,8 +92,8 @@
 				// 	}
 				// })
 			}
-		
-			
+
+
 		}
 	}
 </script>

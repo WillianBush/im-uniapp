@@ -6,15 +6,15 @@
 		<view style="background: #fff;width: 96%;
     margin: auto auto;
     margin-top: 10px;" class="margin-top">
-	
+
 	<view class="cu-bar bg-white search">
 		<view class="search-form round">
 			<text class="cuIcon-search"></text>
 			<input v-model="kw" @input="search_list()" type="text" placeholder="搜索" confirm-type="search"></input>
 		</view>
-		 
-	</view> 
-			
+
+	</view>
+
 			<view style=" width:100%">
 					<view   style="padding-top:30upx;padding-bottom:30upx;">
 						<view v-if="item.id!=$store.state.user.id"  style="display: inline-block;width:25%;margin-bottom:30upx;text-align: center;" v-for="(item,index) in list1">
@@ -25,14 +25,14 @@
 						<view v-if="list.length<=0" style="text-align: center;color:#aaa">
 							<uni-view  class="padding">暂无禁言成员</uni-view>
 						</view>
-						
+
 					</view>
 			</view>
-			
-			 
-		</view> 
-		
-	
+
+
+		</view>
+
+
 	</view>
 </template>
 
@@ -46,10 +46,15 @@
 				kw:"",
 			}
 		},
+		computed:{
+			i18n () {
+				return this.$t('index')
+			}
+		},
 		onShow() {
 			let _this = this;
 			let user = uni.getStorageSync("USER");
-			
+
 			_this.$http.post("/room/json/stopSpeakSingleList",
 				{roomid:_this.$store.state.cur_chat_entity.id},
 				{
@@ -60,7 +65,7 @@
 				}
 			).then(res=>{
 				let res_data = eval(res.data);
-				if(res_data.code==200) {  
+				if(res_data.code==200) {
 					_this.list = res_data.body;
 					let temp = _this.list.filter((item1)=>{
 						if(_this.$store.state.cur_chat_entity.owner_UUID==item1.id||
@@ -76,8 +81,8 @@
 					 _this.list1 = temp;
 				}
 			})
-			
-		
+
+
 			// uni.request({
 			// 	method:"POST",
 			// 	url: _this.$store.state.req_url + "/room/json/getMemberList",
@@ -88,7 +93,7 @@
 			// 	},
 			// 	success(res) {
 			// 		let res_data = eval(res.data);
-			// 		if(res_data.code==200) {  
+			// 		if(res_data.code==200) {
 			// 			_this.list = res_data.body;
 			// 			_this.list.forEach((item1)=>{
 			// 				let s = uni.getStorageSync(item1.id+"_NOTE");
@@ -99,7 +104,7 @@
 			// 		}
 			// 	}
 			// })
-			
+
 		},
 		methods: {
 			addSss(){
@@ -133,7 +138,7 @@
 				    content: '确认此用户恢复发言?',
 				    success: function (res) {
 				        if (res.confirm) {
-							
+
 							_this.$http.post("/room/json/uStopSpeakSingle",
 								{
 									roomid:_this.$store.state.cur_chat_entity.id,
@@ -147,12 +152,12 @@
 								}
 							).then(res=>{
 								let res_data = eval(res.data);
-								if(res_data.code==200) {  
+								if(res_data.code==200) {
 									uni.showToast({
 									    title: '操作成功',
 									    duration: 2000
 									});
-									
+
 									let nlist = [];
 									_this.list.forEach(item=>{
 										if(item.id!=_id) {
@@ -167,10 +172,10 @@
 									});
 									_this.list = nlist;
 									_this.list1 = nlist1;
-									
+
 								}
 							})
-							
+
 				     //       uni.request({
 				     //       	method:"POST",
 				     //       	url: _this.$store.state.req_url + "/room/json/removeMember",
@@ -184,7 +189,7 @@
 				     //       	},
 				     //       	success(res) {
 				     //       		let res_data = eval(res.data);
-				     //       		if(res_data.code==200) {  
+				     //       		if(res_data.code==200) {
 				     //       			uni.showToast({
 				     //       			    title: '移除成功',
 				     //       			    duration: 2000
@@ -210,7 +215,7 @@
 				     //       		}
 				     //       	}
 				     //       })
-				        } 
+				        }
 				    }
 				});
 			}

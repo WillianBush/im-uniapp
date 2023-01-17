@@ -1,9 +1,9 @@
 <template>
-	<view> 
+	<view>
 		<cu-custom bgColor="bg-blue"  :isBack="true" :nameToLeft="true"><block slot="backText"></block><block slot="content">增加朋友</block><block slot="right">
-			
+
 		</block></cu-custom>
-		
+
 		<view class="cu-bar bg-white search" >
 			<view class="search-form round">
 				<text class="cuIcon-search"></text>
@@ -13,28 +13,28 @@
 				<button @tap="search()"  class="cu-btn bg-gradual-green shadow-blur round">查找</button>
 			</view>
 		</view>
-		
+
 		<scroll-view scroll-y class="indexes" :style="[{height:'calc(100vh - 100upx)'}]"
 		 :scroll-with-animation="true" :enable-back-to-top="true">
-		 
+
 		 <view v-if="list.length>0" style="margin-top:10px;" class="cu-list menu"
 		  :class="[true?'sm-border':'',false?'card-menu ':'']">
-		  
+
 		    <view v-for="item in list" class="cu-item" >
-		    	<view  class="content" > 
+		    	<view  class="content" >
 					<view class="cu-avatar round lg" :style="{'backgroundImage': 'url('+$store.state.img_url+ item.headpic +')' }"  style="float:left;width: 80upx;height: 80upx;background-size: 100% 100%;"></view>
 		    		<text class="text-grey" style="float:left;margin-left: 10px;margin-top:15upx">{{item.name}}</text>
 					<button @tap="goVerify(item.member_uuid)" style="float:right;margin-top:8upx" v-if="!item.status" class="cu-btn">添加好友</button>
 					<text style="float:right;margin-top:15upx;color:#999;font-size: 26upx;" v-else>{{item.status}}</text>
 		    	</view>
-		    </view>  
-			
-				
+		    </view>
 
 
-		</view>	
-		 
-			
+
+
+		</view>
+
+
 			<view  v-if="kw!=''&&list.length==0"  style="height: 100upx;text-align: center;background: #fff;
     margin-top: 20upx;
     line-height: 100upx;
@@ -42,7 +42,7 @@
 				该用户不存在
 			</view>
 		</scroll-view>
-		
+
 	</view>
 </template>
 
@@ -58,10 +58,15 @@
 				kw1:""
 			};
 		},
-		
+
 		onReady() {
-		
-			
+
+
+		},
+		computed:{
+			i18n () {
+				return this.$t('index')
+			}
 		},
 		methods: {
 			goVerify(_uuid){
@@ -91,7 +96,7 @@
 					return;
 				}
 				this.kw = this.kw1;
-				
+
 				this.$http.post("/user/friend/searchByTelOrName/v1",
 					{
 						txt:this.kw
@@ -102,14 +107,14 @@
 							"x-access-client":_this.$clientType
 						}
 					}
-					
+
 				).then(res=>{
 					let res_data = eval(res.data);
-					if(res_data.code==200) {  
+					if(res_data.code==200) {
 						_this.list = res_data.body
 					}
 				});
-				
+
 				// uni.request({
 				// 	method:"POST",
 				// 	url: _this.$store.state.req_url + "/user/friend/searchByTelOrName/v1",
@@ -122,7 +127,7 @@
 				// 	},
 				// 	success(res) {
 				// 		let res_data = eval(res.data);
-				// 		if(res_data.code==200) {  
+				// 		if(res_data.code==200) {
 				// 			_this.list = res_data.body
 				// 		}
 				// 	}

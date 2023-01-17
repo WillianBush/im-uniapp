@@ -1079,6 +1079,11 @@
 			});
 
 		},
+		computed:{
+			i18n () {
+				return this.$t('index')
+			}
+		},
 		onLoad(option) {
 			this.$store.commit("setCur_chat_msg_list",[]);
 			this.$store.commit("setChat_my_loadding",false);

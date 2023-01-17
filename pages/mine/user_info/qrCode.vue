@@ -44,6 +44,11 @@
 				qrcodeBase64: ""
 			}
 		},
+		computed:{
+			i18n () {
+				return this.$t('index')
+			}
+		},
 		onLoad(e) {
 			let _this = this;
 			let user = this.$store.state.user;
@@ -126,12 +131,12 @@
 								url: _this.$store.state.img_url + json.msg,
 								success: (res) => {
 									if (res.statusCode === 200) {
-										
+
 										uni.saveImageToPhotosAlbum({
 											filePath: res.tempFilePath,
 											success: function() {
 												//保存成功后删除临时图片
-												
+
 												_this.$http.post("/user/file/delB64Img",
 													{
 														path: json.msg
@@ -142,11 +147,11 @@
 														}
 													}
 												).then(res=>{
-													
+
 												})
-												
+
 												// uni.request({
-												// 	data: {  
+												// 	data: {
 												// 		path: json.msg
 												// 	},
 												// 	header: {
@@ -174,10 +179,10 @@
 								}
 							})
 						}
-					
+
 					}
 				})
-				
+
 				// uni.request({
 				// 	method: "POST",
 				// 	url: _this.$store.state.req_url + "/user/file/uploadB64Img",
@@ -201,13 +206,13 @@
 				// 					url: _this.$store.state.img_url + json.msg,
 				// 					success: (res) => {
 				// 						if (res.statusCode === 200) {
-											
+
 				// 							uni.saveImageToPhotosAlbum({
 				// 								filePath: res.tempFilePath,
 				// 								success: function() {
 				// 									//保存成功后删除临时图片
 				// 									uni.request({
-				// 										data: {  
+				// 										data: {
 				// 											path: json.msg
 				// 										},
 				// 										header: {

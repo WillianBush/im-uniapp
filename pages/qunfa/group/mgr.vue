@@ -180,6 +180,11 @@
 			this.onLoadMethod();
 		  },
 		},
+		computed:{
+			i18n () {
+				return this.$t('index')
+			}
+		},
 		methods: {
 			onLoadMethod() {
 				let _this = this;

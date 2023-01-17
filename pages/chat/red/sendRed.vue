@@ -3,7 +3,7 @@
 		<cu-custom bgColor="bg-blue"  :isBack="true" ><block slot="backText">取消</block><block slot="content">发红包</block></cu-custom>
 		<view>
 			<view v-if="chatType=='group'">
-				
+
 				<view v-show="redType==2" style="width:90%;background-color: #fff;border-radius: 5px;height:90upx;
 						    line-height: 90upx;
 						    margin: auto auto;
@@ -19,70 +19,70 @@
 				line-height: 40upx;
 				text-align: center;
 				font-size: 24upx;
-				margin-right: 8upx;">拼</text>	
-						<text style="float: left;">总金额</text> 
+				margin-right: 8upx;">拼</text>
+						<text style="float: left;">总金额</text>
 						<text  style="float: right;">元</text>
 						<input @input="input" v-model="money"  style="    float: right;
 									margin-top: 26upx;
 									text-align: right;
 									padding-right: 20upx;
 									color: #bbb;
-									font-size: 26upx;"  /> 
+									font-size: 26upx;"  />
 						</view>
-						
+
 						<view  v-show="redType==1" style="width:90%;background-color: #fff;border-radius: 5px;height:90upx;
 								    line-height: 90upx;
 								    margin: auto auto;
 								    margin-top: 32upx;
 								    padding: 0 24upx;font-size: 26upx;">
-								<text style="float: left;">单个金额</text> 
+								<text style="float: left;">单个金额</text>
 								<text  style="float: right;">元</text>
 								<input  @input="input" v-model="money"  style="    float: right;
 											margin-top: 26upx;
 											text-align: right;
 											padding-right: 20upx;
 											color: #bbb;
-											font-size: 26upx;"  /> 
+											font-size: 26upx;"  />
 						</view>
-						
+
 						<view v-show="redType==1" @tap="chgRedType()" style="width:90%;margin:auto auto;margin-top: 16upx;font-size:24upx;color:#777">当前为普通红包，<text style="color:#E2B803">改为拼手气红包</text></view>
 						<view v-show="redType==2" @tap="chgRedType()" style="width:90%;margin:auto auto;margin-top: 16upx;font-size:24upx;color:#777">当前为拼手气红包，<text style="color:#E2B803">改为普通红包</text></view>
-						
+
 						<view style="width:90%;background-color: #fff;border-radius: 5px;height:90upx;
 						    line-height: 90upx;
 						    margin: auto auto;
 						    margin-top: 32upx;
-						    padding: 0 24upx;font-size: 26upx;"><text style="float: left;">红包个数</text> 
+						    padding: 0 24upx;font-size: 26upx;"><text style="float: left;">红包个数</text>
 						<text  style="float: right;">个</text>
 						<input  @input="input" type="number" v-model="number"  style="    float: right;
 									margin-top: 26upx;
 									text-align: right;
 									padding-right: 20upx;
 									color: #bbb;
-									font-size: 26upx;"  /> 
+									font-size: 26upx;"  />
 						</view>
 						<view  style="width:90%;margin:auto auto;margin-top: 16upx;font-size:24upx;color:#777">本群共{{groupMemberCount}}人</view>
-						
-				
+
+
 			</view>
 			<view v-else>
 				<view   style="width:90%;background-color: #fff;border-radius: 5px;height:90upx;
-						    line-height: 90upx; 
+						    line-height: 90upx;
 						    margin: auto auto;
 						    margin-top: 32upx;
 						    padding: 0 24upx;font-size: 26upx;">
-						<text style="float: left;">金额</text> 
+						<text style="float: left;">金额</text>
 						<text  style="float: right;">元</text>
 						<input @input="input" v-model="money"  style="    float: right;
 									margin-top: 26upx;
 									text-align: right;
 									padding-right: 20upx;
 									color: #bbb;
-									font-size: 26upx;"  /> 
+									font-size: 26upx;"  />
 				</view>
-				
+
 			</view>
-			
+
 			<view style="width:90%;background-color: #fff;border-radius: 5px;height:100upx;
 			    line-height: 100upx;
 			    margin: auto auto;
@@ -94,9 +94,9 @@
 						text-align: text;
 						padding-right: 20upx;
 						color: #bbb;
-						font-size: 26upx;"  /> 
-			</view> 
-			
+						font-size: 26upx;"  />
+			</view>
+
 			<view style="margin-top: 100upx;">
 				<view style="font-size: 70upx;text-align: center;">¥<text style="margin-left: 10upx; font-size: 60upx;font-weight: 800;">{{moneyReal}}</text></view>
 				<view>
@@ -104,7 +104,7 @@
 					<button v-show="!tijiaoEnbale" disabled style="width: 50%;margin: auto auto;margin-top:30upx;height:80upx" class="cu-btn block bg-red margin-tb-sm lg" >塞钱进红包</button>
 				</view>
 			</view>
-			
+
 		</view>
 		<number-jpan @close="hideNumber" :length="6" @closeChange="verifyPayPwd($event)" :showNum="false" ref="numberPad"></number-jpan>
 	</view>
@@ -133,6 +133,11 @@
 				this.groupMemberCount = e.groupMemberCount;
 			}
 		},
+		computed:{
+			i18n () {
+				return this.$t('index')
+			}
+		},
 		methods: {
 			hideNumber() {
 				this.isRefuse = false;
@@ -140,7 +145,7 @@
 			},
 			verifyPayPwd(e){
 				let _this = this;
-				
+
 				_this.$http.post("/user/json/paypwdCheck",
 					{pay_pwd:e},
 					{
@@ -151,7 +156,7 @@
 					}
 				).then(res=>{
 					let res_data = eval(res.data);
-					if(res_data.code==200) {  
+					if(res_data.code==200) {
 						if(res_data.msg == "1") {
 							if(_this.chatType=="user") {
 								let v = {
@@ -172,7 +177,7 @@
 								// 	return;
 								// }
 								let v = {
-								   redType:_this.redType,	
+								   redType:_this.redType,
 								   toGroupid:_this.toid,
 								   fromUid:_this.$store.state.user.id,
 								   number:_this.numberReal,
@@ -197,7 +202,7 @@
 									}
 								}
 							});
-							
+
 						}
 					} else {
 						uni.showToast({
@@ -207,7 +212,7 @@
 						});
 					}
 				})
-				
+
 				// uni.request({
 				// 	method:"POST",
 				// 	url: _this.$store.state.req_url + "/user/json/paypwdCheck",
@@ -216,9 +221,9 @@
 				// 		"Content-Type":"application/x-www-form-urlencoded",
 				// 		"x-access-uid":_this.$store.state.user.id
 				// 	},
-				// 	success(res) { 
+				// 	success(res) {
 				// 		let res_data = eval(res.data);
-				// 		if(res_data.code==200) {  
+				// 		if(res_data.code==200) {
 				// 			if(res_data.msg == "1") {
 				// 				if(_this.chatType=="user") {
 				// 					let v = {
@@ -239,7 +244,7 @@
 				// 					// 	return;
 				// 					// }
 				// 					let v = {
-				// 					   redType:_this.redType,	
+				// 					   redType:_this.redType,
 				// 					   toGroupid:_this.toid,
 				// 					   fromUid:_this.$store.state.user.id,
 				// 					   number:_this.numberReal,
@@ -264,7 +269,7 @@
 				// 						}
 				// 					}
 				// 				});
-								
+
 				// 			}
 				// 		} else {
 				// 			uni.showToast({
@@ -276,7 +281,7 @@
 				// 	}
 				// })
 			},
-			
+
 			input() {
 				var moneyRule = /(^[1-9]([0-9]+)?(\.[0-9]{1,2})?$)|(^(0){1}$)|(^[0-9]\.[0-9]([0-9])?$)/;
 				if (!moneyRule.test(this.money)||parseFloat(this.money)<=0) {
@@ -297,7 +302,7 @@
 					   return;
 					}
 					this.numberReal = parseInt(this.number);
-				}	
+				}
 				this.tijiaoEnbale = true;
 			},
 			tijiao() {
@@ -319,8 +324,8 @@
 						})
 					   return;
 					}
-				}	
-				
+				}
+
 				_this.$refs.numberPad.open();
 			},
 			chgRedType() {
@@ -333,7 +338,7 @@
 			 click(e){
 				const v = e.detail.value
 				this.sum = '1'
-		
+
 				const zero = /^(0{2,})|[^0-9]/g
 				let final = 0
 				if (!v) {
@@ -342,7 +347,7 @@
 				  final = v.toString().replace(zero, (v) => {
 					return 0
 				  })
-		
+
 				  if (final.split('')[0] * 1 === 0) {
 					final = final.slice(1) - 0 || 0
 				  }

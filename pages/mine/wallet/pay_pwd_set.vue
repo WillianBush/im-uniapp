@@ -6,7 +6,7 @@
 		<text @tap="tijiao()" style="font-size: 22px;color: #fff;margin-right: 14px;font-size: 30upx;" class="lg text-gray ">提交</text></block>
 		-->
 		</cu-custom>
-		
+
 		<view class="login">
 			<view class="l_top" style="margin-bottom:100upx;">
 				<view class="l_text" style="">请输入6位支付密码，注意不要重复或连续数字</view>
@@ -52,9 +52,9 @@
 			<view class="pan_num_key" :class="[items.checked?'pan_num_checked':'pan_num_key']" v-for="(items,index) in boardlists"
 			 :key="index" @click="writepwd(items.id)">{{items.con}}</view>
 		</view>
-		
-		
-		
+
+
+
 	</view>
 </template>
 <script>
@@ -141,6 +141,9 @@
 		onReady(){
 		},
 		computed: {
+				i18n () {
+					return this.$t('index')
+			},
 			len: function() {
 				if (this.trade_pwd.length == 6) {
 					// 第一次进来可以点击的
@@ -235,7 +238,7 @@
 					}
 				).then(res=>{
 					let res_data = eval(res.data);
-					if(res_data.code==200) {  
+					if(res_data.code==200) {
 						_this.trade_pwd = "";
 						_this.numarr = [];
 						uni.showToast({
@@ -261,9 +264,9 @@
 				// 		"Content-Type":"application/x-www-form-urlencoded",
 				// 		"x-access-uid":_this.$store.state.user.id
 				// 	},
-				// 	success(res) { 
+				// 	success(res) {
 				// 		let res_data = eval(res.data);
-				// 		if(res_data.code==200) {  
+				// 		if(res_data.code==200) {
 				// 			_this.trade_pwd = "";
 				// 			_this.numarr = [];
 				// 			uni.showToast({
@@ -282,7 +285,7 @@
 				// 		}
 				// 	}
 				// })
-				
+
 			},
 
 		}

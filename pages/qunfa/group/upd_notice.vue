@@ -3,16 +3,15 @@
 		<cu-custom bgColor="bg-blue"  :isBack="true" :nameToLeft="true"><block slot="backText"></block><block slot="content">修改群公告</block><block slot="right">
 			<uni-text @tap="tijiao()" style="font-size: 22px;color: #fff;margin-right: 14px;font-size: 30upx;" class="lg text-gray ">提交</uni-text>
 		</block></cu-custom>
-		
+
 		<view class="cu-form-group margin-top">
 			<textarea v-model="txt" style="height:400upx;" maxlength="-1"   placeholder="输入群公告"></textarea>
 		</view>
-			
-			
-		</view>	
-	</view>
+
+
+		</view>
 </template>
-  
+
 <script>
 	export default {
 		data() {
@@ -21,29 +20,34 @@
 			}
 		},
 		onLoad(e) {
-			
+
+		},
+		computed:{
+			i18n () {
+				return this.$t('index')
+			}
 		},
 		methods: {
 			tijiao() {
 				let _this = this;
 				let user = this.$store.state.user;
-				
-				
+
+
 				_this.$http.post("/room/json/updateDescri",
 					{
 						descri:this.txt,
 						roomid:this.$store.state.cur_chat_entity.roomUUID
-					}, 
+					},
 					{
 						header:{
 							"x-access-uid":user.id,
 							"x-access-client":_this.$clientType
 						}
 					}
-					
+
 				).then(res=>{
 					let res_data = eval(res.data);
-					if(res_data.code==200) {  
+					if(res_data.code==200) {
 						uni.showToast({
 						    icon: 'success',
 							position: 'bottom',
@@ -70,22 +74,22 @@
 						});
 					}
 				});
-				
-				
+
+
 				// uni.request({
 				// 	method:"POST",
 				// 	url: _this.$store.state.req_url + "/room/json/updateDescri",
 				// 	data:{
 				// 		descri:this.txt,
 				// 		roomid:this.$store.state.cur_chat_entity.roomUUID
-				// 	}, 
+				// 	},
 				// 	header:{
 				// 		"Content-Type":"application/x-www-form-urlencoded",
 				// 		"x-access-uid":user.id
 				// 	},
 				// 	success(res) {
 				// 		let res_data = eval(res.data);
-				// 		if(res_data.code==200) {  
+				// 		if(res_data.code==200) {
 				// 			uni.showToast({
 				// 			    icon: 'success',
 				// 				position: 'bottom',
@@ -114,8 +118,8 @@
 				// 	}
 				// })
 			}
-		
-			
+
+
 		}
 	}
 </script>

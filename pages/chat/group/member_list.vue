@@ -2,7 +2,7 @@
 	<view>
 		<cu-custom bgColor="bg-blue"  :isBack="true" :nameToLeft="true"><block slot="backText"></block><block slot="content">群组成员({{totalAllListCount}}人)</block><block slot="right">
 		</block></cu-custom>
-		
+
 		<view class="cu-bar bg-white search">
 			<view class="search-form round">
 				<text class="cuIcon-search"></text>
@@ -11,7 +11,7 @@
 
 			<button @tap="searchP(inputText)" style="background: #FFAA01;"   class="cu-btn bg-gradual-green shadow-blur round">搜索</button>
 		</view>
-		
+
 		<view style="background: #fff;width: 96%;
     margin: auto auto;
     margin-top: 10px;" class="margin-top">
@@ -27,15 +27,15 @@
 						<view @tap="goUserDetail(item.id)" style="display: inline-block;width:20%;margin-bottom:20upx;text-align: center;margin-top: 10px" v-for="(item,index) in totalList">
 							<view  class="cu-avatar round" :style="'height:100upx;width:100upx;background-image:url('+$store.state.img_url+item.headpic+');'"></view>
 							<view    style="margin:auto auto;color: #999;font-size:24upx;text-align: center;margin-top:8upx;overflow: hidden;height:68upx;width:100upx;word-wrap: break-word; word-break: normal">{{item.nickName}}</view>
-							
+
 						</view>
 					</scroll-view>
 			</view>
-			
-			 
-		</view> 
-		
-	
+
+
+		</view>
+
+
 	</view>
 </template>
 
@@ -54,14 +54,19 @@
 				status: "more", // 加载状态
 				timer: null,
 				inputText:""
-				
+
+			}
+		},
+		computed:{
+			i18n () {
+				return this.$t('index')
 			}
 		},
 		onLoad() {
 			let _this = this;
 			let user = uni.getStorageSync("USER");
-			
-			
+
+
 			/*_this.$http.post("/room/json/getMemberList",
 				{roomid:_this.$store.state.cur_chat_entity.id},
 				{
@@ -72,7 +77,7 @@
 				}
 			).then(res=>{
 				let res_data = eval(res.data);
-				if(res_data.code==200) {  
+				if(res_data.code==200) {
 					_this.list = res_data.body;
 					_this.list.forEach((item1)=>{
 						let s = uni.getStorageSync(item1.id+"_NOTE");
@@ -85,7 +90,7 @@
 			})*/
 
 			this.loadStoreData(this.pageSize,this.numPag);
-			
+
 		},
 		methods: {
 			searchP(a){
@@ -213,7 +218,7 @@
 					}
 				).then(res=>{
 					let res_data = eval(res.data);
-					if(res_data.code==200) {  
+					if(res_data.code==200) {
 						let flag = false;
 						//哪个角色可查看群成员详细 0全体 1仅群主 2群主和群管理员
 						if(res_data.body.lookGroupMemberDetailForRole==0) {
@@ -228,18 +233,18 @@
 								flag = true;
 							}
 						}
-						
-							
+
+
 						if(flag) {
 							uni.navigateTo({
 								url:"/pages/chat/user_detail?id="+_id+"&room_id="+_this.$store.state.cur_chat_entity.id
 							})
-						}	
-						
+						}
+
 					}
 				})
-				
-				
+
+
 				// uni.request({
 				// 	method:"POST",
 				// 	url: this.$store.state.req_url + "/sysConfig/json/getRoomCfg",
@@ -248,7 +253,7 @@
 				// 	},
 				// 	success(res) {
 				// 		let res_data = eval(res.data);
-				// 		if(res_data.code==200) {  
+				// 		if(res_data.code==200) {
 				// 			let flag = false;
 				// 			//哪个角色可查看群成员详细 0全体 1仅群主 2群主和群管理员
 				// 			if(res_data.body.lookGroupMemberDetailForRole==0) {
@@ -263,19 +268,19 @@
 				// 					flag = true;
 				// 				}
 				// 			}
-							
-								
+
+
 				// 			if(flag) {
 				// 				uni.navigateTo({
 				// 					url:"/pages/chat/user_detail?id="+_id+"&room_id="+_this.$store.state.cur_chat_entity.id
 				// 				})
-				// 			}	
-							
+				// 			}
+
 				// 		}
 				// 	}
 				// })
-				
-				
+
+
 			}
 		}
 	}

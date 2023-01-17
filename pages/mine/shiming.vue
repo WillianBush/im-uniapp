@@ -6,42 +6,42 @@
 		<text @tap="tijiao()" style="font-size: 22px;color: #fff;margin-right: 14px;font-size: 30upx;" class="lg text-gray ">提交</text></block>
 		-->
 		</cu-custom>
-		
+
 		<view v-if="shiming.status==0" class="margin-top" style="    text-align: center;
 		">
 				<view style="font-size: 28upx;
 		color: #999;">审核中，请耐心等待审核！</view>
 			</view>
-		
+
 		<view v-if="shiming.status==1" class="margin-top" style="text-align: center;">
 				<view style="font-size: 28upx;
 		color: green;font-weight: 800;">审核通过</view>
-			</view>	
-			
+			</view>
+
 		<view class="margin-top" v-if="shiming.status==2" style="    text-align: center;
     ">
 			<view style="font-size: 28upx;
     color: red;">审核失败，请编辑后再提交</view>
 			<view style="color: #999;
     margin-top: 20upx;">{{shiming.statusReason}}</view>
-			
+
 		</view>
-		
+
 		<view class="cu-form-group" style="width: 94%;margin: auto auto;
 				border-radius: 5px;margin-top:40upx;border-bottom: 1px solid #eee;" >
-			<view class="title">真实姓名</view>  
+			<view class="title">真实姓名</view>
 			<input v-if="shiming.status!=1"  style="" placeholder="输入真实姓名" v-model="realname"></input>
 			<input v-else  disabled="" v-model="realname"></input>
 		</view>
 		<view class="cu-form-group" style="width: 94%;margin: auto auto;
 				border-radius: 5px;border-bottom: 1px solid #eee;border-top:0px;" >
-			<view class="title">身份证号</view> 
+			<view class="title">身份证号</view>
 			<input v-if="shiming.status!=1" style="" placeholder="输入身份证" v-model="idcard" ></input>
 			<input v-else  disabled="" v-model="idcard"></input>
 		</view>
-		
+
 		<button v-if="shiming.status!=0" @tap="tijiao" style="width: 94%;margin: auto auto;margin-top:50upx;" class="cu-btn block bg-red margin-tb-sm lg" >提交认证</button>
-		
+
 	</view>
 </template>
 
@@ -55,9 +55,14 @@
 				is_post:false,
 			}
 		},
+		computed:{
+			i18n () {
+				return this.$t('index')
+			}
+		},
 		onLoad() {
 			let _this = this;
-			
+
 			_this.$http.post("/user/json/shiming_info",
 				{
 					header:{
@@ -67,7 +72,7 @@
 				}
 			).then(res=>{
 				let res_data = eval(res.data);
-				if(res_data.code==200) {  
+				if(res_data.code==200) {
 					if(res_data.body&&res_data.body!=null) {
 						_this.shiming = res_data.body;
 						_this.realname = res_data.body.realname;
@@ -75,7 +80,7 @@
 					}
 				}
 			})
-			
+
 			// uni.request({
 			// 	method:"POST",
 			// 	url: _this.$store.state.req_url + "/user/json/shiming_info",
@@ -85,7 +90,7 @@
 			// 	},
 			// 	success(res) {
 			// 		let res_data = eval(res.data);
-			// 		if(res_data.code==200) {  
+			// 		if(res_data.code==200) {
 			// 			if(res_data.body&&res_data.body!=null) {
 			// 				_this.shiming = res_data.body;
 			// 				_this.realname = res_data.body.realname;
@@ -103,12 +108,12 @@
 			    var weight_factor = [7,9,10,5,8,4,2,1,6,3,7,9,10,5,8,4,2];
 			    // 校验码
 			    var check_code = ['1', '0', 'X' , '9', '8', '7', '6', '5', '4', '3', '2'];
-			
+
 			    var code = idcode + "";
 			    var last = idcode[17];//最后一位
-			
+
 			    var seventeen = code.substring(0,17);
-			
+
 			    // ISO 7064:1983.MOD 11-2
 			    // 判断最后一位校验码是否正确
 			    var arr = seventeen.split("");
@@ -117,11 +122,11 @@
 			    for(var i = 0; i < len; i++){
 			        num = num + arr[i] * weight_factor[i];
 			    }
-			    
+
 			    // 获取余数
 			    var resisue = num%11;
 			    var last_no = check_code[resisue];
-			
+
 			    // 格式的正则
 			    // 正则思路
 			    /*
@@ -134,10 +139,10 @@
 			    十八位可能是数字0-9，也可能是X
 			    */
 			    var idcard_patter = /^[1-9][0-9]{5}([1][9][0-9]{2}|[2][0][0|1][0-9])([0][1-9]|[1][0|1|2])([0][1-9]|[1|2][0-9]|[3][0|1])[0-9]{3}([0-9]|[X])$/;
-			
+
 			    // 判断格式是否正确
 			    var format = idcard_patter.test(idcode);
-			
+
 			    // 返回验证结果，校验码和格式同时正确才算是合法的身份证号码
 			    return last === last_no && format ? true : false;
 			},
@@ -160,8 +165,8 @@
 					});
 					return;
 				}
-				
-				if(!this.checkIDCard(this.idcard.trim())){ 
+
+				if(!this.checkIDCard(this.idcard.trim())){
 					  uni.showToast({
 						  icon: 'none',
 						position: 'bottom',
@@ -170,8 +175,8 @@
 					  return;
 				}
 				this.is_post = true;
-				
-				
+
+
 				_this.$http.post("/user/json/shiming_update",
 					{
 						realname:_this.realname,
@@ -186,7 +191,7 @@
 				).then(res=>{
 					_this.is_post = false;
 					let res_data = eval(res.data);
-					if(res_data.code==200) {  
+					if(res_data.code==200) {
 						uni.showToast({
 						    icon: 'success',
 							position: 'bottom',
@@ -201,8 +206,8 @@
 						});
 					}
 				})
-				
-				
+
+
 				// uni.request({
 				// 	method:"POST",
 				// 	url: _this.$store.state.req_url + "/user/json/shiming_update",
@@ -217,7 +222,7 @@
 				// 	success(res) {
 				// 		_this.is_post = false;
 				// 		let res_data = eval(res.data);
-				// 		if(res_data.code==200) {  
+				// 		if(res_data.code==200) {
 				// 			uni.showToast({
 				// 			    icon: 'success',
 				// 				position: 'bottom',
@@ -233,7 +238,7 @@
 				// 		}
 				// 	}
 				// })
-				
+
 			}
 		}
 	}

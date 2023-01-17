@@ -29,7 +29,7 @@
 				</view>
 			</view>
 		 </scroll-view>
-		 
+
 		 <scroll-view @scrolltolower="loadmore2" v-show="item_index==2" scroll-y="true"  class="indexes"  :style="'background: #fff;height:calc(100vh - '+CustomBar+'px - 350upx - 70upx)'"
 		  :scroll-with-animation="true" :enable-back-to-top="true">
 		 	<view v-for="(item,index) in item2_list" style="width:94%;margin:auto auto;display: flex;padding:20upx;20upx;height:130upx;border-bottom:1px solid #ddd;">
@@ -42,9 +42,9 @@
 					<view v-if="item.openedNumber==item.number" style="color:#888;font-size:24upx;margin-top:20upx;">已领取</view>
 					<view v-else style="color:#888;font-size:24upx;margin-top:20upx;">已领{{item.openedNumber}}/{{item.number}}个</view>
 		 		</view>
-		 	</view> 
+		 	</view>
 		  </scroll-view>
-		 
+
 		 <view style="display: flex;width:100%;    text-align: center;
     height: 90upx;
     line-height: 90upx;
@@ -56,7 +56,7 @@
 			 	我发出的
 			 </view>
 		 </view>
-		 
+
 	</view>
 </template>
 
@@ -71,10 +71,15 @@
 				item2_page:1,
 			}
 		},
+		computed:{
+			i18n () {
+				return this.$t('index')
+			}
+		},
 		onLoad() {
 			console.log("来");
 			let _this = this;
-			
+
 			_this.$http.post("/red/json/openRecordList/v1",
 				{p:_this.item1_page},
 				{
@@ -85,13 +90,13 @@
 				}
 			).then(res=>{
 				let res_data = eval(res.data);
-				if(res_data.code==200) {  
+				if(res_data.code==200) {
 					_this.item1_list = res_data.body;
-					
+
 				}
 			})
-			
-			
+
+
 			// uni.request({
 			// 	method:"POST",
 			// 	url: _this.$store.state.req_url + "/red/json/openRecordList/v1",
@@ -103,19 +108,19 @@
 			// 	success(res) {
 			// 		let res_data = eval(res.data);
 			// 		console.log(res_data);
-			// 		if(res_data.code==200) {  
+			// 		if(res_data.code==200) {
 			// 			_this.item1_list = res_data.body;
-						
+
 			// 		}
 			// 	}
 			// })
-			
+
 		},
 		methods: {
 			loadmore1(){
 				let _this = this;
 				let p = _this.item1_page + 1;
-				
+
 				_this.$http.post("/red/json/openRecordList/v1",
 					{p:p},
 					{
@@ -126,16 +131,16 @@
 					}
 				).then(res=>{
 					let res_data = eval(res.data);
-					if(res_data.code==200) {  
+					if(res_data.code==200) {
 						if(res_data.body.length>0) {
 							_this.item1_page = _this.item1_page + 1;
 							_this.item1_list.concat(res_data.body);
 						}
 					}
 				})
-				
-				
-				
+
+
+
 				// uni.request({
 				// 	method:"POST",
 				// 	url: _this.$store.state.req_url + "/red/json/openRecordList/v1",
@@ -146,7 +151,7 @@
 				// 	},
 				// 	success(res) {
 				// 		let res_data = eval(res.data);
-				// 		if(res_data.code==200) {  
+				// 		if(res_data.code==200) {
 				// 			if(res_data.body.length>0) {
 				// 				_this.item1_page = _this.item1_page + 1;
 				// 				_this.item1_list.concat(res_data.body);
@@ -158,7 +163,7 @@
 			loadmore2(){
 				let _this = this;
 				let p = _this.item2_page + 1;
-				
+
 				_this.$http.post("/red/json/sendRecordList/v1",
 					{p:p},
 					{
@@ -169,16 +174,16 @@
 					}
 				).then(res=>{
 					let res_data = eval(res.data);
-					if(res_data.code==200) {  
+					if(res_data.code==200) {
 						if(res_data.body.length>0) {
 							_this.item2_page = _this.item2_page + 1;
 							_this.item2_list.concat(res_data.body);
-						} 
+						}
 					}
 				})
-				
-				
-				
+
+
+
 				// uni.request({
 				// 	method:"POST",
 				// 	url: _this.$store.state.req_url + "/red/json/sendRecordList/v1",
@@ -189,11 +194,11 @@
 				// 	},
 				// 	success(res) {
 				// 		let res_data = eval(res.data);
-				// 		if(res_data.code==200) {  
+				// 		if(res_data.code==200) {
 				// 			if(res_data.body.length>0) {
 				// 				_this.item2_page = _this.item2_page + 1;
 				// 				_this.item2_list.concat(res_data.body);
-				// 			} 
+				// 			}
 				// 		}
 				// 	}
 				// })
@@ -203,7 +208,7 @@
 				this.item_index = i;
 				console.log("id:"+_this.$store.state.user.id);
 				if(i==1) {
-					
+
 					_this.$http.post("/red/json/openRecordList/v1",
 						{p:_this.item1_page},
 						{
@@ -214,12 +219,12 @@
 						}
 					).then(res=>{
 						let res_data = eval(res.data);
-						if(res_data.code==200) {  
+						if(res_data.code==200) {
 							_this.item1_list = res_data.body;
-							
+
 						}
 					})
-					
+
 					// uni.request({
 					// 	method:"POST",
 					// 	url: _this.$store.state.req_url + "/red/json/openRecordList/v1",
@@ -230,14 +235,14 @@
 					// 	},
 					// 	success(res) {
 					// 		let res_data = eval(res.data);
-					// 		if(res_data.code==200) {  
+					// 		if(res_data.code==200) {
 					// 			_this.item1_list = res_data.body;
-								
+
 					// 		}
 					// 	}
 					// })
 				} else {
-					
+
 					_this.$http.post("/red/json/sendRecordList/v1",
 						{p:_this.item2_page},
 						{
@@ -248,13 +253,13 @@
 						}
 					).then(res=>{
 						let res_data = eval(res.data);
-						if(res_data.code==200) {  
+						if(res_data.code==200) {
 							_this.item2_list = res_data.body;
 							console.log(_this.item2_list.length);
 						}
 					})
-					
-					
+
+
 					// uni.request({
 					// 	method:"POST",
 					// 	url: _this.$store.state.req_url + "/red/json/sendRecordList/v1",
@@ -265,7 +270,7 @@
 					// 	},
 					// 	success(res) {
 					// 		let res_data = eval(res.data);
-					// 		if(res_data.code==200) {  
+					// 		if(res_data.code==200) {
 					// 			_this.item2_list = res_data.body;
 					// 			console.log(_this.item2_list.length);
 					// 		}

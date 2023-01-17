@@ -170,6 +170,11 @@ word-break:normal; " class="text-grey text-sm">{{$store.state.cur_chat_entity.de
 
 			}
 		},
+		computed:{
+			i18n () {
+				return this.$t('index')
+			}
+		},
 		onLoad(e) {
 			let _this = this;
 			this.id = e.id;

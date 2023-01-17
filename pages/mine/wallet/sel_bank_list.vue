@@ -6,12 +6,12 @@
 		<text @tap="addBank()" style="font-size: 22px;color: #fff;margin-right: 14px;font-size: 30upx;" class="lg text-gray ">添加银行卡</text></block>
 		-->
 		</cu-custom>
-		
+
 		<bank-item @click.native="selItem(item)" v-for="(item,index) in list" :key=index :bankCode="item.code"
 					:bankName="item.name"
 					:cardCode="item.cardCode"></bank-item>
-		
-		
+
+
 	</view>
 </template>
 
@@ -26,11 +26,16 @@
 				list:[]
 			}
 		},
+		computed:{
+			i18n () {
+				return this.$t('index')
+			}
+		},
 		onShow() {
 			this.list = [];
 			let _this = this;
 			let user = this.$store.state.user;
-			
+
 			_this.$http.post("/user/bank/json/getList",
 				{
 					header:{
@@ -40,7 +45,7 @@
 				}
 			).then(res=>{
 				let res_data = eval(res.data);
-				if(res_data.code==200) {  
+				if(res_data.code==200) {
 					_this.list = res_data.body;
 				} else {
 					uni.showToast({
@@ -50,8 +55,8 @@
 					});
 				}
 			})
-			
-			
+
+
 			// uni.request({
 			// 	method:"POST",
 			// 	url: _this.$store.state.req_url + "/user/bank/json/getList",
@@ -61,7 +66,7 @@
 			// 	},
 			// 	success(res) {
 			// 		let res_data = eval(res.data);
-			// 		if(res_data.code==200) {  
+			// 		if(res_data.code==200) {
 			// 			_this.list = res_data.body;
 			// 		} else {
 			// 			uni.showToast({
@@ -72,7 +77,7 @@
 			// 		}
 			// 	}
 			// })
-			
+
 		},
 		methods: {
 			selItem(item) {
@@ -80,7 +85,7 @@
 					url:"withdraw/index?bank_id="+item.id
 				})
 			}
-		} 
+		}
 	}
 </script>
 

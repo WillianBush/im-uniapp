@@ -45,6 +45,11 @@
 				qrcodeBase64: ""
 			}
 		},
+		computed:{
+			i18n () {
+				return this.$t('index')
+			}
+		},
 		onLoad(e) {
 			let _this = this;
 			let user = this.$store.state.user;
@@ -115,7 +120,7 @@
 							"x-access-client":_this.$clientType
 						}
 					}
-					
+
 				).then(res=>{
 					let res_data = eval(res.data);
 					if (res_data.code == 200) {
@@ -129,12 +134,12 @@
 								url: _this.$store.state.img_url + json.msg,
 								success: (res) => {
 									if (res.statusCode === 200) {
-										
+
 										uni.saveImageToPhotosAlbum({
 											filePath: res.tempFilePath,
 											success: function() {
 												//保存成功后删除临时图片
-												
+
 												_this.$http.post("/user/file/delB64Img",
 													{
 														path: json.msg
@@ -144,11 +149,11 @@
 															"x-access-uid": _this.$store.state.user.id
 														}
 													}
-													
+
 												).then(res=>{});
-												
+
 												// uni.request({
-												// 	data: {  
+												// 	data: {
 												// 		path: json.msg
 												// 	},
 												// 	header: {
@@ -176,9 +181,9 @@
 								}
 							})
 						}
-					
+
 					}
-					
+
 				})
 
 				// uni.request({
@@ -204,13 +209,13 @@
 				// 					url: _this.$store.state.img_url + json.msg,
 				// 					success: (res) => {
 				// 						if (res.statusCode === 200) {
-											
+
 				// 							uni.saveImageToPhotosAlbum({
 				// 								filePath: res.tempFilePath,
 				// 								success: function() {
 				// 									//保存成功后删除临时图片
 				// 									uni.request({
-				// 										data: {  
+				// 										data: {
 				// 											path: json.msg
 				// 										},
 				// 										header: {
