@@ -161,7 +161,7 @@
 		computed:{
 				i18n () {
 					return this.$t('index')
-				}
+				},
 			friend_list() {
 				let _this = this;
 				let nlist = [];
