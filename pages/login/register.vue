@@ -112,9 +112,6 @@
 		},
 		mounted() {
 			_this= this;
-
-
-
 		},
 		onLoad(e) {
 			this.registerIcon = activeConfig.registerIcon
@@ -127,7 +124,7 @@
 		},
 		onShow() {
 			let _this = this;
-
+			console.log(this.$http)
 			_this.$http.post("/sysConfig/json/getRegCfg",
 				{
 					header:{

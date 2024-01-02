@@ -40,9 +40,9 @@ const config = {
           store.commit("setSocketDomain",res_data.websocketDomains);
           resolve(config)
         },
-        fail: () => {
+        fail: (error) => {
 
-          console.log('res_N2--'+"22222")
+          console.log('res_N2--'+"22222",error)
           config.RemoteIpInited = true;
           resolve()
         }
