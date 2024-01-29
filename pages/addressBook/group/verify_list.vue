@@ -5,16 +5,21 @@
 			<block slot="content">他人申请入群</block>
 		</cu-custom>
 		<scroll-view scroll-y class="indexes" :style="[{height:'calc(100vh - 100upx)'}]" :scroll-with-animation="true"
-		 :enable-back-to-top="true">
+			:enable-back-to-top="true">
 
-			<view v-if="list.length>0" style="padding:20upx 0;" class="cu-list menu" :class="[true?'sm-border':'',false?'card-menu ':'']">
+			<view v-if="list.length>0" style="padding:20upx 0;" class="cu-list menu"
+				:class="[true?'sm-border':'',false?'card-menu ':'']">
 				<block v-for="item in list">
 					<view class="cu-item" style="    display: block;background: #fff;height: 120upx;padding-top:20upx">
-						<view class="cu-avatar round lg" :style="{'backgroundImage': 'url('+$store.state.img_url+ item.user_img +')' }" style="float:left;width: 80upx;height: 80upx;background-size: 100% 100%;"></view>
-						<text class="text-grey" style="float:left;margin-left: 10px;margin-top:15upx">{{item.user_name}}</text>
+						<view class="cu-avatar round lg"
+							:style="{'backgroundImage': 'url('+imgUrl+ item.user_img +')' }"
+							style="float:left;width: 80upx;height: 80upx;background-size: 100% 100%;"></view>
+						<text class="text-grey"
+							style="float:left;margin-left: 10px;margin-top:15upx">{{item.user_name}}</text>
 						<button @tap="verify(item.id,2)" style="float:right;margin-top:8upx;" class="cu-btn">拒绝</button>
-						<button @tap="verify(item.id,1)" style="float:right;margin-top:8upx;margin-right: 12upx;background-color: #07C160;color:#fff"
-						 class="cu-btn">通过</button>
+						<button @tap="verify(item.id,1)"
+							style="float:right;margin-top:8upx;margin-right: 12upx;background-color: #07C160;color:#fff"
+							class="cu-btn">通过</button>
 					</view>
 					<view style="clear: both;
 				padding: 16upx 20px;
@@ -32,12 +37,7 @@
 
 				</block>
 
-
-
-
-
 			</view>
-
 
 			<view v-else style="height: 100upx;text-align: center;background: #fff;
     margin-top: 20upx;
@@ -51,6 +51,15 @@
 </template>
 
 <script>
+	import {
+		verifyRoomDo,
+		verifyRoomList
+	} from '../../../common/api';
+	import {
+		mapState,
+		mapActions,
+		mapMutations
+	} from 'vuex'
 	export default {
 		data() {
 			return {
@@ -66,69 +75,47 @@
 			this.initData();
 		},
 		onReady() {},
-		computed:{
-			i18n () {
+		computed: {
+			i18n() {
 				return this.$t('index')
-			}
+			},
+			...mapState('user', [
+				'user',
+				'unDoRoomAddCount'
+			]),
+			...mapState('app', [
+				'imgUrl',
+			]),
+			...mapState('chat', [
+				'arList',
+				'arListShow',
+			])
 		},
 		methods: {
+			...mapMutations('user', [
+				'setUnDoRoomAddCount'
+			]),
 			initData() {
 				let _this = this;
-				let user = uni.getStorageSync("USER");
-
-				this.$http.post("/room/json/verify_list",
-					{
-						header:{
-							"x-access-uid": user.id,
-							"x-access-client":_this.$clientType
-						}
-					}
-
-				).then(res=>{
+				verifyRoomList().then(res => {
 					let res_data = eval(res.data);
 					if (res_data.code == 200) {
 						_this.list = res_data.body
 					}
 				});
-
-				// uni.request({
-				// 	method: "POST",
-				// 	url: _this.$store.state.req_url + "/room/json/verify_list",
-				// 	header: {
-				// 		"Content-Type": "application/x-www-form-urlencoded",
-				// 		"x-access-uid": user.id
-				// 	},
-				// 	success(res) {
-				// 		let res_data = eval(res.data);
-				// 		if (res_data.code == 200) {
-				// 			_this.list = res_data.body
-				// 		}
-				// 	}
-				// })
 			},
 			verify(_id, _t) {
 				let _this = this;
 				let user = uni.getStorageSync("USER");
-
 				uni.showModal({
 					title: '请确认',
-					 content: _t==2?'拒绝通过':'验证通过',
+					content: _t == 2 ? '拒绝通过' : '验证通过',
 					success: function(r) {
 						if (r.confirm) {
-
-							_this.$http.post("/room/json/verifyDo",
-								{
-									raid: _id,
-									t: _t
-								},
-								{
-									header:{
-										"x-access-uid": user.id,
-										"x-access-client":_this.$clientType
-									}
-								}
-
-							).then(res=>{
+							verifyRoomDo({
+								raid: _id,
+								t: _t
+							}).then(res => {
 								let res_data = eval(res.data);
 								if (res_data.code == 200) {
 									uni.showToast({
@@ -136,28 +123,25 @@
 										position: 'bottom',
 										title: "操作成功"
 									});
-									_this.$store.commit("setUnDoRoomAddCount", _this.$store.state.unDoRoomAddCount-1);
+									_this.setUnDoRoomAddCount(_this.unDoRoomAddCount - 1)
 									_this.initData();
 									if (_t == 1) {
 										//通过
-										_this.$store.state.ar_list.forEach(item => {
+										_this.arList.forEach(item => {
 											if (item.id == res_data.body.id) {
 												item.img = res_data.body.img;
-												//item.top5Hp = _this.$store.state.cur_chat_entity.top5Hp;
 												return;
 											}
 										})
-										_this.$store.state.ar_list_show.forEach(item => {
+										_this.arListShow.forEach(item => {
 											if (item.id == res_data.body.id) {
 												item.img = res_data.body.img;
-												//item.top5Hp = _this.$store.state.cur_chat_entity.top5Hp;
 												return;
 											}
 										})
 									} else if (_t == 2) {
 										//拒绝
 									}
-
 								} else {
 									uni.showToast({
 										icon: 'none',
@@ -166,57 +150,6 @@
 									});
 								}
 							});
-
-							// uni.request({
-							// 	method: "POST",
-							// 	url: _this.$store.state.req_url + "/room/json/verifyDo",
-							// 	data: {
-							// 		raid: _id,
-							// 		t: _t
-							// 	},
-							// 	header: {
-							// 		"Content-Type": "application/x-www-form-urlencoded",
-							// 		"x-access-uid": user.id
-							// 	},
-							// 	success(res) {
-							// 		let res_data = eval(res.data);
-							// 		if (res_data.code == 200) {
-							// 			uni.showToast({
-							// 				icon: 'none',
-							// 				position: 'bottom',
-							// 				title: "操作成功"
-							// 			});
-							// 			_this.$store.commit("setUnDoRoomAddCount", _this.$store.state.unDoRoomAddCount-1);
-							// 			_this.initData();
-							// 			if (_t == 1) {
-							// 				//通过
-							// 				_this.$store.state.ar_list.forEach(item => {
-							// 					if (item.id == res_data.body.id) {
-							// 						item.img = res_data.body.img;
-							// 						//item.top5Hp = _this.$store.state.cur_chat_entity.top5Hp;
-							// 						return;
-							// 					}
-							// 				})
-							// 				_this.$store.state.ar_list_show.forEach(item => {
-							// 					if (item.id == res_data.body.id) {
-							// 						item.img = res_data.body.img;
-							// 						//item.top5Hp = _this.$store.state.cur_chat_entity.top5Hp;
-							// 						return;
-							// 					}
-							// 				})
-							// 			} else if (_t == 2) {
-							// 				//拒绝
-							// 			}
-
-							// 		} else {
-							// 			uni.showToast({
-							// 				icon: 'none',
-							// 				position: 'bottom',
-							// 				title: res_data.msg
-							// 			});
-							// 		}
-							// 	}
-							// })
 						} else if (res.cancel) {
 							console.log('用户点击取消');
 						}

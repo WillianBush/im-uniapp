@@ -1,62 +1,70 @@
 <template>
 	<view>
-		<cu-custom bgColor="bg-blue"   :isBack="true" :nameToLeft="true"><block slot="backText"></block><block slot="content">新的好友</block><block slot="right">
-			<text @tap="goSearchFriend()" style="font-size: 22px;color: #fff;margin-right: 14px;font-size: 30upx;" class="lg text-gray ">添加朋友</text>
-		</block></cu-custom>
+		<cu-custom bgColor="bg-blue" :isBack="true" :nameToLeft="true">
+			<block slot="backText"></block>
+			<block slot="content">新的好友</block>
+			<block slot="right">
+				<text @tap="goSearchFriend()" style="font-size: 22px;color: #fff;margin-right: 14px;font-size: 30upx;"
+					class="lg text-gray ">添加朋友</text>
+			</block>
+		</cu-custom>
+		<scroll-view scroll-y class="indexes" :style="[{height:'calc(100vh - 100upx)'}]" :scroll-with-animation="true"
+			:enable-back-to-top="true">
 
+			<view v-if="list.length>0" style="margin-top:10px;padding:20upx 0;background: #fff;" class="cu-list menu"
+				:class="[true?'sm-border':'',false?'card-menu ':'']">
 
+				<view v-for="item in list" class="cu-item">
+					<view v-if="item.from_member_uuid==user.id" class="content">
+						<view class="cu-avatar round lg"
+							:style="{'backgroundImage': 'url('+imgUrl+ item.to_headpic +')' }"
+							style="float:left;width: 80upx;height: 80upx;background-size: 100% 100%;"></view>
+						<text class="text-grey"
+							style="float:left;margin-left: 10px;margin-top:15upx">{{item.to_name}}</text>
+						<text v-if="item.status=='wait'"
+							style="float:right;margin-top:15upx;color:#999;font-size: 26upx;">等待确认</text>
+						<text v-if="item.status=='success'"
+							style="float:right;margin-top:15upx;color:#999;font-size: 26upx;">已添加</text>
+						<text v-if="item.status=='faile'"
+							style="float:right;margin-top:15upx;color:#999;font-size: 26upx;">已拒绝</text>
+						<text v-if="item.status=='pass'"
+							style="float:right;margin-top:15upx;color:#999;font-size: 26upx;">已过期</text>
 
-		<scroll-view scroll-y class="indexes" :style="[{height:'calc(100vh - 100upx)'}]"
-		 :scroll-with-animation="true" :enable-back-to-top="true">
+					</view>
 
-		 <view v-if="list.length>0" style="margin-top:10px;padding:20upx 0;background: #fff;" class="cu-list menu"
-		  :class="[true?'sm-border':'',false?'card-menu ':'']" >
+					<view v-if="item.to_member_uuid==user.id" class="content">
+						<view class="cu-avatar round lg"
+							:style="{'backgroundImage': 'url('+imgUrl+ item.from_headpic +')' }"
+							style="float:left;width: 80upx;height: 80upx;background-size: 100% 100%;"></view>
+						<text class="text-grey"
+							style="float:left;margin-left: 10px;margin-top:15upx">{{item.from_name}}</text>
 
-		    <view v-for="item in list" class="cu-item"  >
-		    	<view v-if="item.from_member_uuid==$store.state.user.id" class="content">
-					<view class="cu-avatar round lg" :style="{'backgroundImage': 'url('+$store.state.img_url+ item.to_headpic +')' }"  style="float:left;width: 80upx;height: 80upx;background-size: 100% 100%;"></view>
-		    		<text class="text-grey" style="float:left;margin-left: 10px;margin-top:15upx">{{item.to_name}}</text>
-					<text v-if="item.status=='wait'" style="float:right;margin-top:15upx;color:#999;font-size: 26upx;" >等待确认</text>
-					<text v-if="item.status=='success'" style="float:right;margin-top:15upx;color:#999;font-size: 26upx;" >已添加</text>
-					<text v-if="item.status=='faile'" style="float:right;margin-top:15upx;color:#999;font-size: 26upx;" >已拒绝</text>
-					<text v-if="item.status=='pass'" style="float:right;margin-top:15upx;color:#999;font-size: 26upx;" >已过期</text>
-
-		    	</view>
-
-				<view v-if="item.to_member_uuid==$store.state.user.id"  class="content">
-					<view class="cu-avatar round lg" :style="{'backgroundImage': 'url('+$store.state.img_url+ item.from_headpic +')' }"  style="float:left;width: 80upx;height: 80upx;background-size: 100% 100%;"></view>
-					<text class="text-grey" style="float:left;margin-left: 10px;margin-top:15upx">{{item.from_name}}</text>
-					<!--
-					<button @tap="verify(item.id)" v-if="item.status=='wait'"  style="float:right;margin-top:8upx" class="cu-btn">通过验证</button>
-					-->
-					<button  v-if="item.status=='wait'" @tap="verify(item.id,2)" style="float:right;margin-top:8upx;" class="cu-btn">拒绝</button>
-					<button  v-if="item.status=='wait'" @tap="verify(item.id,1)" style="float:right;margin-top:8upx;margin-right: 12upx;background-color: #07C160;color:#fff"
-					 class="cu-btn">通过</button>
-					<text v-if="item.status=='success'" style="float:right;margin-top:15upx;color:#999;font-size: 26upx;" >已添加</text>
-					<text v-if="item.status=='faile'" style="float:right;margin-top:15upx;color:#999;font-size: 26upx;" >已拒绝</text>
-					<view v-if="item.status=='wait'" style="clear: both;
+						<button v-if="item.status=='wait'" @tap="verify(item.id,2)" style="float:right;margin-top:8upx;"
+							class="cu-btn">拒绝</button>
+						<button v-if="item.status=='wait'" @tap="verify(item.id,1)"
+							style="float:right;margin-top:8upx;margin-right: 12upx;background-color: #07C160;color:#fff"
+							class="cu-btn">通过</button>
+						<text v-if="item.status=='success'"
+							style="float:right;margin-top:15upx;color:#999;font-size: 26upx;">已添加</text>
+						<text v-if="item.status=='faile'"
+							style="float:right;margin-top:15upx;color:#999;font-size: 26upx;">已拒绝</text>
+						<view v-if="item.status=='wait'" style="clear: both;
 						padding: 16upx 20px;
 						color: #999;
 						font-size: 26upx;">
-						验证内容：{{item.content}}
+							验证内容：{{item.content}}
+						</view>
+						<text v-if="item.status=='pass'"
+							style="float:right;margin-top:15upx;color:#999;font-size: 26upx;">已过期</text>
 					</view>
-					<text v-if="item.status=='pass'" style="float:right;margin-top:15upx;color:#999;font-size: 26upx;" >已过期</text>
+
 				</view>
+			</view>
 
-		    </view>
-
-
-
-
-
-
-		</view>
-
-
-			<view v-else  style="height: 100upx;text-align: center;background: #fff;
+			<view v-else style="height: 100upx;text-align: center;background: #fff;
     margin-top: 20upx;
     line-height: 100upx;
-    color: #999;" >
+    color: #999;">
 				暂无好友
 			</view>
 		</scroll-view>
@@ -65,6 +73,17 @@
 </template>
 
 <script>
+	import {
+		newFriendList,
+		verifyFriend,
+		friendList
+	} from '../../../common/api';
+	import {
+		mapState,
+		mapActions,
+		mapMutations
+	} from 'vuex'
+
 	export default {
 		data() {
 			return {
@@ -72,37 +91,44 @@
 				CustomBar: this.CustomBar,
 				hidden: true,
 				list: [],
-				kw:"",
-				kw1:""
+				kw: "",
+				kw1: ""
 			};
 		},
 		onShow() {
 			this.initData();
-
-
 		},
-		computed:{
-				i18n () {
-					return this.$t('index')
-				},
+		computed: {
+			i18n() {
+				return this.$t('index')
+			},
+			...mapState('user', [
+				'user',
+				'friendList',
+				'unDoFriendAddCount'
+			]),
+			...mapState('app', [
+				'imgUrl',
+				'reqUrl'
+			]),
 			friend_list() {
 				let _this = this;
-				let nlist = this.$store.state.friend_list;
-				if(this.kw.trim()!="") {
-					nlist = nlist.filter((item)=>{
+				let nlist = this.friendList;
+				if (this.kw.trim() != "") {
+					nlist = nlist.filter((item) => {
 						let flag = false;
-						item.list = item.list.filter((item1)=>{
-							 if(item1.name.indexOf(_this.kw.trim())>=0) {
-								 flag = true;
-								 return true;
-							 }
-							 return false;
-						 })
+						item.list = item.list.filter((item1) => {
+							if (item1.name.indexOf(_this.kw.trim()) >= 0) {
+								flag = true;
+								return true;
+							}
+							return false;
+						})
 						return flag;
 					});
 				}
 				this.list = [];
-				nlist.forEach(item=>{
+				nlist.forEach(item => {
 					let i = {};
 					i.name = item.h;
 					_this.list.push(i);
@@ -112,193 +138,80 @@
 			}
 		},
 		onReady() {
-			/**
-			let that = this;
-			uni.createSelectorQuery().select('.indexBar-box').boundingClientRect(function(res) {
-				that.boxTop = res.top
-			}).exec();
-			uni.createSelectorQuery().select('.indexes').boundingClientRect(function(res) {
-				that.barTop = res.top
-			}).exec();
-			**/
+
 		},
 		methods: {
-			initData(){
+			...mapMutations('user',[
+				'setUnDoFriendAddCount',
+				'setFriendList'
+			]),
+			initData() {
 				let _this = this;
-				let user = uni.getStorageSync("USER");
-
-				this.$http.post("/user/friend/add/list/v1",
-					{
-						header:{
-							"x-access-uid":user.id,
-							"x-access-client":_this.$clientType
-						}
-					}
-
-				).then(res=>{
+				newFriendList().then(res => {
 					let res_data = eval(res.data);
-					if(res_data.code==200) {
+					if (res_data.code == 200) {
 						_this.list = res_data.body;
 						let c = 0;
-						_this.list.forEach(item=>{
-							if(item.status=="wait") {
+						_this.list.forEach(item => {
+							if (item.status == "wait") {
 								c++;
 							}
 						});
-						_this.$store.commit("setUnDoFriendAddCount",c);
+						_this.setUnDoFriendAddCount(c)
 					}
 				});
-
-
-				// uni.request({
-				// 	method:"POST",
-				// 	url: _this.$store.state.req_url + "/user/friend/add/list/v1",
-				// 	header:{
-				// 		"Content-Type":"application/x-www-form-urlencoded",
-				// 		"x-access-uid":user.id
-				// 	},
-				// 	success(res) {
-				// 		let res_data = eval(res.data);
-				// 		if(res_data.code==200) {
-				// 			_this.list = res_data.body;
-				// 			let c = 0;
-				// 			_this.list.forEach(item=>{
-				// 				if(item.status=="wait") {
-				// 					c++;
-				// 				}
-				// 			});
-				// 			_this.$store.commit("setUnDoFriendAddCount",c);
-				// 		}
-				// 	}
-				// })
 			},
-			verify(_id, _t){
+			verify(_id, _t) {
 				let _this = this;
-				let user = uni.getStorageSync("USER");
 				uni.showModal({
-				    title: '请确认',
-				    content: _t==2?'拒绝通过':'验证通过',
-				    success: function (res) {
-				        if (res.confirm) {
-
-							_this.$http.post("/user/friend/verify/v1",
-								{id:_id,t: _t},
-								{
-									header:{
-										"x-access-uid":user.id,
-										"x-access-client":_this.$clientType
-									}
-								}
-
-							).then(res=>{
+					title: '请确认',
+					content: _t == 2 ? '拒绝通过' : '验证通过',
+					success: function(res) {
+						if (res.confirm) {
+							verifyFriend({
+								id: _id,
+								t: _t
+							}).then(res => {
 								let res_data = eval(res.data);
-								if(res_data.code==200) {
+								if (res_data.code == 200) {
 									uni.showToast({
-									    icon: 'none',
+										icon: 'none',
 										position: 'bottom',
-									    title: "操作成功"
+										title: "操作成功"
 									});
-									_this.$store.commit("setUnDoFriendAddCount",_this.$store.state.unDoFriendAddCount-1);
+									_this.setUnDoFriendAddCount( _this.unDoFriendAddCount - 1)
 									_this.initData();
-									if(_t==1) {
-
-										_this.$http.post("/user/friend/list/v1",
-											{
-												header:{
-													"x-access-uid":user.id,
-													"x-access-client":_this.$clientType
-												}
-											}
-
-										).then(res=>{
+									if (_t == 1) {
+										friendList().then(res => {
 											let res_data = eval(res.data);
-											if(res_data.code==200) {
-												_this.$store.commit("setFriend_list",res_data.body);
+											if (res_data.code == 200) {
+												_this.setFriendList(res_data.body);
 											}
 										});
-
-										// uni.request({
-										// 	method:"POST",
-										// 	url: _this.$store.state.req_url + "/user/friend/list/v1",
-										// 	header:{
-										// 		"Content-Type":"application/x-www-form-urlencoded",
-										// 		"x-access-uid":user.id
-										// 	},
-										// 	success(res) {
-										// 		let res_data = eval(res.data);
-										// 		if(res_data.code==200) {
-										// 			_this.$store.commit("setFriend_list",res_data.body);
-										// 		}
-										// 	}
-										// })
 									}
 								} else {
 									uni.showToast({
-									    icon: 'none',
+										icon: 'none',
 										position: 'bottom',
-									    title: res_data.msg
+										title: res_data.msg
 									});
 								}
 							});
-
-				     //       uni.request({
-				     //       	method:"POST",
-				     //       	url: _this.$store.state.req_url + "/user/friend/verify/v1",
-				     //       	data:{id:_id,t: _t},
-				     //       	header:{
-				     //       		"Content-Type":"application/x-www-form-urlencoded",
-				     //       		"x-access-uid":user.id
-				     //       	},
-				     //       	success(res) {
-				     //       		let res_data = eval(res.data);
-				     //       		if(res_data.code==200) {
-				     //       			uni.showToast({
-				     //       			    icon: 'none',
-				     //       				position: 'bottom',
-				     //       			    title: "操作成功"
-				     //       			});
-									// _this.$store.commit("setUnDoFriendAddCount",_this.$store.state.unDoFriendAddCount-1);
-									// _this.initData();
-				     //       			if(_t==1) {
-									// 	uni.request({
-									// 		method:"POST",
-									// 		url: _this.$store.state.req_url + "/user/friend/list/v1",
-									// 		header:{
-									// 			"Content-Type":"application/x-www-form-urlencoded",
-									// 			"x-access-uid":user.id
-									// 		},
-									// 		success(res) {
-									// 			let res_data = eval(res.data);
-									// 			if(res_data.code==200) {
-									// 				_this.$store.commit("setFriend_list",res_data.body);
-									// 			}
-									// 		}
-									// 	})
-									// }
-				     //       		} else {
-				     //       			uni.showToast({
-				     //       			    icon: 'none',
-				     //       				position: 'bottom',
-				     //       			    title: res_data.msg
-				     //       			});
-				     //       		}
-				     //       	}
-				     //       })
-				        } else if (res.cancel) {
-				            console.log('用户点击取消');
-				        }
-				    }
+						} else if (res.cancel) {
+							console.log('用户点击取消');
+						}
+					}
 				});
 
 			},
-			goSearchFriend(){
+			goSearchFriend() {
 				uni.navigateTo({
-					url:"/pages/addressBook/new_friend/search"
+					url: "/pages/addressBook/new_friend/search"
 				})
 			},
 			goMyGroup() {
 				uni.navigateTo({
-					url:"/pages/addressBook/group/index"
+					url: "/pages/addressBook/group/index"
 				})
 			},
 			search() {
@@ -353,9 +266,10 @@
 </script>
 
 <style>
-	.content{
+	.content {
 		clear: both;
 	}
+
 	.indexes {
 		position: relative;
 	}
@@ -423,7 +337,8 @@
 		text-align: center;
 		font-size: 48upx;
 	}
+
 	.text-grey {
-		color:#333
+		color: #333
 	}
 </style>

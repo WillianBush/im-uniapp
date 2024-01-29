@@ -1,44 +1,48 @@
 <template>
 	<view>
-		<cu-custom bgColor="bg-blue"  :isBack="true" :nameToLeft="true"><block slot="backText"></block><block slot="content">增加朋友</block><block slot="right">
+		<cu-custom bgColor="bg-blue" :isBack="true" :nameToLeft="true">
+			<block slot="backText"></block>
+			<block slot="content">增加朋友</block>
+			<block slot="right">
 
-		</block></cu-custom>
+			</block>
+		</cu-custom>
 
-		<view class="cu-bar bg-white search" >
+		<view class="cu-bar bg-white search">
 			<view class="search-form round">
 				<text class="cuIcon-search"></text>
-				<input v-model="kw1"  type="text" placeholder="输入用户ID" confirm-type="search"></input>
+				<input v-model="kw1" type="text" placeholder="输入用户ID" confirm-type="search"></input>
 			</view>
 			<view class="action">
-				<button @tap="search()"  class="cu-btn bg-gradual-green shadow-blur round">查找</button>
+				<button @tap="search()" class="cu-btn bg-gradual-green shadow-blur round">查找</button>
 			</view>
 		</view>
 
-		<scroll-view scroll-y class="indexes" :style="[{height:'calc(100vh - 100upx)'}]"
-		 :scroll-with-animation="true" :enable-back-to-top="true">
+		<scroll-view scroll-y class="indexes" :style="[{height:'calc(100vh - 100upx)'}]" :scroll-with-animation="true"
+			:enable-back-to-top="true">
 
-		 <view v-if="list.length>0" style="margin-top:10px;" class="cu-list menu"
-		  :class="[true?'sm-border':'',false?'card-menu ':'']">
+			<view v-if="list.length>0" style="margin-top:10px;" class="cu-list menu"
+				:class="[true?'sm-border':'',false?'card-menu ':'']">
 
-		    <view v-for="item in list" class="cu-item" >
-		    	<view  class="content" >
-					<view class="cu-avatar round lg" :style="{'backgroundImage': 'url('+$store.state.img_url+ item.headpic +')' }"  style="float:left;width: 80upx;height: 80upx;background-size: 100% 100%;"></view>
-		    		<text class="text-grey" style="float:left;margin-left: 10px;margin-top:15upx">{{item.name}}</text>
-					<button @tap="goVerify(item.member_uuid)" style="float:right;margin-top:8upx" v-if="!item.status" class="cu-btn">添加好友</button>
-					<text style="float:right;margin-top:15upx;color:#999;font-size: 26upx;" v-else>{{item.status}}</text>
-		    	</view>
-		    </view>
+				<view v-for="item in list" class="cu-item">
+					<view class="content">
+						<view class="cu-avatar round lg"
+							:style="{'backgroundImage': 'url('+imgUrl+ item.headpic +')' }"
+							style="float:left;width: 80upx;height: 80upx;background-size: 100% 100%;"></view>
+						<text class="text-grey"
+							style="float:left;margin-left: 10px;margin-top:15upx">{{item.name}}</text>
+						<button @tap="goVerify(item.member_uuid)" style="float:right;margin-top:8upx"
+							v-if="!item.status" class="cu-btn">添加好友</button>
+						<text style="float:right;margin-top:15upx;color:#999;font-size: 26upx;"
+							v-else>{{item.status}}</text>
+					</view>
+				</view>
 
-
-
-
-		</view>
-
-
-			<view  v-if="kw!=''&&list.length==0"  style="height: 100upx;text-align: center;background: #fff;
+			</view>
+			<view v-if="kw!=''&&list.length==0" style="height: 100upx;text-align: center;background: #fff;
     margin-top: 20upx;
     line-height: 100upx;
-    color: #999;" >
+    color: #999;">
 				该用户不存在
 			</view>
 		</scroll-view>
@@ -47,6 +51,15 @@
 </template>
 
 <script>
+	import {
+		searchFriend
+	} from '../../../common/api';
+	import {
+		mapState,
+		mapActions,
+		mapMutations
+	} from 'vuex'
+
 	export default {
 		data() {
 			return {
@@ -54,84 +67,58 @@
 				CustomBar: this.CustomBar,
 				hidden: true,
 				list: [],
-				kw:"",
-				kw1:""
+				kw: "",
+				kw1: ""
 			};
 		},
-
-		onReady() {
-
-
-		},
-		computed:{
-			i18n () {
+		computed: {
+			i18n() {
 				return this.$t('index')
-			}
+			},
+			...mapState('user', [
+				'user',
+			]),
+			...mapState('app', [
+				'imgUrl',
+			])
 		},
 		methods: {
-			goVerify(_uuid){
+			goVerify(_uuid) {
 				uni.navigateTo({
-					url:"/pages/addressBook/new_friend/add_friend_verify?uuid="+_uuid
+					url: "/pages/addressBook/new_friend/add_friend_verify?uuid=" + _uuid
 				})
 			},
-			goSearchFriend(){
+			goSearchFriend() {
 				uni.navigateTo({
-					url:"/pages/addressBook/new_friend/search"
+					url: "/pages/addressBook/new_friend/search"
 				})
 			},
 			goMyGroup() {
 				uni.navigateTo({
-					url:"/pages/addressBook/group/index"
+					url: "/pages/addressBook/group/index"
 				})
 			},
 			search() {
 				let _this = this;
-				let user = this.$store.state.user;
-				if(this.kw1.trim()=="") {
+				let user = this.user;
+				if (this.kw1.trim() == "") {
 					uni.showToast({
-					    icon: 'none',
+						icon: 'none',
 						position: 'bottom',
-					    title: '请输入手机号/昵称/用户ID'
+						title: '请输入手机号/昵称/用户ID'
 					});
 					return;
 				}
 				this.kw = this.kw1;
 
-				this.$http.post("/user/friend/searchByTelOrName/v1",
-					{
-						txt:this.kw
-					},
-					{
-						header:{
-							"x-access-uid":user.id,
-							"x-access-client":_this.$clientType
-						}
-					}
-
-				).then(res=>{
+				searchFriend({
+					txt: this.kw
+				}).then(res => {
 					let res_data = eval(res.data);
-					if(res_data.code==200) {
+					if (res_data.code == 200) {
 						_this.list = res_data.body
 					}
 				});
-
-				// uni.request({
-				// 	method:"POST",
-				// 	url: _this.$store.state.req_url + "/user/friend/searchByTelOrName/v1",
-				// 	data:{
-				// 		txt:this.kw
-				// 	},
-				// 	header:{
-				// 		"Content-Type":"application/x-www-form-urlencoded",
-				// 		"x-access-uid":user.id
-				// 	},
-				// 	success(res) {
-				// 		let res_data = eval(res.data);
-				// 		if(res_data.code==200) {
-				// 			_this.list = res_data.body
-				// 		}
-				// 	}
-				// })
 			},
 			//获取文字信息
 			getCur(e) {
@@ -182,8 +169,6 @@
 </script>
 
 <style>
-
-
 	.indexes {
 		position: relative;
 	}
@@ -251,7 +236,8 @@
 		text-align: center;
 		font-size: 48upx;
 	}
+
 	.text-grey {
-		color:#333
+		color: #333
 	}
 </style>

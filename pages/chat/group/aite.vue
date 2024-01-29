@@ -1,33 +1,36 @@
 <template>
 	<view>
-		<cu-custom bgColor="bg-blue" :isBack="true" :nameToLeft="true"><block slot="content">选择@群成员</block>
+		<cu-custom bgColor="bg-blue" :isBack="true" :nameToLeft="true">
+			<block slot="content">选择@群成员</block>
 		</cu-custom>
-
-
-		<view class="cu-bar bg-white search" >
+		<view class="cu-bar bg-white search">
 			<view class="search-form round">
 				<text class="cuIcon-search"></text>
-				<input v-model="kw1"  type="text" placeholder="输入搜索的关键词" confirm-type="search"></input>
+				<input v-model="kw1" type="text" placeholder="输入搜索的关键词" confirm-type="search"></input>
 			</view>
 			<view class="action">
-				<button style="background: #FFAA01;"  @tap="search()"  class="cu-btn bg-gradual-green shadow-blur round">搜索</button>
+				<button style="background: #FFAA01;" @tap="search()"
+					class="cu-btn bg-gradual-green shadow-blur round">搜索</button>
 			</view>
 		</view>
-		<scroll-view  scroll-y class="indexes margin-top" :scroll-into-view="'indexes-'+ listCurID" :style="[{height:'calc(100vh - '+CustomBar+'px - 130upx)'}]"
-		 :scroll-with-animation="true" :enable-back-to-top="true">
+		<scroll-view scroll-y class="indexes margin-top" :scroll-into-view="'indexes-'+ listCurID"
+			:style="[{height:'calc(100vh - '+CustomBar+'px - 130upx)'}]" :scroll-with-animation="true"
+			:enable-back-to-top="true">
 
-		 <view class="cu-list menu-avatar no-padding" style="    margin-top: 0upx;">
-		 	<view  @tap="selMember({t:'all'})"  class="cu-item" >
-		 		<view class="content" style="left:40upx;font-weight: 800;color: #EB3941;font-size: 32upx;">
-		 			@所有人
-		 		</view>
-		 	</view>
-		 </view>
+			<view class="cu-list menu-avatar no-padding" style="    margin-top: 0upx;">
+				<view @tap="selMember({t:'all'})" class="cu-item">
+					<view class="content" style="left:40upx;font-weight: 800;color: #EB3941;font-size: 32upx;">
+						@所有人
+					</view>
+				</view>
+			</view>
 
 			<block v-for="(item,index) in member_list" :key="index">
 				<view class="cu-list menu-avatar no-padding" style="    margin-top: 0upx;">
-					<view @tap="selMember(item)"  class="cu-item" >
-						<view class="cu-avatar round lg" :style="{'backgroundImage': 'url('+$store.state.img_url+ item.headpic +')' }"  style="width: 80upx;height: 80upx;background-size: 100% 100%;"></view>
+					<view @tap="selMember(item)" class="cu-item">
+						<view class="cu-avatar round lg"
+							:style="{'backgroundImage': 'url('+imgUrl+ item.headpic +')' }"
+							style="width: 80upx;height: 80upx;background-size: 100% 100%;"></view>
 						<view class="content">
 							<view class="text-grey" style="float:left;">{{item.nickName}}</view>
 						</view>
@@ -47,6 +50,14 @@
 
 <script>
 	import neilModal from '@/components/neil-modal/neil-modal.vue';
+	import {
+		getMemberList
+	} from '../../../common/api';
+	import {
+		mapState,
+		mapActions,
+		mapMutations
+	} from 'vuex'
 	export default {
 		data() {
 			return {
@@ -56,64 +67,56 @@
 				listCurID: '',
 				list: [],
 				listCur: '',
-				kw:"",
-				kw1:"",
-				ids:[],
-				roomid:"",
-				show:false,
-				selFriendBean:{},
+				kw: "",
+				kw1: "",
+				ids: [],
+				roomid: "",
+				show: false,
+				selFriendBean: {},
 			};
 		},
 		onLoad(e) {
 			let _this = this;
-			if(e.roomid&&e.roomid!="") {
+			if (e.roomid && e.roomid != "") {
 				this.roomid = e.roomid;
-
-				_this.$http.post("/room/json/getMemberList",
-					{roomid:_this.roomid},
-					{
-						header:{
-							"x-access-uid":_this.$store.state.user.id,
-							"x-access-client":_this.$clientType
-						}
-					}
-				).then(res=>{
+				getMemberList({
+					roomid: _this.roomid
+				}).then(res => {
 					let res_data = eval(res.data);
-					if(res_data.code==200) {
+					if (res_data.code == 200) {
 						let list = res_data.body;
-						list.forEach((item1)=>{
-							let s = uni.getStorageSync(item1.id+"_NOTE");
-							if(s&&s!="") {
-								item1.nickName=s;
+						list.forEach((item1) => {
+							let s = uni.getStorageSync(item1.id + "_NOTE");
+							if (s && s != "") {
+								item1.nickName = s;
 							}
-						 })
-						 _this.list = list;
+						})
+						_this.list = list;
 
 					}
 				})
-
 			}
-
 		},
-		computed:{
-				i18n () {
-					return this.$t('index')
-				},
+		computed: {
+			i18n() {
+				return this.$t('index')
+			},
+			...mapState('app', [
+				'imgUrl',
+			]),
 			member_list() {
 				let _this = this;
 				let nlist = [];
 				nlist = this.list.concat();
-				 console.log("nlist1",nlist.length);
-				if(this.kw.trim()!="") {
-					nlist =	nlist.filter((item)=>{
-							if(item.nickName.indexOf(_this.kw.trim())>=0) {
-								 return true;
-							}
-							return false;
+				if (this.kw.trim() != "") {
+					nlist = nlist.filter((item) => {
+						if (item.nickName.indexOf(_this.kw.trim()) >= 0) {
+							return true;
+						}
+						return false;
 					});
 
 				}
-				console.log("nlist2",nlist.length);
 				return nlist;
 			}
 		},
@@ -123,7 +126,7 @@
 		},
 		methods: {
 			selMember(item) {
-				uni.$emit("aiteFn",item);
+				uni.$emit("aiteFn", item);
 				uni.navigateBack();
 			},
 			search() {
@@ -133,9 +136,9 @@
 	}
 </script>
 
-<style >
-	uni-checkbox{
-		float:right;
+<style>
+	uni-checkbox {
+		float: right;
 	}
 
 
@@ -207,7 +210,8 @@
 		text-align: center;
 		font-size: 48upx;
 	}
+
 	.text-grey {
-		color:#333
+		color: #333
 	}
 </style>

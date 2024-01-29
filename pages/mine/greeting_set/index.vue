@@ -18,9 +18,10 @@
 				<view class="content">
 					<text class="text-grey"
 						style="float:left;margin-left: 10px;line-height: 160upx;color: #8799a3;">图像1</text>
-					<view style="float:right;width:130upx;padding-top:30upx;padding-bottom:30upx;margin-left: 10upx;" @tap="ChooseImage(1)">
+					<view style="float:right;width:130upx;padding-top:30upx;padding-bottom:30upx;margin-left: 10upx;"
+						@tap="ChooseImage(1)">
 						<view class="cu-avatar radius margin-left"
-							:style="'height:100upx;width:100upx;background-image:url('+$store.state.greetingpic_1+');'">
+							:style="'height:100upx;width:100upx;background-image:url('+greetingpic_1+');'">
 						</view>
 					</view>
 				</view>
@@ -31,9 +32,10 @@
 				<view class="content">
 					<text class="text-grey"
 						style="float:left;margin-left: 10px;line-height: 160upx;color: #8799a3;">图像2</text>
-					<view style="float:right;width:130upx;padding-top:30upx;padding-bottom:30upx;margin-left: 10upx;" @tap="ChooseImage(2)">
+					<view style="float:right;width:130upx;padding-top:30upx;padding-bottom:30upx;margin-left: 10upx;"
+						@tap="ChooseImage(2)">
 						<view class="cu-avatar radius margin-left"
-							:style="'height:100upx;width:100upx;background-image:url('+$store.state.greetingpic_2+');'">
+							:style="'height:100upx;width:100upx;background-image:url('+greetingpic_2+');'">
 						</view>
 					</view>
 				</view>
@@ -44,9 +46,10 @@
 				<view class="content">
 					<text class="text-grey"
 						style="float:left;margin-left: 10px;line-height: 160upx;color: #8799a3;">图像3</text>
-					<view style="float:right;width:130upx;padding-top:30upx;padding-bottom:30upx;margin-left: 10upx;" @tap="ChooseImage(3)">
+					<view style="float:right;width:130upx;padding-top:30upx;padding-bottom:30upx;margin-left: 10upx;"
+						@tap="ChooseImage(3)">
 						<view class="cu-avatar radius margin-left"
-							:style="'height:100upx;width:100upx;background-image:url('+$store.state.greetingpic_3+');'">
+							:style="'height:100upx;width:100upx;background-image:url('+greetingpic_3+');'">
 						</view>
 					</view>
 				</view>
@@ -57,9 +60,10 @@
 				<view class="content">
 					<text class="text-grey"
 						style="float:left;margin-left: 10px;line-height: 160upx;color: #8799a3;">图像4</text>
-					<view style="float:right;width:130upx;padding-top:30upx;padding-bottom:30upx;margin-left: 10upx;" @tap="ChooseImage(4)">
+					<view style="float:right;width:130upx;padding-top:30upx;padding-bottom:30upx;margin-left: 10upx;"
+						@tap="ChooseImage(4)">
 						<view class="cu-avatar radius margin-left"
-							:style="'height:100upx;width:100upx;background-image:url('+$store.state.greetingpic_4+');'">
+							:style="'height:100upx;width:100upx;background-image:url('+greetingpic_4+');'">
 						</view>
 					</view>
 				</view>
@@ -70,9 +74,10 @@
 				<view class="content">
 					<text class="text-grey"
 						style="float:left;margin-left: 10px;line-height: 160upx;color: #8799a3;">图像5</text>
-					<view style="float:right;width:130upx;padding-top:30upx;padding-bottom:30upx;margin-left: 10upx;" @tap="ChooseImage(5)">
+					<view style="float:right;width:130upx;padding-top:30upx;padding-bottom:30upx;margin-left: 10upx;"
+						@tap="ChooseImage(5)">
 						<view class="cu-avatar radius margin-left"
-							:style="'height:100upx;width:100upx;background-image:url('+$store.state.greetingpic_5+');'">
+							:style="'height:100upx;width:100upx;background-image:url('+greetingpic_5+');'">
 						</view>
 					</view>
 				</view>
@@ -105,7 +110,17 @@
 </template>
 
 <script>
-	import { http } from '@/common/netRequest.js';
+	import {
+		http
+	} from '@/common/netRequest.js';
+	import {
+		employeeDefaultMessage
+	} from '../../../common/api';
+	import {
+		mapState,
+		mapActions,
+		mapMutations
+	} from 'vuex'
 	export default {
 		data() {
 			return {
@@ -118,68 +133,78 @@
 		mounted() {
 			let _this = this;
 		},
-		computed:{
-			i18n () {
+		computed: {
+			i18n() {
 				return this.$t('index')
-			}
+			},
+			...mapState('app', [
+				'imgUrl',
+				'reqUrl',
+				'greetingList',
+				'greetingpic_1',
+				'greetingpic_2',
+				'greetingpic_3',
+				'greetingpic_4',
+				'greetingpic_5',
+			]),
+			...mapState('user',[
+				'user'
+			]),
 		},
 		// navigate.vue页面接受参数
-		onLoad: function (option) {
+		onLoad: function(option) {
 			let _this = this;
 			const index = JSON.parse(decodeURIComponent(option.item));
 
-			if(_this.$store.state.greetingList.length > index){
-				let bean = _this.$store.state.greetingList[index];
+			if (_this.greetingList.length > index) {
+				let bean = _this.greetingList[index];
 				_this.txt_1 = bean.msg_1;
 				_this.txt_2 = bean.msg_2;
 				_this.txt_3 = bean.msg_3;
 				_this.greetingId = bean.id;
-				_this.$store.state.greetingpic_1 = bean.picture_1;
-				_this.$store.state.greetingpic_2 = bean.picture_2;
-				_this.$store.state.greetingpic_3 = bean.picture_3;
-				_this.$store.state.greetingpic_4 = bean.picture_4;
-				_this.$store.state.greetingpic_5 = bean.picture_5;
+				_this.setGreetingpic1(bean.picture_1)
+				_this.setGreetingpic2(bean.picture_2)
+				_this.setGreetingpic3(bean.picture_3)
+				_this.setGreetingpic4(bean.picture_4)
+				_this.setGreetingpic5(bean.picture_5)
 			}
 		},
 		onReady() {},
 		methods: {
+			...mapMutations('app',[
+				'setGreetingpic1',
+				'setGreetingpic2',
+				'setGreetingpic3',
+				'setGreetingpic4',
+				'setGreetingpic5',
+				]),
 			tijiao() {
 				let _this = this;
-				let user = this.$store.state.user;
-				var url = "/user/employeeDefaultMessage/json/update";
-				_this.$http.post(url,
-					{
-						id: _this.greetingId,
-						msg_1: _this.txt_1,
-						msg_2: _this.txt_2,
-						msg_3: _this.txt_3,
-						picture_1: _this.$store.state.greetingpic_1,
-						picture_2: _this.$store.state.greetingpic_2,
-						picture_3: _this.$store.state.greetingpic_3,
-						picture_4: _this.$store.state.greetingpic_4,
-						picture_5: _this.$store.state.greetingpic_5
-					},
-					{
-						header:{
-							"x-access-uid":user.id,
-							"x-access-client":_this.$clientType,
-							"Content-Type":  "application/json"
-						}
-					}
-				).then(res=>{
+				let user = this.user;
+				employeeDefaultMessage({
+					id: _this.greetingId,
+					msg_1: _this.txt_1,
+					msg_2: _this.txt_2,
+					msg_3: _this.txt_3,
+					picture_1: _this.greetingpic_1,
+					picture_2: _this.greetingpic_2,
+					picture_3: _this.greetingpic_3,
+					picture_4: _this.greetingpic_4,
+					picture_5: _this.greetingpic_5
+				}).then(res => {
 					let res_data = eval(res.data);
-					if(res_data.code==200) {
+					if (res_data.code == 200) {
 						uni.showToast({
-						    icon: 'success',
+							icon: 'success',
 							position: 'bottom',
-						    title: "修改成功"
+							title: "修改成功"
 						});
 						console.log('res', res_data);
 					} else {
 						uni.showToast({
-						    icon: 'none',
+							icon: 'none',
 							position: 'bottom',
-						    title: res_data.msg
+							title: res_data.msg
 						});
 					}
 				})
@@ -196,16 +221,16 @@
 							uni.showToast({
 								icon: 'none',
 								title: "图片大小不能高于2M"
-							});s
+							});
+							s
 							return;
 						}
 
 						var uper = uni.uploadFile({
 							// 需要上传的地址
-							url: _this.$store.state.req_url + '/user/file/uploadInvitePic',
+							url: _this.reqUrl + '/user/file/uploadInvitePic',
 							header: {
-								"x-access-uid": _this.$store.state.user.id,
-								//"Content-Type":"application/x-www-form-urlencoded"
+								["member-token"]: _this.user.userToken,
 							},
 							// filePath  需要上传的文件
 							filePath: res.tempFilePaths[0],
@@ -218,22 +243,22 @@
 										icon: 'success',
 										title: "上传成功"
 									});
-									let url = _this.$store.state.img_url + json.msg;
+									let url = _this.imgUrl + json.msg;
 									switch (index) {
 										case 1:
-											_this.$store.state.greetingpic_1 = url;
+											_this.setGreetingpic1(url)
 											break
 										case 2:
-											_this.$store.state.greetingpic_2 = url;
+											_this.setGreetingpic2(url)
 											break
 										case 3:
-											_this.$store.state.greetingpic_3 = url;
+											_this.setGreetingpic3(url)
 											break
 										case 4:
-											_this.$store.state.greetingpic_4 = url;
+											_this.setGreetingpic4(url)
 											break
 										case 5:
-											_this.$store.state.greetingpic_5 = url;
+											_this.setGreetingpic5(url)
 											break
 									}
 								} else {

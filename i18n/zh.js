@@ -23,7 +23,7 @@ module.exports = {
 	"originalnickname":"原昵称",
 	"delete":"删除",
 	"clearallchat":"双向清除聊天记录",
-	"clear chat":"清空聊天记录",
+	"clearchat":"清空聊天记录",
 	"addblacklist":"加入黑名单",
 	"stickychat":"置顶聊天",
 	"nodisurb":"消息免打扰",

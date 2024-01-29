@@ -3,7 +3,6 @@ import Vuex from "vuex"
 import mutations from "./mutations.js"
 import actions from "./actions.js"
 import getter from "./getter.js"
-import module from "./module.js"
 
 //使用vuex插件前先执行use一下
 Vue.use(Vuex)
@@ -71,9 +70,7 @@ const store = new  Vuex.Store({
 	state,
 	mutations,
 	actions,
-	getter,
-	module
-});
+	getter});
 
 
 

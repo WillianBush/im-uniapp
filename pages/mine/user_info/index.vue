@@ -1,84 +1,81 @@
 <template>
 	<view>
-		<cu-custom bgColor="bg-blue" :isBack="true" ><block slot="content">个人信息</block></cu-custom>
+		<cu-custom bgColor="bg-blue" :isBack="true">
+			<block slot="content">个人信息</block>
+		</cu-custom>
+		<view style="margin-top:10px;" class="cu-list menu"
+			:class="[true?'sm-border':'',false?'card-menu margin-top':'']">
 
 
+			<view @tap="ChooseImage" class="cu-item cu-item1" :class="true?'arrow':''"
+				style="background: #fff;display: flex;height:160upx;margin-bottom:20upx;">
+				<view class="content">
+					<text class="text-grey"
+						style="float:left;margin-left: 10px;line-height: 160upx;color: #8799a3;">头像</text>
+					<view style="float:right;width:130upx;padding-top:30upx;padding-bottom:30upx;margin-left: 10upx;">
+						<view class="cu-avatar radius margin-left"
+							:style="'height:100upx;width:100upx;background-image:url('+imgUrl+user.headpic+');'">
+						</view>
+					</view>
+				</view>
+			</view>
 
 
+			<view @tap="updName()" class="cu-item" :class="true?'arrow':''">
+				<view class="content">
+					<text class="text-grey" style="float:left;margin-left: 10px;color: #8799a3;">昵称</text>
+					<text class="text-grey text-sm"
+						style="float:right;color:#aaa;font-size: 26upx;">{{user.nickName}}</text>
+				</view>
+			</view>
 
-
-
-		 <view style="margin-top:10px;" class="cu-list menu"
-		  :class="[true?'sm-border':'',false?'card-menu margin-top':'']">
-
-
-		  <view  @tap="ChooseImage" class="cu-item cu-item1" :class="true?'arrow':''" style="background: #fff;display: flex;height:160upx;margin-bottom:20upx;" >
-		  	<view class="content">
-		  		<text class="text-grey" style="float:left;margin-left: 10px;line-height: 160upx;color: #8799a3;" >头像</text>
-		  		<view style="float:right;width:130upx;padding-top:30upx;padding-bottom:30upx;margin-left: 10upx;">
-		  			<view class="cu-avatar radius margin-left" :style="'height:100upx;width:100upx;background-image:url('+$store.state.img_url+$store.state.user.headpic+');'"></view>
-		  		</view>
-		  	</view>
-		  </view>
-
-
-		    <view @tap="updName()" class="cu-item" :class="true?'arrow':''">
-		    	<view class="content">
-		    		<text class="text-grey" style="float:left;margin-left: 10px;color: #8799a3;">昵称</text>
-					<text class="text-grey text-sm" style="float:right;color:#aaa;font-size: 26upx;">{{$store.state.user.nickName}}</text>
-		    	</view>
-		    </view>
-
-			<view @tap="updPhone" class="cu-item arrow" >
+			<view @tap="updPhone" class="cu-item arrow">
 				<view class="content">
 					<text style="float:left;margin-left: 10px;color: #8799a3;">手机号</text>
-					<text class="text-grey text-sm" style="float:right;color:#aaa;font-size: 26upx;">{{$store.state.user.telphone}}</text>
+					<text class="text-grey text-sm"
+						style="float:right;color:#aaa;font-size: 26upx;">{{user.telphone}}</text>
 				</view>
 			</view>
 
-			<view @tap="" class="cu-item" >
+			<view @tap="" class="cu-item">
 				<view class="content">
 					<text class="text-grey" style="float:left;margin-left: 10px;color: #8799a3;">账号</text>
-					<text class="text-grey text-sm" style="float:right;color:#aaa;margin-right:60upx;font-size: 26upx;">{{$store.state.user.username}}</text>
+					<text class="text-grey text-sm"
+						style="float:right;color:#aaa;margin-right:60upx;font-size: 26upx;">{{user.username}}</text>
 				</view>
 			</view>
 
-			<view @tap="goQrcode"  class="cu-item arrow" >
+			<view @tap="goQrcode" class="cu-item arrow">
 				<view class="content">
-					<text class="text-grey" style="color: #8799a3;" >二维码名片</text>
-					<text style="font-size:22px;float: right; position: relative; right: -20upx;" class="lg text-gray cuIcon-qr_code"><span></span></text>
+					<text class="text-grey" style="color: #8799a3;">二维码名片</text>
+					<text style="font-size:22px;float: right; position: relative; right: -20upx;"
+						class="lg text-gray cuIcon-qr_code"><span></span></text>
 				</view>
 			</view>
 
-			<!--
-			<view @tap="" class="cu-item" :class="true?'arrow':''">
+			<view @tap="updSex()" class="cu-item" :class="true?'arrow':''">
 				<view class="content">
-					<text class="text-grey" style="float:left;margin-left: 10px;">个性签名</text>
+					<text style="float:left;margin-left: 10px;color: #8799a3;">性别</text>
+					<text class="text-grey text-sm" style="float:right;color:#aaa;font-size: 26upx;">{{user.sex}}</text>
 				</view>
 			</view>
-			-->
-			<view @tap="updSex()"  class="cu-item" :class="true?'arrow':''">
+
+			<view @tap="modifyPwd()" class="cu-item" :class="true?'arrow':''">
 				<view class="content">
-					<text  style="float:left;margin-left: 10px;color: #8799a3;">性别</text>
-					<text class="text-grey text-sm" style="float:right;color:#aaa;font-size: 26upx;">{{$store.state.user.sex}}</text>
+					<text style="float:left;margin-left: 10px;color: #8799a3;">修改密码</text>
 				</view>
 			</view>
 
-			 <view @tap="modifyPwd()"  class="cu-item" :class="true?'arrow':''">
-				 <view class="content">
-					 <text  style="float:left;margin-left: 10px;color: #8799a3;">修改密码</text>
-				 </view>
-			 </view>
-
-		 </view>
-
-
-
+		</view>
 	</view>
 </template>
 
 <script>
-
+	import {
+		mapState,
+		mapActions,
+		mapMutations
+	} from 'vuex'
 	export default {
 		data() {
 			return {
@@ -87,63 +84,47 @@
 		},
 		mounted() {
 			let _this = this;
-
-			// uni.request({
-			// 	method:"POST",
-			// 	url: _this.$store.state.req_url + "/user/friend/list/v1",
-			// 	header:{
-			// 		"Content-Type":"application/x-www-form-urlencoded",
-			// 		"x-access-uid":user.id
-			// 	},
-			// 	success(res) {
-			// 		let res_data = eval(res.data);
-			// 		if(res_data.code==200) {
-			// 			_this.$store.commit("setFriend_list",res_data.body);
-			// 			res_data.body.forEach(item=>{
-			// 				let i = {};
-			// 				i.name = item.h;
-			// 				_this.list.push(i);
-			// 			})
-
-			// 		}
-			// 	}
-			// })
-
-
 		},
-		onReady() {
-
-
-		},
-		computed:{
-			i18n () {
+		onReady() {},
+		computed: {
+			i18n() {
 				return this.$t('index')
-			}
+			},
+			...mapState('app', [
+				'imgUrl',
+				'reqUrl',
+			]),
+			...mapState('user', [
+				'user'
+			]),
 		},
 		methods: {
+			...mapMutations('user',[
+				'updateUserHeadpic'
+			]),
 			goQrcode() {
 				uni.navigateTo({
-					url:"/pages/mine/user_info/qrCode"
+					url: "/pages/mine/user_info/qrCode"
 				})
 			},
-			updSex(){
+			updSex() {
 				uni.navigateTo({
-					url:"/pages/mine/user_info/upd_sex"
+					url: "/pages/mine/user_info/upd_sex"
 				})
 			},
-			modifyPwd(){
+			modifyPwd() {
 				uni.navigateTo({
-					url:"/pages/login/forget"
+					url: "/pages/login/forget"
 				})
 			},
-			updName(){
+			updName() {
 				uni.navigateTo({
-					url:"/pages/mine/user_info/upd_name"
+					url: "/pages/mine/user_info/upd_name"
 				})
 			},
-			updPhone(){
+			updPhone() {
 				uni.navigateTo({
-					url:"/pages/mine/user_info/upd_phone"
+					url: "/pages/mine/user_info/upd_phone"
 				})
 			},
 			ChooseImage() {
@@ -154,41 +135,40 @@
 					sourceType: ['album'], //从相册选择
 					success: (res) => {
 						//大于2M。则报
-						if(res.tempFiles[0].size>1024*2048) {
+						if (res.tempFiles[0].size > 1024 * 2048) {
 							uni.showToast({
-							   icon: 'none',
-							   title: "图片大小不能高于2M"
+								icon: 'none',
+								title: "图片大小不能高于2M"
 							});
 							return;
 						}
 
-						 var uper = uni.uploadFile({
-							 // 需要上传的地址
-							 url:_this.$store.state.req_url+ '/user/file/uploadHeadpic',
-							 header:{
-								"x-access-uid":_this.$store.state.user.id,
-								//"Content-Type":"application/x-www-form-urlencoded"
-							 },
-							 // filePath  需要上传的文件
-							 filePath: res.tempFilePaths[0],
-							 name: 'file',
-							 success(res1) {
-								 let json = eval("("+res1.data+")");
-								 // 显示上传信息
-								 if(json.code==200) {
-									 uni.showToast({
-									    icon: 'success',
-									    title: "上传成功"
-									 });
-									 _this.$store.state.user.headpic = json.msg
-								 } else {
-									 uni.showToast({
-									    icon: 'none',
-									    title: json.msg
-									 });
-								 }
-							 }
-						 });
+						var uper = uni.uploadFile({
+							// 需要上传的地址
+							url: _this.reqUrl + '/user/file/uploadHeadpic',
+							header: {
+								["member-token"]: _this.user.userToken,
+							},
+							// filePath  需要上传的文件
+							filePath: res.tempFilePaths[0],
+							name: 'file',
+							success(res1) {
+								let json = eval("(" + res1.data + ")");
+								// 显示上传信息
+								if (json.code == 200) {
+									uni.showToast({
+										icon: 'success',
+										title: "上传成功"
+									});
+									_this.updateUserHeadpic(json.msg)
+								} else {
+									uni.showToast({
+										icon: 'none',
+										title: json.msg
+									});
+								}
+							}
+						});
 					}
 				});
 			}
@@ -198,7 +178,7 @@
 
 <style scoped>
 	.cu-item1:after {
-		border-bottom:0px!important;
+		border-bottom: 0px !important;
 	}
 
 	.indexes {
@@ -268,7 +248,8 @@
 		text-align: center;
 		font-size: 48upx;
 	}
+
 	.text-grey {
-		color:#333
+		color: #333
 	}
 </style>

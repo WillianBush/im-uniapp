@@ -1,15 +1,21 @@
 <template>
 	<view>
-		<cu-custom bgColor="bg-blue"  :isBack="true" :nameToLeft="true"><block slot="backText"></block><block slot="content">群组成员({{totalAllListCount}}人)</block><block slot="right">
-		</block></cu-custom>
+		<cu-custom bgColor="bg-blue" :isBack="true" :nameToLeft="true">
+			<block slot="backText"></block>
+			<block slot="content">群组成员({{totalAllListCount}}人)</block>
+			<block slot="right">
+			</block>
+		</cu-custom>
 
 		<view class="cu-bar bg-white search">
 			<view class="search-form round">
 				<text class="cuIcon-search"></text>
-				<input @input="search_list($event.target.value)" type="text" placeholder="搜索" confirm-type="search"></input>
+				<input @input="search_list($event.target.value)" type="text" placeholder="搜索"
+					confirm-type="search"></input>
 			</view>
 
-			<button @tap="searchP(inputText)" style="background: #FFAA01;"   class="cu-btn bg-gradual-green shadow-blur round">搜索</button>
+			<button @tap="searchP(inputText)" style="background: #FFAA01;"
+				class="cu-btn bg-gradual-green shadow-blur round">搜索</button>
 		</view>
 
 		<view style="background: #fff;width: 96%;
@@ -18,18 +24,21 @@
 
 			<view style=" width:100%;height: 100%">
 				<scroll-view style="height: calc(100vh - 100upx - 100upx  - 50upx);" :scroll-y="true" class="page"
-							 :refresher-enabled="true"
-							 :refresher-triggered="refresherTriggered"
-							 @refresherrefresh="refresherrefresh"
-							 @refresherrestore="refresherrestore"
-							 @refresherabort="refresherabort"
-							 @scrolltolower="scrollLower">
-						<view @tap="goUserDetail(item.id)" style="display: inline-block;width:20%;margin-bottom:20upx;text-align: center;margin-top: 10px" v-for="(item,index) in totalList">
-							<view  class="cu-avatar round" :style="'height:100upx;width:100upx;background-image:url('+$store.state.img_url+item.headpic+');'"></view>
-							<view    style="margin:auto auto;color: #999;font-size:24upx;text-align: center;margin-top:8upx;overflow: hidden;height:68upx;width:100upx;word-wrap: break-word; word-break: normal">{{item.nickName}}</view>
-
+					:refresher-enabled="true" :refresher-triggered="refresherTriggered"
+					@refresherrefresh="refresherrefresh" @refresherrestore="refresherrestore"
+					@refresherabort="refresherabort" @scrolltolower="scrollLower">
+					<view @tap="goUserDetail(item.id)"
+						style="display: inline-block;width:20%;margin-bottom:20upx;text-align: center;margin-top: 10px"
+						v-for="(item,index) in totalList">
+						<view class="cu-avatar round"
+							:style="'height:100upx;width:100upx;background-image:url('+imgUrl+item.headpic+');'">
 						</view>
-					</scroll-view>
+						<view
+							style="margin:auto auto;color: #999;font-size:24upx;text-align: center;margin-top:8upx;overflow: hidden;height:68upx;width:100upx;word-wrap: break-word; word-break: normal">
+							{{item.nickName}}</view>
+
+					</view>
+				</scroll-view>
 			</view>
 
 
@@ -40,89 +49,70 @@
 </template>
 
 <script>
+	import {
+		mapState,
+		mapActions,
+		mapMutations
+	} from 'vuex'
+	import {
+		getMember,
+		getMemberListPage,
+		getRoomCfg
+	} from '../../../common/api';
 	export default {
 		data() {
 			return {
 				refresherTriggered: false, //下拉刷新状态
 				_refresherTriggered: false, //防止异步操作
-				id:"",
+				id: "",
 				totalAllListCount: 0,
-				totalList:[],
+				totalList: [],
 				numPag: 1, // 第一页
 				allPageNum: 10000, // 总页数
-				pageSize: 50,//50条
+				pageSize: 50, //50条
 				status: "more", // 加载状态
 				timer: null,
-				inputText:""
+				inputText: ""
 
 			}
 		},
-		computed:{
-			i18n () {
+		computed: {
+			i18n() {
 				return this.$t('index')
-			}
+			},
+			...mapState('chat', [
+				'curChatEntity',
+			]),
+			...mapState('user', [
+				'user',
+			]),
+			...mapState('app', [
+				'imgUrl',
+			]),
 		},
 		onLoad() {
-			let _this = this;
-			let user = uni.getStorageSync("USER");
-
-
-			/*_this.$http.post("/room/json/getMemberList",
-				{roomid:_this.$store.state.cur_chat_entity.id},
-				{
-					header:{
-						"x-access-uid":_this.$store.state.user.id,
-						"x-access-client":_this.$clientType
-					}
-				}
-			).then(res=>{
-				let res_data = eval(res.data);
-				if(res_data.code==200) {
-					_this.list = res_data.body;
-					_this.list.forEach((item1)=>{
-						let s = uni.getStorageSync(item1.id+"_NOTE");
-						if(s&&s!="") {
-							item1.nickName=s;
-						}
-					 })
-					 _this.list1 = _this.list;
-				}
-			})*/
-
-			this.loadStoreData(this.pageSize,this.numPag);
+			this.loadStoreData(this.pageSize, this.numPag);
 
 		},
 		methods: {
-			searchP(a){
-				if(typeof a !== 'undefined' && a != null && a !== ''){
+			searchP(a) {
+				if (typeof a !== 'undefined' && a != null && a !== '') {
 					let _this = this;
-					_this.$http.post("/room/json/getMember",
-							{
-								roomid:_this.$store.state.cur_chat_entity.id,
-								nickname:a,
-							},
-							{
-								header:{
-									"x-access-uid":_this.$store.state.user.id,
-									"x-access-client":_this.$clientType
-								}
-							}
-					).then(res=>{
+					getMember({
+						roomid: _this.curChatEntity.id,
+						nickname: a,
+					}).then(res => {
 						let res_data = eval(res.data);
-						if(res_data.code==200) {
+						if (res_data.code == 200) {
 							let item = res_data.body;
-							if(item){
-								// let s = uni.getStorageSync(item.id+"_NOTE");
-								// if(s&&s!="") {
-								// 	item.nickName=s;
-								// }
+							if (item) {
 								_this.totalList = [];
 								_this.totalList = item;
-								console.log("搜索进来啦2",_this.totalList)
+								console.log("搜索进来啦2", _this.totalList)
 							}
 						}
 					})
-				}else {
+				} else {
 					this.refresherrefresh();
 				}
 			},
@@ -138,9 +128,9 @@
 					_this.refresherTriggered = true;
 				}
 				//清空
-				this.totalList=[];
+				this.totalList = [];
 				this.numPag = 1;
-				this.loadStoreData(this.pageSize,this.numPag);
+				this.loadStoreData(this.pageSize, this.numPag);
 			},
 			refresherrestore() {
 				console.log('自定义下拉刷新被复位');
@@ -164,37 +154,29 @@
 				}
 				this.numPag = this.numPag + 1;
 				this.timer = setTimeout(() => {
-					console.log('我滚动到底部了2'+this.numPag)
-					this.loadStoreData(this.pageSize,this.numPag);
+					console.log('我滚动到底部了2' + this.numPag)
+					this.loadStoreData(this.pageSize, this.numPag);
 
 				}, 1000);
 			},
-			closeRefresh(){
+			closeRefresh() {
 				this.refresherTriggered = false; //触发onRestore，并关闭刷新图标
 				this._refresherTriggered = false;
 			},
-			loadStoreData(pSize,pNumber) {
+			loadStoreData(pSize, pNumber) {
 				let _this = this;
-				_this.$http.post("/room/json/getMemberListPage",
-						{
-							roomid:_this.$store.state.cur_chat_entity.id,
-							pageSize:pSize,//数量
-							pageNumber:pNumber//页数
-						},
-						{
-							header:{
-								"x-access-uid":_this.$store.state.user.id,
-								"x-access-client":_this.$clientType
-							}
-						}
-				).then(res=>{
+				getMemberListPage({
+					roomid: _this.curChatEntity.id,
+					pageSize: pSize, //数量
+					pageNumber: pNumber //页数
+				}).then(res => {
 					let res_data = eval(res.data);
-					if(res_data.code==200) {
-						let list = res_data.body.list;
-						list.forEach((item1)=>{
-							let s = uni.getStorageSync(item1.id+"_NOTE");
-							if(s&&s!="") {
-								item1.nickName=s;
+					if (res_data.code == 200) {
+						let list = res_data.body.records;
+						list.forEach((item1) => {
+							let s = uni.getStorageSync(item1.id + "_NOTE");
+							if (s && s != "") {
+								item1.nickName = s;
 							}
 						})
 						_this.totalAllListCount = res_data.body.totalCount;
@@ -203,84 +185,35 @@
 					_this.closeRefresh();
 				})
 			},
-			search_list(a){
+			search_list(a) {
 				this.inputText = a;
 			},
-			goUserDetail(_id){
+			goUserDetail(_id) {
 				let _this = this;
-
-				_this.$http.post("/sysConfig/json/getRoomCfg",
-					{
-						header:{
-							//"x-access-uid":_this.$store.state.user.id
-							"x-access-client":_this.$clientType
-						}
-					}
-				).then(res=>{
+				getRoomCfg().then(res => {
 					let res_data = eval(res.data);
-					if(res_data.code==200) {
+					if (res_data.code == 200) {
 						let flag = false;
 						//哪个角色可查看群成员详细 0全体 1仅群主 2群主和群管理员
-						if(res_data.body.lookGroupMemberDetailForRole==0) {
+						if (res_data.body.lookGroupMemberDetailForRole == 0) {
 							flag = true;
-						} else if(res_data.body.lookGroupMemberDetailForRole==1) {
-							if(_this.$store.state.user.id==_this.$store.state.cur_chat_entity.owner_UUID) {
+						} else if (res_data.body.lookGroupMemberDetailForRole == 1) {
+							if (_this.user.id == _this.curChatEntity.owner_UUID) {
 								flag = true;
 							}
-						}  else if(res_data.body.lookGroupMemberDetailForRole==2) {
-							if(_this.$store.state.user.id==_this.$store.state.cur_chat_entity.owner_UUID
-								||_this.$store.state.cur_chat_entity.memberMgr_ids.indexOf(_this.$store.state.user.id)>=0) {
+						} else if (res_data.body.lookGroupMemberDetailForRole == 2) {
+							if (_this.user.id == _this.curChatEntity.owner_UUID ||
+								_this.curChatEntity.memberMgr_ids.indexOf(_this.user.id) >= 0) {
 								flag = true;
 							}
 						}
-
-
-						if(flag) {
+						if (flag) {
 							uni.navigateTo({
-								url:"/pages/chat/user_detail?id="+_id+"&room_id="+_this.$store.state.cur_chat_entity.id
+								url: "/pages/chat/user_detail?id=" + _id + "&room_id=" + _this.curChatEntity.id
 							})
 						}
-
 					}
 				})
-
-
-				// uni.request({
-				// 	method:"POST",
-				// 	url: this.$store.state.req_url + "/sysConfig/json/getRoomCfg",
-				// 	header:{
-				// 		"Content-Type":"application/x-www-form-urlencoded"
-				// 	},
-				// 	success(res) {
-				// 		let res_data = eval(res.data);
-				// 		if(res_data.code==200) {
-				// 			let flag = false;
-				// 			//哪个角色可查看群成员详细 0全体 1仅群主 2群主和群管理员
-				// 			if(res_data.body.lookGroupMemberDetailForRole==0) {
-				// 				flag = true;
-				// 			} else if(res_data.body.lookGroupMemberDetailForRole==1) {
-				// 				if(_this.$store.state.user.id==_this.$store.state.cur_chat_entity.owner_UUID) {
-				// 					flag = true;
-				// 				}
-				// 			}  else if(res_data.body.lookGroupMemberDetailForRole==2) {
-				// 				if(_this.$store.state.user.id==_this.$store.state.cur_chat_entity.owner_UUID
-				// 					||_this.$store.state.cur_chat_entity.memberMgr_ids.indexOf(_this.$store.state.user.id)>=0) {
-				// 					flag = true;
-				// 				}
-				// 			}
-
-
-				// 			if(flag) {
-				// 				uni.navigateTo({
-				// 					url:"/pages/chat/user_detail?id="+_id+"&room_id="+_this.$store.state.cur_chat_entity.id
-				// 				})
-				// 			}
-
-				// 		}
-				// 	}
-				// })
-
-
 			}
 		}
 	}

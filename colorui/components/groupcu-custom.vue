@@ -1,15 +1,19 @@
 <template>
 	<view>
 		<view class="cu-custom" :style="[{height:CustomBar + 'px'}]">
-			<view class="group-cu-bar" :style="style" style="background-color: #eee; width: 100%; color:#000;border-bottom: 1px solid #bdbaba;"  :class="[bgImage!=''?'none-bg text-white bg-img':'',bgColor]">
-				<view class="action" style="display: inline;margin-left:1%;"  v-if="isBack">
+			<view class="group-cu-bar" :style="style"
+				style="background-color: #eee; width: 100%; color:#000;border-bottom: 1px solid #bdbaba;"
+				:class="[bgImage!=''?'none-bg text-white bg-img':'',bgColor]">
+				<view class="action" style="display: inline;margin-left:1%;" v-if="isBack">
 					<!-- <text class="cuIcon-back"></text> -->
 					<slot name="backText"></slot>
 				</view>
-				<view v-if="!nameToLeft" class="content group-content" style="text-align: left;margin-left: 65px" :style="[{top:StatusBar + 'px'}]">
+				<view v-if="!nameToLeft" class="content group-content" style="text-align: left;margin-left: 65px"
+					:style="[{top:StatusBar + 'px'}]">
 					<slot name="content"></slot>
 				</view>
-				<view v-else style="width: calc(100% - 140upx);text-align: left;margin-left: 5px"  class="content group-content" :style="[{top:StatusBar + 'px'}]">
+				<view v-else style="width: calc(100% - 140upx);text-align: left;margin-left: 5px"
+					class="content group-content" :style="[{top:StatusBar + 'px'}]">
 					<slot name="content"></slot>
 				</view>
 				<slot name="right"></slot>
@@ -19,6 +23,11 @@
 </template>
 
 <script>
+	import {
+		mapState,
+		mapActions,
+		mapMutations
+	} from 'vuex'
 	export default {
 		data() {
 			return {
@@ -29,8 +38,8 @@
 		name: 'cu-custom',
 		computed: {
 			style() {
-				var StatusBar= this.StatusBar;
-				var CustomBar= this.CustomBar;
+				var StatusBar = this.StatusBar;
+				var CustomBar = this.CustomBar;
 				var bgImage = this.bgImage;
 				var style = `height:${CustomBar}px;padding-top:${StatusBar}px;`;
 				if (this.bgImage) {
@@ -64,26 +73,30 @@
 				type: String,
 				default: ''
 			},
-			backUrl:{
+			backUrl: {
 				type: String,
 				default: ''
 			}
 		},
 		methods: {
+			...mapMutations('chat', [
+				'setCurChatMsgList',
+				'setCurChatEntity',
+			]),
 			BackPage() {
 				console.log(this.backUrl);
-				if(this.backUrl=="") {
+				if (this.backUrl == "") {
 					uni.navigateBack({
 						delta: 1
 					});
 				} else {
-					if(this.backUrl.indexOf("pages/index/index")>=0) {
+					if (this.backUrl.indexOf("pages/index/index") >= 0) {
 						//清除当前窗口数据
-						this.$store.commit("setCur_chat_entity",null);
-						this.$store.commit("setCur_chat_msg_list",[]);
+						this.setCurChatEntity(null);
+						this.setCurChatMsgList([]);
 					}
 					uni.navigateTo({
-						url:this.backUrl
+						url: this.backUrl
 					})
 				}
 

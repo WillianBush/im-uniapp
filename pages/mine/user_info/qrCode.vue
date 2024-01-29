@@ -4,7 +4,8 @@
 			<block slot="backText"></block>
 			<block slot="content">我的二维码名片</block>
 			<block slot="right">
-				<uni-text @tap="share" style="font-size: 22px;color: #fff;margin-right: 14px;" class="lg text-gray cuIcon-more"><span></span></uni-text>
+				<uni-text @tap="share" style="font-size: 22px;color: #fff;margin-right: 14px;"
+					class="lg text-gray cuIcon-more"><span></span></uni-text>
 			</block>
 		</cu-custom>
 
@@ -12,14 +13,16 @@
 		margin: auto auto;
 		margin-top: 15px;width:90%;height:920upx;border-radius: 12px;background-color: #fff;padding-top: 40upx;;">
 			<view style="width: 90%;height:120upx;margin:auto auto;">
-				<text class="cu-avatar round lg" :style="'width:110upx;height:110upx;float: left;background-image: url('+$store.state.img_url+$store.state.user.headpic+');'"></text>
+				<text class="cu-avatar round lg"
+					:style="'width:110upx;height:110upx;float: left;background-image: url('+imgUrl+user.headpic+');'"></text>
 				<text style="    float: left;
     font-size: 36upx;
     line-height: 120upx;
     margin-left: 28upx;
-    font-weight: 600;">{{$store.state.user.nickName}}</text>
+    font-weight: 600;">{{user.nickName}}</text>
 			</view>
-			<view style="width: 84%;margin:auto auto;margin-top:40upx;" :style="'height:'+code_height+'px'" class="qrcode_view">
+			<view style="width: 84%;margin:auto auto;margin-top:40upx;" :style="'height:'+code_height+'px'"
+				class="qrcode_view">
 				<canvas class="canvas-hide" canvas-id="qrcode1" style="width: 100%;height:100%" />
 				<image style="width: 100%;height: 100%;" :src="qrcodeBase64"></image>
 			</view>
@@ -28,15 +31,21 @@
     color: #777;
     font-size: 26upx;">可点击右上角进行二维码分享或保存</view>
 		</view>
-
-
-
 	</view>
 	</view>
 </template>
 
 <script>
 	import uQRCode from '@/common/uqrcode.js'
+	import {
+		delB64Img,
+		uploadB64Img
+	} from '../../../common/api';
+	import {
+		mapState,
+		mapActions,
+		mapMutations
+	} from 'vuex'
 	export default {
 		data() {
 			return {
@@ -44,14 +53,21 @@
 				qrcodeBase64: ""
 			}
 		},
-		computed:{
-			i18n () {
+		computed: {
+			i18n() {
 				return this.$t('index')
-			}
+			},
+			...mapState('app', [
+				'imgUrl',
+				'reqUrl',
+			]),
+			...mapState('user', [
+				'user'
+			]),
 		},
 		onLoad(e) {
 			let _this = this;
-			let user = this.$store.state.user;
+			let user = this.user;
 			this.$nextTick(() => {
 				let code_width = 0;
 				uni.getSystemInfo({
@@ -64,7 +80,7 @@
 							uQRCode.make({
 								canvasId: 'qrcode1',
 								componentInstance: _this,
-								text: '#member#'+_this.$store.state.user.id+"#",
+								text: '#member#' + _this.user.id + "#",
 								size: code_width,
 								margin: 0,
 								backgroundColor: '#ffffff',
@@ -82,6 +98,7 @@
 			})
 		},
 		methods: {
+			...mapMutations('chat', ['setTempBase64']),
 			share() {
 				let _this = this;
 				let user = uni.getStorageSync("USER");
@@ -90,9 +107,9 @@
 					success: function(res) {
 						//console.log('选中了第' + (res.tapIndex + 1) + '个按钮');
 						if (res.tapIndex == 0) {
-							_this.$store.state.temp.base64 = _this.qrcodeBase64;
+							_this.setTempBase64(_this.qrcodeBase64);
 							uni.navigateTo({
-								url:"/pages/mine/user_info/qrcodeSendToFriend"
+								url: "/pages/mine/user_info/qrcodeSendToFriend"
 							})
 						} else if (res.tapIndex == 1) {
 							_this.saveEwm();
@@ -108,17 +125,9 @@
 				let _this = this;
 				//_this.saveImgToAlbum(_this.qrcodeBase64);
 
-				_this.$http.post("/user/file/uploadB64Img",
-					{
-						base64: _this.qrcodeBase64
-					},
-					{
-						header:{
-							"x-access-uid": _this.$store.state.user.id,
-							"x-access-client":_this.$clientType
-						}
-					}
-				).then(res=>{
+				uploadB64Img({
+					base64: _this.qrcodeBase64
+				}).then(res => {
 					let res_data = eval(res.data);
 					if (res_data.code == 200) {
 						//console.log(res.data);
@@ -128,7 +137,7 @@
 						if (json.code == 200) {
 							//console.log( _this.$store.state.img_url +  json.msg);
 							uni.downloadFile({
-								url: _this.$store.state.img_url + json.msg,
+								url: _this.imgUrl + json.msg,
 								success: (res) => {
 									if (res.statusCode === 200) {
 
@@ -137,32 +146,12 @@
 											success: function() {
 												//保存成功后删除临时图片
 
-												_this.$http.post("/user/file/delB64Img",
-													{
-														path: json.msg
-													},
-													{
-														header:{
-															"x-access-uid": _this.$store.state.user.id
-														}
-													}
-												).then(res=>{
+												delB64Img({
+													path: json.msg
+												}).then(res => {
 
 												})
 
-												// uni.request({
-												// 	data: {
-												// 		path: json.msg
-												// 	},
-												// 	header: {
-												// 		"Content-Type": "application/x-www-form-urlencoded",
-												// 		"x-access-uid": _this.$store.state.user.id
-												// 	},
-												// 	method: "POST",
-												// 	url: _this.$store.state.req_url + "/user/file/delB64Img",
-												// 	success(res) {}
-												// })
-												//console.log(res.tempFilePath);
 												uni.showToast({
 													title: "保存成功",
 													icon: "none"
@@ -182,72 +171,6 @@
 
 					}
 				})
-
-				// uni.request({
-				// 	method: "POST",
-				// 	url: _this.$store.state.req_url + "/user/file/uploadB64Img",
-				// 	data: {
-				// 		base64: _this.qrcodeBase64
-				// 	},
-				// 	header: {
-				// 		"Content-Type": "application/x-www-form-urlencoded",
-				// 		"x-access-uid": _this.$store.state.user.id
-				// 	},
-				// 	success(res) {
-				// 		let res_data = eval(res.data);
-				// 		if (res_data.code == 200) {
-				// 			//console.log(res.data);
-				// 			let json = eval(res.data);
-				// 			// 显示上传信息
-				// 			//console.log(json.msg);
-				// 			if (json.code == 200) {
-				// 				//console.log( _this.$store.state.img_url +  json.msg);
-				// 				uni.downloadFile({
-				// 					url: _this.$store.state.img_url + json.msg,
-				// 					success: (res) => {
-				// 						if (res.statusCode === 200) {
-
-				// 							uni.saveImageToPhotosAlbum({
-				// 								filePath: res.tempFilePath,
-				// 								success: function() {
-				// 									//保存成功后删除临时图片
-				// 									uni.request({
-				// 										data: {
-				// 											path: json.msg
-				// 										},
-				// 										header: {
-				// 											"Content-Type": "application/x-www-form-urlencoded",
-				// 											"x-access-uid": _this.$store.state.user.id
-				// 										},
-				// 										method: "POST",
-				// 										url: _this.$store.state.req_url + "/user/file/delB64Img",
-				// 										success(res) {}
-				// 									})
-				// 									//console.log(res.tempFilePath);
-				// 									uni.showToast({
-				// 										title: "保存成功",
-				// 										icon: "none"
-				// 									});
-				// 								},
-				// 								fail: function() {
-				// 									uni.showToast({
-				// 										title: "保存失败， 请稍后重试",
-				// 										icon: "none"
-				// 									});
-				// 								}
-				// 							});
-				// 						}
-				// 					}
-				// 				})
-				// 			}
-
-				// 		}
-				// 	}
-				// })
-
-
-
-
 			}
 
 		},

@@ -35,6 +35,7 @@
 </template>
 
 <script>
+import { kefuList } from '../../../common/api';
 	export default {
 		data() {
 			return {
@@ -48,14 +49,7 @@
 			let _this = this;
 			let user = uni.getStorageSync("USER");
 			
-			_this.$http.post("/kefu/list",
-				{
-					header:{
-						"x-access-uid":_this.$store.state.user.id,
-						"x-access-client":_this.$clientType
-					}
-				}
-			).then(res=>{
+			kefuList().then(res=>{
 				let res_data = eval(res.data);
 				if(res_data.code==200) {  
 					_this.list = res_data.body;

@@ -63,6 +63,11 @@
   import uniPopup from "./uni-popup/uni-popup.vue";
   import uniPopupMessage from "./uni-popup/uni-popup-message.vue";
   import uniPopupDialog from "./uni-popup/uni-popup-dialog.vue";
+  import {
+  	mapState,
+  	mapActions,
+  	mapMutations
+  } from 'vuex'
   export default {
     data: () => ({
       deviceType:"",
@@ -92,6 +97,9 @@
       uniPopupDialog,
     },
     methods: {
+		...mapActions('app',[
+			'checkAppVersion'
+		]),
       // 取消更新
       hiddenUppop() {
         this.$refs.popup.close();
@@ -148,29 +156,15 @@
                   //    break;
           }
           let timestamp = new Date().getTime()
-          _this.$http.get("/user/appversion/json/getAppVersion?site_id=1&device_type="+_appType+"&app_id="+_appName+"&_t="+timestamp,
-                  {
-                    header:{
-                      "x-access-uid":_this.$store.state.user.id,
-                      "x-access-client":_this.$clientType
-                    }
-                  }
-          ).then(res=>{
-            let res_data = eval(res.data);
-
-            console.log("tttttt" , res_data);
-            if(res_data.code==200) {
-              console.log("_this.$store.state.SYS_VERSION:"+_this.$store.state.SYS_VERSION);
-              console.log("res_data.body.version:"+res_data.body.version);
-              if(_this.$store.state.SYS_VERSION != res_data.body.version) {
-                  _this.forceUpdate = res_data.body.force_update == "1";
-                  _this.versionStr = res_data.body.version;
-                  _this.downloadUrl = res_data.body.down_url;
-                  _this.details = res_data.body.descript;
-                  _this.$refs.popup.open();
-              }
-            }
-          })
+		  _this.checkAppVersion().then(res=>{
+			  if(res.vUpdate){
+				  _this.forceUpdate = res.body.force_update == "1";
+				  _this.versionStr = res.body.version;
+				  _this.downloadUrl = res.body.down_url;
+				  _this.details = res.body.descript;
+				  _this.$refs.popup.open();
+			  }
+		  })
         // #endif
 
         // 这是5+sdk调用原生的toast,如果你不喜欢上面的,那么把上面注释或者删除,使用这个,
@@ -254,37 +248,6 @@
 
 
               _this.installApplications(res.tempFilePath);
-
-
-              // 把当前app保存下载
-              /*uni.saveFile({
-                tempFilePath: res.tempFilePath,
-                success: (resp) => {
-
-                  console.log("download99999993---====","保存成功")
-                  // 保存成功
-                  var savedFilePath = resp.savedFilePath;
-                  console.log("download99999997---====",resp)
-
-                  // 安装
-                  this.installApplications({
-                    filePath: savedFilePath,
-                    success: (res) => {
-                      console.log("download99999995---====","安装成功")
-                      console.info(res);
-                    },
-                    error: (err) => {
-                      console.log("download99999996---====","安装失败")
-                      console.log(err);
-                    },
-                  });
-                },
-                fail: (err) => {
-                  console.log("download99999994---====","保存失败")
-                  // 保存失败
-                  console.error(err);
-                },
-              });*/
             }
           },
         });

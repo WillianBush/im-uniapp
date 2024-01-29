@@ -1,9 +1,13 @@
 import Vue from 'vue'
 import Vuex from 'vuex'
+import { MessageType } from '../const/MessageType';
 import store from "../store"//使用vuex对状态进行管理
+import Log from './Log';
 Vue.use(Vuex);
 let wsOpenDo = true;
 let heartCheck;
+let wsUrl = "ws://180.178.43.202:9998/ws"
+const TAG = "WebSocket"
 export default new Vuex.Store({
 	state: {
 		socketTask: null,
@@ -14,7 +18,8 @@ export default new Vuex.Store({
 	},
 	mutations: {
 		WEBSOCKET_INIT(state) {
-			let id = store.state.user.id
+			let id = store.state.user.memberId
+			Log.d(TAG,"WEBSOCKET_INIT",store.state.user)
 			//用户退出后，不让重新连
 			if(typeof id == 'undefined' || id == null || id == ''){
 				return;
@@ -34,15 +39,17 @@ export default new Vuex.Store({
 			}
 			var i = Math.floor((Math.random() * store.state.req_url.length));
 			let websocket_id = uni.getStorageSync("websocket_id");
+			// store.state.socket_url[i]
+			// let ws = wsUrl+"?app_uuid="+store.state.app_uuid+"&session_id="+websocket_id
 			state.socketTask = uni.connectSocket({
-				url:store.state.socket_url[i]+"/chat/socket"+"?app_uuid="+store.state.app_uuid+"&session_id="+websocket_id,
+				url:wsUrl,
 				// 【非常重要】必须确保你的服务器是成功的,如果是手机测试千万别使用ws://127.0.0.1:9099【特别容易犯的错误】
 				success(data) {
 					state.lock = false;
-					console.log("成功");
+					Log.d("=====ws链接成功");	
 				},
-				fail() {
-					console.log("失败1");
+				fail(e) {
+					Log.e("=====ws链接失败",e);
 				}
 			});
 
@@ -51,7 +58,6 @@ export default new Vuex.Store({
 				st:null,
 				si:null,
 				start:function() {
-					console.log('ws success1')
 					var self = this;
 					this.si = setTimeout(()=>{
 						let user = uni.getStorageSync("USER");
@@ -59,11 +65,11 @@ export default new Vuex.Store({
 							// _this.dispatch('WEBSOCKET_SEND', "{body:'"+user.id+"',CMD:'PING'}");
 
 							let v = user.id+"#"+Vue.prototype.$clientType+"#"+store.state.app_uuid;
-							_this.dispatch('WEBSOCKET_SEND', "{body:'"+v+"',CMD:'PING'}");
+							// _this.dispatch('WEBSOCKET_SEND', "{body:'"+v+"',CMD:'PING'}");
 
 						} else {
 
-							_this.dispatch('WEBSOCKET_SEND', "{body:'',CMD:'PING'}");
+							// _this.dispatch('WEBSOCKET_SEND', "{body:'',CMD:'PING'}");
 							// uni.navigateTo({
 							// 	url:"/pages/login/login"
 							// });
@@ -72,9 +78,9 @@ export default new Vuex.Store({
 						self.st = setTimeout(()=>{
 							//_this.state.socketTask.close();     //如果onclose会执行reconnect，我们执行ws.close()就行了.如果直接执行reconnect 会触发onclose导致重连两次
 							if(!state.is_open_socket) {
-								heartCheck.reset();
+								// heartCheck.reset();
 								//if(store.state.appShow) {
-								_this.dispatch('WEBSOCKET_INIT');
+								// _this.dispatch('WEBSOCKET_INIT');
 								//}
 							}
 						}, 20000)
@@ -97,26 +103,35 @@ export default new Vuex.Store({
 			//所以些初始化最好放到connectSocket
 			// 消息的发送和接收必须在正常连接打开中,才能发送或接收【否则会失败】
 			state.socketTask.onOpen((res) => {
+				let ping = {
+					memberId:id,
+					CMD:"PING"
+				}
+				_this.dispatch('WEBSOCKET_SEND', JSON.stringify(ping));
+				Log.d(TAG,"=====onOpen...！");
 				// if(!wsOpenDo) return;
 				wsOpenDo = false;
 				state.is_open_socket = true;
 				state.continueCloseCount = 0;
 
-				console.log("WebSocket连接正常打开中...！");
-
 				let user = uni.getStorageSync("USER");
 				if(user) {
-
-
 					let v = {
 						user_id:user.id,
 						app_uuid:store.state.app_uuid,
 					}
 					v.client = Vue.prototype.$clientType;
 					v.user_id = v.user_id+"#"+v.client;
-					_this.dispatch('WEBSOCKET_SEND', "{body:'"+JSON.stringify(v)+"',CMD:'PUTSESSION'}");
-
-
+					let obj = {
+						body:v,
+						CMD:"PUT_SESSION"
+					}
+					_this.dispatch('WEBSOCKET_SEND', JSON.stringify(obj));
+					let login = {
+						memberId:id,
+						CMD:"LOGIN"
+					}
+					_this.dispatch('WEBSOCKET_SEND', JSON.stringify(login));
 					let WAIT_SEND_MSG_LIST = [];
 					let WAIT_SEND_MSG = uni.getStorageSync("WAIT_SEND_MSG");
 
@@ -134,14 +149,14 @@ export default new Vuex.Store({
 							// ).then(res=>{})
 
 							console.log("消息重新发送ing....."+item);
-							_this.dispatch('WEBSOCKET_SEND', item);
+							// _this.dispatch('WEBSOCKET_SEND', item);
 						})
 					}
 					uni.removeStorageSync("WAIT_SEND_MSG");
 					store.commit("setWAIT_SEND_MSG","");
 
 
-
+					//#ifndef H5
 					// 保存clientid到服务器，最好延迟一下获取信息否则有时会获取不到
 					setTimeout(function(){
 						const clientInfo = plus.push.getClientInfo()
@@ -153,12 +168,13 @@ export default new Vuex.Store({
 							userRole: '用户角色',
 							uid:user.id
 						}
-						_this.dispatch("WEBSOCKET_SEND", "{body:'"+JSON.stringify(pushUser)+"',CMD:'APP_PUSH_USER_INFO'}");
+						// _this.dispatch("WEBSOCKET_SEND", "{body:'"+JSON.stringify(pushUser)+"',CMD:'APP_PUSH_USER_INFO'}");
 					},1000);
+					//#endif
 				}
 
 				if(heartCheck) {
-					heartCheck.start();
+					// heartCheck.start();
 				}
 
 				setTimeout(()=>{
@@ -167,74 +183,44 @@ export default new Vuex.Store({
 			});
 
 			state.socketTask.onClose((res) => {
+				console.log("======onClose:",res);
 				state.is_open_socket = false;
 				state.continueCloseCount = state.continueCloseCount + 1;
 				heartCheck.reset();
 				console.log("WebSocket重新连接1！");
-				_this.dispatch('WEBSOCKET_INIT');
+				// _this.dispatch('WEBSOCKET_INIT');
 			});
 
 			state.socketTask.onError((res) => {
+				console.log("======onError:",res);
+				
 				state.is_open_socket = false;
 				state.continueCloseCount = state.continueCloseCount + 1;
 				heartCheck.reset();
 				console.log("WebSocket重新连接2！");
-				_this.dispatch('WEBSOCKET_INIT');
+				// _this.dispatch('WEBSOCKET_INIT');
 			});
-
-
-			// state.socketTask.onError((res) => {
-			// 	state.is_open_socket = false;
-			// 	heartCheck.reset();
-			// 	if(store.state.appShow) {
-			// 		console.log("WebSocket重新连接2！");
-			// 		//_this.dispatch('WEBSOCKET_INIT');
-			// 		let cur_si = setInterval(()=>{
-			// 			if(!state.is_open_socket) {
-			// 				console.log("1111");
-			// 				state.socketTask = uni.connectSocket({
-			// 					url: ws_url,
-			// 					// 【非常重要】必须确保你的服务器是成功的,如果是手机测试千万别使用ws://127.0.0.1:9099【特别容易犯的错误】
-			// 					success(data) {
-			// 						console.log("websocket连接成功");
-			// 					},
-			// 					fail() {
-			// 						console.log("失败1");
-			// 					}
-			// 				});
-			// 				// 消息的发送和接收必须在正常连接打开中,才能发送或接收【否则会失败】
-			// 				// state.socketTask.onOpen((res) => {
-			// 				// 	console.log("WebSocket连接正常打开中...！");
-			// 				// 	state.is_open_socket = true;
-			// 				// 	let user = uni.getStorageSync("USER");
-			// 				// 	if(user) {
-			// 				// 		_this.dispatch('WEBSOCKET_SEND', "{body:'"+user.id+"',CMD:'PUTSESSION'}");
-			// 				// 	}
-			// 				// });
-			// 			} else {
-			// 				clearTimeout(cur_si);
-			// 			}
-			// 		},1000)
-			// 	}
-			// });
 
 
 
 			state.socketTask.onMessage((res_ws) => {
-				heartCheck.reset();
-				heartCheck.start();
+				// heartCheck.reset();
+				// heartCheck.start();
 				let user = uni.getStorageSync("USER");
 				let data = JSON.parse(res_ws.data);
-				console.log(data.body);
+				console.log("======onMessage:",data.body);
 				console.log(data.CMD);
-
-				if(data.CMD=="LOGIN") {
+				if(data.CMD == MessageType.PING){
+					console.log("PING------>",data);
+					
+				}
+				if(data.CMD== MessageType.LOGIN) {
 					console.log("来登陆了------>");
 					uni.redirectTo({
 						url:"../login/login"
 					})
-				} else if(data.CMD=="CLEAR_CHAT_MSG_DATA_MGR") {
-
+				} else if(data.CMD==MessageType.CLEAR_CHAT_MSG_DATA_MGR) {
+					//清空聊天记录,一般用于后台执行清空命令后，通知客户端清空操作/
 					let arrs = data.body.split("#");
 					arrs.forEach(chat_id=>{
 						if(chat_id&&chat_id!="") {
@@ -262,7 +248,8 @@ export default new Vuex.Store({
 
 
 
-				} else if(data.CMD=="CLEARCHATMSG") {
+				} else if(data.CMD==MessageType.CLEAR_CHAT_MSG) {
+					//清空聊天记录
 					console.log(data.body);
 					store.state.chatMessageMap.delete(user.id+"#"+data.body);
 					uni.removeStorageSync(user.id+"#"+data.body+'_CHAT_MESSAGE');
@@ -271,7 +258,7 @@ export default new Vuex.Store({
 					}
 					uni.removeStorageSync(user.id+"#"+data.body+'_CHAT_MESSAGE_LASTCONTENT');
 					uni.removeStorageSync(user.id+"#"+data.body+'_CHAT_MESSAGE_UNREAD');
-				} else if(data.CMD=="AITE") {
+				} else if(data.CMD==MessageType.AT) {
 					//@群成员
 					let arrs = data.body.split("#");
 					let fromuid = arrs[0];
@@ -320,7 +307,7 @@ export default new Vuex.Store({
 						}
 					});
 
-				} else if(data.CMD=="OTHER_LOGIN") {
+				} else if(data.CMD==MessageType.OTHER_LOGIN) {
 					//别处冲线
 
 					// uni.request({
@@ -352,7 +339,7 @@ export default new Vuex.Store({
 					// 		}
 					// 	}
 					// })
-				} else if(data.CMD=="CHAT_MSG_READED") {
+				} else if(data.CMD==MessageType.CHAT_MSG_READ_ED) {//信息已读/
 					console.log("CHAT_MSG_READED-CHAT_MSG_READED");
 					console.log(data.body);
 					let str = uni.getStorageSync(user.id+"#"+data.body+'_CHAT_MESSAGE');
@@ -399,7 +386,7 @@ export default new Vuex.Store({
 					}
 
 
-				} else if(data.CMD=="FRIEND_ONLINE") {
+				} else if(data.CMD==MessageType.FRIEND_ONLINE) {//朋友上线/
 					let list = store.state.ar_list;
 					list.forEach(item=>{
 						if(item.id==data.body) {
@@ -413,7 +400,7 @@ export default new Vuex.Store({
 					}
 
 
-				} else if(data.CMD=="FRIEND_OFFLINE") {
+				} else if(data.CMD==MessageType.FRIEND_OFFLINE) {//朋友下线
 					let list = store.state.ar_list;
 					list.forEach(item=>{
 						if(item.id==data.body) {
@@ -426,386 +413,15 @@ export default new Vuex.Store({
 						store.state.cur_chat_entity.online = 0;
 						store.commit("setCur_chat_entity",store.state.cur_chat_entity);
 					}
-				} else if(data.CMD=="SHOW_INPUT_ING") {
+				} else if(data.CMD==MessageType.SHOW_INPUT_ING) {
 					store.state.temp.input_ing = true;
-				} else if(data.CMD=="HIDE_INPUT_ING") {
+				} else if(data.CMD==MessageType.HIDE_INPUT_ING) {
 					store.state.temp.input_ing = false;
-				} else if(data.CMD=="LOGIN_USER_MODIFY_HEADPIC") {
+				} else if(data.CMD==MessageType.LOGIN_USER_MODIFY_HEAD_PIC) {//登陆用户头像被修改/
 					store.commit("updateUserHeadpic",data.body);
-				} else if(data.CMD=="LOGIN_USER_MODIFY_NN") {
+				} else if(data.CMD==MessageType.LOGIN_USER_MODIFY_NN) {//登陆用户昵称被修改/
 					store.commit("updateUsername",data.body);
-				} else if(data.CMD=="CHAT_RED_BROADCAST_UPDATE") {
-					console.log("----------------------->111111111111");
-					if(store.state.temp.bean&&store.state.temp.bean.redUUID==data.body.redUUID&&data.body.opener_ids.indexOf(store.state.user.id)<0&&data.body.status==1) {
-						console.log("----------------------->2222222222222222");
-						store.state.temp.bean.descri1 = "手慢了，红包抢完了";
-					}
-					console.log("----------------------->333333333333333");
-					let str = uni.getStorageSync(user.id+"#"+data.body.chatid+'_CHAT_MESSAGE');
-					if(str&&str!="") {
-						console.log("----------------------->444444444444");
-						var arrs = JSON.parse(str);
-						let narrs = [];
-						for(let i=arrs.length-1;i>=0;i--) {
-							if(arrs[i].type == "USER_RED"&&data.body.redUUID==arrs[i].bean.redUUID) {
-								console.log("----------------------->444444444444_1");
-								arrs[i].bean = data.body;
-								break;
-							}
-						}
-						uni.setStorageSync(user.id+"#"+data.body.chatid+'_CHAT_MESSAGE',JSON.stringify(arrs));
-					}
-					console.log("----------------------->55555555555555555");
-					if(store.state.chatMessageMap.has(user.id+"#"+data.body.chatid)) {
-						console.log("----------------------->666666666666666666666");
-						let list = store.state.chatMessageMap.get(user.id+"#"+data.body.chatid);
-						try{
-							list.forEach(item=>{
-								if(item.bean&&item.bean.redUUID&&item.bean.redUUID == data.body.redUUID) {
-									console.log("----------------------->666666666666666666666_1");
-									item.bean.status = data.body.status;
-									item.bean.openedNumber = data.body.openedNumber;
-									item.bean.openedMoney = data.body.openedMoney;
-									throw Error();
-								}
-							});
-						}catch(e){}
-
-					}
-					console.log("----------------------->6666666666666666666");
-					//表明正在打开中的
-					if(store.state.temp.bean&&store.state.temp.bean.redUUID==data.body.redUUID) {
-						console.log("----------------------->777777777777777777");
-						store.state.temp.bean = data.body;
-					}
-					if(store.state.cur_chat_entity&&data.body.chatid==store.state.cur_chat_entity.id) {
-						try{
-							store.state.cur_chat_msg_list.forEach(item=>{
-								if(item.bean&&item.bean.uuid&&item.bean.uuid == data.body.redUUID) {
-									console.log(data.body.openedNumber+"更新了--》:"+data.body.status);
-									item.bean.status = data.body.status;
-									item.bean.openedNumber = data.body.openedNumber;
-									item.bean.openedMoney = data.body.openedMoney;
-									throw Error();
-								}
-							});
-						}catch(e){}
-
-					}
-
-					// str = uni.getStorageSync(user.id+'_RED_MUST_UPDATE_MAP');
-					// if(str&&str!="") {
-					// 	var arrs = JSON.parse(str);
-					// 	arrs[data.body.redUUID] = data.body;
-					// 	uni.setStorageSync(user.id+'_RED_MUST_UPDATE_MAP',JSON.stringify(arrs));
-					// } else {
-					// 	uni.setStorageSync(user.id+'_RED_MUST_UPDATE_MAP',JSON.stringify(data.body));
-					// }
-
-					console.log("----------------------->10000000000");
-					let temp = data.body;
-					data.body = [temp];
-					//arUpdate(data);
-					console.log("----------------------->pppppppppppppppp");
-				} else if(data.CMD=="CHAT_TRANSFER_FINISHED") {
-					console.log("完成了");
-					if(store.state.temp.bean&&store.state.temp.bean.utid&&store.state.temp.bean.utid==data.body.txt) {
-						store.state.temp.bean.status = 1;
-					}
-
-
-					let str = uni.getStorageSync(user.id+"#"+data.body.chatid+'_CHAT_MESSAGE');
-					if(str&&str!="") {
-						var arrs = JSON.parse(str);
-						let narrs = [];
-						for(let i=arrs.length-1;i>=0;i--) {
-							if(arrs[i].type == "USER_TRANSFER"&&data.body.txt==arrs[i].bean.utid) {
-								arrs[i].bean.status = 1;
-								break;
-							}
-						}
-						uni.setStorageSync(user.id+"#"+data.body.chatid+'_CHAT_MESSAGE',JSON.stringify(arrs));
-					}
-					if(store.state.chatMessageMap.has(user.id+"#"+data.body.chatid)) {
-						let list = store.state.chatMessageMap.get(user.id+"#"+data.body.chatid);
-						try {
-							list.forEach(item=>{
-								if( item.type == "USER_TRANSFER"&& item.bean.utid == data.body.txt) {
-									item.bean.status =1;
-									throw Error();
-								}
-							});
-						}catch(e){}
-
-					}
-					try {
-						store.state.cur_chat_msg_list.forEach(item=>{
-							if(item.type == "USER_TRANSFER"&& item.bean.utid == data.body.txt) {
-								item.bean.status = 1;
-								throw Error();
-							}
-						});
-					}catch(e){}
-
-
-					str = uni.getStorageSync(user.id+'_TRANSFER_MUST_UPDATE_MAP');
-					if(str&&str!="") {
-						var arrs = JSON.parse(str);
-						if(arrs[data.body.txt]) {
-							arrs[data.body.txt].status = 1;
-						}
-
-					}
-				} else if(data.CMD=="CHAT_TRANSFER_EXPIRED") {
-					console.log("过期了");
-					uni.$emit("scrollTopFn");
-					if(store.state.temp.bean&&store.state.temp.bean.utid&&store.state.temp.bean.utid==data.body.txt) {
-						store.state.temp.bean.status = 2;
-					}
-
-
-					let str = uni.getStorageSync(user.id+"#"+data.body.chatid+'_CHAT_MESSAGE');
-					if(str&&str!="") {
-						var arrs = JSON.parse(str);
-						let narrs = [];
-						for(let i=arrs.length-1;i>=0;i--) {
-							if(arrs[i].type == "USER_TRANSFER"&&data.body.txt==arrs[i].bean.utid) {
-								arrs[i].bean.status = 2;
-								break;
-							}
-						}
-						uni.setStorageSync(user.id+"#"+data.body.chatid+'_CHAT_MESSAGE',JSON.stringify(arrs));
-					}
-					if(store.state.chatMessageMap.has(user.id+"#"+data.body.chatid)) {
-						let list = store.state.chatMessageMap.get(user.id+"#"+data.body.chatid);
-						try {
-							list.forEach(item=>{
-								if( item.type == "USER_TRANSFER"&& item.bean.utid == data.body.txt) {
-									item.bean.status = 2;
-									throw Error();
-								}
-							});
-						}catch(e){}
-
-					}
-					try {
-						store.state.cur_chat_msg_list.forEach(item=>{
-							if(item.type == "USER_TRANSFER"&& item.bean.utid == data.body.txt) {
-								item.bean.status = 2;
-								throw Error();
-							}
-						});
-					}catch(e){}
-
-
-					str = uni.getStorageSync(user.id+'_TRANSFER_MUST_UPDATE_MAP');
-					if(str&&str!="") {
-						var arrs = JSON.parse(str);
-						arrs[data.body.txt].status = 2;
-					}
-
-
-
-				} else if(data.CMD=="CHAT_RED_EXPIRED") {
-					console.log("过期了");
-					uni.$emit("scrollTopFn");
-					console.log("过期了");
-					if(store.state.temp.bean&&store.state.temp.bean.redUUID&&store.state.temp.bean.redUUID==data.body.txt) {
-						store.state.temp.bean.status = 2;
-					}
-					let str = uni.getStorageSync(user.id+"#"+data.body.chatid+'_CHAT_MESSAGE');
-					if(str&&str!="") {
-						var arrs = JSON.parse(str);
-						let narrs = [];
-						for(let i=arrs.length-1;i>=0;i--) {
-							if(arrs[i].type == "USER_RED"&&data.body.txt==arrs[i].bean.redUUID) {
-								arrs[i].bean.status = 2;
-								break;
-							}
-						}
-						uni.setStorageSync(user.id+"#"+data.body.chatid+'_CHAT_MESSAGE',JSON.stringify(arrs));
-					}
-					if(store.state.chatMessageMap.has(user.id+"#"+data.body.chatid)) {
-						let list = store.state.chatMessageMap.get(user.id+"#"+data.body.chatid);
-						try {
-							list.forEach(item=>{
-								if( item.type == "USER_RED"&& item.bean.redUUID == data.body.txt) {
-									item.bean.status = 2;
-									throw Error();
-								}
-							});
-						}catch(e){}
-
-					}
-					try {
-						store.state.cur_chat_msg_list.forEach(item=>{
-							if(item.type == "USER_RED"&& item.bean.redUUID == data.body.txt) {
-								item.bean.status = 2;
-								throw Error();
-							}
-						});
-					}catch(e){}
-
-
-
-				} else if(data.CMD=="RED_DETAIL_LIST") {
-					store.state.temp.open_hongbao_list = data.body.details;
-					uni.$emit('show_red_detail');
-				} else if(data.CMD=="TRANSFER_MUST_UPDATE_FOR_MEMBER") {
-
-					for(let key in data.body) {
-						let chatid = "";
-						if(user.id==data.body[key].fromUid) {
-							chatid = data.body[key].toUid;
-						} else {
-							chatid = data.body[key].fromUid;
-						}
-
-						let str = uni.getStorageSync(user.id+"#"+chatid+'_CHAT_MESSAGE');
-						if(str&&str!="") {
-							var arrs = JSON.parse(str);
-							for(let i=arrs.length-1;i>=0;i--) {
-								if(arrs[i].type == "USER_TRANSFER"&&arrs[i].bean.utid==data.body[key].utid) {
-									arrs[i].bean.status = data.body[key].status;
-									break;
-								}
-							}
-							uni.setStorageSync(user.id+"#"+chatid+'_CHAT_MESSAGE',JSON.stringify(arrs));
-						}
-						if(store.state.chatMessageMap.has(user.id+"#"+chatid)) {
-							let list = store.state.chatMessageMap.get(user.id+"#"+chatid);
-							try{
-								list.forEach(item=>{
-									if(item.bean.utid == data.body[key].utid) {
-										item.bean.status = data.body[key].status;
-										throw Error();
-									}
-								});
-							}catch(e){}
-						}
-					}
-
-					let str = uni.getStorageSync(user.id+'_TRANSFER_MUST_UPDATE_MAP');
-					if(str&&str!="") {
-						var arrs = JSON.parse(str);
-						for(let key in data.body) {
-							// console.log("属性：" + key + ",值："+ data.body[key]);
-							arrs[key] = data.body[key];
-						}
-						uni.setStorageSync(user.id+'_TRANSFER_MUST_UPDATE_MAP',JSON.stringify(arrs));
-					} else {
-						uni.setStorageSync(user.id+'_TRANSFER_MUST_UPDATE_MAP',JSON.stringify(data.body));
-					}
-
-				} else if(data.CMD=="RED_MUST_UPDATE_FOR_MEMBER") {
-
-					let str = uni.getStorageSync(user.id+'_RED_MUST_UPDATE_MAP');
-					if(str&&str!="") {
-						var arrs = JSON.parse(str);
-						for(let key in data.body) {
-							// console.log("属性：" + key + ",值："+ data.body[key]);
-							arrs[key] = data.body[key];
-						}
-						uni.setStorageSync(user.id+'_RED_MUST_UPDATE_MAP',JSON.stringify(arrs));
-					} else {
-						uni.setStorageSync(user.id+'_RED_MUST_UPDATE_MAP',JSON.stringify(data.body));
-					}
-
-					// str = uni.getStorageSync(user.id+'_RED_MUST_UPDATE_MAP');
-					// if(str&&str!="") {
-					// 	var arrs = JSON.parse(str);
-					// 	console.log("99999999999999999999999999");
-					// 	console.log(arrs);
-					// }
-
-				} else if(data.CMD=="CHAT_RED_OPEN_SUCCESS") {
-					setTimeout(()=>{
-						console.log("CHAT_RED_OPEN_SUCCESS");
-						console.log(data.body.red);
-						store.state.temp.open_hongbao_list = data.body.details;
-						store.state.temp.bean = data.body.red;
-						let str = uni.getStorageSync(user.id+"#"+data.body.red.chatid+'_CHAT_MESSAGE');
-						if(str&&str!="") {
-							var arrs = JSON.parse(str);
-							for(let i=arrs.length-1;i>=0;i--) {
-								if(arrs[i].type == "USER_RED"&&data.body.red.redUUID==arrs[i].bean.redUUID) {
-									arrs[i].bean = data.body.red;
-									break;
-								}
-							}
-							uni.setStorageSync(user.id+"#"+data.body.red.chatid+'_CHAT_MESSAGE',JSON.stringify(arrs));
-						}
-						console.log(user.id+"#"+data.body.red.chatid);
-						if(store.state.chatMessageMap.has(user.id+"#"+data.body.red.chatid)) {
-							console.log("进来了");
-							let list = store.state.chatMessageMap.get(user.id+"#"+data.body.red.chatid);
-							try{
-								list.forEach(item=>{
-									if(item.bean&&item.bean.redUUID&&item.bean.redUUID == data.body.red.redUUID) {
-										console.log("进来了1");
-										item.bean = data.body.red;
-										throw Error();
-									}
-								});
-							}catch(e){}
-
-						}
-						try{
-							store.state.cur_chat_msg_list.forEach(item=>{
-								if(item.bean&&item.bean.redUUID&&item.bean.redUUID == data.body.red.redUUID) {
-									item.bean = data.body.red;
-									throw Error();
-								}
-							});
-						}catch(e){}
-
-
-
-						uni.$emit('show_red_detail');
-					},800)
-
-
-				} else if(data.CMD=="GROUP_CHAT_RED_OPEN_END") {
-					store.state.temp.bean = data.body;
-					let str = uni.getStorageSync(user.id+"#"+data.body.chatid+'_CHAT_MESSAGE');
-					if(str&&str!="") {
-						var arrs = JSON.parse(str);
-						let narrs = [];
-						for(let i=arrs.length-1;i>=0;i--) {
-							if(arrs[i].type == "USER_RED"&&data.body.uuid==arrs[i].bean.uuid) {
-								arrs[i].bean = data.body;
-								break;
-							}
-						}
-						uni.setStorageSync(user.id+"#"+data.body.chatid+'_CHAT_MESSAGE',JSON.stringify(arrs));
-					}
-					if(store.state.chatMessageMap.has(user.id+"#"+data.body.chatid)) {
-						let list = store.state.chatMessageMap.get(user.id+"#"+data.body.chatid);
-						try {
-							list.forEach(item=>{
-								if(item.uuid&&item.uuid == data.body.uuid) {
-									item.status = data.body.status;
-									throw Error();
-								}
-							});
-						}catch(e){}
-
-					}
-					try {
-						store.state.cur_chat_msg_list.forEach(item=>{
-							if(item.uuid&&item.uuid == data.body.uuid) {
-								item.status = data.body.status;
-								throw Error();
-							}
-						});
-					}catch(e){}
-
-
-					//这个命令场景是。点击的时候。能打开。但是打开过程中。被其他玩家抢完了或过期
-					//myConstants.curScope.red = data.body;//更新当前打开红包的状态
-					//myConstants.curScope.redMap[data.body.redUUID].status = myConstants.curScope.red.status;//更新此群红包MAP中某红包的某个属性,不要整个BEAN覆盖否则会失去引用无法达到更新目的
-				} else if(data.CMD=="LOGIN_USER_STATUS_BAN") {
-
+				}  else if(data.CMD==MessageType.LOGIN_USER_STATUS_BAN) {//登陆用户状态被修改为禁止/
 					// uni.request({
 					// 	method:"POST",
 					// 	url:store.state.req_url + "/user/json/logout",
@@ -829,32 +445,7 @@ export default new Vuex.Store({
 					// 		}
 					// 	}
 					// })
-				} else if(data.CMD=="LOGIN_USER_REMOVE") {
-
-					// uni.request({
-					// 	method:"POST",
-					// 	url:store.state.req_url + "/user/json/logout",
-					// 	header:{
-					// 		"Content-Type":"application/x-www-form-urlencoded",
-					// 		"x-access-uid":store.state.user.id
-					// 	},
-					// 	success(res) {
-					// 		let res_data = eval(res.data);
-					// 		if(res_data.code==200) {
-					// 			uni.clearStorageSync();
-					// 			store.commit("clearData");
-					// 			uni.showToast({
-					// 				icon:"none",
-					// 			    title: '帐号已被删除',
-					// 			    duration: 2000
-					// 			});
-					// 			uni.redirectTo({
-					// 				url:"../login/login"
-					// 			})
-					// 		}
-					// 	}
-					// })
-				} else if(data.CMD=="ERROR") {
+				} else if(data.CMD==MessageType.ERROR) {
 					console.log("9999");
 					setTimeout(()=>{
 						uni.showToast({
@@ -865,7 +456,7 @@ export default new Vuex.Store({
 					},100)
 
 					console.log("错误"+data.body);
-				} else if(data.CMD=="UPDATE_ADDRESS_BOOK") {
+				} else if(data.CMD==MessageType.UPDATE_ADDRESS_BOOK) {
 
 					Vue.prototype.$http.post("/user/friend/list/v1",
 						{
@@ -881,41 +472,26 @@ export default new Vuex.Store({
 							store.commit("setFriend_list",res_data.body);
 						}
 					});
-
-
-					// uni.request({
-					// 	method:"POST",
-					// 	header:{
-					// 		"Content-Type":"application/x-www-form-urlencoded",
-					// 		"x-access-uid":user.id
-					// 	},
-					// 	success(res) {
-					// 		let res_data = eval(res.data);
-					// 		if(res_data.code==200) {
-					// 			store.commit("setFriend_list",res_data.body);
-					// 		}
-					// 	}
-					// })
-				} else if(data.CMD=="FRIENDSADD") {
+				} else if(data.CMD==MessageType.FRIENDS_ADD) {
 					//FRIENDSADD好友添加处理
 					if(store.state.unDoFriendAddCount>0) {
 						store.commit("setUnDoFriendAddCount",store.state.unDoFriendAddCount+1);
 					} else {
 						store.commit("setUnDoFriendAddCount",1);
 					}
-				} else if(data.CMD=="ROOMADD") {
+				} else if(data.CMD==MessageType.ROOM_ADD) {
 					//群成员申请
 					if(store.state.unDoFriendAddCount>0) {
 						store.commit("setUnDoRoomAddCount",store.state.unDoRoomAddCount+1);
 					} else {
 						store.commit("setUnDoRoomAddCount",1);
 					}
-				} else if(data.CMD=="AR_INSERT" || data.CMD=="AR_UPDATE") {
+				} else if(data.CMD==MessageType.AR_INSERT || data.CMD==MessageType.AR_UPDATE) {
 					console.log("执行了_ar_update_start");
 					arUpdate(data);
 					console.log("执行了_ar_update_end");
 				}
-				else if(data.CMD=="GROUP_MEMBER_REMOVE") {
+				else if(data.CMD==MessageType.GROUP_MEMBER_REMOVE) {
 					let list =store.state.ar_list.filter(item=>{
 						if(item.id==data.body) {
 							return false;
@@ -935,7 +511,7 @@ export default new Vuex.Store({
 					// else if(data.CMD=="CHAT_SEND_RED_SUCCESS") {
 
 				// }
-				else if(data.CMD=="CHAT_MSG_UNDO") {
+				else if(data.CMD==MessageType.CHAT_MSG_UNDO) {
 					//console.log(data);
 					console.log("撤回了");
 					let str = uni.getStorageSync(user.id+"#"+data.body.chatid+'_CHAT_MESSAGE');
@@ -999,19 +575,10 @@ export default new Vuex.Store({
 						if(store.state.cur_chat_entity&&store.state.cur_chat_entity.id==data.body.chatid) {
 							store.commit("setCur_chat_msg_list",arrs);
 						}
-
-
-
-
-
 					}
-
-
-
-
 				}
-				else if(data.CMD=="USER_CHAT_MESSAGE" || data.CMD=="GROUP_CHAT_MESSAGE" || data.CMD=="CHAT_SEND_RED_SUCCESS"
-					||data.CMD=="CHAT_SYS_TXT"||data.CMD=="CHAT_SEND_TRANSFER_SUCCESS") {
+				else if(data.CMD==MessageType.USER_CHAT_MESSAGE || data.CMD==MessageType.GROUP_CHAT_MESSAGE
+					||data.CMD==MessageType.CHAT_SYS_TXT) {
 					console.log("返回了:"+new Date());
 					console.log(data.body[0]);
 
@@ -1042,7 +609,7 @@ export default new Vuex.Store({
 
 
 					//#ifndef H5
-					if(data.CMD=="USER_CHAT_MESSAGE" || data.CMD=="GROUP_CHAT_MESSAGE" || data.CMD=="CHAT_SEND_TRANSFER_SUCCESS" )	{
+					if(data.CMD==MessageType.USER_CHAT_MESSAGE|| data.CMD==MessageType.GROUP_CHAT_MESSAGE )	{
 						if(!store.state.appShow) {
 							setTimeout(()=>{
 								let options = { cover: false, sound: 'system', title:data.body[0].bean.fromName};
@@ -1105,7 +672,7 @@ export default new Vuex.Store({
 
 
 						//群成员昵称显示备注问题
-						if(data.CMD=="GROUP_CHAT_MESSAGE") {
+						if(data.CMD==MessageType.GROUP_CHAT_MESSAGE) {
 							let s = uni.getStorageSync(data.body[0].bean.fromUid+"_NOTE");
 							if(s&&s!="") {
 								data.body[0].bean.fromName = s;
@@ -1142,7 +709,7 @@ export default new Vuex.Store({
 							}
 
 							//群成员昵称显示备注问题
-							if(data.CMD=="GROUP_CHAT_MESSAGE") {
+							if(data.CMD==MessageType.GROUP_CHAT_MESSAGE) {
 								let s = uni.getStorageSync(data.body[0].bean.fromUid+"_NOTE");
 								if(s&&s!="") {
 									data.body[0].bean.fromName = s;
@@ -1384,25 +951,12 @@ export default new Vuex.Store({
 		},
 		WEBSOCKET_SEND(state, p) {
 			let _this = this;
-			// let user = uni.getStorageSync("USER");
-			// if(user) {
-			// 	p+=("=!@#&="+user.id+"#"+Vue.prototype.$clientType+"#"+store.state.app_uuid);
-			// }
 			if (!state.socketTask) return;
+			console.log("======WEBSOCKET_SEND",p)
 			state.socketTask.send({
 				data: p,
-
 				async success() {
-					// if(p.indexOf("CMD:'USER_CHAT_SEND_TXT'")>=0
-					// 	||p.indexOf("CMD:'USER_CHAT_SEND_VOICE'")>=0
-					// 	||p.indexOf("CMD:'GROUP_CHAT_SEND_TXT'")>=0
-					// 	||p.indexOf("CMD:'GROUP_CHAT_SEND_VOICE'")>=0
-					// 	||p.indexOf("CMD:'CHAT_SEND_CARD'")>=0
-					// 	||p.indexOf("CMD:'USER_CHAT_SEND_RED'")>=0
-					// 	) {
 					console.log("发送成功:"+p);
-
-					// 	}
 				},
 				async fail() {
 					state.is_open_socket = false;
@@ -1434,9 +988,6 @@ export default new Vuex.Store({
 
 				}
 			});
-
-
-
 		},
 	},
 

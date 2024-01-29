@@ -6,13 +6,13 @@ module.exports = {
             config.optimization.minimizer[0].options.terserOptions.compress.warnings = false
             config.optimization.minimizer[0].options.terserOptions.compress.drop_console = true
             config.optimization.minimizer[0].options.terserOptions.compress.drop_debugger = true
-            config.optimization.minimizer[0].options.terserOptions.compress.pure_funcs = ['console.log']
+            // config.optimization.minimizer[0].options.terserOptions.compress.pure_funcs = ['console.log']
         }
     },
 	"devServer" : {
 		"proxy" : {
 			"/user" : {
-				"target" : "http://ws.t6prn1.xyz/",
+				"target" : "http://http.441635.pw",
 				"changeOrigin" : true, //是否跨域
 				"secure" : false, // 是否支持 https 协议的代理
 				"pathRewrite" : {

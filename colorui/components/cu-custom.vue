@@ -9,7 +9,8 @@
 				<view v-if="!nameToLeft" class="content" :style="[{top:StatusBar + 'px'}]">
 					<slot name="content"></slot>
 				</view>
-				<view v-else style="width: calc(100% - 140upx);text-align: left;"  class="content" :style="[{top:StatusBar + 'px'}]">
+				<view v-else style="width: calc(100% - 140upx);text-align: left;" class="content"
+					:style="[{top:StatusBar + 'px'}]">
 					<slot name="content"></slot>
 				</view>
 				<slot name="right"></slot>
@@ -19,6 +20,11 @@
 </template>
 
 <script>
+	import {
+		mapState,
+		mapActions,
+		mapMutations
+	} from 'vuex'
 	export default {
 		data() {
 			return {
@@ -29,15 +35,15 @@
 		name: 'cu-custom',
 		computed: {
 			style() {
-				var StatusBar= this.StatusBar;
-				var CustomBar= this.CustomBar;
+				var StatusBar = this.StatusBar;
+				var CustomBar = this.CustomBar;
 				var bgImage = this.bgImage;
 				var style = `height:${CustomBar}px;padding-top:${StatusBar}px;`;
 				if (this.bgImage) {
 					style = `${style}background-image:url(${bgImage});`;
 				}
 				return style
-			}
+			},
 		},
 		props: {
 			bgColor: {
@@ -56,29 +62,33 @@
 				type: String,
 				default: ''
 			},
-			backUrl:{
+			backUrl: {
 				type: String,
 				default: ''
 			}
 		},
 		methods: {
+			...mapMutations('chat', [
+				'setCurChatMsgList',
+				'setCurChatEntity',
+			]),
 			BackPage() {
 				console.log(this.backUrl);
-				if(this.backUrl=="") {
+				if (this.backUrl == "") {
 					uni.navigateBack({
 						delta: 1
 					});
 				} else {
-					if(this.backUrl.indexOf("pages/index/index")>=0) {
+					if (this.backUrl.indexOf("pages/index/index") >= 0) {
 						//清除当前窗口数据
-						this.$store.commit("setCur_chat_entity",null);
-						this.$store.commit("setCur_chat_msg_list",[]); 
+						this.setCurChatEntity(null);
+						this.setCurChatMsgList([]);
 					}
 					uni.navigateTo({
-						url:this.backUrl
+						url: this.backUrl
 					})
 				}
-				  
+
 			}
 		}
 	}

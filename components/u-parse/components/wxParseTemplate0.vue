@@ -78,7 +78,11 @@
 	import wxParseImg from './wxParseImg';
 	import wxParseVideo from './wxParseVideo';
 	import wxParseAudio from './wxParseAudio';
-
+	import {
+		mapState,
+		mapActions,
+		mapMutations
+	} from 'vuex'
 	export default {
 		name: 'wxParseTemplate0',
 		props: {
@@ -90,19 +94,24 @@
 			wxParseVideo,
 			wxParseAudio,
 		},
+		computed: {
+			...mapState('app', [
+				'imgUrl',
+			])
+		},
 		methods: {
 			wxParseATap(e) {
 				const {
 					href
-				} = e.currentTarget.dataset;// TODO currentTarget才有dataset
+				} = e.currentTarget.dataset; // TODO currentTarget才有dataset
 				if (!href) return;
 				let parent = this.$parent;
-				while(!parent.preview || typeof parent.preview !== 'function') {// TODO 遍历获取父节点执行方法
+				while (!parent.preview || typeof parent.preview !== 'function') { // TODO 遍历获取父节点执行方法
 					parent = parent.$parent;
 				}
 				let resultHref = href;
-				if (href.indexOf(this.$store.state.img_url) != -1) {
-					resultHref = href.replace(this.$store.state.img_url,"");
+				if (href.indexOf(this.imgUrl) != -1) {
+					resultHref = href.replace(this.imgUrl, "");
 				}
 				parent.navigate(resultHref, e);
 			},

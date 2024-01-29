@@ -20,41 +20,48 @@
 </template>
 
 <script>
+	import {
+		updateTel
+	} from '../../../common/api';
+	import {
+		mapState,
+		mapActions,
+		mapMutations
+	} from 'vuex'
 	export default {
 		data() {
 			return {
-				txt: this.$store.state.user.telphone
+				txt: this.user.telphone
 			}
 		},
 		onLoad(e) {
 
 		},
-		computed:{
-			i18n () {
+		computed: {
+			i18n() {
 				return this.$t('index')
-			}
+			},
+			...mapState('user', [
+				'user',
+			]),
 		},
 		methods: {
+			...mapMutations('user',['updateTelPhone']),
 			tijiao() {
 				let _this = this;
-				let user = this.$store.state.user;
-				if (_this.txt.length !=11) {
-				    uni.showToast({
-				        icon: 'none',
+				let user = this.user;
+				if (_this.txt.length != 11) {
+					uni.showToast({
+						icon: 'none',
 						position: 'bottom',
-				        title: '手机号不正确'
-				    });
-				    return false;
+						title: '手机号不正确'
+					});
+					return false;
 				}
 
-				_this.$http.post("/user/json/updateTel", {
+				updateTel({
 					newTel: this.txt,
 					u: user.id
-				}, {
-					header: {
-						"x-access-uid": user.id,
-						"x-access-client": _this.$clientType
-					}
 				}).then(res => {
 					let res_data = eval(res.data);
 					if (res_data.code == 200) {
@@ -63,7 +70,7 @@
 							position: 'bottom',
 							title: "修改成功"
 						});
-						_this.$store.state.user.telphone = res_data.msg;
+						_this.updateTelPhone(res_data.msg)
 					} else {
 						uni.showToast({
 							icon: 'none',

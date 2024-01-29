@@ -1,42 +1,41 @@
 <template>
 	<view>
-		<cu-custom bgColor="bg-blue" :isBack="true" :nameToLeft="true"><block slot="content">转发</block>
-		<block slot="right">
-		<uni-text @tap="tijiao()" style="font-size: 22px;color: #fff;margin-right: 14px;font-size: 30upx;background: #58BB46;padding:10upx 40upx;border-radius: 6upx;" class="lg text-gray ">发送</uni-text>
-		</block>
+		<cu-custom bgColor="bg-blue" :isBack="true" :nameToLeft="true">
+			<block slot="content">转发</block>
+			<block slot="right">
+				<uni-text @tap="tijiao()"
+					style="font-size: 22px;color: #fff;margin-right: 14px;font-size: 30upx;background: #58BB46;padding:10upx 40upx;border-radius: 6upx;"
+					class="lg text-gray ">发送</uni-text>
+			</block>
 		</cu-custom>
 
 
-		<view class="cu-bar bg-white search" >
+		<view class="cu-bar bg-white search">
 			<view class="search-form round">
 				<text class="cuIcon-search"></text>
-				<input v-model="kw1"    type="text" placeholder="输入搜索的关键词" confirm-type="search"></input>
+				<input v-model="kw1" type="text" placeholder="输入搜索的关键词" confirm-type="search"></input>
 			</view>
 			<view class="action">
-				<button @tap="search()" style="background: #FFAA01;"  class="cu-btn bg-gradual-green shadow-blur round">搜索</button>
+				<button @tap="search()" style="background: #FFAA01;"
+					class="cu-btn bg-gradual-green shadow-blur round">搜索</button>
 			</view>
 		</view>
-		<scroll-view scroll-y class="indexes" :scroll-into-view="'indexes-'+ listCurID" :style="[{height:'calc(100vh - 100upx - '+CustomBar+'px)'}]"
-		 :scroll-with-animation="true" :enable-back-to-top="true">
-		  <checkbox-group @change="radioChange" style="width:100%">
-					<view class="cu-list menu-avatar no-padding">
-						<view  class="cu-item" v-for="(items,index1) in friend_list" :key="index1">
-							<!--
-							<view class="cu-avatar round lg">{{item.h}}</view>
-							-->
-							<view class="cu-avatar round lg" :style="{'backgroundImage': 'url('+$store.state.img_url+ items.img +')' }"  style="width: 80upx;height: 80upx;background-size: 100% 100%;"></view>
-							<view class="content">
-								<view class="text-grey" style="float:left;">{{items.title}}</view>
-								<checkbox   class='round blue '  :value="items.id"></checkbox>
-								<!--
-								<view class="text-gray text-sm">
-									有{{sub+2}}个主子需要伺候
-								</view>
-								-->
-							</view>
+		<scroll-view scroll-y class="indexes" :scroll-into-view="'indexes-'+ listCurID"
+			:style="[{height:'calc(100vh - 100upx - '+CustomBar+'px)'}]" :scroll-with-animation="true"
+			:enable-back-to-top="true">
+			<checkbox-group @change="radioChange" style="width:100%">
+				<view class="cu-list menu-avatar no-padding">
+					<view class="cu-item" v-for="(items,index1) in friend_list" :key="index1">
+						<view class="cu-avatar round lg"
+							:style="{'backgroundImage': 'url('+imgUrl+ items.img +')' }"
+							style="width: 80upx;height: 80upx;background-size: 100% 100%;"></view>
+						<view class="content">
+							<view class="text-grey" style="float:left;">{{items.title}}</view>
+							<checkbox class='round blue ' :value="items.id"></checkbox>
 						</view>
-
 					</view>
+
+				</view>
 			</checkbox-group>
 			<view style="height: 100upx;text-align: center;background: #fff;
     margin-top: 20upx;
@@ -50,6 +49,8 @@
 </template>
 
 <script>
+	import { mapState,mapActions,mapMutations} from 'vuex'
+	
 	export default {
 		data() {
 			return {
@@ -59,276 +60,87 @@
 				listCurID: '',
 				list: [],
 				listCur: '',
-				kw:"",
-				kw1:"",
-				ids:[],
-				fid:""
+				kw: "",
+				kw1: "",
+				ids: [],
+				fid: ""
 			};
 		},
-		onLoad(e) {
-		},
+		onLoad(e) {},
 		mounted() {
 			let _this = this;
 			let user = uni.getStorageSync("USER");
 		},
-		computed:{
-				i18n () {
-					return this.$t('index')
+		computed: {
+			i18n() {
+				return this.$t('index')
 			},
+			...mapState('app',[
+				'imgUrl',
+				'reqUrl'
+			]),
+			...mapState('chat',[
+				'arListShow'
+			]),
+			...mapState('user',[
+				'user'
+			]),
 			friend_list() {
 				let _this = this;
-				let nlist = this.$store.state.ar_list_show;
-				console.log(nlist.length);
-				nlist = nlist.filter((item)=>{
-					if(this.kw.trim()!="") {
-						if(item.id=="-1") {
+				let nlist = this.arListShow;
+				nlist = nlist.filter((item) => {
+					if (this.kw.trim() != "") {
+						if (item.id == "-1") {
 							return false;
 						}
-						if(item.title.indexOf(_this.kw.trim())<0) {
+						if (item.title.indexOf(_this.kw.trim()) < 0) {
 							return false;
 						}
 					} else {
-						if(item.id=="-1") {
+						if (item.id == "-1") {
 							return false;
 						}
 					}
 					return true;
 				});
-				console.log(nlist.length);
 				return nlist;
 			}
 		},
 		onReady() {
 			let that = this;
-
-
 		},
 		methods: {
-			sendBaseDo(v) {
-
-				v.fromHeadpic = this.$store.state.user.headpic;
-				let date = new Date();
-				v.date = this.dateFormat("Y/m/d H:M", date);
-				v.fromName = this.$store.state.user.nickName;
-				v.dateTime = date.getTime();
-				v.read = 0;
-				v.oldTxt = v.txt;
-				v.simple_content = v.txt;
-				let msgbean = {
-					chatType:"2",
-					chatid:this.toid,
-					type:"USER_TXT",
-					bean:v
-				}
-				let list = [msgbean];
-				let str = uni.getStorageSync(this.$store.state.user.id+"#"+msgbean.chatid+'_CHAT_MESSAGE');
-				if(str&&str!="") {
-					var jsonObj = JSON.parse(str);
-					jsonObj = jsonObj.concat(list);
-					// if(jsonObj.length>50) {
-						//  jsonObj.splice(0,jsonObj.length-50);
-					// }
-					uni.setStorageSync(this.$store.state.user.id+"#"+msgbean.chatid+'_CHAT_MESSAGE',JSON.stringify(jsonObj));
-					 if(jsonObj.length>50) {
-						jsonObj.splice(0,jsonObj.length-50);
-					 }
-					this.$store.commit("updateChatMessageMap",{
-						key:this.$store.state.user.id+"#"+msgbean.chatid,
-						value:jsonObj
-					});
-
-					if(this.$store.state.cur_chat_entity&&this.$store.state.cur_chat_entity.id==v.toUid) {
-						this.$store.commit("setCur_chat_msg_list",jsonObj);
-
-						let v1 = {
-							toUid:msgbean.chatid,
-							fromUid:this.$store.state.user.id
-						}
-						this.$websocket.dispatch("WEBSOCKET_SEND", "{body:'"+JSON.stringify(v1)+"',CMD:'CHAT_MSG_READED'}");
-
-					}
-					uni.setStorageSync(this.$store.state.user.id+"#"+msgbean.chatid+'_CHAT_MESSAGE_LASTCONTENT',jsonObj[jsonObj.length-1].bean.simple_content);
-				} else {
-					uni.setStorageSync(this.$store.state.user.id+"#"+msgbean.chatid+'_CHAT_MESSAGE',JSON.stringify(list));
-					this.$store.commit("updateChatMessageMap",{
-						key:this.$store.state.user.id+"#"+msgbean.chatid,
-						value:list
-					});
-					if(this.$store.state.cur_chat_entity&&this.$store.state.cur_chat_entity.id==v.toUid) {
-						this.$store.commit("setCur_chat_msg_list",list);
-					}
-					 uni.setStorageSync(this.$store.state.user.id+"#"+msgbean.chatid+'_CHAT_MESSAGE_LASTCONTENT',"");
-				}
-				this.$store.commit("setChat_my_loadding",false);
-			},
-			dateFormat(fmt, date) {
-			    let ret;
-			    const opt = {
-			        "Y+": date.getFullYear().toString().substring(1,3),        // 年
-			        "m+": (date.getMonth() + 1).toString(),     // 月
-			        "d+": date.getDate().toString(),            // 日
-			        "H+": date.getHours().toString(),           // 时
-			        "M+": date.getMinutes().toString(),         // 分
-			        "S+": date.getSeconds().toString()          // 秒
-			        // 有其他格式化字符需求可以继续添加，必须转化成字符串
-			    };
-			    for (let k in opt) {
-			        ret = new RegExp("(" + k + ")").exec(fmt);
-			        if (ret) {
-			            fmt = fmt.replace(ret[1], (ret[1].length == 1) ? (opt[k]) : (opt[k].padStart(ret[1].length, "0")))
-			        };
-			    };
-			    return fmt;
-			},
-			GenerateUUID() {
-				var s = [];
-				var hexDigits = "0123456789abcdef";
-				for (var i = 0; i < 36; i++) {
-					s[i] = hexDigits.substr(Math.floor(Math.random() * 0x10), 1);
-				}
-				s[14] = "4"; // bits 12-15 of the time_hi_and_version field to 0010
-				s[19] = hexDigits.substr((s[19] & 0x3) | 0x8, 1); // bits 6-7 of the clock_seq_hi_and_reserved to 01
-				s[8] = s[13] = s[18] = s[23] = "-";
-
-				var uuid = s.join("");
-				return uuid;
-			},
-			tijiao(){
+			...mapActions('chat',[
+				'transMessageAction'
+			]),
+			tijiao() {
 				let _this = this;
 				let user = uni.getStorageSync("USER");
-				if(this.ids.length==0) {
+				if (this.ids.length == 0) {
 					uni.showToast({
-					    icon: 'none',
-					    title: "请选择转发对象"
+						icon: 'none',
+						title: "请选择转发对象"
 					});
 					return;
 				}
-				// console.log(_this.$store.state.temp.base64);
-				//let items = [];
-				_this.ids.forEach(id=>{
-					 _this.$store.state.ar_list.forEach(item=>{
-						if(id==item.id) {
-							//items.push(item);
-							if(item.typeid=="1") {
-								//群
-								let v = {};
-								if(_this.$store.state.temp.content.indexOf("[名片USERCARD]#")==0) {
-									let ss = _this.$store.state.temp.content.split("#");
-									v = {
-										muuid:ss[4],
-										toGroupid:id,
-										fromUid:this.$store.state.user.id
-									}
-									_this.$websocket.dispatch("WEBSOCKET_SEND", "{body:'"+JSON.stringify(v)+"',CMD:'CHAT_SEND_CARD'}");
-								} else {
-									v = {
-										txt:_this.$store.state.temp.content,
-									    toGroupid:id,
-									    fromUid:_this.$store.state.user.id,
-										uuid:_this.GenerateUUID(),
-									}
-									_this.$websocket.dispatch("WEBSOCKET_SEND", "{body:'"+JSON.stringify(v)+"',CMD:'GROUP_CHAT_SEND_TXT'}");
-									_this.sendBaseDo(v);
-								}
-
-
-								_this.$http.post("/user/accessRecord/json/saveOrUpdate",
-									{type:1,eid:id},
-									{
-										header:{
-											"x-access-uid":_this.$store.state.user.id,
-											"x-access-client":_this.$clientType
-										}
-									}
-								).then(res=>{
-
-								})
-
-
-								// uni.request({
-								// 	method:"POST",
-								// 	url: _this.$store.state.req_url + "/user/accessRecord/json/saveOrUpdate",
-								// 	data:{type:1,eid:id},
-								// 	header:{
-								// 		"Content-Type":"application/x-www-form-urlencoded",
-								// 		"x-access-uid":_this.$store.state.user.id
-								// 	},
-								// 	success(res) {}
-								// })
-
-							} else {
-								//好友
-								let v = {};
-								if(_this.$store.state.temp.content.indexOf("[名片USERCARD]#")==0) {
-									let ss = _this.$store.state.temp.content.split("#");
-									v = {
-										muuid:ss[4],
-										toUid:id,
-										fromUid:this.$store.state.user.id
-									}
-									_this.$websocket.dispatch("WEBSOCKET_SEND", "{body:'"+JSON.stringify(v)+"',CMD:'CHAT_SEND_CARD'}");
-								} else {
-									v = {
-										txt:_this.$store.state.temp.content,
-									    toUid:id,
-									    fromUid:_this.$store.state.user.id,
-										uuid:_this.GenerateUUID(),
-									}
-									_this.$websocket.dispatch("WEBSOCKET_SEND", "{body:'"+JSON.stringify(v)+"',CMD:'USER_CHAT_SEND_TXT'}");
-									_this.sendBaseDo(v);
-								}
-
-								_this.$http.post("/user/accessRecord/json/saveOrUpdate",
-									{type:2,eid:id},
-									{
-										header:{
-											"x-access-uid":_this.$store.state.user.id,
-											"x-access-client":_this.$clientType
-										}
-									}
-								).then(res=>{
-
-								})
-
-								// uni.request({
-								// 	method:"POST",
-								// 	url: _this.$store.state.req_url + "/user/accessRecord/json/saveOrUpdate",
-								// 	data:{type:2,eid:id},
-								// 	header:{
-								// 		"Content-Type":"application/x-www-form-urlencoded",
-								// 		"x-access-uid":_this.$store.state.user.id
-								// 	},
-								// 	success(res) {}
-								// })
-
-							}
-						}
-					});
-				})
-
-
-
-
+				this.transMessageAction(_this.ids)
 				uni.showToast({
-					icon:"success",
-					title:"转发成功",
-					duration:800
+					icon: "success",
+					title: "转发成功",
+					duration: 800
 				})
-				setTimeout(()=>{
+				setTimeout(() => {
 					uni.navigateBack();
-				},800)
-
-
-
+				}, 800)
 			},
 			radioChange(e) {
 				this.ids = e.target.value;
 			},
 			showMsg() {
 				uni.showToast({
-				    icon: 'none',
+					icon: 'none',
 					position: 'bottom',
-				    title: "功能未开启"
+					title: "功能未开启"
 				});
 			},
 
@@ -383,12 +195,10 @@
 	}
 </script>
 
-<style >
-	uni-checkbox{
-		float:right;
+<style>
+	uni-checkbox {
+		float: right;
 	}
-
-
 
 	.indexes {
 		position: relative;
@@ -457,7 +267,8 @@
 		text-align: center;
 		font-size: 48upx;
 	}
+
 	.text-grey {
-		color:#333
+		color: #333
 	}
 </style>
