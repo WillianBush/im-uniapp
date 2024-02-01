@@ -192,7 +192,7 @@
 			setTimeout(()=>{
                 let user = uni.getStorageSync("USER");
                 if (user) {
-                    _this.$websocket.dispatch('WEBSOCKET_INIT');
+                    // _this.$websocket.dispatch('WEBSOCKET_INIT');
                 }
 			},500);
 
@@ -202,7 +202,7 @@
       _checkLink = setInterval(function(){
         let user = uni.getStorageSync("USER");
         if (user) {
-          _this.checkWsLink();
+          // _this.checkWsLink();
         }
         //如果是特权用户并且开启了刷新 ，10秒刷新一次聊天列表
         if (_this.$store.state.isEmployee && _this.$store.state.isOpenRefresh) {

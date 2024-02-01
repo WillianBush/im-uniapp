@@ -10,9 +10,7 @@ const configJapan= {
 
 const configLive1= {
 	appName : "好物通",
-	requestUrl: ["https://media.8jkiy.pw/config_sys/domains-prod.txt",
-		"https://media.33fwj.pw/config_sys/domains-prod.txt",
-		"https://media.ve9gj.pw/config_sys/domains-prod.txt"],
+	requestUrl: ["http://http.441635.pw/config_sys/domains-prod.txt"],
 	loginIcon : "/static/logo.png",
 	registerIcon : "/static/logo.png",
 	setupPicture : "/static/splash.png"
