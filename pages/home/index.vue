@@ -3,7 +3,7 @@
 		<view class="cu-bar bg-white solid-bottom">
 			<view class="action" style="font-size: 36upx;font-weight: 600;">
 				<text class="cuIcon-title text-green "></text>
-				{{$t('index.MessageList')}}(<text> {{delayTime}}ms</text>)
+				{{$t('index.MessageList')}}(<text> {{delayTime}}</text>)
 				<button @tap="refresherrefresh()"
 					style="background: #FFAA01;margin-left:30rpx;font-size:25rpx;font-weight:normal;height:22px"
 					class="cu-btn bg-gradual-green shadow-blur round">{{ i18n.refresh }}</button>
@@ -191,6 +191,12 @@
 			...mapState('socket',{
 				delayTime:state =>state.delayTime
 			}),
+			delayTime(){
+				if(this.$store.state.socket.delayTime < 0){
+					return "--"
+				}
+				return `${this.$store.state.socket.delayTime}ms`
+			}
 		},
 		watch: {
 
@@ -222,7 +228,7 @@
 					_this.refresherTriggered = true;
 				}
 				//清空
-				this.setArList([]);
+				// this.setArList([]);
 				this.numPag = 1;
 				this.loadStoreData(this.pageSize, this.numPag);
 			},

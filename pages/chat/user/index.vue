@@ -558,10 +558,11 @@
 
 			let _this = this;
 			this.toid = option.toid;
+			if (!this.toid) return;
 			let user = uni.getStorageSync("USER");
 			this.getWindowSize();
 			if (this.chatMessageMap.has(user.id + "#" + this.toid)) {
-				let msg_list = chatMessageMap.get(user.id + "#" + this.toid);
+				let msg_list = this.chatMessageMap.get(user.id + "#" + this.toid);
 				if (msg_list && msg_list.length > 0) {
 					var newMsgList = msg_list;
 					this.setCurChatMsgList(newMsgList);
@@ -586,6 +587,12 @@
 				if (res_data.code == 200) {
 					_this.toIP = res_data.body.ip + "(" + res_data.body.ipAddr + ")";
 				}
+			}).catch(error => {
+				uni.showToast({
+					icon: 'none',
+					position: 'bottom',
+					title: error.msg ? error.msg : "服务器异常!"
+				});
 			})
 
 			_this.loadTalkUserAction({
@@ -597,7 +604,13 @@
 						_this.showname = _this.entity.nickName;
 					}
 				}, 100)
-			});
+			}).catch(error => {
+				uni.showToast({
+					icon: 'none',
+					position: 'bottom',
+					title: error.msg ? error.msg : "服务器异常!"
+				});
+			});;
 			_this.saveOrUpdateAction(_this.toid);
 			this.scrollToBottom();
 			getChatCfg().then(res => {
@@ -605,10 +618,16 @@
 				if (res_data.code == 200) {
 					_this.chatCfg = res_data.body;
 				}
+			}).catch(error => {
+				uni.showToast({
+					icon: 'none',
+					position: 'bottom',
+					title: error.msg ? error.msg : "服务器异常!"
+				});
 			})
 		},
 		mounted() {
-
+			if (!this.toid) return;
 			if (!this.curChatMsgList.length > 0) {
 				this.tongbuMsg();
 			} else {
@@ -688,6 +707,12 @@
 							uni.hideLoading();
 						}, 400);
 					}
+				}).catch(error => {
+					uni.showToast({
+						icon: 'none',
+						position: 'bottom',
+						title: error.msg ? error.msg : "服务器异常!"
+					});
 				})
 			},
 			tongbuMsg() { //当前页面聊天记录&页码请求
@@ -698,24 +723,24 @@
 					pageNumber: this.pageParams.pageNumber,
 				}).then(res => {
 					uni.hideLoading()
-					console.log("syncMsgData",res)
+					console.log("syncMsgData", res)
 					let res_data = eval(res.data);
 					if (res_data.code == 201) {
 						//没缓存数据，把加载取消
 						setTimeout(() => {
 							_this.moreShow = false
 							uni.hideLoading();
-							uni.showToast({
-								title: "没有云端数据",
-								icon: "none"
-							})
+							// uni.showToast({
+							// 	title: "没有云端数据",
+							// 	icon: "none"
+							// })
 
 						}, 400);
 					} else if (res_data.code == 200) {
-						if (res_data.body && res_data.body.records.length != 0) {
+						if (res_data.body && res_data.body.list.length != 0) {
 							let cList = [];
-							for (let i = 0; i < res_data.body.records.length; i++) { //从[0]中取出
-								cList.push(res_data.body.records[i][0])
+							for (let i = 0; i < res_data.body.list.length; i++) { //从[0]中取出
+								cList.push(res_data.body.list[i][0])
 							} //遍历
 							_this.syncMessageArr = cList
 							let user = uni.getStorageSync("USER");
@@ -742,15 +767,15 @@
 
 						_this.pageParams = res_data.body
 						if (_this.pageParams.pageNumber > 1) {
-							for (let i = 0; i < res_data.body.records.length; i++) { //从[0]中取出
-								res_data.body.records[i] = res_data.body.records[i][0].bean
+							for (let i = 0; i < res_data.body.list.length; i++) { //从[0]中取出
+								res_data.body.list[i] = res_data.body.list[i][0].bean
 							} //遍历拿出数组bean
 							// _this.chatLogs = _this.chatLogs.concat(res_data.body.list);
-							_this.chatLogs.unshift.apply(_this.chatLogs, res_data.body.records)
+							_this.chatLogs.unshift.apply(_this.chatLogs, res_data.body.list)
 							uni.hideLoading();
 						} else {
 							uni.hideLoading();
-							_this.chatLogs = res_data.body.records
+							_this.chatLogs = res_data.body.list
 						}
 						for (let i = 0; i < _this.chatLogs.length; i++) { //从[0]中取出
 							_this.chatLogs[i] = _this.chatLogs[i][0].bean
@@ -759,8 +784,13 @@
 							uni.hideLoading();
 						}, 400);
 					}
-				}).catch(err => {
-					console.log('err=>', err)
+				}).catch(error => {
+					uni.hideLoading();
+					uni.showToast({
+						icon: 'none',
+						position: 'bottom',
+						title: error.msg ? error.msg : "服务器异常!"
+					});
 				})
 			},
 			getPopButton(item) {
@@ -1279,6 +1309,13 @@
 							// filePath  需要上传的文件
 							filePath: res.tempFilePath,
 							name: 'file',
+							fail(error){
+								uni.showToast({
+									icon: 'none',
+									position: 'bottom',
+									title: error.msg ? error.msg : "上传失败!"
+								});
+							},
 							success(res1) {
 								let json = eval("(" + res1.data + ")");
 								// 显示上传信息
@@ -1314,6 +1351,13 @@
 					count: 9, //默认9
 					sizeType: ['compressed'], //可以指定是原图还是压缩图，默认二者都有
 					sourceType: ['album', 'camera'], //从相册选择
+					fail(error){
+						uni.showToast({
+							icon: 'none',
+							position: 'bottom',
+							title: error.msg ? error.msg : "获取图片失败!"
+						});
+					},
 					success: (res) => {
 						let arrs = res.tempFiles;
 						_this.setChatMyLoadding(true)
@@ -1330,6 +1374,13 @@
 								// filePath  需要上传的文件
 								filePath: item.path,
 								name: 'file',
+								fail(error){
+									uni.showToast({
+										icon: 'none',
+										position: 'bottom',
+										title: error.msg ? error.msg : "上传失败!"
+									});
+								},
 								success(res1) {
 									let json = eval("(" + res1.data + ")");
 									// 显示上传信息
@@ -1500,6 +1551,13 @@
 					// filePath  需要上传的文件
 					filePath: path,
 					name: 'file',
+					fail(error){
+						uni.showToast({
+							icon: 'none',
+							position: 'bottom',
+							title: error.msg ? error.msg : "上传失败!"
+						});
+					},
 					success(res1) {
 						let json = eval("(" + res1.data + ")");
 						// 显示上传信息

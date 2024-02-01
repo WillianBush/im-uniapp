@@ -36,7 +36,7 @@ const config = {
         },
         fail: (error) => {
           config.RemoteIpInited = true;
-          resolve()
+          reject(error)
         }
       })
     });

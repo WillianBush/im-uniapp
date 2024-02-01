@@ -123,7 +123,6 @@
 <script>
 	import updatepage from "@/components/user/updatepage/updatepage.vue";
 	import { getDefaultMessage, isEmployee, loginOut } from "../../common/api";
-	import store from "../../store";
 	import {mapState,mapActions,mapMutations} from 'vuex'
 	export default {
 		components: {

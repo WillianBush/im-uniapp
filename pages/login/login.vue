@@ -124,7 +124,7 @@
 					_this.isRotate = false;
 					uni.showToast({
 						icon: "none",
-						title: error.msg,
+						title: error.msg?error.msg:"服务器异常",
 					});
 				});
 			},

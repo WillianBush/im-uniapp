@@ -29,7 +29,6 @@
 </template>
 
 <script>
-	import store from "store" //使用vuex对状态进行管理
 	import updatepage from "../../components/user/updatepage/updatepage.vue";
 	import {
 		activeConfig
@@ -128,6 +127,12 @@ import Log from "../../common/Log";
 							_this.$refs.updatepage.upgrade();
 						})
 					}
+				}).catch(error=>{
+					uni.showToast({
+						icon: 'none',
+						position: 'bottom',
+						title: error.msg?error.msg:"服务器异常!"
+					});
 				})
 			},
 			init() {

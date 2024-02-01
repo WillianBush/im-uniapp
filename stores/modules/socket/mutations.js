@@ -30,5 +30,11 @@ export default {
 	},
 	setSocketTask(state,payload){
 		state.socketTask = payload
+	},
+	setIsOpenSocket(state,payload){
+		state.isOpenSocket = payload
+	},
+	setContinueCloseCount(state,payload){
+		state.continueCloseCount = payload;
 	}
 }

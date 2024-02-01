@@ -31,7 +31,7 @@
 					</view>
 				</block>
 				<block v-else-if="item.type=='USER_CARD'">
-					<view v-if="item.bean.fromUid==$user.id" class="cu-item self">
+					<view v-if="item.bean.fromUid==user.id" class="cu-item self">
 						<view class="main">
 							<view @longpress="onLongPress($event,item.bean)" @tap="clickCard(item.bean)"
 								style="border: 1px solid #eee;background-color: #fff;width:400upx;height:180upx;border-radius: 6px;">
@@ -415,7 +415,11 @@
 		mapActions,
 		mapMutations
 	} from 'vuex'
-import { dateFormat, uuid } from '../../../common/utils';
+	import {
+		dateFormat,
+		uniqueArr,
+		uuid
+	} from '../../../common/utils';
 	const innerAudioContext = uni.createInnerAudioContext();
 	export default {
 		components: {
@@ -568,6 +572,7 @@ import { dateFormat, uuid } from '../../../common/utils';
 			this.getWindowSize();
 			let _this = this;
 			this.toid = option.toid;
+			if (!this.toid) return;
 			let user = uni.getStorageSync("USER");
 			loadRoom({
 				roomid: _this.toid
@@ -612,6 +617,12 @@ import { dateFormat, uuid } from '../../../common/utils';
 					uni.removeStorageSync(user.id + "#" + _this.toid + '_CHAT_MESSAGE_UNREAD');
 					_this.setUnReadMsgSum(_this.unReadMsgSum - parseInt(unRead))
 				}
+			}).catch(error => {
+				uni.showToast({
+					icon: 'none',
+					position: 'bottom',
+					title: error.msg ? error.msg : "服务器异常!"
+				});
 			})
 			if (this.chatMessageMap.has(user.id + "#" + this.toid)) {
 				let msg_list = this.chatMessageMap.get(user.id + "#" + this.toid);
@@ -622,7 +633,7 @@ import { dateFormat, uuid } from '../../../common/utils';
 				let str = uni.getStorageSync(user.id + "#" + this.toid + '_CHAT_MESSAGE');
 				if (str && str != "") {
 					var jsonObj = JSON.parse(str);
-					this.updateChatMessageMap( {
+					this.updateChatMessageMap({
 						key: user.id + "#" + this.toid,
 						value: jsonObj
 					})
@@ -673,6 +684,12 @@ import { dateFormat, uuid } from '../../../common/utils';
 						}
 					});
 				}
+			}).catch(error => {
+				uni.showToast({
+					icon: 'none',
+					position: 'bottom',
+					title: error.msg ? error.msg : "服务器异常!"
+				});
 			})
 			getChatCfg().then(res => {
 				let res_data = eval(res.data);
@@ -741,6 +758,14 @@ import { dateFormat, uuid } from '../../../common/utils';
 			scrollFn(e) {
 				this.scrollDetail = e.detail;
 			},
+			deduplication() {
+				this.setChatMyLoadding(false)
+				this.curChatMsgList.forEach((item) => {
+					item.uuid = item.bean.uuid
+				});
+				this.setCurChatMsgList(uniqueArr(this.curChatMsgList, "uuid"))
+				this.scrollToBottom();
+			},
 			tongbuMsg_1stInNoData() {
 				let _this = this;
 				uni.showLoading()
@@ -774,16 +799,16 @@ import { dateFormat, uuid } from '../../../common/utils';
 						setTimeout(() => {
 							this.moreShow = false
 							uni.hideLoading();
-							uni.showToast({
-								title: "没有云端数据",
-								icon: "none"
-							})
+							// uni.showToast({
+							// 	title: "没有云端数据",
+							// 	icon: "none"
+							// })
 						}, 400);
 					} else if (res_data.code == 200) {
-						if (res_data.body && res_data.body.records.length != 0) {
+						if (res_data.body && res_data.body.list.length != 0) {
 							let cList = [];
-							for (let i = 0; i < res_data.body.records.length; i++) { //从[0]中取出
-								cList.push(res_data.body.records[i][0])
+							for (let i = 0; i < res_data.body.list.length; i++) { //从[0]中取出
+								cList.push(res_data.body.list[i][0])
 							} //遍历
 							_this.syncMessageArr = cList
 							let user = uni.getStorageSync("USER");
@@ -808,15 +833,15 @@ import { dateFormat, uuid } from '../../../common/utils';
 						}
 						_this.pageParams = res_data.body
 						if (_this.pageParams.pageNumber > 1) {
-							for (let i = 0; i < res_data.body.records.length; i++) { //从[0]中取出
-								res_data.body.records[i] = res_data.body.records[i][0].bean
+							for (let i = 0; i < res_data.body.list.length; i++) { //从[0]中取出
+								res_data.body.list[i] = res_data.body.list[i][0].bean
 							} //遍历拿出数组bean
 							// _this.chatLogs = _this.chatLogs.concat(res_data.body.list);
-							_this.chatLogs.unshift.apply(_this.chatLogs, res_data.body.records)
+							_this.chatLogs.unshift.apply(_this.chatLogs, res_data.body.list)
 							uni.hideLoading();
 						} else {
 							uni.hideLoading();
-							_this.chatLogs = res_data.body.records
+							_this.chatLogs = res_data.body.list
 						}
 						for (let i = 0; i < _this.chatLogs.length; i++) { //从[0]中取出
 							_this.chatLogs[i] = _this.chatLogs[i][0].bean
@@ -825,8 +850,12 @@ import { dateFormat, uuid } from '../../../common/utils';
 							uni.hideLoading();
 						}, 400);
 					}
-				}).catch(err => {
-					console.log('err=>', err)
+				}).catch(error => {
+					uni.showToast({
+						icon: 'none',
+						position: 'bottom',
+						title: error.msg ? error.msg : "服务器异常!"
+					});
 				})
 			},
 			clickAite(item) {
@@ -1098,6 +1127,12 @@ import { dateFormat, uuid } from '../../../common/utils';
 								icon: "success",
 							});
 						}
+					}).catch(error => {
+						uni.showToast({
+							icon: 'none',
+							position: 'bottom',
+							title: error.msg ? error.msg : "服务器异常!"
+						});
 					})
 				}
 				this.hidePop();
@@ -1210,6 +1245,12 @@ import { dateFormat, uuid } from '../../../common/utils';
 							})
 						}
 					}
+				}).catch(error => {
+					uni.showToast({
+						icon: 'none',
+						position: 'bottom',
+						title: error.msg ? error.msg : "服务器异常!"
+					});
 				})
 			},
 			goMgr(_id) {
@@ -1276,20 +1317,20 @@ import { dateFormat, uuid } from '../../../common/utils';
 					if (jsonObj.length > 50) {
 						jsonObj.splice(0, jsonObj.length - 50);
 					}
-					this.updateChatMessageMap( {
+					this.updateChatMessageMap({
 						key: this.user.id + "#" + msgbean.chatid,
 						value: jsonObj
 					})
-					if (this.curChatEntity&& this.curChatEntity.id == v.toGroupid) {
+					if (this.curChatEntity && this.curChatEntity.id == v.toGroupid) {
 						this.setCurChatMsgList(jsonObj)
 					}
 				} else {
 					uni.setStorageSync(this.user.id + "#" + msgbean.chatid + '_CHAT_MESSAGE', JSON.stringify(
 						list));
-						this.updateChatMessageMap( {
-							key: this.user.id + "#" + msgbean.chatid,
-							value: list
-						})
+					this.updateChatMessageMap({
+						key: this.user.id + "#" + msgbean.chatid,
+						value: list
+					})
 					if (this.curChatEntity && this.curChatEntity.id == v.toGroupid) {
 						this.setCurChatMsgList(list)
 					}
@@ -1342,8 +1383,8 @@ import { dateFormat, uuid } from '../../../common/utils';
 					this.aite_map.clear();
 					v.aite = aite;
 					this.WEBSOCKET_SEND({
-						body:v,
-						CMD:MessageType.GROUP_CHAT_SEND_TXT
+						body: v,
+						CMD: MessageType.GROUP_CHAT_SEND_TXT
 					})
 					this.setChatMyLoadding(true);
 					this.sendBaseDo(v);
@@ -1411,7 +1452,7 @@ import { dateFormat, uuid } from '../../../common/utils';
 							// 需要上传的地址
 							url: _this.reqUrl + '/user/file/uploadVideo',
 							header: {
-							["member-token"]: _this.user.userToken,
+								["member-token"]: _this.user.userToken,
 							},
 							// filePath  需要上传的文件
 							filePath: res.tempFilePath,
@@ -1427,13 +1468,13 @@ import { dateFormat, uuid } from '../../../common/utils';
 										uuid: uuid(),
 									}
 									_this.WEBSOCKET_SEND({
-										body:{
+										body: {
 											txt: json.msg,
 											toGroupid: _this.toid,
 											fromUid: _this.user.id,
 											uuid: uuid(),
 										},
-										CMD:MessageType.GROUP_CHAT_SEND_TXT
+										CMD: MessageType.GROUP_CHAT_SEND_TXT
 									})
 									let videoSrc = _this.imgUrl + json.msg;
 									_this.temp_txt = _this.temp_txt + (
@@ -1486,14 +1527,14 @@ import { dateFormat, uuid } from '../../../common/utils';
 											uuid: uuid(),
 										}
 										_this.WEBSOCKET_SEND({
-											body:{
+											body: {
 												txt: json.msg,
 												toGroupid: _this.toid,
 												fromUid: _this.user.id,
 												uuid: uuid(),
 											},
-											CMD:MessageType.GROUP_CHAT_SEND_TXT
-										})	
+											CMD: MessageType.GROUP_CHAT_SEND_TXT
+										})
 										let img = _this.imgUrl + json.msg;
 										_this.temp_txt = _this.temp_txt + (
 											"<img  style='max-width: 150px;max-height:150px;' class='face' src='" +
@@ -1634,7 +1675,7 @@ import { dateFormat, uuid } from '../../../common/utils';
 					// 需要上传的地址
 					url: _this.reqUrl + '/user/file/uploadVoice',
 					header: {
-							["member-token"]: _this.user.userToken,
+						["member-token"]: _this.user.userToken,
 					},
 					// filePath  需要上传的文件
 					filePath: path,
@@ -1654,14 +1695,14 @@ import { dateFormat, uuid } from '../../../common/utils';
 									uuid: uuid(),
 								}
 								_this.WEBSOCKET_SEND({
-									body:{
+									body: {
 										txt: json.msg,
 										toGroupid: _this.toid,
 										fromUid: _this.user.id,
 										sub_txt: timeStr,
 										uuid: uuid(),
 									},
-									CMD:MessageType.GROUP_CHAT_SEND_VOICE
+									CMD: MessageType.GROUP_CHAT_SEND_VOICE
 								})
 								v.psr = "voice";
 								v.simple_content = "[语音]";

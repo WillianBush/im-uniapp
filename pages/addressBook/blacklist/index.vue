@@ -67,6 +67,12 @@
 				if (res_data.code == 200) {
 					_this.list = res_data.body;
 				}
+			}).catch(error => {
+				uni.showToast({
+					icon: 'none',
+					position: 'bottom',
+					title: error.msg ? error.msg : "服务器异常!"
+				});
 			});
 		},
 		computed: {
@@ -110,6 +116,12 @@
 									});
 									_this.list = nlist;
 								}
+							}).catch(error => {
+								uni.showToast({
+									icon: 'none',
+									position: 'bottom',
+									title: error.msg ? error.msg : "服务器异常!"
+								});
 							});
 						}
 					}

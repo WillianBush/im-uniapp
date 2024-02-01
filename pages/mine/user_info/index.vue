@@ -145,7 +145,7 @@
 
 						var uper = uni.uploadFile({
 							// 需要上传的地址
-							url: _this.reqUrl + '/user/file/uploadHeadpic',
+							url: _this.reqUrl + '/user/file/uploadAvatar',
 							header: {
 								["member-token"]: _this.user.userToken,
 							},

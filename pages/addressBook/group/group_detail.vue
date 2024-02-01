@@ -77,7 +77,13 @@
 				if (res_data.code == 200) {
 					_this.room = res_data.body;
 				}
-			});
+			}).catch(error => {
+					uni.showToast({
+						icon: 'none',
+						position: 'bottom',
+						title: error.msg ? error.msg : "服务器异常!"
+					});
+				});
 
 			isRoomMember({
 				roomid: this.id
@@ -88,7 +94,13 @@
 						_this.isRoomMember = true;
 					}
 				}
-			});
+			}).catch(error => {
+					uni.showToast({
+						icon: 'none',
+						position: 'bottom',
+						title: error.msg ? error.msg : "服务器异常!"
+					});
+				});
 		},
 		methods: {
 			goMgr(_id) {

@@ -21,13 +21,13 @@
 							style="float:left;width: 80upx;height: 80upx;background-size: 100% 100%;"></view>
 						<text class="text-grey"
 							style="float:left;margin-left: 10px;margin-top:15upx">{{item.to_name}}</text>
-						<text v-if="item.status=='wait'"
+						<text v-if="item.status=='0'"
 							style="float:right;margin-top:15upx;color:#999;font-size: 26upx;">等待确认</text>
-						<text v-if="item.status=='success'"
+						<text v-if="item.status=='1'"
 							style="float:right;margin-top:15upx;color:#999;font-size: 26upx;">已添加</text>
-						<text v-if="item.status=='faile'"
+						<text v-if="item.status=='2'"
 							style="float:right;margin-top:15upx;color:#999;font-size: 26upx;">已拒绝</text>
-						<text v-if="item.status=='pass'"
+						<text v-if="item.status=='3'"
 							style="float:right;margin-top:15upx;color:#999;font-size: 26upx;">已过期</text>
 
 					</view>
@@ -39,22 +39,22 @@
 						<text class="text-grey"
 							style="float:left;margin-left: 10px;margin-top:15upx">{{item.from_name}}</text>
 
-						<button v-if="item.status=='wait'" @tap="verify(item.id,2)" style="float:right;margin-top:8upx;"
+						<button v-if="item.status=='0'" @tap="verify(item.id,2)" style="float:right;margin-top:8upx;"
 							class="cu-btn">拒绝</button>
-						<button v-if="item.status=='wait'" @tap="verify(item.id,1)"
+						<button v-if="item.status=='0'" @tap="verify(item.id,1)"
 							style="float:right;margin-top:8upx;margin-right: 12upx;background-color: #07C160;color:#fff"
 							class="cu-btn">通过</button>
 						<text v-if="item.status=='success'"
 							style="float:right;margin-top:15upx;color:#999;font-size: 26upx;">已添加</text>
 						<text v-if="item.status=='faile'"
 							style="float:right;margin-top:15upx;color:#999;font-size: 26upx;">已拒绝</text>
-						<view v-if="item.status=='wait'" style="clear: both;
+						<view v-if="item.status=='0'" style="clear: both;
 						padding: 16upx 20px;
 						color: #999;
 						font-size: 26upx;">
 							验证内容：{{item.content}}
 						</view>
-						<text v-if="item.status=='pass'"
+						<text v-if="item.status=='3'"
 							style="float:right;margin-top:15upx;color:#999;font-size: 26upx;">已过期</text>
 					</view>
 
@@ -141,7 +141,7 @@
 
 		},
 		methods: {
-			...mapMutations('user',[
+			...mapMutations('user', [
 				'setUnDoFriendAddCount',
 				'setFriendList'
 			]),
@@ -153,12 +153,18 @@
 						_this.list = res_data.body;
 						let c = 0;
 						_this.list.forEach(item => {
-							if (item.status == "wait") {
+							if (item.status == "0") {
 								c++;
 							}
 						});
 						_this.setUnDoFriendAddCount(c)
 					}
+				}).catch(error => {
+					uni.showToast({
+						icon: 'none',
+						position: 'bottom',
+						title: error.msg ? error.msg : "服务器异常!"
+					});
 				});
 			},
 			verify(_id, _t) {
@@ -179,7 +185,7 @@
 										position: 'bottom',
 										title: "操作成功"
 									});
-									_this.setUnDoFriendAddCount( _this.unDoFriendAddCount - 1)
+									_this.setUnDoFriendAddCount(_this.unDoFriendAddCount - 1)
 									_this.initData();
 									if (_t == 1) {
 										friendList().then(res => {
@@ -196,6 +202,12 @@
 										title: res_data.msg
 									});
 								}
+							}).catch(error => {
+								uni.showToast({
+									icon: 'none',
+									position: 'bottom',
+									title: error.msg ? error.msg : "服务器异常!"
+								});
 							});
 						} else if (res.cancel) {
 							console.log('用户点击取消');

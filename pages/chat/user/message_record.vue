@@ -403,8 +403,13 @@
 						}, 400);
 
 					}
-				}).catch(err => {
-					console.log('err=>', err)
+				}).catch(error => {
+					uni.hideLoading()
+					uni.showToast({
+						icon: 'none',
+						position: 'bottom',
+						title: error.msg ? error.msg : "服务器异常!"
+					});
 				})
 			},
 			loadStoreData(pSize, pNumber) {
@@ -486,8 +491,7 @@
 				this.player = plus.audio.createPlayer(_vpath);
 				this.player.play(function() {
 					_this.selVoiceIndex = -1;
-				}, function(e) {
-				});
+				}, function(e) {});
 			},
 			/* 获取窗口尺寸 */
 			getWindowSize() {

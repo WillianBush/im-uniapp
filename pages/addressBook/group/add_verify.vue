@@ -95,6 +95,12 @@
 							title: res_data.msg
 						});
 					}
+				}).catch(error => {
+					uni.showToast({
+						icon: 'none',
+						position: 'bottom',
+						title: error.msg ? error.msg : "服务器异常!"
+					});
 				});
 			},
 			goSearchFriend() {
@@ -127,6 +133,12 @@
 					if (res_data.code == 200) {
 						_this.list = res_data.body
 					}
+				}).catch(error => {
+					uni.showToast({
+						icon: 'none',
+						position: 'bottom',
+						title: error.msg ? error.msg : "服务器异常!"
+					});
 				});
 			},
 			//获取文字信息

@@ -76,7 +76,13 @@
 						_this.idcard = res_data.body.idcard;
 					}
 				}
-			})
+			}).catch(error => {
+					uni.showToast({
+						icon: 'none',
+						position: 'bottom',
+						title: error.msg ? error.msg : "服务器异常!"
+					});
+				})
 		},
 		methods: {
 			// 函数参数必须是字符串，因为二代身份证号码是十八位，而在javascript中，十八位的数值会超出计算范围，造成不精确的结果，导致最后两位和计算的值不一致，从而该函数出现错误。
@@ -176,6 +182,12 @@
 							title: res_data.msg
 						});
 					}
+				}).catch(error => {
+					uni.showToast({
+						icon: 'none',
+						position: 'bottom',
+						title: error.msg ? error.msg : "服务器异常!"
+					});
 				})
 			}
 		}

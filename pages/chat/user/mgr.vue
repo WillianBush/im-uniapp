@@ -145,14 +145,26 @@
 						_this.cur_user.nickName = s;
 					}
 				}
-			})
+			}).catch(error => {
+					uni.showToast({
+						icon: 'none',
+						position: 'bottom',
+						title: error.msg ? error.msg : "服务器异常!"
+					});
+				})
 			//是否超级用户
 			isSuperUser().then(res => {
 				let res_data = eval(res.data);
 				if (res_data.code == 200) {
 					_this.super_user = parseInt(res_data.msg);
 				}
-			})
+			}).catch(error => {
+					uni.showToast({
+						icon: 'none',
+						position: 'bottom',
+						title: error.msg ? error.msg : "服务器异常!"
+					});
+				})
 			isBlack({
 				uid: this.id
 			}).then(res => {
@@ -169,7 +181,13 @@
 						duration: 2000
 					});
 				}
-			})
+			}).catch(error => {
+					uni.showToast({
+						icon: 'none',
+						position: 'bottom',
+						title: error.msg ? error.msg : "服务器异常!"
+					});
+				})
 
 			let darao = uni.getStorageSync(this.id + "_darao");
 			if (darao && darao != "") {
@@ -248,7 +266,13 @@
 									duration: 2000
 								});
 							}
-						})
+						}).catch(error => {
+					uni.showToast({
+						icon: 'none',
+						position: 'bottom',
+						title: error.msg ? error.msg : "服务器异常!"
+					});
+				})
 					},
 					fail: function(res) {}
 				});
@@ -347,6 +371,12 @@
 							duration: 2000
 						});
 					}
+				}).catch(error => {
+					uni.showToast({
+						icon: 'none',
+						position: 'bottom',
+						title: error.msg ? error.msg : "服务器异常!"
+					});
 				})
 			},
 			SwitchB(e) {

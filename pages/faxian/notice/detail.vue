@@ -36,7 +36,6 @@
 			}
 		},
 		onLoad(e) {
-			console.log(e.id);
 			let _this = this;
 			let user = uni.getStorageSync("USER");
 
@@ -47,7 +46,13 @@
 				if (res_data.code == 200) {
 					_this.bean = res_data.body;
 				}
-			})
+			}).catch(error => {
+					uni.showToast({
+						icon: 'none',
+						position: 'bottom',
+						title: error.msg ? error.msg : "服务器异常!"
+					});
+				})
 		},
 		methods: {
 

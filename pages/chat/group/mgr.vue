@@ -53,7 +53,7 @@
 					<text class="text-grey" style="color:#333">邀请群成员</text>
 				</view>
 			</view>
-			<view v-if="user.id==curChatEntity.owner_UUID||$curChatEntity.memberMgr_ids.indexOf(user.id)>=0"
+			<view v-if="user.id==curChatEntity.owner_UUID||curChatEntity.memberMgr_ids.indexOf(user.id)>=0"
 				@tap="goRemoveMember()" class="cu-item arrow">
 				<view class="content">
 					<text class="text-grey" style="color:#333">移除群成员</text>

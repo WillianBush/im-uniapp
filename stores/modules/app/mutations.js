@@ -29,6 +29,9 @@ export default{
 		Log.d(TAG,"setReqDomain",payload)
 		state.reqUrl = payload;
 	},
+	setCheckUrl(state,payload){
+		state.reqUrl.splice(payload,1)
+	},
 	setSocketDomain(state,payload){
 		state.socketUrl = payload;
 	},

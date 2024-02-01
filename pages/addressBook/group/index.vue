@@ -104,6 +104,12 @@
 							title: "获取列表失败"
 						});
 					}
+				}).catch(error => {
+					uni.showToast({
+						icon: 'none',
+						position: 'bottom',
+						title: error.msg ? error.msg : "服务器异常!"
+					});
 				});
 			},
 			goRoomAddList() {
