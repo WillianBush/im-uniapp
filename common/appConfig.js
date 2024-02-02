@@ -10,10 +10,13 @@ const configJapan= {
 
 const configLive1= {
 	appName : "好物通",
-	requestUrl: ["http://http.441635.pw/config_sys/domains-prod.txt"],
-	loginIcon : "/static/logo.png",
-	registerIcon : "/static/logo.png",
-	setupPicture : "/static/splash.png"
+	requestUrl: ["http://media.441635.pw/config_sys/domains-prod.txt",
+		"http://media.441635.pw/config_sys/domains-prod.txt",
+		"http://media.441635.pw/config_sys/domains-prod.txt"],
+	loginIcon : "/static/logo12.png",
+	registerIcon : "/static/logo12.png",
+	language: "zh-CN",
+	setupPicture : "/static/splash.jpg"
 }
 
 const config9113= {

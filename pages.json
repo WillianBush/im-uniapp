@@ -5,13 +5,12 @@
 			"style": {}
 		},
 		{
-			"path": "pages/other/pictureLook",
-			"style": {}
-		},
-		{
 			"path": "pages/index/index",
 			"style": {}
-		},{ 
+		},{
+			"path": "pages/faxian/webview",
+			"style": {}
+		},{
             "path": "pages/login/login",
             "style": {}
         },{
@@ -58,7 +57,9 @@
 		}
 		,{
 		    "path" : "pages/chat/user/message_record",
-		    "style" : {}
+		    "style" : {
+				"enablePullDownRefresh":true
+			}
 		}
         ,{
             "path" : "pages/chat/user_detail",
@@ -90,10 +91,6 @@
 		},
 		{
 		    "path" : "pages/mine/g1",
-		    "style" : {}
-		},
-		{
-		    "path" : "pages/mine/wallet/index",
 		    "style" : {}
 		},
 		{
@@ -139,11 +136,17 @@
 		{
 		    "path" : "pages/chat/group/upd_pic",
 		    "style" : {}
-		} 
+		}
         ,{
-            "path" : "pages/faxian/site/site",
-            "style" : {}
-        },
+			"path" : "pages/faxian/site/site",
+			"style" : {}
+		},{
+			"path" : "pages/faxian/site/shoppage",
+			"style" : {}
+		},{
+			"path" : "pages/faxian/site/shopDetail",
+			"style" : {}
+		},
 		{
 		    "path" : "pages/home/index",
 		    "style" : {}
@@ -168,26 +171,11 @@
 		    "path" : "pages/addressBook/blacklist/index",
 		    "style" : {}
 		},
-		{
-		    "path" : "pages/mine/wallet/pay_pwd_set",
-		    "style" : {}
-		}
-       ,{
+       {
            "path" : "pages/faxian/kefu/index",
            "style" : {}
         }
-        ,{
-            "path" : "pages/mine/wallet/tel_verify",
-            "style" : {}
-        },
-		{
-		    "path" : "pages/mine/wallet/withdraw/index",
-		    "style" : {}
-		},
-		{
-		    "path" : "pages/mine/wallet/bank_list",
-		    "style" : {}
-		},
+        ,
 		{
 			"path" : "pages/custom/myVideo",
 			"style" : {}
@@ -195,26 +183,6 @@
 		{
 			"path" : "pages/empty/empty",
 			"style" : {}
-		},
-		{
-		    "path" : "pages/mine/wallet/add_bank",
-		    "style" : {}
-		},
-		{
-		    "path" : "pages/mine/wallet/edit_bank",
-		    "style" : {}
-		},
-		{
-		    "path" : "pages/mine/wallet/sel_bank_list",
-		    "style" : {}
-		},
-		{
-		    "path" : "pages/mine/wallet/bill",
-		    "style" : {}
-		},
-		{
-		    "path" : "pages/mine/wallet/chongzhi/index",
-		    "style" : {}
 		},
 		{
 		    "path" : "pages/chat/group/qrCode",
@@ -230,21 +198,21 @@
 		}
         ,{
             "path" : "pages/faxian/txtContent/txtContent",
-            "style" :                                                                                    
+            "style" :
             {
                 "navigationBarTitleText": "",
                 "enablePullDownRefresh": false
             }
-            
+
         },
 		{
 		    "path" : "pages/super_user/search",
-		    "style" :                                                                                    
+		    "style" :
 		    {
 		        "navigationBarTitleText": "",
 		        "enablePullDownRefresh": false
 		    }
-		    
+
 		},
 		{
 		    "path" : "pages/mine/user_info/qrCode",
@@ -262,158 +230,94 @@
 		    "path" : "pages/mine/favourite_list",
 		    "style" : {}
 		}
-        ,{
-            "path" : "pages/chat/red/sendRed",
-            "style" :                                                                                    
-            {
-                "navigationBarTitleText": "",
-                "enablePullDownRefresh": false
-            }
-            
-        }
-		,{
-		    "path" : "pages/chat/transfer/transfer",
-		    "style" :                                                                                    
-		    {
-		        "navigationBarTitleText": "",
-		        "enablePullDownRefresh": false
-		    }
-		    
-		}
-        ,{
-            "path" : "pages/chat/red/red_detail",
-            "style" :                                                                                    
-            {
-                "navigationBarTitleText": "",
-                "enablePullDownRefresh": false,
-				"navigationBarBackgroundColor":"#E13C36"
-            }
-            
-        }
-        ,{
-            "path" : "pages/chat/transfer/transfer_receive",
-            "style" :                                                                                    
-            {
-                "navigationBarTitleText": "",
-                "enablePullDownRefresh": false
-            }
-            
-        }
 		,{
 		    "path" : "pages/chat/card/sendCard",
-		    "style" :                                                                                    
+		    "style" :
 		    {
 		        "navigationBarTitleText": "",
 		        "enablePullDownRefresh": false
 		    }
-		    
+
 		}
         ,{
             "path" : "pages/hotItem/hotItem",
-            "style" :                                                                                    
+            "style" :
             {
                 "navigationBarTitleText": "",
                 "enablePullDownRefresh": false
             }
-            
+
         }
         ,{
             "path" : "pages/hotItem/hotItem_app",
             "style" : {
 				"navigationBarBackgroundColor":"#E54D42"
 			}
-            
+
         }
         ,{
             "path" : "pages/mine/shiming",
-            "style" :                                                                                    
+            "style" :
             {
                 "navigationBarTitleText": "",
                 "enablePullDownRefresh": false
             }
-            
+
         }
         ,{
             "path" : "pages/chat/group/not_shiming_member_list",
-            "style" :                                                                                    
+            "style" :
             {
                 "navigationBarTitleText": "",
                 "enablePullDownRefresh": false
             }
-            
-        }
-        ,{
-            "path" : "pages/chat/red/redRecord",
-            "style" :                                                                                    
-            {
-                "navigationBarTitleText": "",
-                "enablePullDownRefresh": false
-            }
-            
+
         }
         ,{
             "path" : "pages/chat/group/yaoqi",
-            "style" :                                                                                    
+            "style" :
             {
                 "navigationBarTitleText": "",
                 "enablePullDownRefresh": false
             }
-            
+
         }
         ,{
             "path" : "pages/chat/group/add_room_mgr",
-            "style" :                                                                                    
+            "style" :
             {
                 "navigationBarTitleText": "",
                 "enablePullDownRefresh": false
             }
-            
+
         }
         ,{
             "path" : "pages/chat/group/room_mgr",
-            "style" :                                                                                    
+            "style" :
             {
                 "navigationBarTitleText": "",
                 "enablePullDownRefresh": false
             }
-            
+
         }
-       
+
         ,{
             "path" : "pages/faxian/notice/index",
-            "style" :                                                                                    
+            "style" :
             {
                 "navigationBarTitleText": "",
                 "enablePullDownRefresh": false
             }
-            
+
         }
         ,{
             "path" : "pages/faxian/notice/detail",
-            "style" :                                                                                    
+            "style" :
             {
                 "navigationBarTitleText": "",
                 "enablePullDownRefresh": false
             }
-            
-        }
-        ,{
-            "path" : "pages/mine/signIn",
-            "style" :                                                                                    
-            {
-                "navigationBarTitleText": "",
-                "enablePullDownRefresh": false
-            }
-            
-        }
-        ,{
-            "path" : "pages/mine/signInRecord",
-            "style" :                                                                                    
-            {
-                "navigationBarTitleText": "",
-                "enablePullDownRefresh": false
-            }
-            
+
         }
     ],
 	"globalStyle": {
@@ -421,11 +325,11 @@
 		"navigationStyle": "custom",
 		"navigationBarBackgroundColor":"#0081FF",
 		"app-plus": {
-			"titleNView": false ,//禁用原生导航栏  
+			"titleNView": false ,//禁用原生导航栏
 			"softinputMode": "adjustResize"//手机软键盘升起不让其将页面头部上推
 			//"animationType": "fade-in",
 			//"animationDuration": 300
-		} 
+		}
 	},
 	"condition" : { //模式配置，仅开发期间生效
 		"current": 0, //当前激活的模式(list 的索引项)
