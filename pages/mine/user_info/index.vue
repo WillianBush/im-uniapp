@@ -14,7 +14,7 @@
 						style="float:left;margin-left: 10px;line-height: 160upx;color: #8799a3;">头像</text>
 					<view style="float:right;width:130upx;padding-top:30upx;padding-bottom:30upx;margin-left: 10upx;">
 						<view class="cu-avatar radius margin-left"
-							:style="'height:100upx;width:100upx;background-image:url('+imgUrl+user.headpic+');'">
+							:style="'height:100upx;width:100upx;background-image:url('+userHeadPic+');'">
 						</view>
 					</view>
 				</view>
@@ -97,9 +97,16 @@
 			...mapState('user', [
 				'user'
 			]),
+			userHeadPic() {
+				if (this.user.headpic && this.user.headpic.indexOf('static/header') != -1) {
+					return this.user.headpic;
+				} else {
+					return this.imgUrl + this.user.headpic;
+				}
+			}
 		},
 		methods: {
-			...mapMutations('user',[
+			...mapMutations('user', [
 				'updateUserHeadpic'
 			]),
 			goQrcode() {

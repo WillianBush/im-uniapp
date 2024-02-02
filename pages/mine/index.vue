@@ -27,7 +27,7 @@
 				<view @tap="goUserInfo()" style="width:100%;height:340upx;padding-top:130upx">
 
 					<view class="cu-avatar xl round margin-left"
-						:style="'float:left;background-image: url('+imgUrl+headpic +');'">
+						:style="'float:left;background-image: url('+userHeadPic +');'">
 					</view>
 					<view style="float:left;margin-left: 10px;margin-top:6px;">
 						<text class="uni-ellipsis-2" style="font-size: 16px;font-weight: 800;">{{nickName}}</text>
@@ -160,7 +160,14 @@
 				'greetingList',
 				'getGreetingMsgAction'
 			]
-			)
+			),
+			userHeadPic() {
+				if (this.user.headpic && this.user.headpic.indexOf('static/header') != -1) {
+					return this.user.headpic;
+				} else {
+					return this.imgUrl + this.user.headpic;
+				}
+			}
 		},
 		mounted() {
 			let _this = this;

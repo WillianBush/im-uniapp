@@ -12,7 +12,7 @@
 			</view>
 			<view class="action">
 				<button @tap="search()" style="background: #FFAA01;"
-					class="cu-btn bg-gradual-green shadow-blur round">{{i18n.refresh}}</button>
+					class="cu-btn bg-gradual-green shadow-blur round">{{i18n.searchinput}}</button>
 				<button @tap="getRefresh()" style="margin-left:20rpx;background: #3F92F8;"
 					class="cu-btn bg-gradual-green shadow-blur round">{{i18n.refresh}}</button>
 			</view>
@@ -55,7 +55,7 @@
 						<view @tap="goUserDetail(items.member_uuid)" class="cu-item" v-for="(items,index1) in item.list"
 							:key="index1">
 							<view class="cu-avatar round lg"
-								:style="{'backgroundImage': 'url('+imgUrl+ items.headpic +')' }"
+								:style="{'backgroundImage': 'url('+getHeadPic(items.headpic) +')' }"
 								style="width: 84upx;height: 84upx;background-size: 100% 100%;"></view>
 							<view class="content">
 								<view class="text-grey">{{items.name}}</view>
@@ -71,7 +71,7 @@
 				{{i18n.nofriend}}
 			</view>
 		</scroll-view>
-		<view style="bottom:50upx" class="indexBar" :style="[{height:'calc(100vh - ' + CustomBar + 'px - 50px)'}]">
+		<view style="bottom:50upx" class="indexBar" :style="[{height:'calc(100vh - ' + CustomBar + 'px - 80px)'}]">
 			<view class="indexBar-box" @touchstart="tStart" @touchend="tEnd" @touchmove.stop="tMove">
 				<view class="indexBar-item" v-for="(item,index) in list" :key="index" :id="index" @touchstart="getCur"
 					@touchend="setCur"> {{item.name}}</view>
@@ -170,8 +170,16 @@
 			...mapMutations('chat', [
 				'setMemberLength'
 			]),
+			getHeadPic(headpic) {
+				if (headpic && headpic.indexOf('static/header') != -1) {
+					return headpic;
+				} else {
+					return this.imgUrl + headpic;
+				}
+			},
 			getRefresh() {
 				this.kw1 = ""
+				console.log("=====getRefresh")
 				uni.showLoading({
 					title: '加载中'
 				});
@@ -206,13 +214,6 @@
 				uni.navigateTo({
 					url: "/pages/addressBook/blacklist/index"
 				})
-			},
-			showMsg() {
-				uni.showToast({
-					icon: 'none',
-					position: 'bottom',
-					title: "功能未开启"
-				});
 			},
 			goUserDetail(_id) {
 				uni.navigateTo({
@@ -293,7 +294,7 @@
 		position: fixed;
 		right: 0px;
 		bottom: 0px;
-		padding: 20upx 20upx 20upx 60upx;
+		padding: 10upx 20upx 20upx 10upx;
 		display: flex;
 		align-items: center;
 	}

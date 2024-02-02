@@ -48,7 +48,7 @@
 													margin: auto auto;display: flex;">
 									<view style="width:90upx;margin-top: 26upx;width: 80upx;height: 80upx;"
 										class="cu-avatar radius"
-										:style="'background-image:url('+imgUrl+item.bean.mheadpic+');'">
+										:style="'background-image:url('+getHeadPic(item.bean.mheadpic)+');'">
 									</view>
 									<view
 										style="width: 240upx;;margin-top: 30upx;margin-left: 12upx; text-align: left;">
@@ -68,12 +68,12 @@
 							</view>
 						</view>
 						<view class="cu-avatar radius"
-							:style="'background-image:url('+imgUrl+item.bean.fromHeadpic+');'"></view>
+							:style="'background-image:url('+getHeadPic(item.bean.fromHeadpic)+');'"></view>
 						<view class="date">{{item.bean.date}}</view>
 					</view>
 					<view v-else class="cu-item">
 						<view @tap.stop="goUserDetail(item.bean.fromUid)" class="cu-avatar radius"
-							:style="'background-image:url('+imgUrl+item.bean.fromHeadpic+');'"></view>
+							:style="'background-image:url('+getHeadPic(item.bean.fromHeadpic)+');'"></view>
 						<view class="main">
 							<view @longpress="onLongPress($event,item.bean)" @tap="clickCard(item.bean)"
 								style="border: 1px solid #eee;background-color: #fff;width:400upx;height:180upx;border-radius: 6px;">
@@ -83,7 +83,7 @@
 													margin: auto auto;display: flex;">
 									<view style="width:90upx;margin-top: 26upx;width: 80upx;height: 80upx;"
 										class="cu-avatar radius"
-										:style="'background-image:url('+imgUrl+item.bean.mheadpic+');'">
+										:style="'background-image:url('+getHeadPic(item.bean.mheadpic)+');'">
 									</view>
 									<view
 										style="width: 240upx;;margin-top: 30upx;margin-left: 12upx; text-align: left;">
@@ -143,14 +143,14 @@
 							</view>
 						</view>
 						<view v-if="item.bean.psr!='video'" class="cu-avatar radius"
-							:style="'background-image:url('+imgUrl+item.bean.fromHeadpic+');'"></view>
+							:style="'background-image:url('+getHeadPic(item.bean.fromHeadpic)+');'"></view>
 						<view v-if="item.bean.psr!='video'" class="date">{{item.bean.date}}</view>
 					</view>
 
 					<!--别人发来的-->
 					<view v-else class="cu-item">
 						<view @tap.stop="goUserDetail(item.bean.fromUid)" class="cu-avatar radius"
-							:style="'background-image:url('+imgUrl+item.bean.fromHeadpic+');'"></view>
+							:style="'background-image:url('+getHeadPic(item.bean.fromHeadpic)+');'"></view>
 						<view class="main">
 							<view @longtap="onLongPress($event,item.bean)"
 								:class="[item.bean.psr=='uparse'?'':'content shadow']" style="color:#222;">
@@ -219,14 +219,14 @@
 							</view>
 						</view>
 						<view v-if="item.bean.psr!='video'" class="cu-avatar radius"
-							:style="'background-image:url('+imgUrl+item.bean.fromHeadpic+');'"></view>
+							:style="'background-image:url('+getHeadPic(item.bean.fromHeadpic)+');'"></view>
 						<view v-if="item.bean.psr!='video'" class="date">{{item.bean.date}}</view>
 					</view>
 
 					<!--别人发来的-->
 					<view v-else class="cu-item">
 						<view @tap.stop="goUserDetail(item.bean.fromUid)" class="cu-avatar radius"
-							:style="'background-image:url('+imgUrl+item.bean.fromHeadpic+');'"></view>
+							:style="'background-image:url('+getHeadPic(item.bean.fromHeadpic)+');'"></view>
 						<view class="main">
 							<view @longpress="onLongPress($event,item.bean)"
 								:class="[item.bean.psr=='uparse'?'':'content shadow']" style="color:#222;">
@@ -264,7 +264,7 @@
 				<view class="main">
 					<view style="background-color: #F1F1F1;" class="cu-load load-cuIcon loading"></view>
 				</view>
-				<view class="cu-avatar radius" :style="'background-image:url('+imgUrl+user.headpic+');'"></view>
+				<view class="cu-avatar radius" :style="'background-image:url('+getHeadPic(user.headpic)+');'"></view>
 			</view>
 
 
@@ -517,7 +517,7 @@
 			...mapState('app', [
 				'imgUrl',
 				'reqUrl'
-			])
+			]),
 		},
 		onShow() {
 			let _this = this;
@@ -656,6 +656,13 @@
 				'collectAction'
 
 			]),
+			getHeadPic(headpic) {
+				if (headpic && headpic.indexOf('static/header') != -1) {
+					return headpic;
+				} else {
+					return this.imgUrl + headpic;
+				}
+			},
 			clearMsg() {
 				this.setCurChatEntity(null);
 				this.setCurChatMsgList([]);

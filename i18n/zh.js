@@ -70,6 +70,5 @@ module.exports = {
 	"nottop":"取消置顶",
 	"delete":"删除",
     "sponsor": "发起群聊",
-    "refresh": "刷新"
   }
 }

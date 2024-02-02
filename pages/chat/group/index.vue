@@ -41,7 +41,7 @@
 												margin: auto auto;display: flex;">
 									<view style="width:90upx;margin-top: 26upx;width: 80upx;height: 80upx;"
 										class="cu-avatar radius"
-										:style="'background-image:url('+imgUrl+item.bean.mheadpic+');'">
+										:style="'background-image:url('+getHeadPic(item.bean.mheadpic)+');'">
 									</view>
 									<view
 										style="width: 240upx;;margin-top: 30upx;margin-left: 12upx; text-align: left;">
@@ -61,12 +61,12 @@
 							</view>
 						</view>
 						<view class="cu-avatar radius"
-							:style="'background-image:url('+imgUrl+item.bean.fromHeadpic+');'"></view>
+							:style="'background-image:url('+getHeadPic(item.bean.fromHeadpic)+');'"></view>
 						<view class="date">{{item.bean.date}}</view>
 					</view>
 					<view v-else class="cu-item">
 						<view @longpress="onLongPress1($event,item.bean)" @tap.stop="goUserDetail(item.bean.fromUid)"
-							class="cu-avatar radius" :style="'background-image:url('+imgUrl+item.bean.fromHeadpic+');'">
+							class="cu-avatar radius" :style="'background-image:url('+getHeadPic(item.bean.fromHeadpic)+');'">
 						</view>
 						<view class="main" style="display: block!important;">
 							<view style="height: 40upx;font-size: 12px;color: #8799a3;">{{item.bean.fromName}}
@@ -81,7 +81,7 @@
 												margin: auto auto;display: flex;">
 									<view style="width:90upx;margin-top: 26upx;width: 80upx;height: 80upx;"
 										class="cu-avatar radius"
-										:style="'background-image:url('+imgUrl+item.bean.mheadpic+');'">
+										:style="'background-image:url('+getHeadPic(item.bean.mheadpic)+');'">
 									</view>
 									<view
 										style="width: 240upx;;margin-top: 30upx;margin-left: 12upx; text-align: left;">
@@ -133,13 +133,13 @@
 							</view>
 						</view>
 						<view v-if="item.bean.psr!='video'" class="cu-avatar radius"
-							:style="'background-image:url('+imgUrl+item.bean.fromHeadpic+');'"></view>
+							:style="'background-image:url('+getHeadPic(item.bean.fromHeadpic)+');'"></view>
 						<view v-if="item.bean.psr!='video'" class="date">{{item.bean.date}}</view>
 					</view>
 					<!--接收着-->
 					<view v-else class="cu-item" :id="item.bean.uuid">
 						<view @click="doublebclick2($event,item.bean)" class="cu-avatar radius"
-							:style="'background-image:url('+imgUrl+item.bean.fromHeadpic+');'"></view>
+							:style="'background-image:url('+getHeadPic(item.bean.fromHeadpic)+');'"></view>
 						<view class="main" style="display: block!important;">
 							<view style="height: 40upx;font-size: 12px;color: #8799a3;">
 								<text style="color:#FFB502;margin-right:6upx;    font-size: 36upx;"
@@ -208,13 +208,13 @@
 							</view>
 						</view>
 						<view v-if="item.bean.psr!='video'" class="cu-avatar radius"
-							:style="'background-image:url('+imgUrl+item.bean.fromHeadpic+');'"></view>
+							:style="'background-image:url('+getHeadPic(item.bean.fromHeadpic)+');'"></view>
 						<view v-if="item.bean.psr!='video'" class="date">{{item.bean.date}}</view>
 					</view>
 					<!--接收者-->
 					<view v-else class="cu-item" :id="item.bean.uuid">
 						<view @longpress="onLongPress1($event,item.bean)" @tap.stop="goUserDetail(item.bean.fromUid)"
-							class="cu-avatar radius" :style="'background-image:url('+imgUrl+item.bean.fromHeadpic+');'">
+							class="cu-avatar radius" :style="'background-image:url('+getHeadPic(item.bean.fromHeadpic)+');'">
 						</view>
 						<view class="main" style="display: block!important;">
 							<view style="height: 40upx;font-size: 12px;color: #8799a3;">
@@ -259,7 +259,7 @@
 				<view class="main">
 					<view style="background-color: #F1F1F1;" class="cu-load load-cuIcon loading"></view>
 				</view>
-				<view class="cu-avatar radius" :style="'background-image:url('+imgUrl+user.headpic+');'"></view>
+				<view class="cu-avatar radius" :style="'background-image:url('+getHeadPic(user.headpic)+');'"></view>
 			</view>
 			<view v-show="curChatEntity.stopSpeak&&curChatEntity.stopSpeak==1" class="cu-info">
 				<text class="cuIcon-roundclosefill text-red " style="margin-right: 8upx;"></text> 全员禁言中
@@ -730,6 +730,13 @@
 				'uploadImageAction',
 				'uploadVoiceAction'
 			]),
+			getHeadPic(headpic) {
+				if (headpic && headpic.indexOf('static/header') != -1) {
+					return headpic;
+				} else {
+					return this.imgUrl + headpic;
+				}
+			},
 			loadmore() { //加载更多
 				this.pageParams.pageNumber++
 				this.tongbuMsg(this.pageParams.pageCount, this.pageParams.pageNumber);
