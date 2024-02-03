@@ -12,7 +12,7 @@
 		<view style="background: #fff;display: flex;height:220upx">
 			<view style="width:150upx;padding-top:30upx;padding-bottom:30upx;margin-left: 10upx;">
 				<view class="cu-avatar radius margin-left"
-					:style="'height:120upx;width:120upx;background-image:url('+imgUrl+userDetail.headpic+');'">
+					:style="'height:120upx;width:120upx;background-image:url('+getHeadPic(userDetail.headpic)+');'">
 				</view>
 			</view>
 			<view v-if="userDetail.id!='-1'" style="margin-left: 20upx;">
@@ -137,11 +137,11 @@
 			}).then(res => {
 				let res_data = eval(res.data);
 				if (res_data.code == 200) {
-					_this.user = res_data.body;
-					let s = uni.getStorageSync(_this.user.id + "_NOTE");
+					_this.userDetail = res_data.body;
+					let s = uni.getStorageSync(_this.userDetail.id + "_NOTE");
 					if (s && s != "") {
-						_this.user.nickName_real = _this.user.nickName;
-						_this.user.nickName = s;
+						_this.userDetail.nickName_real = _this.userDetail.nickName;
+						_this.userDetail.nickName = s;
 					}
 				}
 			})
@@ -158,6 +158,13 @@
 			})
 		},
 		methods: {
+			getHeadPic(headpic) {
+				if (headpic && headpic.indexOf('static/header') != -1) {
+					return headpic;
+				} else {
+					return this.imgUrl + headpic;
+				}
+			},
 			GroupStopSpeak(e) {
 				let _this = this;
 				this.groupStopSpeak = e.detail.value;

@@ -27,7 +27,7 @@
 				<view v-for="item in list" class="cu-item">
 					<view class="content">
 						<view class="cu-avatar round lg"
-							:style="{'backgroundImage': 'url('+imgUrl+ item.headpic +')' }"
+							:style="{'backgroundImage': 'url('+getHeadPic(item.headpic)+')' }"
 							style="float:left;width: 80upx;height: 80upx;background-size: 100% 100%;"></view>
 						<text class="text-grey"
 							style="float:left;margin-left: 10px;margin-top:15upx">{{item.name}}</text>
@@ -83,6 +83,13 @@
 			])
 		},
 		methods: {
+			getHeadPic(headpic) {
+				if (headpic && headpic.indexOf('static/header') != -1) {
+					return headpic;
+				} else {
+					return this.imgUrl + headpic;
+				}
+			},
 			goVerify(_uuid) {
 				uni.navigateTo({
 					url: "/pages/addressBook/new_friend/add_friend_verify?uuid=" + _uuid

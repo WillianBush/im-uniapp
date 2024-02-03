@@ -18,7 +18,7 @@
 		    margin: auto auto;
 		    color: #999;
 		    margin-top: .4rem;
-		    font-size: .3rem">你需要发送验证申请，等待对方通过</view>
+		    font-size: 1rem">你需要发送验证申请，等待对方通过</view>
 	</view>
 </template>
 

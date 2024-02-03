@@ -108,11 +108,11 @@
 					@touchmove="ListTouchMove" @touchend="ListTouchEnd" :data-target="'move-box-' + index">
 					<view v-if="chatCfg&&chatCfg.showUserOnline==1"
 						:class="{unline_pic:item.typeid=='2'&&item.online==0&&item.id!='-1'}" class="cu-avatar round lg"
-						:style="{'backgroundImage': 'url('+imgUrl+ item.img +')'}">
+						:style="{'backgroundImage': 'url('+getHeadPic(item.img) +')'}">
 
 					</view>
 					<view v-else class="cu-avatar round lg"
-						:style="{'backgroundImage': 'url('+imgUrl+ item.img +')'}">
+						:style="{'backgroundImage': 'url('+getHeadPic(item.img) +')'}">
 
 					</view>
 					<view class="content">
@@ -205,6 +205,13 @@
 			...mapMutations('chat',[
 				'setArList'
 			]),
+			getHeadPic(headpic) {
+				if (headpic && headpic.indexOf('static/header') != -1) {
+					return headpic;
+				} else {
+					return this.imgUrl + headpic;
+				}
+			},
 			...mapActions('chat',[
 				'listPageAction',
 				'scanCode',

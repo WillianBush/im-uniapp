@@ -17,7 +17,7 @@
 				<view v-for="item in list" class="cu-item">
 					<view v-if="item.from_member_uuid==user.id" class="content">
 						<view class="cu-avatar round lg"
-							:style="{'backgroundImage': 'url('+imgUrl+ item.to_headpic +')' }"
+							:style="{'backgroundImage': 'url('+getHeadPic(item.to_headpic) +')' }"
 							style="float:left;width: 80upx;height: 80upx;background-size: 100% 100%;"></view>
 						<text class="text-grey"
 							style="float:left;margin-left: 10px;margin-top:15upx">{{item.to_name}}</text>
@@ -34,7 +34,7 @@
 
 					<view v-if="item.to_member_uuid==user.id" class="content">
 						<view class="cu-avatar round lg"
-							:style="{'backgroundImage': 'url('+imgUrl+ item.from_headpic +')' }"
+							:style="{'backgroundImage': 'url('+getHeadPic(item.from_headpic) +')' }"
 							style="float:left;width: 80upx;height: 80upx;background-size: 100% 100%;"></view>
 						<text class="text-grey"
 							style="float:left;margin-left: 10px;margin-top:15upx">{{item.from_name}}</text>
@@ -141,6 +141,13 @@
 
 		},
 		methods: {
+			getHeadPic(headpic) {
+				if (headpic && headpic.indexOf('static/header') != -1) {
+					return headpic;
+				} else {
+					return this.imgUrl + headpic;
+				}
+			},
 			...mapMutations('user', [
 				'setUnDoFriendAddCount',
 				'setFriendList'

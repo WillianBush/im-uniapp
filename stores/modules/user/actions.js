@@ -167,6 +167,9 @@ export default {
 				if (res_data.code == 200) {
 					commit("setUser", res_data.body);
 					uni.setStorageSync("USER", res_data.body);
+					uni.setStorageSync("token", res_data.token);
+					commit("setUserToken", res_data.token);
+					
 					commit(
 						"setUnDoRoomAddCount",
 						res_data.body.unDoRoomAddCount

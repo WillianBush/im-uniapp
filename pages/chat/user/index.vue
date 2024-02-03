@@ -553,12 +553,11 @@
 			})
 		},
 		onLoad(option) {
+			if (!option.toid) return;
 			this.setCurChatMsgList([]);
 			this.setChatMyLoadding(false);
-
-			let _this = this;
 			this.toid = option.toid;
-			if (!this.toid) return;
+			let _this = this;
 			let user = uni.getStorageSync("USER");
 			this.getWindowSize();
 			if (this.chatMessageMap.has(user.id + "#" + this.toid)) {
@@ -582,7 +581,7 @@
 			}
 
 			/*获取聊天的对象 user数据*/
-			getTalkUserInfo(_this.toid).then(res => {
+			getTalkUserInfo({toid:_this.toid}).then(res => {
 				let res_data = eval(res.data);
 				if (res_data.code == 200) {
 					_this.toIP = res_data.body.ip + "(" + res_data.body.ipAddr + ")";

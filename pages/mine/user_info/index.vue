@@ -95,7 +95,8 @@
 				'reqUrl',
 			]),
 			...mapState('user', [
-				'user'
+				'user',
+				'userToken'
 			]),
 			userHeadPic() {
 				if (this.user.headpic && this.user.headpic.indexOf('static/header') != -1) {
@@ -149,16 +150,23 @@
 							});
 							return;
 						}
+						let token = uni.getStorageSync("token");
 
 						var uper = uni.uploadFile({
 							// 需要上传的地址
 							url: _this.reqUrl + '/user/file/uploadAvatar',
 							header: {
-								["member-token"]: _this.user.userToken,
+								["member-token"]: token,
 							},
 							// filePath  需要上传的文件
 							filePath: res.tempFilePaths[0],
 							name: 'file',
+							fail(error) {
+								uni.showToast({
+									title:error.msg?error.msg:error,
+									duration:1000
+								})
+							},
 							success(res1) {
 								let json = eval("(" + res1.data + ")");
 								// 显示上传信息
