@@ -1,46 +1,46 @@
 <template>
 	<view>
-		<cu-custom bgColor="bg-blue" :isBack="true" :nameToLeft="true"><block slot="content">请选择好友</block>
-		<block slot="right">
-		<uni-text @tap="tijiao()" style="font-size: 22px;color: #fff;margin-right: 14px;font-size: 30upx;background: #58BB46;padding:10upx 40upx;border-radius: 6upx;" class="lg text-gray ">发送</uni-text>
-		</block>
+		<cu-custom bgColor="bg-blue" :isBack="true" :nameToLeft="true">
+			<block slot="content">请选择好友</block>
+			<block slot="right">
+				<uni-text @tap="tijiao()"
+					style="font-size: 22px;color: #fff;margin-right: 14px;font-size: 30upx;background: #58BB46;padding:10upx 40upx;border-radius: 6upx;"
+					class="lg text-gray ">发送</uni-text>
+			</block>
 		</cu-custom>
 
 
-		<view class="cu-bar bg-white search" >
+		<view class="cu-bar bg-white search">
 			<view class="search-form round">
 				<text class="cuIcon-search"></text>
-				<input v-model="kw1"  type="text" placeholder="输入搜索的关键词" confirm-type="search"></input>
+				<input v-model="kw1" type="text" placeholder="输入搜索的关键词" confirm-type="search"></input>
 			</view>
 			<view class="action">
-				<button style="background: #FFAA01;"  @tap="search()"  class="cu-btn bg-gradual-green shadow-blur round">搜索</button>
+				<button style="background: #FFAA01;" @tap="search()"
+					class="cu-btn bg-gradual-green shadow-blur round">搜索</button>
 			</view>
 		</view>
-		<scroll-view scroll-y class="indexes" :scroll-into-view="'indexes-'+ listCurID" :style="[{height:'calc(100vh - 100upx - 100upx - 100upx)'}]"
-		 :scroll-with-animation="true" :enable-back-to-top="true">
-		  <checkbox-group @change="radioChange" style="width:100%">
-			<block v-for="(item,index) in friend_list" :key="index">
-				<view :class="'indexItem-' + item.h" :id="'indexes-' + item.h" :data-index="item.h">
-					<view class="padding">{{item.h}}</view>
-					<view class="cu-list menu-avatar no-padding">
-						<view  class="cu-item" v-for="(items,index1) in item.list" :key="index1">
-							<!--
-							<view class="cu-avatar round lg">{{item.h}}</view>
-							-->
-							<view class="cu-avatar round lg" :style="{'backgroundImage': 'url('+$store.state.img_url+ items.headpic +')' }"  style="width: 80upx;height: 80upx;background-size: 100% 100%;"></view>
-							<view class="content">
-								<view class="text-grey" style="float:left;">{{items.name}}</view>
-								<checkbox :checked="fid==items.member_uuid"  class='round blue '  :value="items.member_uuid"></checkbox>
-								<!--
-								<view class="text-gray text-sm">
-									有{{sub+2}}个主子需要伺候
+		<scroll-view scroll-y class="indexes" :scroll-into-view="'indexes-'+ listCurID"
+			:style="[{height:'calc(100vh - 100upx - 100upx - 100upx)'}]" :scroll-with-animation="true"
+			:enable-back-to-top="true">
+			<checkbox-group @change="radioChange" style="width:100%">
+				<block v-for="(item,index) in friend_list" :key="index">
+					<view :class="'indexItem-' + item.h" :id="'indexes-' + item.h" :data-index="item.h">
+						<view class="padding">{{item.h}}</view>
+						<view class="cu-list menu-avatar no-padding">
+							<view class="cu-item" v-for="(items,index1) in item.list" :key="index1">
+								<view class="cu-avatar round lg"
+									:style="{'backgroundImage': 'url('+getHeadPic(items.headpic,imgUrl) +')' }"
+									style="width: 80upx;height: 80upx;background-size: 100% 100%;"></view>
+								<view class="content">
+									<view class="text-grey" style="float:left;">{{items.name}}</view>
+									<checkbox :checked="fid==items.member_uuid" class='round blue '
+										:value="items.member_uuid"></checkbox>
 								</view>
-								-->
 							</view>
 						</view>
 					</view>
-				</view>
-			</block>
+				</block>
 			</checkbox-group>
 			<view style="height: 100upx;text-align: center;background: #fff;
     margin-top: 20upx;
@@ -51,7 +51,8 @@
 		</scroll-view>
 		<view style="bottom:50upx" class="indexBar" :style="[{height:'calc(100vh - ' + CustomBar + 'px - 50px)'}]">
 			<view class="indexBar-box" @touchstart="tStart" @touchend="tEnd" @touchmove.stop="tMove">
-				<view class="indexBar-item" v-for="(item,index) in list" :key="index" :id="index" @touchstart="getCur" @touchend="setCur"> {{item.name}}</view>
+				<view class="indexBar-item" v-for="(item,index) in list" :key="index" :id="index" @touchstart="getCur"
+					@touchend="setCur"> {{item.name}}</view>
 			</view>
 		</view>
 		<!--选择显示-->
@@ -62,6 +63,18 @@
 </template>
 
 <script>
+	import {
+		friendList,
+		sendQrcode
+	} from '../../../common/api';
+	import {
+		mapState,
+		mapActions,
+		mapMutations
+	} from 'vuex'
+	import {
+		getHeadPic
+	} from '../../../common/utils';
 	export default {
 		data() {
 			return {
@@ -71,42 +84,21 @@
 				listCurID: '',
 				list: [],
 				listCur: '',
-				kw:"",
-				kw1:"",
-				ids:[],
-				fid:""
+				kw: "",
+				kw1: "",
+				ids: [],
+				fid: ""
 			};
 		},
-		onLoad(e) {
-		},
+		onLoad(e) {},
 		mounted() {
 			let _this = this;
-			let user = uni.getStorageSync("USER");
-			/**
-			let list = [{}];
-			for (let i = 0; i < 26; i++) {
-				list[i] = {};
-				list[i].name = String.fromCharCode(65 + i);
-			}
-			this.list = list;
-			this.listCur = list[0];
-			**/
-
-			if(this.$store.state.friend_list.length<=0) {
-
-				_this.$http.post("/user/friend/list/v1",
-					{
-						header:{
-							"x-access-uid":user.id,
-							"x-access-client":_this.$clientType
-						}
-					}
-
-				).then(res=>{
+			if (this.friendList.length <= 0) {
+				friendList().then(res => {
 					let res_data = eval(res.data);
-					if(res_data.code==200) {
-						_this.$store.commit("setFriend_list",res_data.body);
-						res_data.body.forEach(item=>{
+					if (res_data.code == 200) {
+						_this.setFriendList(res_data.body);
+						res_data.body.forEach(item => {
 							let i = {};
 							i.name = item.h;
 							_this.list.push(i);
@@ -114,80 +106,55 @@
 
 					}
 				})
-
-				// uni.request({
-				// 	method:"POST",
-				// 	header:{
-				// 		"Content-Type":"application/x-www-form-urlencoded",
-				// 		"x-access-uid":user.id
-				// 	},
-				// 	success(res) {
-				// 		let res_data = eval(res.data);
-				// 		if(res_data.code==200) {
-				// 			_this.$store.commit("setFriend_list",res_data.body);
-				// 			res_data.body.forEach(item=>{
-				// 				let i = {};
-				// 				i.name = item.h;
-				// 				_this.list.push(i);
-				// 			})
-
-				// 		}
-				// 	}
-				// })
 			}
-
-
-
-
-
-
 		},
-		computed:{
+		computed: {
+			...mapState('chat', [
+				'curChatEntity',
+				'temp'
+			]),
+			...mapState('user', [
+				'friendList',
+			]),
+			...mapState('app', [
+				'imgUrl',
+				'reqUrl'
+			]),
 			friend_list() {
 				let _this = this;
-				let nlist = this.$store.state.friend_list;
-
-
-
-				nlist = nlist.filter((item)=>{
-					let l = item.list.filter((item1)=>{
+				let nlist = this.friendList;
+				nlist = nlist.filter((item) => {
+					let l = item.list.filter((item1) => {
 						let flag = true;
-						if(this.kw.trim()!="") {
-							if(item1.member_uuid=="-1") {
+						if (this.kw.trim() != "") {
+							if (item1.member_uuid == "-1") {
 								return false;
 							}
-							if(item1.name.indexOf(_this.kw.trim())<0) {
-								 flag = false;
+							if (item1.name.indexOf(_this.kw.trim()) < 0) {
+								flag = false;
 							}
 						} else {
-							if(item1.member_uuid=="-1") {
+							if (item1.member_uuid == "-1") {
 								return false;
 							}
 						}
-						 return flag;
-					 })
-					 console.log("l:"+l.length);
-					if(l.length>0) return true;
+						return flag;
+					})
+					if (l.length > 0) return true;
 					else return false;
-
 				});
-
-
-
 				this.list = [];
-				nlist.forEach(item=>{
+				nlist.forEach(item => {
 					let i = {};
 					i.name = item.h;
 					_this.list.push(i);
-					item.list.forEach((item1)=>{
-						let s = uni.getStorageSync(item1.member_uuid+"_NOTE");
-						if(s&&s!="") {
-							item1.name=s;
+					item.list.forEach((item1) => {
+						let s = uni.getStorageSync(item1.member_uuid + "_NOTE");
+						if (s && s != "") {
+							item1.name = s;
 						}
-					 })
+					})
 				})
-
-
 				return nlist;
 			}
 		},
@@ -202,95 +169,42 @@
 
 		},
 		methods: {
-			tijiao(){
+			tijiao() {
 				let _this = this;
 				let user = uni.getStorageSync("USER");
-				if(this.ids.length==0) {
+				if (this.ids.length == 0) {
 					uni.showToast({
-					    icon: 'none',
-					    title: "请选择好友"
+						icon: 'none',
+						title: "请选择好友"
 					});
 					return;
 				}
-				// console.log(_this.$store.state.temp.base64);
-
-				_this.$http.post("/chat/sendQrcode",
-					{
-						mids:this.ids.toString(),
-						base64:_this.$store.state.temp.base64
-					},
-					{
-						header:{
-							"x-access-uid":user.id,
-							"x-access-client":_this.$clientType
-						}
-					}
-
-				).then(res=>{
+				sendQrcode({
+					mids: this.ids.toString(),
+					base64: _this.temp.base64
+				}).then(res => {
 					let res_data = eval(res.data);
-					if(res_data.code==200) {
-						_this.$store.state.temp.base64 = "";//清空
+					if (res_data.code == 200) {
+						_this.setTempBase64("")
 						uni.showToast({
-							icon:"none",
-						    title: '发送成功',
-						    duration: 1500
+							icon: "none",
+							title: '发送成功',
+							duration: 1500
 						});
-						setTimeout(()=>{
+						setTimeout(() => {
 							uni.navigateBack();
-						},1500)
+						}, 1500)
 					} else {
 						uni.showToast({
-						    icon: 'none',
-						    title: res_data.msg
+							icon: 'none',
+							title: res_data.msg
 						});
 					}
 				})
-
-				// uni.request({
-				// 	method:"POST",
-				// 	url: _this.$store.state.req_url + "/chat/sendQrcode",
-				// 	data:{
-				// 		mids:this.ids.toString(),
-				// 		base64:_this.$store.state.temp.base64
-				// 	},
-				// 	header:{
-				// 		"Content-Type":"application/x-www-form-urlencoded",
-				// 		"x-access-uid":user.id
-				// 	},
-				// 	success(res) {
-				// 		let res_data = eval(res.data);
-				// 		if(res_data.code==200) {
-				// 			_this.$store.state.temp.base64 = "";//清空
-				// 			uni.showToast({
-				// 				icon:"none",
-				// 			    title: '发送成功',
-				// 			    duration: 1500
-				// 			});
-				// 			setTimeout(()=>{
-				// 				uni.navigateBack();
-				// 			},1500)
-				// 		} else {
-				// 			uni.showToast({
-				// 			    icon: 'none',
-				// 			    title: res_data.msg
-				// 			});
-				// 		}
-				// 	}
-				// })
-
-
 			},
 			radioChange(e) {
 				this.ids = e.target.value;
 			},
-			showMsg() {
-				uni.showToast({
-				    icon: 'none',
-					position: 'bottom',
-				    title: "功能未开启"
-				});
-			},
-
 			search() {
 				this.kw = this.kw1;
 			},
@@ -342,13 +256,10 @@
 	}
 </script>
 
-<style >
-	uni-checkbox{
-		float:right;
+<style>
+	uni-checkbox {
+		float: right;
 	}
-
-
-
 	.indexes {
 		position: relative;
 	}
@@ -416,7 +327,8 @@
 		text-align: center;
 		font-size: 48upx;
 	}
+
 	.text-grey {
-		color:#333
+		color: #333
 	}
 </style>

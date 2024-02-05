@@ -88,7 +88,7 @@ export const sendSms = () => http.post("/user/json/sendSms/v1")
 export const removeBlack = (params) => http.post("/user/json/removeBlack", params)
 
 
-export const getTalkUserInfo = (params) => http.get("/user/json/userInfo?toid=" + params)
+export const getTalkUserInfo = (params) => http.post("/user/json/userInfo" , params)
 
 export const loadTalkUserById = (params) => http.post("/user/json/loadById/v1", params)
 

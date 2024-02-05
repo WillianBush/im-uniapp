@@ -1,36 +1,43 @@
 <template>
 	<view>
-			<view style="height: 45px;line-height: 45px;background: #eee;padding-left: 5px; color:#000">
-				<text class="cuIcon-back" @click="goback" style="float:left; margin:0 5px; cursor: pointer;"></text>
-				设置群管理
-			</view>
+		<view style="height: 45px;line-height: 45px;background: #eee;padding-left: 5px; color:#000">
+			<text class="cuIcon-back" @click="goback" style="float:left; margin:0 5px; cursor: pointer;"></text>
+			设置群管理
+		</view>
 		<block slot="right">
-		<text @tap="tijiao()" style="font-size: 22px;color: #fff;margin-right: 14px;font-size: 30upx;background: #58BB46;padding:10upx 40upx;border-radius: 6upx;" class="lg text-gray ">邀请</text>
+			<text @tap="tijiao()"
+				style="font-size: 22px;color: #fff;margin-right: 14px;font-size: 30upx;background: #58BB46;padding:10upx 40upx;border-radius: 6upx;"
+				class="lg text-gray ">邀请</text>
 		</block>
 		</cu-custom>
-		
-		
-		<view class="cu-bar bg-white search" >
+
+
+		<view class="cu-bar bg-white search">
 			<view class="search-form round">
 				<text class="cuIcon-search"></text>
-				<input   v-model="kw1"  type="text" placeholder="输入搜索的关键词" confirm-type="search"></input>
+				<input v-model="kw1" type="text" placeholder="输入搜索的关键词" confirm-type="search"></input>
 			</view>
 			<view class="action">
-				<button @tap="search()" style="background: #FFAA01;"  class="cu-btn bg-gradual-green shadow-blur round">搜索</button>
+				<button @tap="search()" style="background: #FFAA01;"
+					class="cu-btn bg-gradual-green shadow-blur round">搜索</button>
 			</view>
 		</view>
-		<scroll-view scroll-y class="indexes" :scroll-into-view="'indexes-'+ listCurID" :style="[{height:'calc(100vh - 100upx - 100upx - 100upx)'}]"
-		 :scroll-with-animation="true" :enable-back-to-top="true">
-		  <checkbox-group @change="radioChange" style="width:100%">
-			<view class="cu-list menu-avatar no-padding">
-				<view  class="cu-item" v-for="(items,index) in member_list" :key="index">
-					<view class="cu-avatar round lg" :style="{'backgroundImage': 'url('+$store.state.img_url+ items.headpic +')' }"  style="width: 80upx;height: 80upx;background-size: 100% 100%;"></view>
-					<view class="content">
-						<view class="text-grey" style="float:left;">{{items.nickName}}</view>
-						<checkbox  :checked="ids.includes(String(items.id))"  class='round blue '  :value="items.id"></checkbox>  
+		<scroll-view scroll-y class="indexes" :scroll-into-view="'indexes-'+ listCurID"
+			:style="[{height:'calc(100vh - 100upx - 100upx - 100upx)'}]" :scroll-with-animation="true"
+			:enable-back-to-top="true">
+			<checkbox-group @change="radioChange" style="width:100%">
+				<view class="cu-list menu-avatar no-padding">
+					<view class="cu-item" v-for="(items,index) in member_list" :key="index">
+						<view class="cu-avatar round lg"
+							:style="{'backgroundImage': 'url('+getHeadPic(items.headpic,imgUrl) +')' }"
+							style="width: 80upx;height: 80upx;background-size: 100% 100%;"></view>
+						<view class="content">
+							<view class="text-grey" style="float:left;">{{items.nickName}}</view>
+							<checkbox :checked="ids.includes(String(items.id))" class='round blue ' :value="items.id">
+							</checkbox>
+						</view>
 					</view>
 				</view>
-			</view>
 			</checkbox-group>
 			<view style="height: 100upx;text-align: center;background: #fff;
     margin-top: 20upx;
@@ -43,6 +50,18 @@
 </template>
 
 <script>
+	import {
+		mapState,
+		mapActions,
+		mapMutations
+	} from 'vuex'
+	import {
+		addRoomMgr,
+		getMemberList
+	} from '../../../common/api';
+	import {
+		getHeadPic
+	} from '../../../common/utils'
 	export default {
 		data() {
 			return {
@@ -52,176 +71,115 @@
 				listCurID: '',
 				list: [],
 				listCur: '',
-				kw:"",
-				kw1:"",
-				ids:[],
-				fid:""
+				kw: "",
+				kw1: "",
+				ids: [],
+				fid: ""
 			};
 		},
 		onLoad() {
 			let _this = this;
-			let user = uni.getStorageSync("USER");
-			
-			_this.$http.post("/room/json/getMemberList",
-				{roomid:_this.$store.state.cur_chat_entity.id},
-				{
-					header:{
-						"x-access-uid":_this.$store.state.user.id,
-						"x-access-client":_this.$clientType
-					}
-				}
-			).then(res=>{
+			getMemberList({
+				roomid: _this.curChatEntity.id
+			}, ).then(res => {
 				let res_data = eval(res.data);
-				if(res_data.code==200) {  
+				if (res_data.code == 200) {
 					_this.list = res_data.body;
-					_this.list.forEach((item1)=>{
-						let s = uni.getStorageSync(item1.id+"_NOTE");
-						if(s&&s!="") {
-							item1.nickName=s;
+					_this.list.forEach((item1) => {
+						let s = uni.getStorageSync(item1.id + "_NOTE");
+						if (s && s != "") {
+							item1.nickName = s;
 						}
-					 })
+					})
 				}
 			})
-		
-			// uni.request({
-			// 	method:"POST",
-			// 	url: _this.$store.state.req_url + "/room/json/getMemberList",
-			// 	data:{roomid:_this.$store.state.cur_chat_entity.id},
-			// 	header:{
-			// 		"Content-Type":"application/x-www-form-urlencoded",
-			// 		"x-access-uid":_this.$store.state.user.id
-			// 	},
-			// 	success(res) {
-			// 		let res_data = eval(res.data);
-			// 		if(res_data.code==200) {  
-			// 			_this.list = res_data.body;
-			// 			_this.list.forEach((item1)=>{
-			// 				let s = uni.getStorageSync(item1.id+"_NOTE");
-			// 				if(s&&s!="") {
-			// 					item1.nickName=s;
-			// 				}
-			// 			 })
-			// 		}
-			// 	}
-			// })
-			
 		},
-		computed:{
+		computed: {
+			...mapState('chat', [
+				'curChatEntity',
+			]),
+			...mapState('app', [
+				'imgUrl',
+				'reqUrl'
+			]),
 			member_list() {
 				let _this = this;
 				let nlist = this.list;
-				nlist = nlist.filter((item)=>{
-					if(this.kw.trim()!="") {
-						if(item.id=="-1") {
-							return false;							 
+				nlist = nlist.filter((item) => {
+					if (this.kw.trim() != "") {
+						if (item.id == "-1") {
+							return false;
 						}
-						if(item.nickName.indexOf(_this.kw.trim())<0) {
-							 return false;	
+						if (item.nickName.indexOf(_this.kw.trim()) < 0) {
+							return false;
 						}
 					} else {
-						if(item.id=="-1") {
-							return false;							 
+						if (item.id == "-1") {
+							return false;
 						}
 					}
-					if(_this.$store.state.cur_chat_entity.memberMgr_ids.indexOf(item.id)>=0
-						||_this.$store.state.cur_chat_entity.owner_UUID==item.id) {
+					if (_this.curChatEntity.memberMgr_ids.indexOf(item.id) >= 0 ||
+						_this.curChatEntity.owner_UUID == item.id) {
 						return false;
 					}
-					return true; 
+					return true;
 				});
 				return nlist;
 			}
 		},
 		onReady() {
 			let that = this;
-			
+
 		},
 		methods: {
-			goback () {
+			goback() {
 				this.$emit('goBack');
 			},
-			tijiao(){
+			tijiao() {
 				let _this = this;
-				let user = uni.getStorageSync("USER");
-				if(this.ids.length==0) {
+				if (this.ids.length == 0) {
 					uni.showToast({
-					    icon: 'none',
-					    title: "请选择好友"
+						icon: 'none',
+						title: "请选择好友"
 					});
 					return;
 				}
-				
-				_this.$http.post("/room/json/addRoomMgr",
-					{
-						mids:this.ids.toString(),
-						roomid:_this.$store.state.cur_chat_entity.roomUUID
-					},
-					{
-						header:{
-							"x-access-uid":user.id,
-							"x-access-client":_this.$clientType
-						}
-					}
-				).then(res=>{
+				addRoomMgr({
+					mids: this.ids.toString(),
+					roomid: _this.curChatEntity.roomUUID
+				}).then(res => {
 					let res_data = eval(res.data);
-					if(res_data.code==200) {  
-						_this.$store.state.cur_chat_entity = res_data.body;
-						
+					if (res_data.code == 200) {
+						_this.setCurChatEntity(res_data.body)
 						uni.showToast({
-						    title: '设置成功',
-						    duration: 2000
+							title: '设置成功',
+							duration: 2000
 						});
 					} else {
 						uni.showToast({
-						    icon: 'none',
-						    title: res_data.msg
+							icon: 'none',
+							title: res_data.msg
 						});
 					}
+				}).catch(error => {
+					uni.showToast({
+						icon: 'none',
+						position: 'bottom',
+						title: error.msg ? error.msg : "服务器异常!"
+					});
 				})
-				
-				// uni.request({
-				// 	method:"POST",
-				// 	url: _this.$store.state.req_url + "/room/json/addRoomMgr",
-				// 	data:{
-				// 		mids:this.ids.toString(),
-				// 		roomid:_this.$store.state.cur_chat_entity.roomUUID
-				// 	},
-				// 	header:{
-				// 		"Content-Type":"application/x-www-form-urlencoded",
-				// 		"x-access-uid":user.id
-				// 	},
-				// 	success(res) {
-				// 		console.log(res.data);
-				// 		let res_data = eval(res.data);
-				// 		if(res_data.code==200) {  
-				// 			_this.$store.state.cur_chat_entity = res_data.body;
-							
-				// 			uni.showToast({
-				// 			    title: '设置成功',
-				// 			    duration: 2000
-				// 			});
-				// 		} else {
-				// 			uni.showToast({
-				// 			    icon: 'none',
-				// 			    title: res_data.msg
-				// 			});
-				// 		}
-				// 	}
-				// })
-				
-				
 			},
 			radioChange(e) {
 				this.ids = e.target.value;
 			},
 			showMsg() {
 				uni.showToast({
-				    icon: 'none',
+					icon: 'none',
 					position: 'bottom',
-				    title: "功能未开启"
+					title: "功能未开启"
 				});
 			},
-		
+
 			search() {
 				this.kw = this.kw1;
 			},
@@ -273,13 +231,10 @@
 	}
 </script>
 
-<style >
-	uni-checkbox{
-		float:right;
+<style>
+	uni-checkbox {
+		float: right;
 	}
-		  
-	
-
 	.indexes {
 		position: relative;
 	}
@@ -347,7 +302,8 @@
 		text-align: center;
 		font-size: 48upx;
 	}
+
 	.text-grey {
-		color:#333
+		color: #333
 	}
 </style>

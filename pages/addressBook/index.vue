@@ -1,35 +1,42 @@
 <template>
 	<view>
-		<view  style="width:20%; float: left">
+		<view style="width:20%; float: left">
 			<view v-show="PageCur=='tongxunlu'">
-				<view style="height: 45px;line-height: 45px;text-align: center;background: #eee;">通讯录({{$store.state.memberLength}})人</view>
-				<view class="cu-bar bg-white search" >
+				<view style="height: 45px;line-height: 45px;text-align: center;background: #eee;">
+					通讯录({{memberLength}})人</view>
+				<view class="cu-bar bg-white search">
 					<view class="search-form round">
 						<text class="cuIcon-search"></text>
-						<input v-model="kw1"  type="text" placeholder="输入搜索的关键词" confirm-type="search"></input>
+						<input v-model="kw1" type="text" placeholder="输入搜索的关键词" confirm-type="search"></input>
 					</view>
 					<view class="action">
-						<button @tap="search()" style="background: #FFAA01;margin-right:2px"   class="cu-btn bg-gradual-green shadow-blur round">搜索</button>
-						<button @tap="refresherrefresh()" style="background: #4FA2FE;"   class="cu-btn bg-gradual-green shadow-blur round">刷新</button>
+						<button @tap="search()" style="background: #FFAA01;margin-right:2px"
+							class="cu-btn bg-gradual-green shadow-blur round">搜索</button>
+						<button @tap="refresherrefresh()" style="background: #4FA2FE;"
+							class="cu-btn bg-gradual-green shadow-blur round">刷新</button>
 					</view>
 				</view>
-				<scroll-view scroll-y class="indexes" :scroll-into-view="'indexes-'+ listCurID" :style="[{height:'calc(100vh - 100upx - 150upx)'}]"
-							 :scroll-with-animation="true" :enable-back-to-top="true">
+				<scroll-view scroll-y class="indexes" :scroll-into-view="'indexes-'+ listCurID"
+					:style="[{height:'calc(100vh - 100upx - 150upx)'}]" :scroll-with-animation="true"
+					:enable-back-to-top="true">
 
 					<view style="margin-top:10px;" class="cu-list menu"
-						  :class="[true?'sm-border':'',false?'card-menu margin-top':'']">
+						:class="[true?'sm-border':'',false?'card-menu margin-top':'']">
 						<view @tap="goNewFriends()" class="cu-item" :class="true?'arrow':''">
 							<view class="content">
-								<text style="float:left;color:#FCBF00;font-size:50upx" class="iconfont icon-tianjiahaoyou"></text>
+								<text style="float:left;color:#FCBF00;font-size:50upx"
+									class="iconfont icon-tianjiahaoyou"></text>
 								<text class="text-grey" style="float:left;margin-left: 10px;">新的朋友</text>
-								<view v-if="$store.state.unDoFriendAddCount>0" style="top: 38upx;right: 72upx" class="cu-tag badge">{{$store.state.unDoFriendAddCount}}</view>
+								<view v-if="unDoFriendAddCount>0" style="top: 38upx;right: 72upx" class="cu-tag badge">
+									{{unDoFriendAddCount}}</view>
 							</view>
 						</view>
 						<view @tap="goMyGroup()" class="cu-item" :class="true?'arrow':''">
 							<view class="content">
 								<text style="color:#009FE8;font-size:50upx" class="iconfont icon-qunzhong"></text>
 								<text class="text-grey" style="margin-left: 10px;">群聊</text>
-								<view v-if="$store.state.unDoRoomAddCount>0" style="top: 38upx;right: 72upx" class="cu-tag badge">{{$store.state.unDoRoomAddCount}}</view>
+								<view v-if="unDoRoomAddCount>0" style="top: 38upx;right: 72upx" class="cu-tag badge">
+									{{unDoRoomAddCount}}</view>
 							</view>
 						</view>
 						<view @tap="goBlacklist()" class="cu-item" :class="true?'arrow':''">
@@ -44,8 +51,11 @@
 						<view :class="'indexItem-' + item.h" :id="'indexes-' + item.h" :data-index="item.h">
 							<view class="padding">{{item.h}}</view>
 							<view class="cu-list menu-avatar no-padding">
-								<view @tap="goUserDetail(items)" class="cu-item" v-for="(items,index1) in item.list" :key="index1">
-									<view class="cu-avatar round lg" :style="{'backgroundImage': 'url('+$store.state.img_url+ items.headpic +')' }"  style="width: 60upx;height: 60upx;background-size: 100% 100%;"></view>
+								<view @tap="goUserDetail(items)" class="cu-item" v-for="(items,index1) in item.list"
+									:key="index1">
+									<view class="cu-avatar round lg"
+										:style="{'backgroundImage': 'url('+getHeadPic(items.headpic,imgUrl)  +')' }"
+										style="width: 60upx;height: 60upx;background-size: 100% 100%;"></view>
 									<view class="content">
 										<view class="text-grey">{{items.name}}</view>
 									</view>
@@ -53,13 +63,17 @@
 							</view>
 						</view>
 					</block>
-					<view style="height: 100upx;text-align: center;background: #fff;margin-top: 20upx;line-height: 100upx;color: #999;" v-if="friend_list.length<=0">
+					<view
+						style="height: 100upx;text-align: center;background: #fff;margin-top: 20upx;line-height: 100upx;color: #999;"
+						v-if="friend_list.length<=0">
 						暂无好友
 					</view>
 				</scroll-view>
-				<view style="bottom:50upx" class="indexBar" :style="[{height:'calc(100vh - ' + CustomBar + 'px - 50px)'}]">
+				<view style="bottom:50upx" class="indexBar"
+					:style="[{height:'calc(100vh - ' + CustomBar + 'px - 50px)'}]">
 					<view class="indexBar-box" @touchstart="tStart" @touchend="tEnd" @touchmove.stop="tMove">
-						<view class="indexBar-item" v-for="(item,index) in list" :key="index" :id="index" @touchstart="getCur" @touchend="setCur"> {{item.name}}</view>
+						<view class="indexBar-item" v-for="(item,index) in list" :key="index" :id="index"
+							@touchstart="getCur" @touchend="setCur"> {{item.name}}</view>
 					</view>
 				</view>
 				<!--选择显示-->
@@ -71,20 +85,24 @@
 			<blackList v-show="PageCur=='heimingdan'" :keyid="keyid" @goBack="showMain"></blackList>
 			<qunliao v-show="PageCur=='qunliao'" :keyid="keyid" @goBack="showMain" @goGroupChat="goGroupChat"></qunliao>
 		</view>
-		<view v-show="!msgToId && isBlank" style="height: 100vh;width: 80%; float: left; border-left: 1px solid #ddd; background:#eee">
-			<img src="../../static/logo1.png" width="100px" height="100px" style="margin-top: calc(50vh - 50px);margin-left: calc(50% - 50px);"></img>
+		<view v-show="!msgToId && isBlank"
+			style="height: 100vh;width: 80%; float: left; border-left: 1px solid #ddd; background:#eee">
+			<img src="../../static/logo1.png" width="100px" height="100px"
+				style="margin-top: calc(50vh - 50px);margin-left: calc(50% - 50px);"></img>
 		</view>
 		<view style="height: calc(100vh - 50upx);width: 80%; float: left; border-left: 1px solid #ddd">
-			<scroll-view :scroll-y="modalName==null"
-						 style="width: 100%"
-						 class="page" :class="modalName!=null?'show':''">
-				<GroupChat :msgToGroupId="msgToGroupId" :isGroupChat="isGroupChat" :isRandom="random" :msgToId="msgToId"  @openModal="openModal" @openAtModal="openAtModal"></GroupChat>
+			<scroll-view :scroll-y="modalName==null" style="width: 100%" class="page"
+				:class="modalName!=null?'show':''">
+				<GroupChat :msgToGroupId="msgToGroupId" :isGroupChat="isGroupChat" :isRandom="random" :msgToId="msgToId"
+					@openModal="openModal" @openAtModal="openAtModal"></GroupChat>
 			</scroll-view>
 		</view>
 
 
-		<view v-if="visiable" style="width: 100%; height: 100%;color:#fff;background-color: #0006; position: fixed;left: 0;top:0; z-index: 10;">
-			<text @click="closeModal" class="cuIcon-close" style="font-size: 36px; cursor: pointer; position:absolute; top:15px; right: 15px"></text>
+		<view v-if="visiable"
+			style="width: 100%; height: 100%;color:#fff;background-color: #0006; position: fixed;left: 0;top:0; z-index: 10;">
+			<text @click="closeModal" class="cuIcon-close"
+				style="font-size: 36px; cursor: pointer; position:absolute; top:15px; right: 15px"></text>
 			<UserMgr v-if="mgrType=='user'" :mgrId="mgrId" :friendPic="friendPic" :toid="toId"></UserMgr>
 			<GroupMgr v-if="mgrType=='group'" :mgrId="mgrId" :toid="toId"></GroupMgr>
 			<Aite v-if="mgrType=='at'" :roomid="roomid" @closeModal="closeModal"></Aite>
@@ -95,16 +113,26 @@
 
 <script>
 	import GroupChat from '@/pages/chat/group/index.vue';
-
+	import {
+		friendList
+	} from '../../common/api';
+	import {
+		getHeadPic
+	} from '../../common/utils'
+	import {
+		mapState,
+		mapActions,
+		mapMutations
+	} from 'vuex'
 	export default {
-		components:{
+		components: {
 			GroupChat
 		},
-		props:['isBlank'],
+		props: ['isBlank'],
 		data() {
 			return {
-				random:0,
-				randomnum:'',
+				random: 0,
+				randomnum: '',
 				StatusBar: this.StatusBar,
 				CustomBar: this.CustomBar,
 				hidden: true,
@@ -114,8 +142,8 @@
 				memberList: [], //会员列表
 				list: [],
 				listCur: '',
-				kw:"",
-				kw1:"",
+				kw: "",
+				kw1: "",
 				roomid: '',
 				PageCur: 'tongxunlu',
 				keyid: 0,
@@ -129,20 +157,28 @@
 			};
 		},
 		mounted() {
-
 			this.loadStoreData()
-
 		},
-		computed:{
+		computed: {
+			...mapState('user', [
+				'user',
+				'friendList',
+				'unDoFriendAddCount',
+				'unDoRoomAddCount'
+			]),
+			...mapState('app', [
+				'imgUrl',
+			]),
+			...mapState('chat', ['memberLength']),
 			friend_list() {
 				let _this = this;
-				if(!this.$store.state.friend_list) return [];
-				let nlist = this.$store.state.friend_list;
-				if(this.kw.trim()!="") {
-					nlist = nlist.filter((item)=>{
+				if (!this.friendList) return [];
+				let nlist = this.friendList;
+				if (this.kw.trim() != "") {
+					nlist = nlist.filter((item) => {
 						let flag = false;
-						item.list.filter((item1)=>{
-							if(item1.name.indexOf(_this.kw.trim())>=0) {
+						item.list.filter((item1) => {
+							if (item1.name.indexOf(_this.kw.trim()) >= 0) {
 								flag = true;
 								return true;
 							}
@@ -152,7 +188,7 @@
 					});
 				}
 				this.list = [];
-				nlist.forEach(item=>{
+				nlist.forEach(item => {
 					let i = {};
 					i.name = item.h;
 					_this.list.push(i);
@@ -174,6 +210,12 @@
 
 		},
 		methods: {
+			...mapMutations('user', [
+				'setFriendList'
+			]),
+			...mapMutations('chat', [
+				'setMemberLength'
+			]),
 			refresherrestore() {
 				let _this = this;
 				_this.refresherTriggered = false;
@@ -196,33 +238,34 @@
 				_this.refresherTriggered = false;
 				_this._refresherTriggered = false;
 			},
-			loadStoreData(){
+			loadStoreData() {
 				let _this = this;
 				let user = uni.getStorageSync("USER");
-					_this.$http.post("/user/friend/list/v1",
-							{
-								header:{
-									"x-access-uid":user.id,
-									"x-access-client":_this.$clientType
-								}
-							}
-					).then(res=>{
-						let res_data = eval(res.data);
+				friendList().then(res => {
+					uni.hideLoading()
+					let res_data = eval(res.data);
+					if (res_data.code == 200) {
+						_this.setFriendList(res_data.body)
+						res_data.body.forEach(item => {
+							let i = {};
+							i.name = item.h;
+							_this.list.push(i);
+						})
 						res.data.body.forEach((item, index) => { //循环拿到聊天人员列表name。根据name长度获取人数
 							item.list.forEach((item, index) => {
-								this.memberList.push(item.name)
+								_this.memberList.push(item.name)
 							})
 						})
-						this.$store.state.memberLength = this.memberList.length
-						if(res_data.code==200) {
-							_this.$store.commit("setFriend_list",res_data.body);
-							res_data.body.forEach(item=>{
-								let i = {};
-								i.name = item.h;
-								_this.list.push(i);
-							})
-						}
+						_this.setMemberLength(_this.memberList.length)
+					}
+				}).catch(error => {
+					uni.hideLoading()
+					uni.showToast({
+						icon: 'none',
+						position: 'bottom',
+						title: error.msg ? error.msg : "服务器异常!"
 					});
+				})
 			},
 
 			closeModal() {
@@ -231,11 +274,11 @@
 			openModal(obj) {
 				this.mgrId = obj.id;
 				this.mgrType = obj.type;
-				this.friendPic= obj.friendPic;
+				this.friendPic = obj.friendPic;
 				this.toId = obj.toId;
 				this.visiable = true;
 			},
-			openAtModal(id){
+			openAtModal(id) {
 				this.visiable = true;
 				this.mgrType = 'at';
 				this.roomid = id;
@@ -249,7 +292,7 @@
 			},
 			goBlacklist() {
 				this.PageCur = 'heimingdan';
-				this.keyid = parseInt(Math.random()*100000000);
+				this.keyid = parseInt(Math.random() * 100000000);
 				// uni.navigateTo({
 				// 	url:"/pages/addressBook/blacklist/index"
 				// })
@@ -261,34 +304,33 @@
 					title: "功能未开启"
 				});
 			},
-			goUserDetail(item){
-				setTimeout(()=>{
-				},1000);
+			goUserDetail(item) {
+				setTimeout(() => {}, 1000);
 				this.isGroupChat = false;
 				this.msgToId = item.member_uuid;
-				this.random = this.random +1
+				this.random = this.random + 1
 			},
 			goChat(item) {
 				if (item.id == "-1" || item.typeid == "2") {
 					this.msgToId = item.id;
 					this.isGroupChat = false;
-					this.random = this.random +1
+					this.random = this.random + 1
 				} else {
 					this.msgToGroupId = item.id;
 					this.isGroupChat = true;
-					this.random = this.random +1
+					this.random = this.random + 1
 				}
 			},
 			goNewFriends() {
 				this.PageCur = 'xinpengyou';
-				this.keyid = parseInt(Math.random()*100000000);
+				this.keyid = parseInt(Math.random() * 100000000);
 				// uni.navigateTo({
 				// 	url:"/pages/addressBook/new_friend/new_friend_list"
 				// })
 			},
 			goMyGroup() {
 				this.PageCur = 'qunliao';
-				this.keyid = parseInt(Math.random()*100000000);
+				this.keyid = parseInt(Math.random() * 100000000);
 				// uni.navigateTo({
 				// 	url:"/pages/addressBook/group/index"
 				// })
@@ -308,8 +350,8 @@
 			//滑动选择Item
 			tMove(e) {
 				let y = e.touches[0].clientY,
-						offsettop = this.boxTop,
-						that = this;
+					offsettop = this.boxTop,
+					that = this;
 				//判断选择区域,只有在选择区才会生效
 				if (y > offsettop) {
 					let num = parseInt((y - offsettop) / 20);
@@ -361,9 +403,12 @@
 		display: flex;
 		align-items: center;
 	}
-	.cu-list .cu-item, .cu-list.menu-avatar>.cu-item {
+
+	.cu-list .cu-item,
+	.cu-list.menu-avatar>.cu-item {
 		cursor: pointer;
 	}
+
 	.indexBar .indexBar-box {
 		width: 40upx;
 		height: auto;
@@ -419,10 +464,12 @@
 		text-align: center;
 		font-size: 48upx;
 	}
+
 	.text-grey {
-		color:#333
+		color: #333
 	}
-	.cu-btn{
-		line-height:28px;
+
+	.cu-btn {
+		line-height: 28px;
 	}
 </style>

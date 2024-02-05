@@ -6,22 +6,40 @@
 		</view>
 		<view style="background: #fff;width: 96%;margin: auto auto;margin-top: 10px;" class="margin-top">
 			<view style=" width:100%">
-					<view   style="padding-top:30upx;padding-bottom:30upx;">
-						<view v-if="item.id!=$store.state.user.id" style="display: inline-block;width:25%;margin-bottom:30upx;text-align: center;" v-for="(item,index) in list">
-							<view  class="cu-avatar round" :style="'height:100upx;width:100upx;background-image:url('+$store.state.img_url+item.headpic+');'"></view>
-							<view style="height:30upx;margin:auto auto;color: #999;font-size:24upx;text-align: center;margin-top:8upx;overflow: hidden;height:34upx;width:100upx;">{{item.nickName}}</view>
-							<button  @tap="removeBlack(item.id)" style="margin-top:8upx"  class="cu-btn round bg-red shadow">移除</button>
+				<view style="padding-top:30upx;padding-bottom:30upx;">
+					<view v-if="item.id!=user.id"
+						style="display: inline-block;width:25%;margin-bottom:30upx;text-align: center;"
+						v-for="(item,index) in list">
+						<view class="cu-avatar round"
+							:style="'height:100upx;width:100upx;background-image:url('+getHeadPic(item.headpic)+');'">
 						</view>
-						<view v-if="list.length<=0" style="text-align: center;color:#aaa">
-							<uni-view  class="padding">暂无可移除的黑名单</uni-view>
+						<view
+							style="height:30upx;margin:auto auto;color: #999;font-size:24upx;text-align: center;margin-top:8upx;overflow: hidden;height:34upx;width:100upx;">
+							{{item.nickName}}
 						</view>
+						<button @tap="removeBlack(item.id)" style="margin-top:8upx"
+							class="cu-btn round bg-red shadow">移除</button>
 					</view>
-			</view>			 
-		</view> 
+					<view v-if="list.length<=0" style="text-align: center;color:#aaa">
+						<uni-view class="padding">暂无可移除的黑名单</uni-view>
+					</view>
+				</view>
+			</view>
+		</view>
 	</view>
 </template>
 
 <script>
+	import {
+		mapState,
+		mapActions,
+		mapMutations
+	} from 'vuex'
+
+	import {
+		getBlackList,
+		removeBlack
+	} from '../../../common/api';
 	export default {
 		props: {
 			keyid: {
@@ -31,75 +49,85 @@
 		},
 		data() {
 			return {
-				id:"",
-				list:[]
+				id: "",
+				list: []
 			}
 		},
+		computed: {
+			...mapState('user', [
+				'user',
+			]),
+			...mapState('app', [
+				'imgUrl',
+				'reqUrl'
+			])
+		},
 		watch: {
-		  keyid: function(newVal,oldVal){
-			console.log('----------------------newVal',newVal)
-			console.log('---------------------oldVal',oldVal)
-			this.fetchData();
-		  }
+			keyid: function(newVal, oldVal) {
+				this.fetchData();
+			}
 		},
 		methods: {
 			fetchData() {
 				let _this = this;
-				let user = uni.getStorageSync("USER");
-				this.$http.post("/user/json/getBlackList",
-					{
-						header:{
-							"x-access-uid":_this.$store.state.user.id,
-							"x-access-client":_this.$clientType
-						}
-					}
-					
-				).then(res=>{
+				getBlackList().then(res => {
 					let res_data = eval(res.data);
-					if(res_data.code==200) {  
+					if (res_data.code == 200) {
 						_this.list = res_data.body;
 					}
+				}).catch(error => {
+					uni.showToast({
+						icon: 'none',
+						position: 'bottom',
+						title: error.msg ? error.msg : "服务器异常!"
+					});
 				});
 			},
-			goback () {
+			getHeadPic(headpic) {
+				if (headpic && headpic.indexOf('static/header') != -1) {
+					return headpic;
+				} else {
+					return this.reqUrl + headpic;
+				}
+			},
+			goback() {
 				this.$emit('goBack');
 			},
 			removeBlack(_id) {
 				let _this = this;
 				let user = uni.getStorageSync("USER");
 				uni.showModal({
-				    title: '请确认',
-				    content: '要移出此用户吗?',
-				    success: function (res) {
-				        if (res.confirm) {
-							
-							this.$http.post("/user/json/removeBlack",
-								{uid:_id},
-								{
-									header:{
-										"x-access-uid":_this.$store.state.user.id,
-										"x-access-client":_this.$clientType
-									}
-								}
-								
-							).then(res=>{
+					title: '请确认',
+					content: '要移出此用户吗?',
+					success: function(res) {
+						if (res.confirm) {
+
+							removeBlack({
+								uid: _id
+							}).then(res => {
 								let res_data = eval(res.data);
-								if(res_data.code==200) {  
+								if (res_data.code == 200) {
 									uni.showToast({
-									    title: '移除成功',
-									    duration: 2000
+										title: '移除成功',
+										duration: 2000
 									});
 									let nlist = [];
-									_this.list.forEach(item=>{
-										if(item.id!=_id) {
+									_this.list.forEach(item => {
+										if (item.id != _id) {
 											nlist.push(item);
 										}
 									});
 									_this.list = nlist;
 								}
+							}).catch(error => {
+								uni.showToast({
+									icon: 'none',
+									position: 'bottom',
+									title: error.msg ? error.msg : "服务器异常!"
+								});
 							});
-				        } 
-				    }
+						}
+					}
 				});
 			}
 		}

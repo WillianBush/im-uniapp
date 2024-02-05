@@ -1,56 +1,66 @@
 <template>
 	<view>
-	<view v-show="PageCur=='main'">
-		<view style="height: 45px;line-height: 45px;background: #eee;padding-left: 5px">
-			<text class="cuIcon-back" @click="goback" style="float:left; margin:0 5px; cursor: pointer;"></text>
-			群聊
-			<text @tap="goSearch()" style="float:right;font-size: 30upx; cursor: pointer;color: #000; margin-right: 5px"
-				class="lg text-gray ">搜索</text>
-		</view>
-
-		<view class="cu-list menu" style="height: 100upx;">
-			<view @tap="goRoomAddList()" class="cu-item" :class="true?'arrow':''">
-				<view class="content">
-					<text style="color:#F56B2D;font-size:54upx;top: 10upx; position: relative;"
-						class="iconfont icon-qun-tongguo"></text>
-					<text class="text-grey" style="margin-left: 10px;">他人申请加入群组</text>
-					<view v-if="$store.state.unDoRoomAddCount>0" style="top: 38upx;right: 72upx" class="cu-tag badge">
-						{{$store.state.unDoRoomAddCount}}</view>
-				</view>
+		<view v-show="PageCur=='main'">
+			<view style="height: 45px;line-height: 45px;background: #eee;padding-left: 5px">
+				<text class="cuIcon-back" @click="goback" style="float:left; margin:0 5px; cursor: pointer;"></text>
+				群聊
+				<text @tap="goSearch()"
+					style="float:right;font-size: 30upx; cursor: pointer;color: #000; margin-right: 5px"
+					class="lg text-gray ">搜索</text>
 			</view>
-		</view>
 
-		<view style="height:80upx;line-height: 80upx;text-align: center;color:#888">
-			{{$store.state.group_list.length}}个群聊
-		</view>
-		<scroll-view scroll-y class="indexes" :style="'height:calc(100vh - '+CustomBar+'px - 100upx - 80upx)'"
-			:scroll-with-animation="true" :enable-back-to-top="true">
-			<block>
-				<view class="cu-list menu-avatar no-padding">
-					<view @tap="goChat(item)" class="cu-item" v-for="(item,index) in $store.state.group_list"
-						:key="index">
-
-						<view class="cu-avatar round lg"
-							:style="{'backgroundImage': 'url('+$store.state.img_url+ item.img +')' }"
-							style="width: 60upx;height: 60upx;background-size: 100% 100%;"></view>
-						<view class="content">
-							<view class="text-grey">{{item.name}}</view>
+			<view class="cu-list menu" style="height: 100upx;">
+				<view @tap="goRoomAddList()" class="cu-item" :class="true?'arrow':''">
+					<view class="content">
+						<text style="color:#F56B2D;font-size:54upx;top: 10upx; position: relative;"
+							class="iconfont icon-qun-tongguo"></text>
+						<text class="text-grey" style="margin-left: 10px;">他人申请加入群组</text>
+						<view v-if="unDoRoomAddCount>0" style="top: 38upx;right: 72upx" class="cu-tag badge">
+							{{unDoRoomAddCount}}
 						</view>
 					</view>
 				</view>
-			</block>
-			<view style="height: 100upx;text-align: center;background: #fff;margin-top: 20upx;line-height: 100upx;
-    color: #999;" v-if="$store.state.group_list.length<=0">
-				暂无群聊信息
 			</view>
-		</scroll-view>
-	</view>
-	<verifyList v-show="PageCur=='list'" :keyid="randomKeyId" @goBack="showGroup"></verifyList>
-	<groupSearch v-show="PageCur=='search'"  @goBack="showGroup"></groupSearch>
+
+			<view style="height:80upx;line-height: 80upx;text-align: center;color:#888">
+				{{groupList.length}}个群聊
+			</view>
+			<scroll-view scroll-y class="indexes" :style="'height:calc(100vh - '+CustomBar+'px - 100upx - 80upx)'"
+				:scroll-with-animation="true" :enable-back-to-top="true">
+				<block>
+					<view class="cu-list menu-avatar no-padding">
+						<view @tap="goChat(item)" class="cu-item" v-for="(item,index) in groupList" :key="index">
+
+							<view class="cu-avatar round lg"
+								:style="{'backgroundImage': 'url('+getHeadPic(item.img)  +')' }"
+								style="width: 60upx;height: 60upx;background-size: 100% 100%;"></view>
+							<view class="content">
+								<view class="text-grey">{{item.name}}</view>
+							</view>
+						</view>
+					</view>
+				</block>
+				<view style="height: 100upx;text-align: center;background: #fff;margin-top: 20upx;line-height: 100upx;
+    color: #999;" v-if="groupList.length<=0">
+					暂无群聊信息
+				</view>
+			</scroll-view>
+		</view>
+		<verifyList v-show="PageCur=='list'" :keyid="randomKeyId" @goBack="showGroup"></verifyList>
+		<groupSearch v-show="PageCur=='search'" @goBack="showGroup"></groupSearch>
 	</view>
 </template>
 
 <script>
+	import {
+		mapState,
+		mapActions,
+		mapMutations
+	} from 'vuex'
+
+	import {
+		roomList
+	} from '../../../common/api';
 	export default {
 		props: {
 			keyid: {
@@ -64,62 +74,72 @@
 				randomKeyId: 0
 			};
 		},
+		computed: {
+			...mapState('app', [
+				'imgUrl',
+				'reqUrl',
+			]),
+			...mapState('user', [
+				'user',
+				'unDoRoomAddCount',
+				'unDoFriendAddCount',
+				'groupList'
+			]),
+		},
 		watch: {
 			keyid: function(newVal, oldVal) {
-				console.log('----------------------newVal', newVal)
-				console.log('---------------------oldVal', oldVal)
 				this.fetchData();
 			}
 		},
 		methods: {
+			...mapMutations('user', [
+				'setGroupList'
+			]),
+			getHeadPic(headpic) {
+				if (headpic && headpic.indexOf('static/header') != -1) {
+					return headpic;
+				} else {
+					return this.reqUrl + headpic;
+				}
+			},
 			fetchData() {
 				let _this = this;
-				let user = uni.getStorageSync("USER");
-				this.$http.post("/user/json/room/list", {
-						type: "1"
-					}, {
-						header: {
-							"x-access-uid": user.id,
-							"x-access-client": _this.$clientType
-						}
-					}
-
-				).then(res => {
+				roomList({
+					type: "1"
+				}).then(res => {
 					let res_data = eval(res.data);
 					if (res_data.code == 200) {
-						_this.$store.commit("setGroup_list", res_data.body)
+						_this.setGroupList(res_data.body)
+						uni.hideLoading()
 					} else {
 						uni.showToast({
 							icon: 'none',
 							title: "获取列表失败"
 						});
 					}
+				}).catch(error => {
+					uni.showToast({
+						icon: 'none',
+						position: 'bottom',
+						title: error.msg ? error.msg : "服务器异常!"
+					});
 				});
 			},
 			showGroup() {
 				this.PageCur = 'main';
 			},
-			goback () {
+			goback() {
 				this.$emit('goBack');
 			},
 			goRoomAddList() {
 				this.PageCur = 'list';
-				this.randomKeyId = parseInt(Math.random()*100000000);
-				// uni.navigateTo({
-				// 	url: "/pages/addressBook/group/verify_list"
-				// })
+				this.randomKeyId = parseInt(Math.random() * 100000000);
 			},
 			goSearch() {
 				this.PageCur = 'search';
-				// uni.navigateTo({
-				// 	url: "/pages/addressBook/group/search"
-				// })
 			},
 			goChat(item) {
 				this.$emit('goGroupChat', item.roomUUID);
-				// uni.navigateTo({
-				// 	url:"/pages/chat/group/index?toid="+item.roomUUID
-				// })
 			}
 		}
 	}

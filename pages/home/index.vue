@@ -1,16 +1,16 @@
 <template>
-	<view >
+	<view>
 		<view @tap="hideShowMenu()" style="padding-top:50upx;background-color: #fff;width: 20%;float: left">
 			<view class="cu-bar bg-white solid-bottom">
 				<view class="action" style="font-size: 36upx;font-weight: 600;">
 					<text class="cuIcon-title text-orange " style="color: green"></text>
 					<text style="min-width:73px;">
 						消息列表
+						(<text> {{delayTime}}</text>)
 					</text>
-
 				</view>
 				<div class="auto-refresh">
-					<switch v-if="$store.state.isEmployee" @change="isOpenRefresh"></switch>
+					<switch v-if="isEmployee" @change="isOpenRefresh"></switch>
 				</div>
 				<text @tap.stop="showMenuFn()"
 					style="float:right;font-size:48upx;cursor: pointer;color:#333;margin-top:6upx;margin-right:40upx"
@@ -22,7 +22,7 @@
 					<input v-model="kw" @input="search_list()" type="text" placeholder="输入搜索的关键词"
 						confirm-type="search"></input>
 				</view>
-				<button class="refresh-btn" @click="refresherrefresh"  >刷新</button>
+				<button class="refresh-btn" @click="refresherrefresh">刷新</button>
 
 			</view>
 			<!--#ifdef H5 -->
@@ -39,14 +39,18 @@
 						style="float:left;font-size:46upx;margin-top:6upx;margin-left:10upx"
 						class="iconfont icon-liaotian1"></text><text
 						style="float:left;margin-top:10upx;margin-left:20upx;font-size: 28upx;">发起群聊</text></view>
-				<view v-if="false" @tap.stop="addFriend()" style="border-top:1px solid #777;float:left;width:98%;padding-top:10upx;">
+				<view v-if="false" @tap.stop="addFriend()"
+					style="border-top:1px solid #777;float:left;width:98%;padding-top:10upx;">
 					<text style="float:left;font-size:46upx;margin-top:6upx;margin-left:10upx"
 						class="iconfont icon-tianjiahaoyou1"></text><text
-						style="float:left;margin-top:10upx;margin-left:20upx;font-size: 28upx;">添加好友</text></view>
-				<view v-if="false" @tap.stop="searchGroup()" style="border-top:1px solid #777;float:left;width:98%;padding-top:10upx;">
+						style="float:left;margin-top:10upx;margin-left:20upx;font-size: 28upx;">添加好友</text>
+				</view>
+				<view v-if="false" @tap.stop="searchGroup()"
+					style="border-top:1px solid #777;float:left;width:98%;padding-top:10upx;">
 					<text style="float:left;font-size:46upx;margin-top:6upx;margin-left:10upx"
 						class="iconfont icon-chazhao"></text><text
-						style="float:left;margin-top:10upx;margin-left:20upx;font-size: 28upx;">查找群组</text></view>
+						style="float:left;margin-top:10upx;margin-left:20upx;font-size: 28upx;">查找群组</text>
+				</view>
 				<view v-if="super_user==1" @tap.stop="searchUser"
 					style="border-top:1px solid #777;float:left;width:98%;padding-top:10upx;"><text
 						style="float:left;font-size:44upx;margin-top:6upx;margin-left:10upx"
@@ -55,34 +59,28 @@
 			</view>
 			<!--#endif -->
 
-
-
-			<scroll-view style="height: calc(100vh - 135px);width: 100%;" :scroll-y="modalName==null"
-				class="page" :class="modalName!=null?'show':''">
+			<scroll-view style="height: calc(100vh - 135px);width: 100%;" :scroll-y="modalName==null" class="page"
+				:class="modalName!=null?'show':''">
 				<view class="cu-list menu-avatar">
-					<view style="text-align: center;background: #fff;height: 80px;line-height: 80px;color: #999;" v-if="$store.state.ar_list_show.length<=0">暂无聊天信息</view>
+					<view style="text-align: center;background: #fff;height: 80px;line-height: 80px;color: #999;"
+						v-if="arListShow&&arListShow.length<=0">暂无聊天信息</view>
 					<view @tap="goChat(item)" class="cu-item" :class="modalName=='move-box-'+ index?'move-cur':''"
-						v-for="(item,index) in $store.state.ar_list_show" :key="index" @touchstart="ListTouchStart"
+						v-for="(item,index) in arListShow" :key="index" @touchstart="ListTouchStart"
 						@touchmove="ListTouchMove" @touchend="ListTouchEnd" :data-target="'move-box-' + index">
 						<view v-if="chatCfg.showUserOnline==1"
-							:class="{unline_pic:item.typeid=='2'&&item.online==0&&item.id!='-1'}" class="cu-avatar round lg"
-							:style="{'backgroundImage': 'url('+$store.state.img_url+ item.img +')'}">
-							<!--
-							<uni-view data-v-3174c329="" class="cu-tag badge">99+</uni-view>
-							-->
+							:class="{unline_pic:item.typeid=='2'&&item.online==0&&item.id!='-1'}"
+							class="cu-avatar round lg" :style="{'backgroundImage': 'url('+getHeadPic(item.img) +')'}">
 						</view>
 						<view v-else class="cu-avatar round lg"
-							:style="{'backgroundImage': 'url('+$store.state.img_url+ item.img +')'}">
-							<!--
-							<uni-view data-v-3174c329="" class="cu-tag badge">99+</uni-view>
-							-->
+							:style="{'backgroundImage': 'url('+getHeadPic(item.img) +')'}">
 						</view>
 						<view class="content" style="min-width: 120px;z-index: 20;background: #fff;">
 							<view class="text-black">{{item.title}}{{item.typeid == '1' ? '（群聊）' : ''}}</view>
 							<view class="text-gray text-sm flex">
 								<view class="text-cut" style="position: relative;top: 4px;">
 									<text style="margin-right: 6px;"
-										v-if="item.typeid=='2'&&item.online==0&&item.id!='-1'">最近登陆于{{item.lastLoginDate}} -
+										v-if="item.typeid=='2'&&item.online==0&&item.id!='-1'">最近登陆于{{item.lastLoginDate}}
+										-
 									</text>
 									<text style="margin-right: 6px;color:red"
 										v-if="item.aiteCount>0">[你有{{item.aiteCount}}条消息]</text>
@@ -92,11 +90,7 @@
 						</view>
 						<view class="action">
 							<view class="text-grey text-xs">{{item.createDate}}</view>
-							<!--
-							<view data-v-3174c329="" class="cuIcon-notice_forbid_fill text-gray"></view>
-							-->
 							<view v-if="item.unread>0" class="cu-tag round bg-red sm">{{item.unread}}</view>
-							<!-- <view v-else style="font-size: 46upx;color: #ccc;" class="cuIcon-commentfill text-gray"></view> -->
 						</view>
 						<view class="move">
 							<view v-if="item.top>0" @touchend.stop="" @touchmove.stop="" @touchstart.stop=""
@@ -112,22 +106,24 @@
 
 			</scroll-view>
 		</view>
-		<view v-show="!msgToId && !msgToGroupId && isBlank" style="height: 100vh;width: 80%; float: left; border-left: 1px solid #ddd; background:#eee">
-			<img src="../../static/logo1.png" width="100px" height="100px" style="margin-top: calc(50vh - 50px);margin-left: calc(50% - 50px);"></img>
+		<view v-show="!msgToId && !msgToGroupId && isBlank"
+			style="height: 100vh;width: 80%; float: left; border-left: 1px solid #ddd; background:#eee">
+			<img src="../../static/logo1.png" width="100px" height="100px"
+				style="margin-top: calc(50vh - 50px);margin-left: calc(50% - 50px);"></img>
 		</view>
 
 		<view style="height: calc(100vh - 50upx);width: 80%; float: left; border-left: 1px solid #ddd">
-			<scroll-view :scroll-y="modalName==null"
-						 style="width: 100%"
-						 class="page" :class="modalName!=null?'show':''">
-				<GroupChat :msgToGroupId="msgToGroupId" :isGroupChat="isGroupChat" :isRandom="random" :msgToId="msgToId"  @openModal="openModal" @openAtModal="openAtModal"></GroupChat>
+			<scroll-view :scroll-y="modalName==null" style="width: 100%" class="page"
+				:class="modalName!=null?'show':''">
+				<GroupChat :msgToGroupId="msgToGroupId" :isGroupChat="isGroupChat" :isRandom="random" :msgToId="msgToId"
+					@openModal="openModal" @openAtModal="openAtModal"></GroupChat>
 			</scroll-view>
 		</view>
-
-
-		<view v-if="visiable" style="width: 100%; height: 100%;color:#fff;background-color: #0006; position: fixed;left: 0;top:0; z-index: 10;">
-			<text @click="closeModal" class="cuIcon-close" style="font-size: 36px; cursor: pointer; position:absolute; top:15px; right: 15px"></text>
-		    <UserMgr v-show="mgrType=='user'" :mgrId="mgrId" :friendPic="friendPic" :toid="toId"></UserMgr>
+		<view v-if="visiable"
+			style="width: 100%; height: 100%;color:#fff;background-color: #0006; position: fixed;left: 0;top:0; z-index: 10;">
+			<text @click="closeModal" class="cuIcon-close"
+				style="font-size: 36px; cursor: pointer; position:absolute; top:15px; right: 15px"></text>
+			<UserMgr v-show="mgrType=='user'" :mgrId="mgrId" :friendPic="friendPic" :toid="toId"></UserMgr>
 			<GroupMgr v-show="mgrType=='group'" :mgrId="mgrId" :toid="toId"></GroupMgr>
 			<Aite v-show="mgrType=='at'" :roomid="roomid" @closeModal="closeModal"></Aite>
 			<CreateGroup v-show="mgrType=='createGroup'"></CreateGroup>
@@ -137,11 +133,17 @@
 
 <script>
 	import GroupChat from '@/pages/chat/group/index.vue';
+	import {
+		mapState,
+		mapMutations,
+		mapActions
+	} from 'vuex'
+
 	export default {
-		components:{
+		components: {
 			GroupChat
 		},
-		props:['isBlank'],
+		props: ['isBlank'],
 		data() {
 			return {
 				isGroupChat: false,
@@ -150,66 +152,15 @@
 				msgToGroupId: '',
 				mgrId: '',
 				friendPic: '',
-				toId:'',
+				toId: '',
 				mgrType: 'user',
 				refresherTriggered: false, //下拉刷新状态
 				_refresherTriggered: false, //防止异步操作
 				chatCfg: {},
 				showMenu: false,
-				cuIconList: [{
-					cuIcon: 'cardboardfill',
-					color: 'red',
-					badge: 120,
-					name: 'VR'
-				}, {
-					cuIcon: 'recordfill',
-					color: 'orange',
-					badge: 1,
-					name: '录像'
-				}, {
-					cuIcon: 'picfill',
-					color: 'yellow',
-					badge: 0,
-					name: '图像'
-				}, {
-					cuIcon: 'noticefill',
-					color: 'olive',
-					badge: 22,
-					name: '通知'
-				}, {
-					cuIcon: 'upstagefill',
-					color: 'cyan',
-					badge: 0,
-					name: '排行榜'
-				}, {
-					cuIcon: 'clothesfill',
-					color: 'blue',
-					badge: 0,
-					name: '皮肤'
-				}, {
-					cuIcon: 'discoverfill',
-					color: 'purple',
-					badge: 0,
-					name: '发现'
-				}, {
-					cuIcon: 'questionfill',
-					color: 'mauve',
-					badge: 0,
-					name: '帮助'
-				}, {
-					cuIcon: 'commandfill',
-					color: 'purple',
-					badge: 0,
-					name: '问答'
-				}, {
-					cuIcon: 'brandfill',
-					color: 'mauve',
-					badge: 0,
-					name: '版权'
-				}],
 				modalName: null,
 				gridCol: 3,
-				random:1,
+				random: 1,
 				gridBorder: false,
 				menuBorder: false,
 				menuArrow: false,
@@ -223,13 +174,54 @@
 				roomid: ''
 			};
 		},
-		watch:{
+		computed: {
+			...mapState('chat', {
+				chatCfg: state => state.chatCfg,
+				arListShow: state => state.arListShow
+			}),
+			...mapState('app', ['imgUrl', 'reqUrl']),
+			...mapState('socket', {
+				delayTime: state => state.delayTime
+			}),
+			...mapState('user', ['isEmployee']),
+			delayTime() {
+				if (this.delayTime < 0) {
+					return "--"
+				}
+				return `${this.delayTime}ms`
+			}
 		},
+		watch: {},
 
 		methods: {
-			isOpenRefresh(e){
-				let _this = this;
-				_this.$store.state.isOpenRefresh = e.detail.value;
+			...mapMutations('chat', [
+				'setArList'
+			]),
+			...mapMutations('app', [
+				'setOpenRefresh'
+			]),
+			getHeadPic(headpic) {
+				if (headpic && headpic.indexOf('static/header') != -1) {
+					return headpic;
+				} else {
+					return this.reqUrl + headpic;
+				}
+			},
+			...mapActions('chat', [
+				'listPageAction',
+				'scanCode',
+				'cancelZhidingItem',
+				'zhidingItem',
+				'removeItem',
+				'searchMsgListAction',
+				'getChatCfgAction',
+				'setArListShow'
+			]),
+			...mapActions('user', [
+				'isSuperUserAction'
+			]),
+			isOpenRefresh(e) {
+				this.setOpenRefresh(e.detail.value);
 			},
 			closeModal() {
 				this.visiable = false;
@@ -237,16 +229,16 @@
 			openModal(obj) {
 				this.mgrId = obj.id;
 				this.mgrType = obj.type;
-				this.friendPic= obj.friendPic;
+				this.friendPic = obj.friendPic;
 				this.toId = obj.toId;
 				this.visiable = true;
 			},
-			openAtModal(id){
+			openAtModal(id) {
 				this.visiable = true;
 				this.mgrType = 'at';
 				this.roomid = id;
 			},
- 			refresherrefresh() {
+			refresherrefresh() {
 				let _this = this;
 				if (_this._refresherTriggered) {
 					return;
@@ -272,169 +264,16 @@
 				let _this = this;
 				let user = uni.getStorageSync("USER");
 				if (user) {
-					_this.$http.post("/user/accessRecord/json/list", {
-						header: {
-							"x-access-uid": user.id,
-							"x-access-client": _this.$clientType
-						}
-					}).then(res_1 => {
-						let res_data_1 = eval(res_1.data);
-						if (res_data_1.code == 200) {
-							let unreadSum = 0;
-							res_data_1.body.forEach(item => {
-								let s = uni.getStorageSync(item.id + "_NOTE");
-								if (s && s != "") {
-									item.title = s;
-								}
-
-								let last_txt = uni.getStorageSync(user.id + "#" + item.id +
-									'_CHAT_MESSAGE_LASTCONTENT');
-								if (last_txt.indexOf("<img") >= 0) {
-									item.content = "[图片]";
-								} else if (last_txt.indexOf("upload/chat/voice") >= 0) {
-									item.content = "[语音]";
-								} else if (last_txt.indexOf("upload/chat/video") >= 0) {
-									item.content = "[视频]";
-								} else {
-									item.content = last_txt;
-								}
-
-
-								let unRead = uni.getStorageSync(user.id + "#" + item.id +
-									'_CHAT_MESSAGE_UNREAD');
-								if (unRead && unRead != "") {
-									unreadSum += parseInt(unRead);
-									item.unread = parseInt(unRead);
-								} else {
-									item.unread = 0;
-								}
-
-								let aite_count = uni.getStorageSync(item.id + "#AITE_COUNT");
-								if (aite_count && aite_count != "") {
-									item.aiteCount = parseInt(aite_count);
-								}
-
-								let zhiding = uni.getStorageSync(item.id + "_zhiding");
-								if (zhiding) {
-									item.top = 0;
-								}
-
-							});
-							let list = res_data_1.body;
-							list.sort(function(a, b) {
-								if (a.top == b.top) {
-									return b.createDateTime - a.createDateTime;
-								} else {
-									return a.top - b.top;
-								}
-							})
-
-							_this.$store.commit("setAr_list", list)
-							_this.$store.commit("setUnReadMsgSum", unreadSum)
-							this.closeRefresh();
-							//_this.$store.commit("setAr_list_show",list)
-
-						} else {
-							this.closeRefresh();
-							uni.showToast({
-								icon: 'none',
-								title: "获取列表失败"
-							});
-						}
-					})
+					_this.listPageAction().then(res => {
+						_this.closeRefresh();
+					}).catch(error => {
+						_this.closeRefresh();
+					});
 				}
 			},
 			closeRefresh() {
 				this.refresherTriggered = false; //触发onRestore，并关闭刷新图标
 				this._refresherTriggered = false;
-			},
-			saoma() {
-				let _this = this;
-				let user = uni.getStorageSync("USER");
-				// 允许从相机和相册扫码
-				uni.scanCode({
-					success: function(res) {
-						if (res.result.indexOf("#group#") == 0) {
-							let roomid = res.result.split("#")[2];
-
-							_this.$http.post("/room/json/isRoomMember", {
-								roomid: roomid
-							}, {
-								header: {
-									"x-access-uid": user.id,
-									"x-access-client": _this.$clientType
-								}
-							}).then(res => {
-								let res_data = eval(res.data);
-								if (res_data.code == 200) {
-									if (res_data.msg == "1") {
-										uni.navigateTo({
-											url: "/pages/chat/group/index?toid=" + roomid
-										})
-									} else {
-										uni.navigateTo({
-											url: "/pages/addressBook/group/group_detail?id=" +
-												roomid
-										})
-									}
-								} else {
-									uni.showToast({
-										icon: 'none',
-										title: res_data.msg
-									});
-								}
-							})
-
-						} else if (res.result.indexOf("#member#") == 0) {
-							let member_id = res.result.split("#")[2];
-							//如果是自己的二维码
-							if (member_id == _this.$store.state.user.id) {
-								uni.navigateTo({
-									url: "/pages/index/index"
-								})
-								return;
-							}
-
-
-							_this.$http.post("/user/friend/isMyFri/v1", {
-								uid: member_id
-							}, {
-								header: {
-									"x-access-uid": user.id,
-									"x-access-client": _this.$clientType
-								}
-							}).then(res => {
-								let res_data = eval(res.data);
-								if (res_data.code == 200) {
-									if (res_data.msg == "1") {
-										uni.navigateTo({
-											url: "/pages/chat/user/index?toid=" + member_id
-										})
-									} else {
-										uni.navigateTo({
-											url: "/pages/chat/user_detail?id=" + member_id
-										})
-									}
-								} else {
-									uni.showToast({
-										icon: 'none',
-										title: res_data.msg
-									});
-								}
-							})
-						} else if (res.result.indexOf("http") == 0) {
-							uni.navigateTo({
-								url: "/pages/faxian/site/site?url=" + encodeURIComponent(res.result)
-							})
-						} else {
-							uni.navigateTo({
-								url: "/pages/faxian/txtContent/txtContent?txt=" + res.result
-							})
-						}
-
-
-					}
-				});
 			},
 			searchGroup() {
 				uni.navigateTo({
@@ -443,124 +282,21 @@
 				this.showMenu = false;
 			},
 			cancelZhidingItem(item) {
-				uni.setStorageSync(item.id + "_zhiding", false);
-				let list1 = []; //没有置顶的
-				let list2 = []; //置顶的
-
-				this.$store.state.ar_list.forEach(item1 => {
-					if (item.arid == item1.arid) {
-						item1.top = 50;
-					}
-
-					let zhiding = uni.getStorageSync(item1.id + "_zhiding");
-					if (zhiding) {
-						item.top = 0;
-						list2.push(item1);
-					} else {
-						list1.push(item1);
-					}
-				});
-
-
-				list1.sort(function(a, b) {
-					return b.createDateTime - a.createDateTime;
-				})
-				list2.sort(function(a, b) {
-					return b.createDateTime - a.createDateTime;
-				})
-				this.$store.commit("setAr_list", list2.concat(list1));
-
-
+				this.cancelZhidingItem(item);
 				this.ListTouchEnd();
 			},
 			zhidingItem(item) {
-				uni.setStorageSync(item.id + "_zhiding", true);
-
-				let list1 = []; //没有置顶的
-				let list2 = []; //置顶的
-				this.$store.state.ar_list.forEach(item1 => {
-					if (item.arid == item1.arid) {
-						item1.top = 0;
-					}
-
-					let zhiding = uni.getStorageSync(item1.id + "_zhiding");
-					if (zhiding) {
-						item.top = 0;
-						list2.push(item1);
-					} else {
-						list1.push(item1);
-					}
-
-				});
-
-				list1.sort(function(a, b) {
-					return b.createDateTime - a.createDateTime;
-				})
-				list2.sort(function(a, b) {
-					return b.createDateTime - a.createDateTime;
-				})
-				this.$store.commit("setAr_list", list2.concat(list1));
-
-
+				this.zhidingItem(item);
 				this.ListTouchEnd();
 			},
 			removeItem(item) {
-				let _this = this;
-				let user = uni.getStorageSync("USER");
-
 				this.ListTouchEnd();
 				//使用setTimeout的目的在于先左移动再进行删除
 				setTimeout(function() {
-
-
-					_this.$http.post("/user/accessRecord/json/remove", {
-						id: item.arid
-					}, {
-						header: {
-							"x-access-uid": _this.$store.state.user.id,
-							"x-access-client": _this.$clientType
-						}
-					}).then(res => {
-						let res_data = eval(res.data);
-						if (res_data.code == 200) {
-							let list = _this.$store.state.ar_list.filter(item1 => {
-								if (item.arid == item1.arid) {
-									return false;
-								}
-								return true;
-							});
-							_this.$store.commit("setAr_list", list);
-						}
-					})
-
-					// uni.request({
-					// 	method:"POST",
-					// 	url: _this.$store.state.req_url + "/user/accessRecord/json/remove",
-					// 	data:{id:item.arid},
-					// 	header:{
-					// 		"Content-Type":"application/x-www-form-urlencoded",
-					// 		"x-access-uid":_this.$store.state.user.id
-					// 	},
-					// 	success(res) {
-					// 		let res_data = eval(res.data);
-					// 		if(res_data.code==200) {
-					// 			let list = _this.$store.state.ar_list.filter(item1=>{
-					// 				if(item.arid==item1.arid) {
-					// 					return false;
-					// 				}
-					// 				return true;
-					// 			});
-					// 			_this.$store.commit("setAr_list",list);
-					// 		}
-					// 	}
-					// })
+					this.removeItem(item.arid)
 				}, 500)
-
 			},
 			createGroup() {
-				// uni.navigateTo({
-				// 	url: "/pages/chat/group/createGroup"
-				// })
 				this.showMenu = false;
 				this.mgrType = "createGroup";
 				this.visiable = true;
@@ -582,56 +318,31 @@
 			},
 			showMenuFn() {
 				let _this = this;
-				let user = uni.getStorageSync("USER");
-
-				//是否超级用户
-				_this.$http.post("/user/json/isSuperUser", {
-					header: {
-						"x-access-uid": _this.$store.state.user.id,
-						"x-access-client": _this.$clientType
-					}
-				}).then(res => {
-					let res_data = eval(res.data);
-					if (res_data.code == 200) {
-						_this.super_user = parseInt(res_data.msg);
+				this.isSuperUserAction().then(res => {
+					if (res != -1) {
+						_this.super_user = res;
 					}
 				})
-				// uni.request({
-				// 	method:"POST",
-				// 	url: _this.$store.state.req_url + "/user/json/isSuperUser",
-				// 	header:{
-				// 		"Content-Type":"application/x-www-form-urlencoded",
-				// 		"x-access-uid":_this.$store.state.user.id
-				// 	},
-				// 	success(res) {
-				// 		let res_data = eval(res.data);
-				// 		if(res_data.code==200) {
-				// 			_this.super_user = parseInt(res_data.msg);
-				// 		}
-				// 	}
-				// })
-
 				this.showMenu = !this.showMenu;
 			},
 			search_list() {
 				let _this = this;
-				let list = this.$store.state.ar_list;
+				let list = this.arList;
 				list = list.filter((item) => {
 					return item.title.indexOf(_this.kw.trim()) >= 0 || item.subname.indexOf(_this.kw.trim()) >= 0
 				});
-				this.$store.commit("setAr_list_show", list);
+				ths.setArListShow(list)
 			},
 			goChat(item) { //打开用户聊天详情
-				setTimeout(()=>{
-				},1000);
+				setTimeout(() => {}, 1000);
 				if (item.id == "-1" || item.typeid == "2") {
 					this.msgToId = item.id;
 					this.isGroupChat = false;
-					this.random = this.random +1
+					this.random = this.random + 1
 				} else {
 					this.msgToGroupId = item.id;
 					this.isGroupChat = true;
-					this.random = this.random +1
+					this.random = this.random + 1
 				}
 			},
 			showModal(e) {
@@ -686,39 +397,8 @@
 		},
 		//因为这个home/index.vue是组件形式显示的。所有没有页面的生命周期只有mounted等
 		mounted() {
-
-			let _this = this;
-			let user = uni.getStorageSync("USER");
-			_this.$http.post("/sysConfig/json/getChatCfg", {
-				header: {
-					"x-access-uid": _this.$store.state.user.id,
-					"x-access-client": _this.$clientType
-				}
-			}).then(res => {
-				let res_data = eval(res.data);
-				if (res_data.code == 200) {
-					_this.chatCfg = res_data.body;
-				}
-			})
+			this.getChatCfgAction();
 			this.refresherrefresh()
-			// uni.request({
-			// 	method:"POST",
-			// 	url: _this.$store.state.req_url + "/sysConfig/json/getChatCfg",
-			// 	header:{
-			// 		"Content-Type":"application/x-www-form-urlencoded",
-			// 		"x-access-uid":_this.$store.state.user.id
-			// 	},
-			// 	success(res) {
-			// 		let res_data = eval(res.data);
-			// 		if(res_data.code==200) {
-			// 			_this.chatCfg = res_data.body;
-			// 		}
-			// 	}
-			// })
-
-
-
-
 		}
 	}
 </script>
@@ -748,7 +428,10 @@
 	.switch-music::before {
 		content: "\e6db";
 	}
-	.cu-list.menu-avatar>.cu-item { cursor: pointer;}
+
+	.cu-list.menu-avatar>.cu-item {
+		cursor: pointer;
+	}
 
 	.cu-list.menu-avatar>.cu-item::after {
 		border-bottom: 1px solid #ddd;
@@ -768,13 +451,19 @@
 		-webkit-filter: grayscale(100%);
 		filter: grayscale(100%);
 	}
-	.refresh-btn{
-		background: #FFAA01;margin-right:20rpx;font-size:25rpx;font-weight:normal;line-height:25px;
-		color:white;
+
+	.refresh-btn {
+		background: #FFAA01;
+		margin-right: 20rpx;
+		font-size: 25rpx;
+		font-weight: normal;
+		line-height: 25px;
+		color: white;
 	}
-	.auto-refresh{
-		margin-left:10rpx;
-		font-size:25rpx;
-		font-weight:normal;
+
+	.auto-refresh {
+		margin-left: 10rpx;
+		font-size: 25rpx;
+		font-weight: normal;
 	}
 </style>

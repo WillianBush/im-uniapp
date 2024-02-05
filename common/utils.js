@@ -70,3 +70,11 @@ export const dateFormat = (fmt, date) => {
 	};
 	return fmt;
 }
+
+export const getHeadPic = (headpic, url) => {
+		if (headpic && headpic.indexOf('static/header') != -1) {
+			return headpic;
+		} else {
+			return url + headpic;
+		}
+	},

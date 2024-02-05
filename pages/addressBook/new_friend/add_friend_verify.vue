@@ -1,9 +1,7 @@
 <template>
 	<view>
 		<headbar :title="'申请验证'" :isback="true">
-
 		</headbar>
-
 		<view class="cu-form-group margin-top" style="width: 96%;
     margin: auto auto;
     margin-top: 15px;">
@@ -13,17 +11,23 @@
 		    margin: auto auto;
 		    color: #999;
 		    margin-top: .4rem;
-		    font-size: .3rem">你需要发送验证申请，等待对方通过</view>
+		    font-size: 1rem">你需要发送验证申请，等待对方通过</view>
 		<div style="margin-top:30px;text-align: center">
 			<el-button type="primary" @tap="sendVerify()" style="width:130px">发送</el-button>
 		</div>
-
-
-
 	</view>
 </template>
 
 <script>
+	import {
+		searchFriend,
+		sendVerifyFriend
+	} from '../../../common/api';
+	import {
+		mapState,
+		mapActions,
+		mapMutations
+	} from 'vuex'
 	export default {
 		data() {
 			return {
@@ -31,171 +35,99 @@
 				CustomBar: this.CustomBar,
 				hidden: true,
 				list: [],
-				kw:"",
-				kw1:"",
-				uuid:""
+				kw: "",
+				kw1: "",
+				uuid: ""
 			};
 		},
-
+		computed: {
+			...mapState('user', [
+				'user',
+			]),
+		},
 		onLoad(e) {
 			this.uuid = e.uuid;
 		},
 		methods: {
-			sendVerify(){
-				let _this = this;
-				let user = this.$store.state.user;
+			sendVerify() {
+				let user = this.user;
 				let v = {
-					txt:this.kw==''?"我是"+user.nickName:this.kw,
-					mid:this.uuid
+					txt: this.kw == '' ? "我是" + user.nickName : this.kw,
+					mid: this.uuid
 				}
-
-				this.$http.post("/user/friend/sendVerify/v1",
-					v,
-					{
-						header:{
-							"x-access-uid":user.id,
-							"x-access-client":_this.$clientType
-						}
-					}
-
-				).then(res=>{
-					console.log(res.data);
+				sendVerifyFriend(v).then(res => {
 					let res_data = eval(res.data);
-					if(res_data.code==200) {
-						// uni.navigateTo({
-						// 	url:"/pages/addressBook/new_friend/new_friend_list"
-						// })
-						//let pages = getCurrentPages(); // 当前页面
-						///let beforePage = pages[pages.length - 3];
-
+					if (res_data.code == 200) {
 						uni.showToast({
-						    title: "发送成功",
-						    duration: 800
+							title: "发送成功",
+							duration: 800
 						});
 
-						setTimeout(()=>{
+						setTimeout(() => {
 							uni.navigateBack({
-								delta: 1,
-								success: function() {
-									//beforePage.onLoad(); // 执行前一个页面的onLoad方法
-								},
+								delta: 2,
+								success: function() {},
 							});
-						},800);
+						}, 800);
 
 
 					} else {
 						uni.showToast({
-						    icon: 'none',
+							icon: 'none',
 							position: 'bottom',
-						    title: res_data.msg
+							title: res_data.msg
 						});
 					}
+				}).catch(error => {
+					uni.showToast({
+						icon: 'none',
+						position: 'bottom',
+						title: error.msg ? error.msg : "服务器异常!"
+					});
 				});
 
-				// uni.request({
-				// 	method:"POST",
-				// 	url: _this.$store.state.req_url + "/user/friend/sendVerify/v1",
-				// 	data:v,
-				// 	header:{
-				// 		"Content-Type":"application/x-www-form-urlencoded",
-				// 		"x-access-uid":user.id
-				// 	},
-				// 	success(res) {
-				// 		console.log(res.data);
-				// 		let res_data = eval(res.data);
-				// 		if(res_data.code==200) {
-				// 			// uni.navigateTo({
-				// 			// 	url:"/pages/addressBook/new_friend/new_friend_list"
-				// 			// })
-				// 			//let pages = getCurrentPages(); // 当前页面
-				// 			///let beforePage = pages[pages.length - 3];
-
-				// 			uni.showToast({
-				// 			    title: "发送成功",
-				// 			    duration: 800
-				// 			});
-
-				// 			setTimeout(()=>{
-				// 				uni.navigateBack({
-				// 					delta: 2,
-				// 					success: function() {
-				// 						//beforePage.onLoad(); // 执行前一个页面的onLoad方法
-				// 					},
-				// 				});
-				// 			},800);
-
-
-				// 		} else {
-				// 			uni.showToast({
-				// 			    icon: 'none',
-				// 				position: 'bottom',
-				// 			    title: res_data.msg
-				// 			});
-				// 		}
-				// 	}
-				// })
-
 			},
-			goSearchFriend(){
+			goSearchFriend() {
 				uni.navigateTo({
-					url:"/pages/addressBook/new_friend/search"
+					url: "/pages/addressBook/new_friend/search"
 				})
 			},
 			goMyGroup() {
 				uni.navigateTo({
-					url:"/pages/addressBook/group/index"
+					url: "/pages/addressBook/group/index"
 				})
 			},
 			search() {
 				let _this = this;
-				let user = this.$store.state.user;
-				if(this.kw1.trim()=="") {
+				let user = this.user;
+				if (this.kw1.trim() == "") {
 					uni.showToast({
-					    icon: 'none',
+						icon: 'none',
 						position: 'bottom',
-					    title: '请输入手机号或昵称'
+						title: '请输入手机号或昵称'
 					});
 					return;
 				}
 				this.kw = this.kw1;
-
-				this.$http.post("/user/friend/searchByTelOrName/v1",
-					{
-						txt:this.kw
-					},
-					{
-						header:{
-							"x-access-uid":user.id,
-							"x-access-client":_this.$clientType
-						}
-					}
-
-				).then(res=>{
+				searchRoom({
+					kw: this.kw
+				}).then(res => {
 					let res_data = eval(res.data);
-					if(res_data.code==200) {
+					if (res_data.code == 200) {
 						_this.list = res_data.body
+					} else {
+						uni.showToast({
+							icon: 'none',
+							title: res_data.msg
+						});
 					}
+				}).catch(error => {
+					uni.showToast({
+						icon: 'none',
+						position: 'bottom',
+						title: error.msg ? error.msg : "服务器异常!"
+					});
 				});
-
-
-				// uni.request({
-				// 	method:"POST",
-				// 	url: _this.$store.state.req_url + "/user/friend/searchByTelOrName/v1",
-				// 	data:{
-				// 		txt:this.kw
-				// 	},
-				// 	header:{
-				// 		"Content-Type":"application/x-www-form-urlencoded",
-				// 		"x-access-uid":user.id
-				// 	},
-				// 	success(res) {
-				// 		console.log(res.data);
-				// 		let res_data = eval(res.data);
-				// 		if(res_data.code==200) {
-				// 			_this.list = res_data.body
-				// 		}
-				// 	}
-				// })
 			},
 			//获取文字信息
 			getCur(e) {
@@ -246,12 +178,9 @@
 </script>
 
 <style>
-
-
 	.indexes {
 		position: relative;
 	}
-
 	.indexBar {
 		position: fixed;
 		right: 0px;
@@ -315,7 +244,8 @@
 		text-align: center;
 		font-size: 48upx;
 	}
+
 	.text-grey {
-		color:#333
+		color: #333
 	}
 </style>
