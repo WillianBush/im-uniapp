@@ -1452,6 +1452,8 @@
 						}
 						//#endif
 						_this.setChatMyLoadding(true)
+						let token = uni.getStorageSync("token");
+						
 						setTimeout(() => {
 							_this.scrollTop = 99999999 + Math.random();
 						}, 100)
@@ -1459,7 +1461,7 @@
 							// 需要上传的地址
 							url: _this.reqUrl + '/user/file/uploadVideo',
 							header: {
-								["member-token"]: _this.user.userToken,
+								["member-token"]: token,
 							},
 							// filePath  需要上传的文件
 							filePath: res.tempFilePath,
@@ -1513,12 +1515,14 @@
 						setTimeout(function() {
 							_this.scrollToBottom();
 						}, 100)
+						let token = uni.getStorageSync("token");
+						
 						arrs.forEach(item => {
 							var uper = uni.uploadFile({
 								// 需要上传的地址
 								url: _this.reqUrl + '/user/file/upload',
 								header: {
-									["member-token"]: _this.user.userToken,
+									["member-token"]: token,
 								},
 								// filePath  需要上传的文件
 								filePath: item.path,
@@ -1678,11 +1682,13 @@
 			Audio2dataURL(path, timeStr) {
 				let _this = this;
 				let user = uni.getStorageSync("USER");
+				let token = uni.getStorageSync("token");
+				
 				var uper = uni.uploadFile({
 					// 需要上传的地址
 					url: _this.reqUrl + '/user/file/uploadVoice',
 					header: {
-						["member-token"]: _this.user.userToken,
+						["member-token"]: token,
 					},
 					// filePath  需要上传的文件
 					filePath: path,

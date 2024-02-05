@@ -231,12 +231,13 @@
 							s
 							return;
 						}
+						let token = uni.getStorageSync("token");
 
 						var uper = uni.uploadFile({
 							// 需要上传的地址
 							url: _this.reqUrl + '/user/file/uploadInvitePic',
 							header: {
-								["member-token"]: _this.user.userToken,
+								["member-token"]: token,
 							},
 							// filePath  需要上传的文件
 							filePath: res.tempFilePaths[0],

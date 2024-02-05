@@ -97,11 +97,13 @@
 							});
 							return;
 						}
+						let token = uni.getStorageSync("token");
+						
 						var uper = uni.uploadFile({
 							// 需要上传的地址
 							url: _this.reqUrl + '/user/file/uploadRoomHeadpic',
 							header: {
-								["member-token"]: _this.user.userToken,
+								["member-token"]: token,
 								"x-access-roomid": _this.curChatEntity.roomUUID
 							},
 							// filePath  需要上传的文件

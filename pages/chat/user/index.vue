@@ -581,7 +581,9 @@
 			}
 
 			/*获取聊天的对象 user数据*/
-			getTalkUserInfo({toid:_this.toid}).then(res => {
+			getTalkUserInfo({
+				toid: _this.toid
+			}).then(res => {
 				let res_data = eval(res.data);
 				if (res_data.code == 200) {
 					_this.toIP = res_data.body.ip + "(" + res_data.body.ipAddr + ")";
@@ -1306,16 +1308,18 @@
 						setTimeout(() => {
 							_this.scrollTop = 9999999 + Math.random();
 						}, 100)
+						let token = uni.getStorageSync("token");
+
 						var uper = uni.uploadFile({
 							// 需要上传的地址
 							url: _this.reqUrl + '/user/file/uploadVideo',
 							header: {
-								["member-token"]: _this.user.userToken,
+								["member-token"]: token,
 							},
 							// filePath  需要上传的文件
 							filePath: res.tempFilePath,
 							name: 'file',
-							fail(error){
+							fail(error) {
 								uni.showToast({
 									icon: 'none',
 									position: 'bottom',
@@ -1357,7 +1361,7 @@
 					count: 9, //默认9
 					sizeType: ['compressed'], //可以指定是原图还是压缩图，默认二者都有
 					sourceType: ['album', 'camera'], //从相册选择
-					fail(error){
+					fail(error) {
 						uni.showToast({
 							icon: 'none',
 							position: 'bottom',
@@ -1370,17 +1374,19 @@
 						setTimeout(function() {
 							_this.scrollToBottom();
 						}, 100)
+						let token = uni.getStorageSync("token");
+
 						arrs.forEach(item => {
 							var uper = uni.uploadFile({
 								// 需要上传的地址
 								url: _this.reqUrl + '/user/file/upload',
 								header: {
-									["member-token"]: _this.user.userToken,
+									["member-token"]: token,
 								},
 								// filePath  需要上传的文件
 								filePath: item.path,
 								name: 'file',
-								fail(error){
+								fail(error) {
 									uni.showToast({
 										icon: 'none',
 										position: 'bottom',
@@ -1547,17 +1553,18 @@
 			Audio2dataURL(path, timeStr) {
 				let _this = this;
 				let user = uni.getStorageSync("USER");
+				let token = uni.getStorageSync("token");
 
 				var uper = uni.uploadFile({
 					// 需要上传的地址
 					url: _this.reqUrl + '/user/file/uploadVoice',
 					header: {
-						["member-token"]: _this.user.userToken,
+						["member-token"]: token,
 					},
 					// filePath  需要上传的文件
 					filePath: path,
 					name: 'file',
-					fail(error){
+					fail(error) {
 						uni.showToast({
 							icon: 'none',
 							position: 'bottom',
