@@ -33,7 +33,7 @@
 	import {
 		activeConfig
 	} from "../../common/appConfig";
-import Log from "../../common/Log";
+	import Log from "../../common/Log";
 	let TAG = "Splash"
 	export default {
 		components: {
@@ -61,6 +61,10 @@ import Log from "../../common/Log";
 			if (!uni.getStorageSync('system_info')) {
 				this.langShow = true
 			}
+			// 防截屏
+			uni.setUserCaptureScreen({
+				enable: false
+			})
 		},
 		computed: {
 			i18n() {
@@ -115,7 +119,7 @@ import Log from "../../common/Log";
 			},
 			loadImage() {},
 			checkVersion() {
-				this.$store.dispatch("app/checkAppVersion").then(res=>{
+				this.$store.dispatch("app/checkAppVersion").then(res => {
 					//不显示
 					if (res.body.is_show == 0) {
 						return
@@ -127,25 +131,25 @@ import Log from "../../common/Log";
 							_this.$refs.updatepage.upgrade();
 						})
 					}
-				}).catch(error=>{
+				}).catch(error => {
 					uni.showToast({
 						icon: 'none',
 						position: 'bottom',
-						title: error.msg?error.msg:"服务器异常!"
+						title: error.msg ? error.msg : "服务器异常!"
 					});
 				})
 			},
 			init() {
 				let _this = this
 				setTimeout(function() {
-					_this.$store.dispatch("app/appHideOrShow",true);
+					_this.$store.dispatch("app/appHideOrShow", true);
 				}, 2000)
 			}
 		},
 		onShow: async function() {
-			Log.d(TAG,'Splash Show--')
+			Log.d(TAG, 'Splash Show--')
 			await this.$onLaunched;
-			Log.d(TAG,"======onShow:获取域名成功！")
+			Log.d(TAG, "======onShow:获取域名成功！")
 			let _this = this;
 			//#ifdef H5
 			_this.init();
