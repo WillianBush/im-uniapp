@@ -62,9 +62,12 @@
 				this.langShow = true
 			}
 			// 防截屏
+			// #ifdef APP-PLUS
 			uni.setUserCaptureScreen({
 				enable: false
 			})
+			// #endif
+			
 		},
 		computed: {
 			i18n() {
