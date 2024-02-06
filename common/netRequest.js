@@ -101,7 +101,7 @@ export function _initC(reqUrl) {
 
     http.interceptors.request.use((config) => { /* 请求之前拦截器。可以使用async await 做异步操作 */
         const header = config.data ? config.data.header : config.header;
-		// console.log("=====config",config)
+		console.log("=====config",config)
         config.header = {
             ...config.header,
             ...header,

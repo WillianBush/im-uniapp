@@ -113,8 +113,15 @@
 		},
 		methods: {
 			...mapActions('chat', [
-				'transMessageAction'
+				'transMessageAction',
+				"setCurChatMsgList",
+				"setCurChatEntity",
+				"setChatMyLoadding",
+				"updateChatMessageMap",
 			]),
+			getHeadPic(img) {
+				return getHeadPic(img, this.imgUrl)
+			},
 			sendBaseDo(v) {
 				v.fromHeadpic = this.user.headpic;
 				let date = new Date();
@@ -140,37 +147,36 @@
 					if (jsonObj.length > 50) {
 						jsonObj.splice(0, jsonObj.length - 50);
 					}
-					this.$store.commit("updateChatMessageMap", {
-						key: this.$store.state.user.id + "#" + msgbean.chatid,
-						value: jsonObj
+					this.updateChatMessageMap({
+						key: this.user.id + "#" + msgbean.chatid,
+						value: jsonObj,
 					});
 
-					if (this.$store.state.cur_chat_entity && this.$store.state.cur_chat_entity.id == v.toUid) {
-						this.$store.commit("setCur_chat_msg_list", jsonObj);
-
-						let v1 = {
-							toUid: msgbean.chatid,
-							fromUid: this.$store.state.user.id
-						}
-						this.$websocket.dispatch("WEBSOCKET_SEND", "{body:'" + JSON.stringify(v1) +
-							"',CMD:'CHAT_MSG_READED'}");
-
+					if (this.curChatEntity && this.curChatEntity.id == v.toUid) {
+						this.setCurChatMsgList(newJsonObj);
+						this.WEBSOCKET_SEND({
+							body: {
+								toUid: msgbean.chatid,
+								fromUid: this.user.id,
+							},
+							CMD: MessageType.CHAT_MSG_READ_ED,
+						});
 					}
-					uni.setStorageSync(this.$store.state.user.id + "#" + msgbean.chatid + '_CHAT_MESSAGE_LASTCONTENT',
+					uni.setStorageSync(this.user.id + "#" + msgbean.chatid + '_CHAT_MESSAGE_LASTCONTENT',
 						jsonObj[jsonObj.length - 1].bean.simple_content);
 				} else {
-					uni.setStorageSync(this.$store.state.user.id + "#" + msgbean.chatid + '_CHAT_MESSAGE', JSON.stringify(
+					uni.setStorageSync(this.user.id + "#" + msgbean.chatid + '_CHAT_MESSAGE', JSON.stringify(
 						list));
-					this.$store.commit("updateChatMessageMap", {
-						key: this.$store.state.user.id + "#" + msgbean.chatid,
-						value: list
+					this.updateChatMessageMap({
+						key: this.user.id + "#" + msgbean.chatid,
+						value: list,
 					});
-					if (this.$store.state.cur_chat_entity && this.$store.state.cur_chat_entity.id == v.toUid) {
-						this.$store.commit("setCur_chat_msg_list", list);
+					if (this.curChatEntity && this.curChatEntity.id == v.toUid) {
+						this.setCurChatMsgList(uniqueArr(newList, "uuid"));
 					}
-					uni.setStorageSync(this.$store.state.user.id + "#" + msgbean.chatid + '_CHAT_MESSAGE_LASTCONTENT', "");
+					uni.setStorageSync(this.user.id + "#" + msgbean.chatid + '_CHAT_MESSAGE_LASTCONTENT', "");
 				}
-				this.$store.commit("setChat_my_loadding", false);
+				this.setChatMyLoadding(false);
 			},
 			dateFormat(fmt, date) {
 				let ret;
@@ -190,19 +196,6 @@
 					};
 				};
 				return fmt;
-			},
-			GenerateUUID() {
-				var s = [];
-				var hexDigits = "0123456789abcdef";
-				for (var i = 0; i < 36; i++) {
-					s[i] = hexDigits.substr(Math.floor(Math.random() * 0x10), 1);
-				}
-				s[14] = "4"; // bits 12-15 of the time_hi_and_version field to 0010
-				s[19] = hexDigits.substr((s[19] & 0x3) | 0x8, 1); // bits 6-7 of the clock_seq_hi_and_reserved to 01
-				s[8] = s[13] = s[18] = s[23] = "-";
-
-				var uuid = s.join("");
-				return uuid;
 			},
 			tijiao() {
 				let _this = this;

@@ -22,7 +22,7 @@
 					<view class="cu-list menu-avatar no-padding">
 						<view @tap="selFriend(items)" class="cu-item" v-for="(items,index1) in item.list" :key="index1">
 							<view class="cu-avatar round lg"
-								:style="{'backgroundImage': 'url('+getHeadPic(items.headpic,imgUrl) +')' }"
+								:style="{'backgroundImage': 'url('+getHeadPic(items.headpic) +')' }"
 								style="width: 80upx;height: 80upx;background-size: 100% 100%;"></view>
 							<view class="content">
 								<view class="text-grey" style="float:left;">{{items.name}}</view>
@@ -54,7 +54,7 @@
 				<view style="font-weight: 800;">发送给：</view>
 				<view style="margin-top: 16upx;display: flex;">
 					<view style="" class="cu-avatar radius"
-						:style="'background-image:url('+getHeadPic(temp.bean.img,imgUrl)+');'"></view>
+						:style="'background-image:url('+getHeadPic(temp.bean.img)+');'"></view>
 					<view style="margin-left:20upx;margin-top:10upx;">{{temp.bean.name}}</view>
 				</view>
 				<view style="margin-top: 14upx;clear:both;font-size: 24upx;color:#999;">[个人名片] {{selFriendBean.name}}
@@ -199,6 +199,9 @@
 			...mapActions('socket', [
 				'WEBSOCKET_SEND'
 			]),
+			getHeadPic(img){
+				return getHeadPic(img,this.imgUrl)
+			},
 			sendConfirm() {
 				if (this.temp.bean.roomUUID && this.temp.bean.roomUUID != "") {
 					//群

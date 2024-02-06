@@ -29,7 +29,7 @@
 				<view class="cu-list menu-avatar no-padding">
 					<view class="cu-item" v-for="(items,index) in member_list" :key="index">
 						<view class="cu-avatar round lg"
-							:style="{'backgroundImage': 'url('+getHeadPic(items.headpic,imgUrl) +')' }"
+							:style="{'backgroundImage': 'url('+getHeadPic(items.headpic) +')' }"
 							style="width: 80upx;height: 80upx;background-size: 100% 100%;"></view>
 						<view class="content">
 							<view class="text-grey" style="float:left;">{{items.nickName}}</view>
@@ -132,6 +132,9 @@
 
 		},
 		methods: {
+			getHeadPic(img){
+				return getHeadPic(img,this.imgUrl)
+			},
 			goback() {
 				this.$emit('goBack');
 			},

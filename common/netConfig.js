@@ -1,4 +1,3 @@
-import store from "../store"//使用vuex对状态进行管理
 import {activeConfig} from "./appConfig";
 const config = {
   isMockApi: false,
@@ -14,8 +13,7 @@ const config = {
     url: [],//这个暂时没用，当初设计是接受参数用的
   },
   uuid: Math.random().toString(36).substring(3, 20),
-  requestRemoteIp: () => {
-    console.log("config:", config)
+  requestRemoteIp: (commit) => {
     if (config.RemoteIpInited)
       return Promise.resolve();
     return new Promise((resolve, reject) => {
@@ -23,8 +21,6 @@ const config = {
       uni.request({
         url: config.requestUrl[i],
         success: (response) => {
-
-          console.log('res_N1--'+"11111")
           //todo 测试
           // config.baseUrl.pro = response.data.data.path;
           let res_data = eval(response.data);
@@ -32,19 +28,15 @@ const config = {
           config.mediaDomains.url = res_data.mediaDomains;
           config.websocketDomains.url = res_data.websocketDomains;
           config.RemoteIpInited = true;
-
-          console.log('res_N11111--'+res_data.websocketDomains)
           //更新domain
-          store.commit("setImgDomain",res_data.mediaDomains);
-          store.commit("setReqDomain",res_data.httpDomains);
-          store.commit("setSocketDomain",res_data.websocketDomains);
+          commit("app/setImgDomain",res_data.mediaDomains,{root:true});
+          commit("app/setReqDomain",res_data.httpDomains,{root:true});
+          commit("app/setSocketDomain",res_data.websocketDomains,{root:true});
           resolve(config)
         },
-        fail: () => {
-
-          console.log('res_N2--'+"22222")
+        fail: (error) => {
           config.RemoteIpInited = true;
-          resolve()
+          reject(error)
         }
       })
     });

@@ -1,12 +1,12 @@
 <template>
 	<view ref="topVew" v-if="curChatEntity"
-		:style="chatCfg.chatBackgroundImage&&chatCfg.chatBackgroundImage!=''?'background-image: url('+getHeadPic(chatCfg.chatBackgroundImage,imgUrl)+')':''"
+		:style="chatCfg.chatBackgroundImage&&chatCfg.chatBackgroundImage!=''?'background-image: url('+getHeadPic(chatCfg.chatBackgroundImage)+')':''"
 		style="background-size: 100%;min-height: 100vh;">
 		<group-custom v-if="isGroupChat" backUrl="/pages/index/index" bgColor="bg-blue" :isBack="true"
 			:nameToLeft="false">
 			<block slot="backText">
 				<view class="cu-avatar radius" style="margin-right: 5px; border-radius: 50%"
-					:style="'background-image:url('+getHeadPic(friendPic,imgUrl)+');'"></view>
+					:style="'background-image:url('+getHeadPic(friendPic)+');'"></view>
 			</block>
 			<block slot="content" style="margin-left: 66px;">
 				{{curChatEntity.name}}({{curChatEntity.memberCount}}人)
@@ -20,10 +20,10 @@
 			<block slot="backText"></block>
 			<block slot="content">
 				<view class="cu-avatar radius" style="margin-right: 5px; border-radius: 50%"
-					:style="'background-image:url('+getHeadPic(friendPic,imgUrl)+');'"></view>
+					:style="'background-image:url('+getHeadPic(friendPic)+');'"></view>
 				{{$store.state.chatShowName}} <text
 					v-if="chatCfg.showUserOnline==1">{{entity.online==0?' (离线)':' (在线)'}}</text>
-				<text v-show="$store.state.temp.input_ing" style="font-size: 26upx;margin-left:10upx;">- 正在输入...</text>
+				<text v-show="temp.input_ing" style="font-size: 26upx;margin-left:10upx;">- 正在输入...</text>
 				<uni-text @tap="goMgr2(entity.id,friendPic)"
 					style="font-size: 22px;color: #000;margin-left: 1%;margin-right:1%;cursor: pointer;"
 					class="lg text-gray cuIcon-more"></uni-text>
@@ -58,7 +58,7 @@
 												margin: auto auto;display: flex;">
 									<view style="width:90upx;margin-top: 26upx;width: 80upx;height: 80upx;"
 										class="cu-avatar radius"
-										:style="'background-image:url('+getHeadPic(item.bean.mheadpic,imgUrl)+');'">
+										:style="'background-image:url('+getHeadPic(item.bean.mheadpic)+');'">
 									</view>
 									<view
 										style="width: 240upx;;margin-top: 30upx;margin-left: 12upx; text-align: left;">
@@ -78,13 +78,13 @@
 							</view>
 						</view>
 						<view class="cu-avatar radius"
-							:style="'background-image:url('+getHeadPic(item.bean.fromHeadpic,imgUrl)+');'"></view>
+							:style="'background-image:url('+getHeadPic(item.bean.fromHeadpic)+');'"></view>
 						<view class="date">{{item.bean.date}}</view>
 					</view>
 					<view v-else class="cu-item">
 						<view @longpress="onLongPress1($event,item.bean)" @tap.stop="goUserDetail(item.bean.fromUid)"
 							class="cu-avatar radius"
-							:style="'background-image:url('+getHeadPic(item.bean.fromHeadpic,imgUrl)+');'"></view>
+							:style="'background-image:url('+getHeadPic(item.bean.fromHeadpic)+');'"></view>
 						<view class="main" style="display: block!important;">
 							<view style="height: 40upx;font-size: 12px;color: #8799a3;">{{item.bean.fromName}}
 								<text style="color:#FFB502" v-if="item.bean.fromUid==curChatEntity.owner_UUID"
@@ -98,7 +98,7 @@
 												margin: auto auto;display: flex;">
 									<view style="width:90upx;margin-top: 26upx;width: 80upx;height: 80upx;"
 										class="cu-avatar radius"
-										:style="'background-image:url('+getHeadPic(item.bean.mheadpic,imgUrl)+');'">
+										:style="'background-image:url('+getHeadPic(item.bean.mheadpic)+');'">
 									</view>
 									<view
 										style="width: 240upx;;margin-top: 30upx;margin-left: 12upx; text-align: left;">
@@ -152,7 +152,7 @@
 							</view>
 						</view>
 						<view v-if="item.bean.psr!='video'" class="cu-avatar radius"
-							:style="'background-image:url('+getHeadPic(item.bean.fromHeadpic,imgUrl)+');'"></view>
+							:style="'background-image:url('+getHeadPic(item.bean.fromHeadpic)+');'"></view>
 						<view v-if="item.bean.psr!='video'" class="date">{{item.bean.date}}</view>
 					</view>
 
@@ -160,7 +160,7 @@
 					<view v-else class="cu-item" :id="item.bean.uuid">
 						<view @longpress="onLongPress1($event,item.bean)" @tap.stop="goUserDetail(item.bean.fromUid)"
 							class="cu-avatar radius"
-							:style="'background-image:url('+getHeadPic(item.bean.fromHeadpic,imgUrl)+');'"></view>
+							:style="'background-image:url('+getHeadPic(item.bean.fromHeadpic)+');'"></view>
 						<view class="main" style="display: block!important;">
 							<view style="height: 40upx;font-size: 12px;color: #8799a3;">
 								<text style="color:#FFB502;margin-right:6upx;    font-size: 36upx;"
@@ -233,7 +233,7 @@
 							</view>
 						</view>
 						<view v-if="item.bean.psr!='video'" class="cu-avatar radius"
-							:style="'background-image:url('+getHeadPic(item.bean.fromHeadpic,imgUrl)+');'"></view>
+							:style="'background-image:url('+getHeadPic(item.bean.fromHeadpic)+');'"></view>
 						<view v-if="item.bean.psr!='video'" class="date">{{item.bean.date}}</view>
 					</view>
 
@@ -241,7 +241,7 @@
 					<view v-else class="cu-item" :id="item.bean.uuid">
 						<view @longpress="onLongPress1($event,item.bean)" @tap.stop="goUserDetail(item.bean.fromUid)"
 							class="cu-avatar radius"
-							:style="'background-image:url('+getHeadPic(item.bean.fromHeadpic,imgUrl)+');'"></view>
+							:style="'background-image:url('+getHeadPic(item.bean.fromHeadpic)+');'"></view>
 						<view class="main" style="display: block!important;">
 							<view style="height: 40upx;font-size: 12px;color: #8799a3;">
 								<text style="color:#FFB502;margin-right:6upx;    font-size: 36upx;"
@@ -289,7 +289,7 @@
 				<view class="main">
 					<view style="background-color: #F1F1F1;" class="cu-load load-cuIcon loading"></view>
 				</view>
-				<view class="cu-avatar radius" :style="'background-image:url('+getHeadPic(user.headpic,imgUrl)+');'">
+				<view class="cu-avatar radius" :style="'background-image:url('+getHeadPic(user.headpic)+');'">
 				</view>
 			</view>
 
@@ -659,6 +659,9 @@
 				'uploadImageAction',
 				'uploadVoiceAction'
 			]),
+			getHeadPic(img){
+				return getHeadPic(img,this.imgUrl)
+			},
 			determineGroup() { //判断是否是群组聊天；
 				if (this.isGroupChat) {
 					this.toid = this.msgToGroupId;

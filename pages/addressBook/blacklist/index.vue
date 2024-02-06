@@ -40,6 +40,9 @@
 		getBlackList,
 		removeBlack
 	} from '../../../common/api';
+	import {
+		getHeadPic
+	} from '../../../common/utils'
 	export default {
 		props: {
 			keyid: {
@@ -84,11 +87,7 @@
 				});
 			},
 			getHeadPic(headpic) {
-				if (headpic && headpic.indexOf('static/header') != -1) {
-					return headpic;
-				} else {
-					return this.reqUrl + headpic;
-				}
+				return getHeadPic(headpic, this.imgUrl)
 			},
 			goback() {
 				this.$emit('goBack');

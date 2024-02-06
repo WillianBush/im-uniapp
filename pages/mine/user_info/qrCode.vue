@@ -5,7 +5,7 @@
 		margin-top: 15px;width:90%;height:920upx;border-radius: 12px;background-color: #fff;padding-top: 40upx;;">
 			<view style="width: 90%;height:120upx;margin:auto auto;">
 				<text class="cu-avatar round lg"
-					:style="'width:110upx;height:110upx;float: left;background-image: url('+getHeadPic(user.headpic,imgUrl)+');'"></text>
+					:style="'width:110upx;height:110upx;float: left;background-image: url('+getHeadPic(user.headpic)+');'"></text>
 				<text style="    float: left;
     font-size: 36upx;
     line-height: 120upx;
@@ -86,6 +86,9 @@
 		},
 		methods: {
 			...mapMutations('chat', ['setTempBase64']),
+			getHeadPic(img){
+				return getHeadPic(img,this.imgUrl)
+			},
 			share() {
 				let _this = this;
 				let user = uni.getStorageSync("USER");

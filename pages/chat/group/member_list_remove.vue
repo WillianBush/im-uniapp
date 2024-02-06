@@ -25,7 +25,7 @@
 						style="display: inline-block;width:25%;margin-bottom:30upx;text-align: center;"
 						v-for="(item,index) in list1">
 						<view @tap="goUserDetail(item.id)" class="cu-avatar round"
-							:style="'height:100upx;width:100upx;background-image:url('+getHeadPic(item.headpic,imgUrl)+');'">
+							:style="'height:100upx;width:100upx;background-image:url('+getHeadPic(item.headpic)+');'">
 						</view>
 						<view @tap="goUserDetail(item.id)"
 							style="margin:auto auto;color: #999;font-size:24upx;text-align: center;margin-top:8upx;overflow: hidden;height:68upx;width:100upx;word-wrap: break-word; word-break: normal">
@@ -101,6 +101,9 @@
 				'setArList',
 				'setArListShow'
 			]),
+			getHeadPic(img){
+				return getHeadPic(img,this.imgUrl)
+			},
 			goback() {
 				this.$emit('goBack');
 			},

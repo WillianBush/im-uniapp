@@ -6,7 +6,7 @@
 		<view style="background: #fff;display: flex;height:220upx">
 			<view style="width:150upx;padding-top:30upx;padding-bottom:30upx;margin-left: 10upx;">
 				<view class="cu-avatar radius margin-left"
-					:style="'height:120upx;width:120upx;background-image:url('+getHeadPic(userDetail.headpic,imgUrl)+');'">
+					:style="'height:120upx;width:120upx;background-image:url('+getHeadPic(userDetail.headpic)+');'">
 				</view>
 			</view>
 			<view v-if="userDetail.id!='-1'" style="margin-left: 20upx;">
@@ -159,6 +159,9 @@
 						console.log('success'); //调用方法成功
 					}
 				})
+			},
+			getHeadPic(img) {
+				return getHeadPic(img, this.imgUrl)
 			},
 			GroupStopSpeak(e) {
 				let _this = this;

@@ -1,12 +1,11 @@
 <template>
 	<view>
-		<view @tap="hideShowMenu()" style="padding-top:50upx;background-color: #fff;width: 20%;float: left">
+		<view @tap="hideShowMenu()" style="padding-top:50upx;background-color: #fff;width: 30%;float: left">
 			<view class="cu-bar bg-white solid-bottom">
 				<view class="action" style="font-size: 36upx;font-weight: 600;">
 					<text class="cuIcon-title text-orange " style="color: green"></text>
 					<text style="min-width:73px;">
-						消息列表
-						(<text> {{delayTime}}</text>)
+						消息列表<text style="font-size: 12px;"> ({{delayTimeStr}})</text>
 					</text>
 				</view>
 				<div class="auto-refresh">
@@ -112,7 +111,7 @@
 				style="margin-top: calc(50vh - 50px);margin-left: calc(50% - 50px);"></img>
 		</view>
 
-		<view style="height: calc(100vh - 50upx);width: 80%; float: left; border-left: 1px solid #ddd">
+		<view style="height: calc(100vh - 50upx);width: 70%; float: left; border-left: 1px solid #ddd">
 			<scroll-view :scroll-y="modalName==null" style="width: 100%" class="page"
 				:class="modalName!=null?'show':''">
 				<GroupChat :msgToGroupId="msgToGroupId" :isGroupChat="isGroupChat" :isRandom="random" :msgToId="msgToId"
@@ -138,7 +137,9 @@
 		mapMutations,
 		mapActions
 	} from 'vuex'
-
+	import {
+		getHeadPic
+	} from '../../common/utils';
 	export default {
 		components: {
 			GroupChat
@@ -156,7 +157,6 @@
 				mgrType: 'user',
 				refresherTriggered: false, //下拉刷新状态
 				_refresherTriggered: false, //防止异步操作
-				chatCfg: {},
 				showMenu: false,
 				modalName: null,
 				gridCol: 3,
@@ -184,7 +184,7 @@
 				delayTime: state => state.delayTime
 			}),
 			...mapState('user', ['isEmployee']),
-			delayTime() {
+			delayTimeStr() {
 				if (this.delayTime < 0) {
 					return "--"
 				}
@@ -200,12 +200,8 @@
 			...mapMutations('app', [
 				'setOpenRefresh'
 			]),
-			getHeadPic(headpic) {
-				if (headpic && headpic.indexOf('static/header') != -1) {
-					return headpic;
-				} else {
-					return this.reqUrl + headpic;
-				}
+			getHeadPic(img) {
+				return getHeadPic(img ,this.imgUrl)
 			},
 			...mapActions('chat', [
 				'listPageAction',

@@ -29,7 +29,7 @@
 												margin: auto auto;display: flex;">
 									<view style="width:90upx;margin-top: 26upx;width: 80upx;height: 80upx;"
 										class="cu-avatar radius"
-										:style="'background-image:url('+getHeadPic(item.bean.mheadpic,imgUrl)+');'">
+										:style="'background-image:url('+getHeadPic(item.bean.mheadpic)+');'">
 									</view>
 									<view
 										style="width: 240upx;;margin-top: 30upx;margin-left: 12upx; text-align: left;">
@@ -49,12 +49,12 @@
 							</view>
 						</view>
 						<view class="cu-avatar radius"
-							:style="'background-image:url('+getHeadPic(item.bean.fromHeadpic,imgUrl)+');'"></view>
+							:style="'background-image:url('+getHeadPic(item.bean.fromHeadpic)+');'"></view>
 						<view class="date">{{item.bean.date}}</view>
 					</view>
 					<view v-else class="cu-item">
 						<view @tap.stop="goUserDetail(item.bean.fromUid)" class="cu-avatar radius"
-							:style="'background-image:url('+getHeadPic(item.bean.fromHeadpic,imgUrl)+');'"></view>
+							:style="'background-image:url('+getHeadPic(item.bean.fromHeadpic)+');'"></view>
 						<view class="main" style="display: block!important;">
 							<view style="height: 40upx;font-size: 12px;color: #8799a3;">{{item.bean.fromName}}</view>
 							<view @tap="clickCard(item.bean)"
@@ -65,7 +65,7 @@
 												margin: auto auto;display: flex;">
 									<view style="width:90upx;margin-top: 26upx;width: 80upx;height: 80upx;"
 										class="cu-avatar radius"
-										:style="'background-image:url('+getHeadPic(item.bean.mheadpic,imgUrl)+');'">
+										:style="'background-image:url('+getHeadPic(item.bean.mheadpic)+');'">
 									</view>
 									<view
 										style="width: 240upx;;margin-top: 30upx;margin-left: 12upx; text-align: left;">
@@ -113,13 +113,13 @@
 							</view>
 						</view>
 						<view class="cu-avatar radius"
-							:style="'background-image:url('+getHeadPic(item.bean.fromHeadpic,imgUrl)+');'"></view>
+							:style="'background-image:url('+getHeadPic(item.bean.fromHeadpic)+');'"></view>
 						<view class="date">{{item.bean.date}}</view>
 					</view>
 
 					<view v-else class="cu-item">
 						<view @tap.stop="goUserDetail(item.bean.fromUid)" class="cu-avatar radius"
-							:style="'background-image:url('+getHeadPic(item.bean.fromHeadpic,imgUrl)+');'"></view>
+							:style="'background-image:url('+getHeadPic(item.bean.fromHeadpic)+');'"></view>
 						<view class="main" style="display: block!important;">
 							<view style="height: 40upx;font-size: 12px;color: #8799a3;">{{item.bean.fromName}}</view>
 							<view class="content shadow" style="
@@ -256,6 +256,9 @@
 			]),
 		},
 		methods: {
+			getHeadPic(img){
+				return getHeadPic(img,this.imgUrl)
+			},
 			initData() {
 				let _this = this;
 				let user = uni.getStorageSync("USER");

@@ -32,7 +32,7 @@
 							<view class="cu-list menu-avatar no-padding">
 								<view class="cu-item" v-for="(items,index1) in item.list" :key="index1">
 									<view class="cu-avatar round lg"
-										:style="{'backgroundImage': 'url('+getHeadPic(items.headpic,imgUrl) +')' }"
+										:style="{'backgroundImage': 'url('+getHeadPic(items.headpic) +')' }"
 										style="width: 80upx;height: 80upx;background-size: 100% 100%;"></view>
 									<view class="content">
 										<view class="text-grey" style="float:left;margin-left: 10px">{{items.name}}
@@ -188,6 +188,9 @@
 
 		},
 		methods: {
+			getHeadPic(img) {
+				return getHeadPic(img, this.imgUrl)
+			},
 			tijiao() {
 				let _this = this;
 				let user = uni.getStorageSync("USER");

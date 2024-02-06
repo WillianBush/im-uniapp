@@ -72,6 +72,9 @@
 		friendList
 	} from '../../../common/api';
 	import {
+		getHeadPic
+	} from '../../../common/utils';
+	import {
 		mapState,
 		mapActions,
 		mapMutations
@@ -141,12 +144,8 @@
 		},
 		onReady() {},
 		methods: {
-			getHeadPic(headpic) {
-				if (headpic && headpic.indexOf('static/header') != -1) {
-					return headpic;
-				} else {
-					return this.imgUrl + headpic;
-				}
+			getHeadPic(img) {
+				return getHeadPic(img, this.imgUrl);
 			},
 			...mapMutations('user', [
 				'setUnDoFriendAddCount',

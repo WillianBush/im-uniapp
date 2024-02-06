@@ -16,9 +16,6 @@
 		</view>
 		<view style="margin-top:20upx;color:#999;margin-left:30upx;font-size:26upx">
 			原昵称：{{curChatEntity.nickName}}</view>
-
-
-
 	</view>
 </template>
 

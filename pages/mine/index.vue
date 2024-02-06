@@ -6,12 +6,12 @@
 		margin-top: 15px;width:90%;height:920upx;border-radius: 12px;background-color: #fff;padding-top: 40upx;;">
 				<view style="width: 90%;height:120upx;margin:auto auto;">
 					<text class="cu-avatar round lg"
-						:style="'width:110upx;height:110upx;float: left;background-image: url('+$store.state.img_url+$store.state.user.headpic+');'"></text>
+						:style="'width:110upx;height:110upx;float: left;background-image: url('+getHeadPic(user.headpic)+');'"></text>
 					<text style="    float: left;
     font-size: 36upx;
     line-height: 120upx;
     margin-left: 28upx;
-    font-weight: 600;">{{$store.state.user.nickName}}</text>
+    font-weight: 600;">{{user.nickName}}</text>
 				</view>
 				<view style="width: 84%;margin:auto auto;margin-top:40upx;" :style="'height:'+code_height+'px'"
 					class="qrcode_view">
@@ -27,9 +27,6 @@
 
 		<el-dialog width="30%" :title="'我的收藏'" :visible.sync="collectShow">
 			<view @tap="clickChat">
-
-
-
 				<view class="cu-bar bg-white search">
 					<view class="search-form round">
 						<text class="cuIcon-search"></text>
@@ -78,11 +75,11 @@
 				<view @tap="goUserInfo()" style="width:100%;height:340upx;padding-top:130upx">
 
 					<view class="cu-avatar xl round margin-left"
-						:style="'float:left;background-image: url('+$store.state.img_url+$store.state.user.headpic +');'">
+						:style="'float:left;background-image: url('+getHeadPic(user.headpic) +');'">
 					</view>
 					<view style="float:left;margin-left: 10px;margin-top:6px;">
-						<view style="    font-size: 16px;font-weight: 800;">{{$store.state.user.nickName}}</view>
-						<view style="margin-top: 6px;">ID号：{{$store.state.user.memberId}}</view>
+						<view style="    font-size: 16px;font-weight: 800;">{{user.nickName}}</view>
+						<view style="margin-top: 6px;">ID号：{{user.memberId}}</view>
 					</view>
 
 					<view style="float:right;margin-top: 20px;margin-right:14px;">
@@ -97,23 +94,15 @@
 					style="border-top-left-radius: 20px;border-top-right-radius: 20px;margin-top:10px;background: #F1F1F1;"
 					class="cu-list menu" :class="[true?'sm-border':'',false?'card-menu margin-top':'']">
 
-					<view v-if="$store.state.shimingCfg.shiming==1" @tap="goShiming()" class="cu-item"
-						:class="true?'arrow':''">
+					<view v-if="shimingCfg.shiming==1" @tap="goShiming()" class="cu-item" :class="true?'arrow':''">
 						<view class="content">
 							<text style="color:#EF4023;font-size:44upx" class="iconfont icon-shimingrenzheng"></text>
 							<text class="text-black" style="margin-left: 10px;">实名认证</text>
 						</view>
 					</view>
 
-					<view v-show="false" @tap="goBill()" class="cu-item" :class="true?'arrow':''">
-						<view class="content">
-							<text style="color:#2588C4;font-size:44upx" class="iconfont icon-ziyuan"></text>
-							<text class="text-black" style="margin-left: 10px;">资金明细</text>
-						</view>
-					</view>
-
 					<!--是否开启不断刷新-->
-					<view v-if="$store.state.isEmployee" class="cu-item">
+					<view v-if="isEmployee" class="cu-item">
 						<view class="content">
 
 							<view class="cu-form-group margin-top">
@@ -139,9 +128,9 @@
 						</view>
 					</view>
 
-					<block v-for="(item,index) in $store.state.greetingList">
-						<view @tap="goSetGreeting(index)" v-show="$store.state.isEmployee" class="cu-item t1"
-							style="border:0px;" :class="true?'arrow':''">
+					<block v-for="(item,index) in greetingList">
+						<view @tap="goSetGreeting(index)" v-show="isEmployee" class="cu-item t1" style="border:0px;"
+							:class="true?'arrow':''">
 							<view class="content">
 								<text style="color:#F5BC50;font-size:46upx" class="iconfont icon-xiaoxi2"></text>
 								<text class="text-black" style="margin-left: 10px;">{{"设置问候语-"+item.invite_code}}</text>
@@ -153,7 +142,7 @@
 							<text style="color:#FF2D2D;font-size:44upx" class="iconfont icon-app_icons--"></text>
 							<text class="text-black" style="margin-left: 10px;">检查更新</text>
 							<text class="text-grey"
-								style="float:right;font-size: 26upx;color: #bbb;">当前版本：{{$store.state.SYS_VERSION}}</text>
+								style="float:right;font-size: 26upx;color: #bbb;">当前版本：{{SYS_VERSION}}</text>
 						</view>
 					</view>
 					<view class="cu-item" @tap="logout()">
@@ -181,6 +170,9 @@
 		mapActions,
 		mapMutations
 	} from 'vuex'
+	import {
+		getHeadPic
+	} from '../../common/utils';
 	export default {
 		data() {
 			return {
@@ -250,6 +242,9 @@
 			...mapMutations('chat', [
 				'setTempContent'
 			]),
+			getHeadPic(img){
+				return getHeadPic(img,this.imgUrl);
+			},
 			clickChat() {
 				this.showPop = false;
 			},

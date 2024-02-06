@@ -4,6 +4,7 @@ import ElementUI from 'element-ui'
 import 'element-ui/lib/theme-chalk/index.css'
 import home from './pages/home/index.vue'
 Vue.component('home',home)
+import store from "./stores" //使用vuex对状态进行管理
 
 
 import addressBook from './pages/addressBook/index.vue'
@@ -97,7 +98,6 @@ Vue.component('headbar',headbar)
 
 import number_jpan from './components/numberJpan/numberJpan.vue'
 Vue.component('number-jpan',number_jpan)
-import store from "./stores" //使用vuex对状态进行管理
 
 
 /*这里是为了从domian拿到数据后，再进行app启动，防止接口访问时，domian未获取到*/

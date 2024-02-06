@@ -27,7 +27,7 @@
 						style="display: inline-block;width:20%;margin-bottom:20upx;text-align: center;"
 						v-for="(item,index) in list1">
 						<view class="cu-avatar round"
-							:style="'height:100upx;width:100upx;background-image:url('+getHeadPic(item.headpic,imgUrl)+');'">
+							:style="'height:100upx;width:100upx;background-image:url('+getHeadPic(item.headpic)+');'">
 						</view>
 						<view
 							style="margin:auto auto;color: #999;font-size:24upx;text-align: center;margin-top:8upx;overflow: hidden;height:68upx;width:100upx;word-wrap: break-word; word-break: normal">
@@ -90,6 +90,9 @@
 			this.loadStoreData(this.pageSize, this.numPag);
 		},
 		methods: {
+			getHeadPic(img) {
+				return getHeadPic(img, this.imgUrl)
+			},
 			search(a) {
 				if (typeof a !== 'undefined' && a != null && a !== '') {
 					let _this = this;

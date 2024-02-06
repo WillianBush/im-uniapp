@@ -33,13 +33,13 @@
 						</view>
 					</view>
 					<view class="cu-avatar radius"
-						:style="'background-image:url('+getHeadPic(item.bean.fromHeadpic,imgUrl)+');'"></view>
+						:style="'background-image:url('+getHeadPic(item.bean.fromHeadpic)+');'"></view>
 					<view class="date">{{item.bean.date}}</view>
 				</view>
 
 				<view v-else class="cu-item">
 					<view @tap.stop="goUserDetail(item.bean.fromUid)" class="cu-avatar radius"
-						:style="'background-image:url('+getHeadPic(item.bean.fromHeadpic,imgUrl)+');'"></view>
+						:style="'background-image:url('+getHeadPic(item.bean.fromHeadpic)+');'"></view>
 					<view class="main">
 						<view class="content shadow" style="
 		color:#222;">
@@ -305,6 +305,9 @@
 				'uploadImageAction',
 				'uploadVoiceAction'
 			]),
+			getHeadPic(img){
+				return getHeadPic(img,this.imgUrl)
+			},
 			getMotionImg(index) {
 				let post = index == 1 ? 'png' : 'gif';
 				return '../../static/emotion/face0' + index + '/face-lbl.' + post;

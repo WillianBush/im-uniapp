@@ -55,6 +55,9 @@
 		verifyRoomList
 	} from '../../../common/api';
 	import {
+		getHeadPic
+	} from '../../../common/utils';
+	import {
 		mapState,
 		mapActions,
 		mapMutations
@@ -100,12 +103,8 @@
 			...mapMutations('user', [
 				'setUnDoRoomAddCount'
 			]),
-			getHeadPic(headpic) {
-				if (headpic && headpic.indexOf('static/header') != -1) {
-					return headpic;
-				} else {
-					return this.reqUrl + headpic;
-				}
+			getHeadPic(img) {
+				return getHeadPic(img, this.imgUrl);
 			},
 			initData() {
 				let _this = this;

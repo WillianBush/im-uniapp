@@ -23,7 +23,7 @@
 				<view v-for="item in list" class="cu-item">
 					<view class="content">
 						<view class="cu-avatar round lg"
-							:style="{'backgroundImage': 'url('+getHeadPic(item.headpic,imgUrl)  +')' }"
+							:style="{'backgroundImage': 'url('+getHeadPic(item.headpic)  +')' }"
 							style="float:left;width: 80upx;height: 80upx;background-size: 100% 100%;"></view>
 						<text class="text-grey"
 							style="float:left;margin-left: 10px;margin-top:15upx">{{item.name}}</text>
@@ -75,7 +75,9 @@
 			])
 		},
 		methods: {
-
+			getHeadPic(img) {
+				return getHeadPic(img, this.imgUrl);
+			},
 			goback() {
 
 				this.$emit('goBack');

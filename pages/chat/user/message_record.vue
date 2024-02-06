@@ -10,7 +10,7 @@
 			<view v-if="list.length<=0" style="text-align: center;color:#aaa;margin-top:60upx;font-size: 28upx;">
 				暂无聊天记录
 			</view>
-			<block v-for="(item,index) in $store.state.cur_chat_msg_list">
+			<block v-for="(item,index) in curChatMsgList">
 				<block v-if="item.opt&&item.opt=='undo'">
 					<view style="display: none"></view>
 				</block>
@@ -21,7 +21,7 @@
 				</block>
 
 				<block v-else-if="item.type=='USER_CARD'">
-					<view v-if="item.bean.fromUid==$store.state.user.id" class="cu-item self">
+					<view v-if="item.bean.fromUid==user.id" class="cu-item self">
 						<view class="main">
 							<view @tap="clickCard(item.bean)"
 								style="border: 1px solid #eee;background-color: #fff;width:400upx;height:180upx;border-radius: 6px;">
@@ -31,7 +31,7 @@
 													margin: auto auto;display: flex;">
 									<view style="width:90upx;margin-top: 26upx;width: 80upx;height: 80upx;"
 										class="cu-avatar radius"
-										:style="'background-image:url('+$store.state.img_url+item.bean.mheadpic+');'">
+										:style="'background-image:url('+getHeadPic(item.bean.mheadpic)+');'">
 									</view>
 									<view
 										style="width: 240upx;;margin-top: 30upx;margin-left: 12upx; text-align: left;">
@@ -51,12 +51,12 @@
 							</view>
 						</view>
 						<view class="cu-avatar radius"
-							:style="'background-image:url('+$store.state.img_url+item.bean.fromHeadpic+');'"></view>
+							:style="'background-image:url('+getHeadPic(item.bean.fromHeadpic)+');'"></view>
 						<view class="date">{{item.bean.date}}</view>
 					</view>
 					<view v-else class="cu-item">
 						<view @tap.stop="goUserDetail(item.bean.fromUid)" class="cu-avatar radius"
-							:style="'background-image:url('+$store.state.img_url+item.bean.fromHeadpic+');'"></view>
+							:style="'background-image:url('+getHeadPic(item.bean.fromHeadpic)+');'"></view>
 						<view class="main">
 							<view @tap="clickCard(item.bean)"
 								style="border: 1px solid #eee;background-color: #fff;width:400upx;height:180upx;border-radius: 6px;">
@@ -66,7 +66,7 @@
 													margin: auto auto;display: flex;">
 									<view style="width:90upx;margin-top: 26upx;width: 80upx;height: 80upx;"
 										class="cu-avatar radius"
-										:style="'background-image:url('+$store.state.img_url+item.bean.mheadpic+');'">
+										:style="'background-image:url('+getHeadPic(item.bean.mheadpic)+');'">
 									</view>
 									<view
 										style="width: 240upx;;margin-top: 30upx;margin-left: 12upx; text-align: left;">
@@ -90,7 +90,7 @@
 
 				</block>
 				<block v-else>
-					<view v-if="item.bean.fromUid==$store.state.user.id" class="cu-item self">
+					<view v-if="item.bean.fromUid==user.id" class="cu-item self">
 						<view class="main">
 							<view v-if="item.bean.read==0" style="margin-right:30upx;color: #999;font-size: 24upx;">未读
 							</view>
@@ -113,19 +113,19 @@
 										style="float:left;font-size: 26upx;position: relative;top: 6upx;">{{item.bean.sub_txt}}"</text>
 								</view>
 								<video direction="0" v-else-if="item.bean.psr=='video'"
-									:src="$store.state.img_url+item.bean.txt"></video>
+									:src="imgUrl+item.bean.txt"></video>
 								<rich-text v-else :nodes="item.bean.txt"></rich-text>
 
 							</view>
 						</view>
 						<view class="cu-avatar radius"
-							:style="'background-image:url('+$store.state.img_url+item.bean.fromHeadpic+');'"></view>
+							:style="'background-image:url('+getHeadPic(item.bean.fromHeadpic)+');'"></view>
 						<view class="date">{{item.bean.date}}</view>
 					</view>
 
 					<view v-else class="cu-item">
 						<view @tap.stop="goUserDetail(item.bean.fromUid)" class="cu-avatar radius"
-							:style="'background-image:url('+$store.state.img_url+item.bean.fromHeadpic+');'"></view>
+							:style="'background-image:url('+getHeadPic(item.bean.fromHeadpic)+');'"></view>
 						<view class="main">
 							<view class="content shadow" style="
 			color:#222;">
@@ -144,7 +144,7 @@
 										style="float:right;font-size: 26upx;position: relative;top: 6upx;">{{item.bean.sub_txt}}"</text>
 								</view>
 								<video direction="0" v-else-if="item.bean.psr=='video'"
-									:src="$store.state.img_url+item.bean.txt"></video>
+									:src="imgUrl+item.bean.txt"></video>
 								<rich-text v-else :nodes="item.bean.txt"></rich-text>
 							</view>
 						</view>
@@ -169,6 +169,9 @@
 		syncMsgData,
 		chatListPage
 	} from '../../../common/api';
+	import {
+		getHeadPic
+	} from '../../../common/utils';
 	export default {
 		components: {
 			uParse
@@ -242,7 +245,6 @@
 				temp_uuid: "",
 				chatCfg: {},
 				temp_bean: null,
-				showOpenRed: false,
 				showname: "",
 			};
 		},
@@ -269,6 +271,9 @@
 				'updateChatMessageMap',
 				'setTempBean'
 			]),
+			getHeadPic(img){
+				return getHeadPic(img,this.imgUrl)
+			},
 			getPopButton(item) {
 				// popButton: ["复制", "转发", "收藏","删除","撤消"],
 				if (item == "复制") return "icon-fuzhi";

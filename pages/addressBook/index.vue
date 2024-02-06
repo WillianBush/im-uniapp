@@ -28,7 +28,8 @@
 									class="iconfont icon-tianjiahaoyou"></text>
 								<text class="text-grey" style="float:left;margin-left: 10px;">新的朋友</text>
 								<view v-if="unDoFriendAddCount>0" style="top: 38upx;right: 72upx" class="cu-tag badge">
-									{{unDoFriendAddCount}}</view>
+									{{unDoFriendAddCount}}
+								</view>
 							</view>
 						</view>
 						<view @tap="goMyGroup()" class="cu-item" :class="true?'arrow':''">
@@ -36,7 +37,8 @@
 								<text style="color:#009FE8;font-size:50upx" class="iconfont icon-qunzhong"></text>
 								<text class="text-grey" style="margin-left: 10px;">群聊</text>
 								<view v-if="unDoRoomAddCount>0" style="top: 38upx;right: 72upx" class="cu-tag badge">
-									{{unDoRoomAddCount}}</view>
+									{{unDoRoomAddCount}}
+								</view>
 							</view>
 						</view>
 						<view @tap="goBlacklist()" class="cu-item" :class="true?'arrow':''">
@@ -54,7 +56,7 @@
 								<view @tap="goUserDetail(items)" class="cu-item" v-for="(items,index1) in item.list"
 									:key="index1">
 									<view class="cu-avatar round lg"
-										:style="{'backgroundImage': 'url('+getHeadPic(items.headpic,imgUrl)  +')' }"
+										:style="{'backgroundImage': 'url('+getHeadPic(items.headpic)  +')' }"
 										style="width: 60upx;height: 60upx;background-size: 100% 100%;"></view>
 									<view class="content">
 										<view class="text-grey">{{items.name}}</view>
@@ -216,6 +218,9 @@
 			...mapMutations('chat', [
 				'setMemberLength'
 			]),
+			getHeadPic(img) {
+				return getHeadPic(img, this.imgUrl)
+			},
 			refresherrestore() {
 				let _this = this;
 				_this.refresherTriggered = false;

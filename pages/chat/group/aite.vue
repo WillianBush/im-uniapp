@@ -29,7 +29,7 @@
 				<view class="cu-list menu-avatar no-padding" style="    margin-top: 0upx;">
 					<view @tap="selMember(item)" class="cu-item">
 						<view class="cu-avatar round lg"
-							:style="{'backgroundImage': 'url('+getHeadPic(item.headpic,imgUrl) +')' }"
+							:style="{'backgroundImage': 'url('+getHeadPic(item.headpic) +')' }"
 							style="width: 60upx;height: 60upx;background-size: 100% 100%;"></view>
 						<view class="content">
 							<view class="text-grey" style="float:left;">{{item.nickName}}</view>
@@ -112,6 +112,9 @@
 
 		},
 		methods: {
+			getHeadPic(img) {
+				return getHeadPic(img, this.imgUrl)
+			},
 			initData() {
 				let _this = this;
 				if (_this.roomid && _this.roomid != "") {

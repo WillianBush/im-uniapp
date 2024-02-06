@@ -36,7 +36,7 @@
 													margin: auto auto;display: flex;">
 											<view style="width:90upx;margin-top: 26upx;width: 80upx;height: 80upx;"
 												class="cu-avatar radius"
-												:style="'background-image:url('+getHeadPic(item.bean.mheadpic,imgUrl)+');'">
+												:style="'background-image:url('+getHeadPic(item.bean.mheadpic)+');'">
 											</view>
 											<view
 												style="width: 240upx;;margin-top: 30upx;margin-left: 12upx; text-align: left;">
@@ -58,13 +58,13 @@
 								</view>
 
 								<view class="cu-avatar radius"
-									:style="'background-image:url('+getHeadPic(item.bean.fromHeadpic,imgUrl)+');'">
+									:style="'background-image:url('+getHeadPic(item.bean.fromHeadpic)+');'">
 								</view>
 								<view class="date">{{item.bean.date}}</view>
 							</view>
 							<view v-else class="cu-item">
 								<view @tap.stop="goUserDetail(item.bean.fromUid)" class="cu-avatar radius"
-									:style="'background-image:url('+getHeadPic(item.bean.fromHeadpic,imgUrl)+');'">
+									:style="'background-image:url('+getHeadPic(item.bean.fromHeadpic)+');'">
 								</view>
 								<view class="main">
 									<view @tap="clickCard(item.bean)"
@@ -75,7 +75,7 @@
 													margin: auto auto;display: flex;">
 											<view style="width:90upx;margin-top: 26upx;width: 80upx;height: 80upx;"
 												class="cu-avatar radius"
-												:style="'background-image:url('+getHeadPic(item.bean.mheadpic,imgUrl)+');'">
+												:style="'background-image:url('+getHeadPic(item.bean.mheadpic)+');'">
 											</view>
 											<view
 												style="width: 240upx;;margin-top: 30upx;margin-left: 12upx; text-align: left;">
@@ -130,14 +130,14 @@
 									</view>
 								</view>
 								<view class="cu-avatar radius"
-									:style="'background-image:url('+getHeadPic(item.bean.fromHeadpic,imgUrl)+');'">
+									:style="'background-image:url('+getHeadPic(item.bean.fromHeadpic)+');'">
 								</view>
 								<view class="date">{{item.bean.date}}</view>
 							</view>
 
 							<view v-else class="cu-item">
 								<view @tap.stop="goUserDetail(item.bean.fromUid)" class="cu-avatar radius"
-									:style="'background-image:url('+getHeadPic(item.bean.fromHeadpic,imgUrl)+');'">
+									:style="'background-image:url('+getHeadPic(item.bean.fromHeadpic)+');'">
 								</view>
 								<view class="main">
 									<view class="content shadow" style="
@@ -197,7 +197,7 @@
     margin-top: 10px!important;" class="margin-top">
 				<view style="width:150upx;padding-top:30upx;padding-bottom:30upx;margin-left: 10upx;">
 					<view class="cu-avatar radius margin-left"
-						:style="'height:100upx;width:100upx;background-image:url('+getHeadPic(friendPic,imgUrl)+');'">
+						:style="'height:100upx;width:100upx;background-image:url('+getHeadPic(friendPic)+');'">
 					</view>
 					<view
 						style="margin:auto auto;color: #999;font-size:24upx;text-align: center;margin-top:8upx;overflow: hidden;height:34upx;width:100upx;">
@@ -418,6 +418,9 @@
 			...mapActions('socket', [
 				'WEBSOCKET_SEND'
 			]),
+			getHeadPic(img){
+				return getHeadPic(img,this.imgUrl)
+			},
 			loadmore() { //页码更换
 				this.pageNumber++;
 				this.tongbuMsg() //recall pagination datas.

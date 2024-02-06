@@ -47,6 +47,9 @@
 		mapActions,
 		mapMutations
 	} from 'vuex'
+	import {
+		getHeadPic
+	} from '../../../common/utils';
 	export default {
 		data() {
 			return {
@@ -58,6 +61,7 @@
 		computed: {
 			...mapState('app', [
 				'reqUrl',
+				'imgUrl',
 			])
 		},
 		onLoad(e) {
@@ -98,11 +102,7 @@
 		},
 		methods: {
 			getHeadPic(headpic) {
-				if (headpic && headpic.indexOf('static/header') != -1) {
-					return headpic;
-				} else {
-					return this.reqUrl + headpic;
-				}
+				return getHeadPic(headpic, this.imgUrl)
 			},
 			goMgr(_id) {
 				uni.navigateTo({

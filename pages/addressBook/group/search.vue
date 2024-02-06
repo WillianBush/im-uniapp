@@ -22,8 +22,7 @@
 
 				<view v-for="item in list" class="cu-item">
 					<view class="content" style="height:120upx;padding-top:18upx;">
-						<view class="cu-avatar round lg"
-							:style="{'backgroundImage': 'url('+getHeadPic(item.img) +')' }"
+						<view class="cu-avatar round lg" :style="{'backgroundImage': 'url('+getHeadPic(item.img) +')' }"
 							style="float:left;width: 80upx;height: 80upx;background-size: 100% 100%;"></view>
 						<view style="float:left;">
 							<view class="text-grey" style="margin-left: 10px;">{{item.name}}</view>
@@ -54,6 +53,9 @@
 		searchRoom
 	} from '../../../common/api';
 	import {
+		getHeadPic
+	} from '../../../common/utils';
+	import {
 		mapState,
 		mapActions,
 		mapMutations
@@ -83,12 +85,8 @@
 			])
 		},
 		methods: {
-			getHeadPic(headpic) {
-				if (headpic && headpic.indexOf('static/header') != -1) {
-					return headpic;
-				} else {
-					return this.reqUrl + headpic;
-				}
+			getHeadPic(img) {
+				return getHeadPic(img, this.imgUrl)
 			},
 			goback() {
 				this.$emit('goBack');

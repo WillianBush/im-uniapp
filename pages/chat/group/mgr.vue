@@ -37,7 +37,7 @@
 													margin: auto auto;display: flex;">
 											<view style="width:90upx;margin-top: 26upx;width: 80upx;height: 80upx;"
 												class="cu-avatar radius"
-												:style="'background-image:url('+getHeadPic(item.bean.mheadpic,imgUrl)+');'">
+												:style="'background-image:url('+getHeadPic(item.bean.mheadpic)+');'">
 											</view>
 											<view
 												style="width: 240upx;;margin-top: 30upx;margin-left: 12upx; text-align: left;">
@@ -59,7 +59,7 @@
 								</view>
 
 								<view class="cu-avatar radius"
-									:style="'background-image:url('+getHeadPic(item.bean.fromHeadpic,imgUrl)+');'">
+									:style="'background-image:url('+getHeadPic(item.bean.fromHeadpic)+');'">
 								</view>
 								<view class="date">{{item.bean.date}}</view>
 							</view>
@@ -77,7 +77,7 @@
 													margin: auto auto;display: flex;">
 											<view style="width:90upx;margin-top: 26upx;width: 80upx;height: 80upx;"
 												class="cu-avatar radius"
-												:style="'background-image:url('+getHeadPic(item.bean.mheadpic,imgUrl)+');'">
+												:style="'background-image:url('+getHeadPic(item.bean.mheadpic)+');'">
 											</view>
 											<view
 												style="width: 240upx;;margin-top: 30upx;margin-left: 12upx; text-align: left;">
@@ -104,9 +104,6 @@
 						<div v-else>
 							<view v-if="item.bean.fromUid==user.id" class="cu-item self">
 								<view class="main">
-									<!---
-                                    <view v-if="item.bean.read==-1" class="iconfont cu-load load-cuIcon loading text-xxl" style="margin-right:30upx;color: #999;font-size: 24upx;"></view>
-                                    -->
 									<view v-if="item.bean.read==0"
 										style="margin-right:30upx;color: #999;font-size: 24upx;">未读</view>
 									<view v-if="item.bean.read==1"
@@ -134,14 +131,14 @@
 									</view>
 								</view>
 								<view class="cu-avatar radius"
-									:style="'background-image:url('+getHeadPic(item.bean.fromHeadpic,imgUrl)+');'">
+									:style="'background-image:url('+getHeadPic(item.bean.fromHeadpic)+');'">
 								</view>
 								<view class="date">{{item.bean.date}}</view>
 							</view>
 
 							<view v-else class="cu-item">
 								<view @tap.stop="goUserDetail(item.bean.fromUid)" class="cu-avatar radius"
-									:style="'background-image:url('+getHeadPic(item.bean.fromHeadpic,imgUrl)+');'">
+									:style="'background-image:url('+getHeadPic(item.bean.fromHeadpic)+');'">
 								</view>
 								<view class="main">
 									<view class="content shadow" style="
@@ -203,7 +200,7 @@
 							style="padding-top:10upx;padding-bottom:10upx;margin-left: 10upx;flex:1;    line-height: 140upx;">
 							<view @tap="goUserDetail(index)" v-for="(item,index) in curChatEntity.top5Hp"
 								class="cu-avatar round margin-left"
-								:style="'height:100upx;width:100upx;background-image:url('+getHeadPic(item,imgUrl)+');'">
+								:style="'height:100upx;width:100upx;background-image:url('+getHeadPic(item)+');'">
 							</view>
 							<text v-if="false" @tap="yaoqi()" style="position: relative;
 		top: 36upx;font-size: 120upx;margin-top:20upx;color:#999;margin-left:20upx"
@@ -262,7 +259,7 @@
 						<view class="content">
 							<text class="text-grey" style="color:#333">群组头像</text>
 							<view class="cu-avatar round lg"
-								:style="'width:60upx;height:60upx;float: right;background-image: url('+getHeadPic(curChatEntity.img,imgUrl)+');'">
+								:style="'width:60upx;height:60upx;float: right;background-image: url('+getHeadPic(curChatEntity.img)+');'">
 							</view>
 						</view>
 					</view>
@@ -415,6 +412,9 @@
 			...mapActions('socket', [
 				'WEBSOCKET_SEND'
 			]),
+			getHeadPic(img) {
+				return getHeadPic(img, this.imgUrl)
+			},
 			loadmore() { //页码更换
 				this.pageNumber++;
 				this.tongbuMsg() //recall pagination datas.

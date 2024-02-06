@@ -26,7 +26,7 @@
 						<view class="cu-list menu-avatar no-padding">
 							<view class="cu-item" v-for="(items,index1) in item.list" :key="index1">
 								<view class="cu-avatar round lg"
-									:style="{'backgroundImage': 'url('+getHeadPic(items.headpic,imgUrl)  +')' }"
+									:style="{'backgroundImage': 'url('+getHeadPic(items.headpic)  +')' }"
 									style="width: 60upx;height: 60upx;background-size: 100% 100%;"></view>
 								<view class="content">
 									<view class="text-grey" style="float:left;">{{items.name}}</view>
@@ -181,6 +181,9 @@
 			...mapMutations('user', [
 				'setFriendList'
 			]),
+			getHeadPic(img){
+				return getHeadPic(img,this.imgUrl)
+			},
 			initData() {
 				let _this = this;
 				if (this.friendList.length <= 0) {

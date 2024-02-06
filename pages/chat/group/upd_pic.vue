@@ -7,7 +7,7 @@
 		<view style="
 		text-align: center;height:400upx;background-color: #fff;padding-top:60upx;margin-bottom: 20px">
 			<view class="cu-avatar round lg"
-				:style="'margin:auto auto;width:160upx;height:160upx;background-image: url('+getHeadPic(curChatEntity.img,imgUrl)+');'">
+				:style="'margin:auto auto;width:160upx;height:160upx;background-image: url('+getHeadPic(curChatEntity.img)+');'">
 			</view>
 			<view style="margin-top: 50upx;"><button @tap="ChooseImage()"
 					class="cu-btn round bg-green shadow">更换群头像</button></view>
@@ -56,6 +56,9 @@
 			]),
 			goback() {
 				this.$emit('goBack');
+			},
+			getHeadPic(img){
+				return getHeadPic(img,this.imgUrl)
 			},
 			clearImage() {
 				let _this = this;

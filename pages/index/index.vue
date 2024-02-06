@@ -15,7 +15,6 @@
 		<addressBook :isBlank="isBlank" v-if="PageCur=='addressBook'"></addressBook>
 		<faxian v-show="PageCur=='faxian'"></faxian>
 		<mine v-show="PageCur=='mine'"></mine>
-		<qunfa v-show="PageCur=='hotItem'" :keyid="randomid"></qunfa>
 		<view ref="footerView" class="cu-bar tabbar bg-white shadow foot" style="position: fixed; z-index: 9;">
 			<view class="action">
 				<view class='cuIcon-cu-image'></view>
@@ -23,7 +22,7 @@
 			<view class="action">
 				<view class='cuIcon-cu-image'>
 					<view class="cu-avatar radius" style="margin-right: 5px; border-radius: 50%"
-						:style="'background-image:url('+$store.state.img_url+$store.state.user.headpic+');'"></view>
+						:style="'background-image:url('+getHeadPic(user.headpic)+');'"></view>
 				</view>
 			</view>
 			<view class="action">
@@ -33,8 +32,8 @@
 				<view class='cuIcon-cu-image'>
 					<text class="iconfont icon-xiaoxi" :style="'color:'+(PageCur=='home'?'#3F92F8':'#888')"
 						style="font-size: 50upx;"><span></span></text>
-					<view v-show="$store.state.unReadMsgSum>0" style="top:0" class="cu-tag badge">
-						{{$store.state.unReadMsgSum}}
+					<view v-show="unReadMsgSum>0" style="top:0" class="cu-tag badge">
+						{{unReadMsgSum}}
 					</view>
 				</view>
 				<view style="margin-top: 2upx;" :style="'color:'+(PageCur=='home'?'#3F92F8':'#888')">消息</view>
@@ -43,8 +42,8 @@
 				<view class='cuIcon-cu-image'>
 					<text class="iconfont icon-tongxunlu1" :style="'color:'+(PageCur=='addressBook'?'#3F92F8':'#888')"
 						style="font-size: 52upx;"><span></span></text>
-					<view v-show="($store.state.unDoFriendAddCount+$store.state.unDoRoomAddCount)>0" style="top:0"
-						class="cu-tag badge">{{$store.state.unDoFriendAddCount+$store.state.unDoRoomAddCount}}</view>
+					<view v-show="(unDoFriendAddCount+unDoRoomAddCount)>0" style="top:0"
+						class="cu-tag badge">{{unDoFriendAddCount+unDoRoomAddCount}}</view>
 				</view>
 				<view style="margin-top: 2upx;" :style="'color:'+(PageCur=='addressBook'?'#3F92F8':'#888')">通讯录</view>
 			</view>
@@ -84,7 +83,9 @@
 		mapMutations,
 		mapActions
 	} from 'vuex'
-
+import {
+		getHeadPic
+	} from '../../common/utils';
 	export default {
 		data() {
 			return {
@@ -140,6 +141,9 @@
 				'getShimingCfgAction',
 				'getFriendListAction'
 			]),
+			getHeadPic(img){
+				return getHeadPic(img,this.imgUrl)
+			},
 			switchNav: function(e) {
 				let _this = this;
 				let user = uni.getStorageSync("USER");
