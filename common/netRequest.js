@@ -9,6 +9,7 @@
  */
 import Vue from 'vue'
 import Request from '@/js_sdk/luch-request/luch-request/index.js'
+import config from "../common/netConfig"
 import Log from './Log';
 
 var test;
@@ -89,7 +90,7 @@ export function _initC(reqUrl) {
         // config.baseURL = "http://client.441635.pw" /* 根域名不同 */
 		Log.d("BaseUrl",config.baseURL)
         config.header = {
-			"x-access-client":"PC",
+			"x-access-client":Vue.prototype.$clientType,
 			// 'Content-Type':'application/json'
             "Content-Type": "application/x-www-form-urlencoded",
 			...config.header
