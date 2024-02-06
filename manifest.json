@@ -145,12 +145,11 @@
                 "enable" : true
             }
         },
-        "domain" : "http://ws.t6prn1.xyz/",
         "devServer" : {
             "https" : false,
             "proxy" : {
                 "/user" : {
-                    "target" : "http://ws.t6prn1.xyz/", //请求的目标域名
+                    "target" : "http://http.441635.pw/", //请求的目标域名
                     "changeOrigin" : true,
                     "secure" : false,
                     "pathRewrite" : {

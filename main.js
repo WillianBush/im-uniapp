@@ -69,9 +69,6 @@ Vue.component('RoomMgr',RoomMgr)
 import UpdName from './pages/chat/group/upd_name'
 Vue.component('UpdName',UpdName)
 
-import PicLook from './pages/other/pictureLook'
-Vue.component('PicLook',PicLook)
-
 import UpdPic from './pages/chat/group/upd_pic'
 Vue.component('UpdPic',UpdPic)
 
@@ -84,11 +81,6 @@ Vue.component('MemberList',MemberList)
 import faxian from './pages/faxian/index.vue'
 Vue.component('faxian',faxian)
 
-import qunfa from './pages/qunfa/index.vue'
-Vue.component('qunfa',qunfa)
-
-import qunfaChat from './pages/qunfa/group/index.vue'
-Vue.component('qunfaChat',qunfaChat)
 
 import hotItem from './pages/hotItem/hotItem.vue'
 Vue.component('hotItem',hotItem)

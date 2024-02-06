@@ -77,4 +77,4 @@ export const getHeadPic = (headpic, url) => {
 		} else {
 			return url + headpic;
 		}
-	},
+	}

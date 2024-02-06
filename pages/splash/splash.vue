@@ -30,13 +30,31 @@
 				let _this = this;
 				setTimeout(function() {
 					_this.$store.dispatch("app/appHideOrShow", true);
+					
 				}, 2000)
-			}
+				this.jump()
+			},
+			jump() { //跳转到对应的页面
+				let user = uni.getStorageSync("USER");
+				if (user) {
+					//进入首页
+					uni.navigateTo({
+						url: "/pages/index/index"
+					})
+					if (this.timer) {
+						this.autoJump = false;
+					}
+				} else {
+					uni.navigateTo({
+						url: "/pages/login/login"
+					})
+				}
+			},
 		},
 		onShow: async function() {
 			await this.$onLaunched;
 			Log.d(TAG, "======onShow:获取域名成功！")
-			_this.init();
+			this.init();
 		}
 	}
 </script>

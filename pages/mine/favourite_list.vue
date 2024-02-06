@@ -1,23 +1,25 @@
 <template>
 	<view @tap="clickChat">
-
-
-
-		<view class="cu-bar bg-white search" >
+		<view class="cu-bar bg-white search">
 			<view class="search-form round">
 				<text class="cuIcon-search"></text>
-				<input v-model="kw1"  type="text" placeholder="输入搜索的关键词" confirm-type="search"></input>
+				<input v-model="kw1" type="text" placeholder="输入搜索的关键词" confirm-type="search"></input>
 			</view>
 			<view class="action">
-				<button  style="background: #FFAA01;" @tap="search()"  class="cu-btn bg-gradual-green shadow-blur round">搜索</button>
+				<button style="background: #FFAA01;" @tap="search()"
+					class="cu-btn bg-gradual-green shadow-blur round">搜索</button>
 			</view>
 		</view>
-		<scroll-view @scrolltolower="loadMore" scroll-y="true"  class="indexes" :scroll-into-view="'indexes-'+ listCurID" :style="[{height:'calc(100vh - 100upx - 100upx)'}]"
-		 :scroll-with-animation="true" :enable-back-to-top="true">
+		<scroll-view @scrolltolower="loadMore" scroll-y="true" class="indexes" :scroll-into-view="'indexes-'+ listCurID"
+			:style="[{height:'calc(100vh - 100upx - 100upx)'}]" :scroll-with-animation="true"
+			:enable-back-to-top="true">
 			<block v-for="(item,index) in list" :key="index">
-				<view  @longpress="onLongPress($event,item)" style="margin-top:20upx;background-color: #fff;padding:30upx">
-					<view><rich-text   :nodes="item.bean.txt"></rich-text></view>
-					<view style="font-size: 24upx;color:#999;margin-top:14upx;">{{item.bean.fromName}} {{item.bean.date}}</view>
+				<view @longpress="onLongPress($event,item)"
+					style="margin-top:20upx;background-color: #fff;padding:30upx">
+					<view><rich-text :nodes="item.bean.txt"></rich-text></view>
+					<view style="font-size: 24upx;color:#999;margin-top:14upx;">{{item.bean.fromName}}
+						{{item.bean.date}}
+					</view>
 				</view>
 			</block>
 			<view style="height: 100upx;text-align: center;background: #fff;
@@ -29,16 +31,28 @@
 		</scroll-view>
 
 		<view @longpress="hidePop" class="shade" v-show="showShade" @tap="hidePop">
-				<view style="text-align: center;" class="pop" :style="popStyle" :class="{'show':showPop}">
-					<view v-for="(item,index) in popButton" :key="index" @tap="pickerMenu" :data-name="item" :data-index="index">
-					<text style="font-size:34upx;margin-right:16upx;" class="iconfont" :class="popButtonIcon[index]"></text>
-					{{item}}</view>
+			<view style="text-align: center;" class="pop" :style="popStyle" :class="{'show':showPop}">
+				<view v-for="(item,index) in popButton" :key="index" @tap="pickerMenu" :data-name="item"
+					:data-index="index">
+					<text style="font-size:34upx;margin-right:16upx;" class="iconfont"
+						:class="popButtonIcon[index]"></text>
+					{{item}}
 				</view>
+			</view>
 		</view>
 	</view>
 </template>
 
 <script>
+	import {
+		collectList,
+		delCollect
+	} from '../../common/api';
+	import {
+		mapState,
+		mapActions,
+		mapMutations
+	} from 'vuex'
 	export default {
 		data() {
 			return {
@@ -48,11 +62,11 @@
 				listCurID: '',
 				list: [],
 				listCur: '',
-				kw:"",
-				kw1:"",
-				list:[],
-				p:1,
-				loadMoreing:false,
+				kw: "",
+				kw1: "",
+				list: [],
+				p: 1,
+				loadMoreing: false,
 				/* 窗口尺寸 */
 				winSize: {},
 				/* 显示遮罩 */
@@ -62,27 +76,34 @@
 				/* 弹窗按钮列表 */
 				popButton: ["转发", "删除"],
 				/* 对应图标class */
-				popButtonIcon:["icon-zhuanfa","icon-shanchu"],
+				popButtonIcon: ["icon-zhuanfa", "icon-shanchu"],
 				/* 弹窗定位样式 */
 				popStyle: "",
 				/* 选择的用户下标 */
 				pickerUserIndex: -1,
 				/* 临时内容 */
-				chatCfg:{},
-				temp_item:null,
+				chatCfg: {},
+				temp_item: null,
 			};
 		},
 		onShow() {
 			this.loadData();
 		},
-		onReady() {
-
-
+		computed: {
+			...mapState('user', [
+				'user'
+			]),
+			...mapState('chat', [
+				'temp'
+			]),
 		},
 		onLoad() {
 			this.getWindowSize();
 		},
 		methods: {
+			...mapMutations('chat', [
+				'setTempContent'
+			]),
 			clickChat() {
 				this.showPop = false;
 			},
@@ -98,9 +119,9 @@
 				})
 			},
 			/* 长按监听 */
-			onLongPress(e,item) {
+			onLongPress(e, item) {
 				console.log(88);
-				if(this.showPop) {
+				if (this.showPop) {
 					this.showPop = false;
 				}
 				this.temp_item = item;
@@ -142,62 +163,22 @@
 				let user = uni.getStorageSync("USER");
 				let name = e.currentTarget.dataset.name;
 				//console.log(`第${index+1}个按钮`);
-				if(name=='转发') {
-					_this.$store.state.temp.content = _this.temp_item.bean.oldTxt;
+				if (name == '转发') {
+					_this.setTempContent(_this.temp_item.bean.oldTxt)
 					uni.navigateTo({
-						url:"/pages/chat/transpond"
+						url: "/pages/chat/transpond"
 					})
-				} else if(name=='删除') {
+				} else if (name == '删除') {
 
-					_this.$http.post("/user/favourite/json/remove",
-							{
-								id:this.temp_item.id
-							},
-							{
-								header:{
-									"x-access-uid":user.id,
-									"x-access-client":_this.$clientType
-								}
-							}
-					).then(res=>{
+					delCollect({
+						id: this.temp_item.id
+					}).then(res => {
 						let res_data = eval(res.data);
-						if(res_data.code==200) {
+						if (res_data.code == 200) {
 							_this.loadData();
 						}
 					})
-
-					// uni.request({
-					// 	method:"POST",
-					// 	url: _this.$store.state.req_url + "/user/favourite/json/remove",
-					// 	data:{
-					// 		id:this.temp_item.id
-					// 	},
-					// 	header:{
-					// 		"Content-Type":"application/x-www-form-urlencoded",
-					// 		"x-access-uid":user.id
-					// 	},
-					// 	success(res) {
-
-					// 		let res_data = eval(res.data);
-					// 		if(res_data.code==200) {
-					// 			_this.loadData();
-					// 		}
-					// 	}
-					// })
-
 				}
-				/**
-				uni.showToast({
-					title: `第${this.pickerUserIndex+1}个用户,第${index+1}个按钮`,
-					icon: "none",
-					mask: true,
-					duration: 600
-				});
-				 **、
-				/*
-				 因为隐藏弹窗方法中会将当前选择的用户下标还原为-1,
-				 如果行的菜单方法存在异步情况，请在隐藏之前将该值保存，或通过参数传入异步函数中
-				 */
 				this.hidePop();
 			},
 			/* 列表触摸事件 */
@@ -206,8 +187,6 @@
 				if (this.showShade) {
 					return;
 				}
-
-				console.log("列表触摸事件触发")
 			},
 			search() {
 				this.kw = this.kw1;
@@ -215,119 +194,59 @@
 			},
 			loadData() {
 				let _this = this;
-				let user = uni.getStorageSync("USER");
-
-
-				_this.$http.post("/user/favourite/json/getList",
-						{
-							kw:_this.kw
-						},
-						{
-							header:{
-								"x-access-uid":user.id,
-								"x-access-client":_this.$clientType
-							}
-						}
-				).then(res=>{
+				collectList({
+					kw: _this.kw
+				}).then(res => {
 					let res_data = eval(res.data);
-					if(res_data.code==200) {
-						res_data.body.forEach(item=>{
-							item.bean = eval("("+item.jsonstr+")")
+					if (res_data.code == 200) {
+						res_data.body.forEach(item => {
+							item.bean = eval("(" + item.jsonstr + ")")
 						})
 						_this.list = res_data.body;
 					}
+				}).catch(error => {
+					uni.showToast({
+						icon: 'none',
+						position: 'bottom',
+						title: error.msg ? error.msg : "服务器异常!"
+					});
 				})
-
-				// uni.request({
-				// 	method:"POST",
-				// 	url: _this.$store.state.req_url + "/user/favourite/json/getList",
-				// 	data:{
-				// 		kw:_this.kw
-				// 	},
-				// 	header:{
-				// 		"Content-Type":"application/x-www-form-urlencoded",
-				// 		"x-access-uid":user.id
-				// 	},
-				// 	success(res) {
-
-				// 		let res_data = eval(res.data);
-				// 		if(res_data.code==200) {
-				// 			res_data.body.forEach(item=>{
-				// 				item.bean = eval("("+item.jsonstr+")")
-				// 			})
-				// 			_this.list = res_data.body;
-				// 		}
-				// 	}
-				// })
 			},
 			loadMore() {
-				if(this.loadMoreing) return;
+				if (this.loadMoreing) return;
 				this.loadMoreing = true;
 				let _this = this;
 				let user = this.$store.state.user;
 
-				if(this.p == -1) {
+				if (this.p == -1) {
 					//当为-1时就是没有更多的数据了
 					_this.loadMoreing = false;
 					return;
 				}
 				this.p = this.p + 1;
 
-
-				_this.$http.post("/user/favourite/json/getList",
-						{
-							p:this.p,
-							kw:_this.kw
-						},
-						{
-							header:{
-								"x-access-uid":user.id,
-								"x-access-client":_this.$clientType
-							}
-						}
-				).then(res=>{
+				collectList({
+					p: this.p,
+					kw: _this.kw
+				}).then(res => {
 					let res_data = eval(res.data);
-					if(res_data.code==200) {
-
-						if(res_data.body.length<=0) {
+					if (res_data.code == 200) {
+						if (res_data.body.length <= 0) {
 							_this.p = -1;
 						} else {
-							res_data.body.forEach(item=>{
-								item.bean = eval("("+item.jsonstr+")")
+							res_data.body.forEach(item => {
+								item.bean = eval("(" + item.jsonstr + ")")
 							})
 							_this.list = _this.list.concat(res_data.body);
 						}
 					}
+				}).catch(error => {
+					uni.showToast({
+						icon: 'none',
+						position: 'bottom',
+						title: error.msg ? error.msg : "服务器异常!"
+					});
 				})
-
-
-
-				// uni.request({
-				// 	method:"POST",
-				// 	url: _this.$store.state.req_url + "/user/favourite/json/getList",
-				// 	data:{
-				// 		p:this.p,
-				// 		kw:_this.kw
-				// 	},
-				// 	header:{
-				// 		"Content-Type":"application/x-www-form-urlencoded",
-				// 		"x-access-uid":user.id
-				// 	},
-				// 	success(res) {
-				// 		let res_data = eval(res.data);
-				// 		if(res_data.code==200) {
-
-				// 			if(res_data.body.length<=0) {
-				// 				_this.p = -1;
-				// 			} else {
-				// 				res_data.body.forEach(item=>{
-				// 					item.bean = eval("("+item.jsonstr+")")
-				// 				})
-				// 				_this.list = _this.list.concat(res_data.body);
-				// 			}
-				// 		}
-				// 	}
-				// })
 			}
 		}
 	}

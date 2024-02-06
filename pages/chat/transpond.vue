@@ -112,6 +112,9 @@
 			let that = this;
 		},
 		methods: {
+			...mapActions('chat', [
+				'transMessageAction'
+			]),
 			sendBaseDo(v) {
 				v.fromHeadpic = this.user.headpic;
 				let date = new Date();
@@ -211,116 +214,7 @@
 					});
 					return;
 				}
-				// console.log(_this.$store.state.temp.base64);
-				//let items = [];
-				_this.ids.forEach(id => {
-					_this.$store.state.ar_list.forEach(item => {
-						if (id == item.id) {
-							//items.push(item);
-							if (item.typeid == "1") {
-								//群
-								let v = {};
-								if (_this.$store.state.temp.content.indexOf("[名片USERCARD]#") == 0) {
-									let ss = _this.$store.state.temp.content.split("#");
-									v = {
-										muuid: ss[4],
-										toGroupid: id,
-										fromUid: this.$store.state.user.id
-									}
-									_this.$websocket.dispatch("WEBSOCKET_SEND", "{body:'" + JSON.stringify(
-										v) + "',CMD:'CHAT_SEND_CARD'}");
-								} else {
-									v = {
-										txt: _this.$store.state.temp.content,
-										toGroupid: id,
-										fromUid: _this.$store.state.user.id,
-										uuid: _this.GenerateUUID(),
-									}
-									_this.$websocket.dispatch("WEBSOCKET_SEND", "{body:'" + JSON.stringify(
-										v) + "',CMD:'GROUP_CHAT_SEND_TXT'}");
-									_this.sendBaseDo(v);
-								}
-
-
-								_this.$http.post("/user/accessRecord/json/saveOrUpdate", {
-									type: 1,
-									eid: id
-								}, {
-									header: {
-										"x-access-uid": _this.$store.state.user.id,
-										"x-access-client": _this.$clientType
-									}
-								}).then(res => {
-
-								})
-
-
-								// uni.request({
-								// 	method:"POST",
-								// 	url: _this.$store.state.req_url + "/user/accessRecord/json/saveOrUpdate",
-								// 	data:{type:1,eid:id},
-								// 	header:{
-								// 		"Content-Type":"application/x-www-form-urlencoded",
-								// 		"x-access-uid":_this.$store.state.user.id
-								// 	},
-								// 	success(res) {}
-								// })
-
-							} else {
-								//好友
-								let v = {};
-								if (_this.$store.state.temp.content.indexOf("[名片USERCARD]#") == 0) {
-									let ss = _this.$store.state.temp.content.split("#");
-									v = {
-										muuid: ss[4],
-										toUid: id,
-										fromUid: this.$store.state.user.id
-									}
-									_this.$websocket.dispatch("WEBSOCKET_SEND", "{body:'" + JSON.stringify(
-										v) + "',CMD:'CHAT_SEND_CARD'}");
-								} else {
-									v = {
-										txt: _this.$store.state.temp.content,
-										toUid: id,
-										fromUid: _this.$store.state.user.id,
-										uuid: _this.GenerateUUID(),
-									}
-									_this.$websocket.dispatch("WEBSOCKET_SEND", "{body:'" + JSON.stringify(
-										v) + "',CMD:'USER_CHAT_SEND_TXT'}");
-									_this.sendBaseDo(v);
-								}
-
-								_this.$http.post("/user/accessRecord/json/saveOrUpdate", {
-									type: 2,
-									eid: id
-								}, {
-									header: {
-										"x-access-uid": _this.$store.state.user.id,
-										"x-access-client": _this.$clientType
-									}
-								}).then(res => {
-
-								})
-
-								// uni.request({
-								// 	method:"POST",
-								// 	url: _this.$store.state.req_url + "/user/accessRecord/json/saveOrUpdate",
-								// 	data:{type:2,eid:id},
-								// 	header:{
-								// 		"Content-Type":"application/x-www-form-urlencoded",
-								// 		"x-access-uid":_this.$store.state.user.id
-								// 	},
-								// 	success(res) {}
-								// })
-
-							}
-						}
-					});
-				})
-
-
-
-
+				this.transMessageAction(_this.ids)
 				uni.showToast({
 					icon: "success",
 					title: "转发成功",
@@ -329,9 +223,6 @@
 				setTimeout(() => {
 					uni.navigateBack();
 				}, 800)
-
-
-
 			},
 			radioChange(e) {
 				this.ids = e.target.value;

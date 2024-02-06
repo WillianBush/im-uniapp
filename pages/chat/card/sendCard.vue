@@ -121,7 +121,6 @@
 					}
 				});
 			}
-		}
 	},
 	computed: {
 			...mapState('chat', [

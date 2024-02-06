@@ -44,22 +44,6 @@
 				 //一定要append到当前的页面里！！！才能跟随当前页面一起做动画，一起关闭
 				currentWebview.append(mv); 
 			// #endif
-			
-			
-			//console.log(e.s);
-			// uni.request({
-			// 	url:_this.$store.state.req_url + "/sysConfig/json/getSimple",
-			// 	method:"POST",
-			// 	success(res) {
-			// 		let json = eval(res.data);
-			// 		if(json.code==200) {
-			// 			if(e.s=="1") {
-			// 				_this.siteName = "云点赞";
-			// 				_this.url = json.body.site1_url;
-			// 			}
-			// 		}	
-			// 	}
-			// })
 		},
 		methods: {
 			

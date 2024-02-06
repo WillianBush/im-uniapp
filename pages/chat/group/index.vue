@@ -39,7 +39,7 @@
 			:style="'height: calc(100vh - '+CustomBar+'px - 118px - '+(120+InputBottom)+'upx)'">
 			<block v-for="(item,index) in curChatMsgList">
 				<block v-if="item.opt&&item.opt=='undo'">
-					<view v-else class="cu-info round">{{item.name}} 撤回一条消息</view> -->
+					<view class="cu-info round">{{item.name}} 撤回一条消息</view> -->
 					<view style="display: none"></view>
 				</block>
 				<block v-else-if="item.type=='SYS_TXT'">
@@ -871,28 +871,22 @@
 							let res_data = eval(res.data);
 							if (res_data.code == 200) {
 								let json = eval(res.data);
-
 								let v = {
 									txt: json.msg,
 									fromUid: _this.user.id,
 									uuid: uuid(),
 								};
+								let type = MessageType.GROUP_CHAT_SEND_TXT
 								if (this.isGroupChat) {
-									v.toGroupid = _this.toid,
+									v.toGroupid = _this.toid
 								} else {
 									v.toUid = _this.toid
+									type = MessageType.USER_CHAT_SEND_TXT
 								}
-								if (this.isGroupChat) {
-									_this.WEBSOCKET_SEND({
-										body: v,
-										CMD: MessageType.GROUP_CHAT_SEND_TXT
-									})
-								} else {
-									_this.WEBSOCKET_SEND({
-										body: v,
-										CMD: MessageType.USER_CHAT_SEND_TXT
-									})
-								}
+								_this.WEBSOCKET_SEND({
+									body: v,
+									CMD: type
+								})
 								let img = _this.imgUrl + json.msg;
 								_this.temp_txt = _this.temp_txt + (
 									"<img  style='max-width: 150px;max-height:150px;' class='face' src='" +
@@ -968,23 +962,18 @@
 									fromUid: _this.user.id,
 									uuid: uuid(),
 								};
+								let type = MessageType.GROUP_CHAT_SEND_TXT
 								if (_this.isGroupChat) {
-									v.toGroupid = _this.toid,
+									v.toGroupid = _this.toid
 								} else {
 									v.toUid = _this.toid
+									type = MessageType.USER_CHAT_SEND_TXT
 								}
-								if (_this.isGroupChat) {
-									_this.WEBSOCKET_SEND({
-										body: v,
-										CMD: MessageType.GROUP_CHAT_SEND_TXT
-									})
-								} else {
-									_this.WEBSOCKET_SEND({
-										body: v,
-										CMD: MessageType.USER_CHAT_SEND_TXT
-									})
-								}
-								let img = _this.$store.state.img_url + json.msg;
+								_this.WEBSOCKET_SEND({
+									body: v,
+									CMD: type
+								})
+								let img = _this.imgUrl + json.msg;
 								_this.temp_txt = _this.temp_txt + (
 									"<img  style='max-width: 150px;max-height:150px;' class='face' src='" +
 									img + "'>");
@@ -1478,611 +1467,465 @@
 						});
 					})
 				}
-			}
-			this.hidePop();
-		},
-		selType(_t) {
-			if (this.stopSpeak == 1) return;
-			this.c_type = _t;
-			this.showjia = true;
-			this.txt = "";
-
-			this.showPop = false;
-			this.showItem = 0;
-			this.InputBottom = 0;
-		},
-		preview(src, e) {},
-		navigate(href, e) {
-			uni.navigateTo({
-				url: "/pages/faxian/site/site?url=" + encodeURIComponent(href)
-			})
-		},
-		clickChat() {
-			this.showPop = false;
-			this.showItem = 0;
-			this.InputBottom = 0;
-		},
-		showItemIndex(i) {
-			if (this.showItem == i) {
-				i = 0;
-			}
-			if (i == 1) {
-				this.c_type = 1;
+				this.hidePop();
+			},
+			selType(_t) {
+				if (this.stopSpeak == 1) return;
+				this.c_type = _t;
+				this.showjia = true;
 				this.txt = "";
-				this.showjia = true;
-			}
-			this.showItem = i;
-			if (i != 0) {
-				this.InputBottom = 400;
-			} else {
+
+				this.showPop = false;
+				this.showItem = 0;
 				this.InputBottom = 0;
-			}
-			let _this = this;
-			setTimeout(function() {
-				_this.scrollToBottom();
-			}, 100)
-		},
-		showEmotion(i) {
-			this.emotion = i;
-			let _this = this;
-			setTimeout(function() {
-				_this.scrollToBottom();
-			}, 100)
-		},
-		inputTxt(e) {
-			let _this = this;
-			if (this.txt.trim() == "") {
-				this.showjia = true;
-			} else {
-				this.showjia = false;
-			}
+			},
+			preview(src, e) {},
+			navigate(href, e) {
+				uni.navigateTo({
+					url: "/pages/faxian/site/site?url=" + encodeURIComponent(href)
+				})
+			},
+			clickChat() {
+				this.showPop = false;
+				this.showItem = 0;
+				this.InputBottom = 0;
+			},
+			showItemIndex(i) {
+				if (this.showItem == i) {
+					i = 0;
+				}
+				if (i == 1) {
+					this.c_type = 1;
+					this.txt = "";
+					this.showjia = true;
+				}
+				this.showItem = i;
+				if (i != 0) {
+					this.InputBottom = 400;
+				} else {
+					this.InputBottom = 0;
+				}
+				let _this = this;
+				setTimeout(function() {
+					_this.scrollToBottom();
+				}, 100)
+			},
+			showEmotion(i) {
+				this.emotion = i;
+				let _this = this;
+				setTimeout(function() {
+					_this.scrollToBottom();
+				}, 100)
+			},
+			inputTxt(e) {
+				let _this = this;
+				if (this.txt.trim() == "") {
+					this.showjia = true;
+				} else {
+					this.showjia = false;
+				}
 
-			if (e.target.value.indexOf("@") >= 0 && e.target.value.lastIndexOf("@") == e.target.value
-				.length - 1) {
-				this.$emit('openAtModal', _this.entity.id);
-			}
-		},
-		goUserDetail(_id) {
-			let _this = this;
-			getRoomCfg().then(res => {
-				let res_data = eval(res.data);
-				if (res_data.code == 200) {
-					let flag = false;
-					//哪个角色可查看群成员详细 0全体 1仅群主 2群主和群管理员
-					if (res_data.body.lookGroupMemberDetailForRole == 0) {
-						flag = true;
-					} else if (res_data.body.lookGroupMemberDetailForRole == 1) {
-						if (_this.user.id == _this.entity.owner_UUID) {
+				if (e.target.value.indexOf("@") >= 0 && e.target.value.lastIndexOf("@") == e.target.value
+					.length - 1) {
+					this.$emit('openAtModal', _this.entity.id);
+				}
+			},
+			goUserDetail(_id) {
+				let _this = this;
+				getRoomCfg().then(res => {
+					let res_data = eval(res.data);
+					if (res_data.code == 200) {
+						let flag = false;
+						//哪个角色可查看群成员详细 0全体 1仅群主 2群主和群管理员
+						if (res_data.body.lookGroupMemberDetailForRole == 0) {
 							flag = true;
+						} else if (res_data.body.lookGroupMemberDetailForRole == 1) {
+							if (_this.user.id == _this.entity.owner_UUID) {
+								flag = true;
+							}
+						} else if (res_data.body.lookGroupMemberDetailForRole == 2) {
+							if (_this.user.id == _this.entity.owner_UUID ||
+								_this.curChatEntity.memberMgr_ids.indexOf(_this.user.id) >= 0) {
+								flag = true;
+							}
 						}
-					} else if (res_data.body.lookGroupMemberDetailForRole == 2) {
-						if (_this.user.id == _this.entity.owner_UUID ||
-							_this.curChatEntity.memberMgr_ids.indexOf(_this.user.id) >= 0) {
-							flag = true;
+						if (flag) {
+							uni.navigateTo({
+								url: "/pages/chat/user_detail?id=" + _id + "&room_id=" + _this.entity.id
+							})
 						}
 					}
-					if (flag) {
-						uni.navigateTo({
-							url: "/pages/chat/user_detail?id=" + _id + "&room_id=" + _this.entity.id
-						})
-					}
-				}
-			}).catch(error => {
-				uni.showToast({
-					icon: 'none',
-					position: 'bottom',
-					title: error.msg ? error.msg : "服务器异常!"
-				});
-			})
-		},
-		goMgr(_id) {
-			this.$emit('openModal', {
-				id: _id,
-				type: 'group',
-				toId: this.toid,
-			})
-		},
-		goMgr2(_id, friendPic) {
-			let _friendPic = friendPic;
-			this.$emit('openModal', {
-				id: _id,
-				type: 'user',
-				friendPic: _friendPic,
-				toId: this.toid,
-			})
-		},
-		sendBaseDo(v) { //群组发送
-			v.fromHeadpic = this.user.headpic;
-			let date = new Date();
-			v.date = dateFormat("Y/m/d H:M", date);
-			v.fromName = this.user.nickName;
-			v.dateTime = date.getTime();
-			v.read = 0;
-			v.oldTxt = v.txt;
-			v.simple_content = v.txt;
-			if (this.temp_txt != "") {
-				v.txt = this.temp_txt;
-				this.temp_txt = "";
-			}
-			if (this.temp_map.size > 0) {
-				this.temp_map.forEach((value, key, map) => {
-					while (v.txt.indexOf(key) >= 0) {
-						v.txt = v.txt.replace(key, value);
-					}
+				}).catch(error => {
+					uni.showToast({
+						icon: 'none',
+						position: 'bottom',
+						title: error.msg ? error.msg : "服务器异常!"
+					});
 				})
-			}
-			//去除视频上传和图片上传 纯文件内容才检测URL
-			if (v.txt.indexOf("/chat_video") < 0 && v.txt.indexOf("/chat_img") < 0) {
-				let hasUrl = false;
-				let httpReg = new RegExp(
-					"(http[s]{0,1}|ftp)://[a-zA-Z0-9\\.\\-]+\\.([a-zA-Z]{2,4})(:\\d+)?(/[a-zA-Z0-9\\.\\-~!@#$%^&amp;*+?:_/=<>]*)?",
-					"gi");
-				let formatTxtContent = v.txt.replace(httpReg, function(httpText) {
-					if (httpText.indexOf("/img/emotion/") >= 0) return httpText;
-					hasUrl = true;
-					return '<a style="color: #3F92F8;" href="' + httpText + '">' + httpText +
-						'</a>';
-				});
-				if (hasUrl) {
-					v.txt = formatTxtContent;
-					v.psr = "uparse";
-				}
-			}
-
-			let msgbean = {
-				chatType: "1",
-				chatid: this.toid,
-				type: "USER_TXT",
-				bean: v
-			}
-
-			let list = [msgbean];
-			let str = uni.getStorageSync(this.user.id + "#" + msgbean.chatid +
-				'_CHAT_MESSAGE');
-			if (str && str != "") {
-				var jsonObj = JSON.parse(str);
-				jsonObj = jsonObj.concat(list);
-				// if(jsonObj.length>50) {
-				//  jsonObj.splice(0,jsonObj.length-50);
-				// }
-				uni.setStorageSync(this.user.id + "#" + msgbean.chatid + '_CHAT_MESSAGE', JSON
-					.stringify(
-						jsonObj));
-				if (jsonObj.length > 50) {
-					jsonObj.splice(0, jsonObj.length - 50);
-				}
-				this.updateChatMessageMap({
-					key: this.user.id + "#" + msgbean.chatid,
-					value: jsonObj
+			},
+			goMgr(_id) {
+				this.$emit('openModal', {
+					id: _id,
+					type: 'group',
+					toId: this.toid,
 				})
-				if (this.curChatEntity && this.curChatEntity.id == v.toGroupid) {
-					this.setCurChatMsgList(jsonObj)
-				}
-			} else {
-				uni.setStorageSync(this.user.id + "#" + msgbean.chatid + '_CHAT_MESSAGE', JSON
-					.stringify(
-						list));
-				this.updateChatMessageMap({
-					key: this.user.id + "#" + msgbean.chatid,
-					value: list
+			},
+			goMgr2(_id, friendPic) {
+				let _friendPic = friendPic;
+				this.$emit('openModal', {
+					id: _id,
+					type: 'user',
+					friendPic: _friendPic,
+					toId: this.toid,
 				})
-				if (this.curChatEntity && this.curChatEntity.id == v.toGroupid) {
-					this.setCurChatMsgList(list)
+			},
+			sendBaseDo(v) { //群组发送
+				v.fromHeadpic = this.user.headpic;
+				let date = new Date();
+				v.date = dateFormat("Y/m/d H:M", date);
+				v.fromName = this.user.nickName;
+				v.dateTime = date.getTime();
+				v.read = 0;
+				v.oldTxt = v.txt;
+				v.simple_content = v.txt;
+				if (this.temp_txt != "") {
+					v.txt = this.temp_txt;
+					this.temp_txt = "";
 				}
-			}
-			this.setChatMyLoadding(false)
-		},
-
-		sendBaseDo2(v) { //个人发送
-
-			v.fromHeadpic = this.user.headpic;
-			let date = new Date();
-			v.date = dateFormat("Y/m/d H:M", date);
-			v.fromName = this.user.nickName;
-			v.dateTime = date.getTime();
-			v.read = 0;
-			v.oldTxt = v.txt;
-			v.simple_content = v.txt;
-			if (this.temp_txt != "") {
-				v.txt = this.temp_txt;
-				this.temp_txt = "";
-			}
-			if (this.temp_map.size > 0) {
-				this.temp_map.forEach((value, key, map) => {
-					while (v.txt.indexOf(key) >= 0) {
-						v.txt = v.txt.replace(key, value);
-					}
-				})
-			}
-
-			//去除视频上传和图片上传 纯文件内容才检测URL
-			if (v.txt.indexOf("/chat_video") < 0 && v.txt.indexOf("/chat_img") < 0) {
-				let hasUrl = false;
-				let httpReg = new RegExp(
-					"(http[s]{0,1}|ftp)://[a-zA-Z0-9\\.\\-]+\\.([a-zA-Z]{2,4})(:\\d+)?(/[a-zA-Z0-9\\.\\-~!@#$%^&amp;*+?:_/=<>]*)?",
-					"gi");
-				let formatTxtContent = v.txt.replace(httpReg, function(httpText) {
-					if (httpText.indexOf("/img/emotion/") >= 0) return httpText;
-					hasUrl = true;
-					return '<a style="color: #3F92F8;" href="' + httpText + '">' + httpText +
-						'</a>';
-				});
-				if (hasUrl) {
-					v.txt = formatTxtContent;
-					v.psr = "uparse";
-				}
-			}
-
-			let msgbean = {
-				chatType: "2",
-				chatid: this.toid,
-				type: "USER_TXT",
-				bean: v
-			}
-			let list = [msgbean];
-			let str = uni.getStorageSync(this.user.id + "#" + msgbean.chatid +
-				'_CHAT_MESSAGE');
-			if (str && str != "") {
-				var jsonObj = JSON.parse(str);
-				jsonObj = jsonObj.concat(list);
-
-				var newJsonObj = jsonObj;
-				uni.setStorageSync(this.user.id + "#" + msgbean.chatid + '_CHAT_MESSAGE', JSON
-					.stringify(
-						newJsonObj));
-				if (jsonObj.length > 50) {
-					jsonObj.splice(0, jsonObj.length - 50);
-				}
-
-				this.updateChatMessageMap({
-					key: this.user.id + "#" + msgbean.chatid,
-					value: newJsonObj
-				})
-				if (this.curChatEntity && this.curChatEntity.id == v.toUid) {
-					this.setCurChatMsgList(newJsonObj)
-
-					let v1 = {
-						toUid: msgbean.chatid,
-						fromUid: this.user.id
-					}
-
-					this.WEBSOCKET_SEND({
-						body: {
-							toUid: msgbean.chatid,
-							fromUid: this.user.id
-						},
-						CMD: MessageType.CHAT_MSG_READ_ED
+				if (this.temp_map.size > 0) {
+					this.temp_map.forEach((value, key, map) => {
+						while (v.txt.indexOf(key) >= 0) {
+							v.txt = v.txt.replace(key, value);
+						}
 					})
 				}
-			} else {
-				var newList = list;
-				uni.setStorageSync(this.user.id + "#" + msgbean.chatid + '_CHAT_MESSAGE', JSON
-					.stringify(
-						newList));
-				this.updateChatMessageMap({
-					key: this.user.id + "#" + msgbean.chatid,
-					value: newList
-				})
-				if (this.curChatEntity && this.curChatEntity.id == v.toUid) {
-					this.setCurChatMsgList(newList)
+				//去除视频上传和图片上传 纯文件内容才检测URL
+				if (v.txt.indexOf("/chat_video") < 0 && v.txt.indexOf("/chat_img") < 0) {
+					let hasUrl = false;
+					let httpReg = new RegExp(
+						"(http[s]{0,1}|ftp)://[a-zA-Z0-9\\.\\-]+\\.([a-zA-Z]{2,4})(:\\d+)?(/[a-zA-Z0-9\\.\\-~!@#$%^&amp;*+?:_/=<>]*)?",
+						"gi");
+					let formatTxtContent = v.txt.replace(httpReg, function(httpText) {
+						if (httpText.indexOf("/img/emotion/") >= 0) return httpText;
+						hasUrl = true;
+						return '<a style="color: #3F92F8;" href="' + httpText + '">' + httpText +
+							'</a>';
+					});
+					if (hasUrl) {
+						v.txt = formatTxtContent;
+						v.psr = "uparse";
+					}
 				}
 
-			}
-			this.setChatMyLoadding(false);
-		},
+				let msgbean = {
+					chatType: "1",
+					chatid: this.toid,
+					type: "USER_TXT",
+					bean: v
+				}
 
-		checkStopSpeak() {
-			let _this = this;
-			let memberIds = _this.curChatEntity ? _this.curChatEntity.memberMgr_ids : [];
-			//管理者没限制
-			if (this.entity.owner_UUID == this.user.id ||
-				memberIds.indexOf(_this.user.id) >= 0) {
+				let list = [msgbean];
+				let str = uni.getStorageSync(this.user.id + "#" + msgbean.chatid +
+					'_CHAT_MESSAGE');
+				if (str && str != "") {
+					var jsonObj = JSON.parse(str);
+					jsonObj = jsonObj.concat(list);
+					// if(jsonObj.length>50) {
+					//  jsonObj.splice(0,jsonObj.length-50);
+					// }
+					uni.setStorageSync(this.user.id + "#" + msgbean.chatid + '_CHAT_MESSAGE', JSON
+						.stringify(
+							jsonObj));
+					if (jsonObj.length > 50) {
+						jsonObj.splice(0, jsonObj.length - 50);
+					}
+					this.updateChatMessageMap({
+						key: this.user.id + "#" + msgbean.chatid,
+						value: jsonObj
+					})
+					if (this.curChatEntity && this.curChatEntity.id == v.toGroupid) {
+						this.setCurChatMsgList(jsonObj)
+					}
+				} else {
+					uni.setStorageSync(this.user.id + "#" + msgbean.chatid + '_CHAT_MESSAGE', JSON
+						.stringify(
+							list));
+					this.updateChatMessageMap({
+						key: this.user.id + "#" + msgbean.chatid,
+						value: list
+					})
+					if (this.curChatEntity && this.curChatEntity.id == v.toGroupid) {
+						this.setCurChatMsgList(list)
+					}
+				}
+				this.setChatMyLoadding(false)
+			},
+
+			sendBaseDo2(v) { //个人发送
+
+				v.fromHeadpic = this.user.headpic;
+				let date = new Date();
+				v.date = dateFormat("Y/m/d H:M", date);
+				v.fromName = this.user.nickName;
+				v.dateTime = date.getTime();
+				v.read = 0;
+				v.oldTxt = v.txt;
+				v.simple_content = v.txt;
+				if (this.temp_txt != "") {
+					v.txt = this.temp_txt;
+					this.temp_txt = "";
+				}
+				if (this.temp_map.size > 0) {
+					this.temp_map.forEach((value, key, map) => {
+						while (v.txt.indexOf(key) >= 0) {
+							v.txt = v.txt.replace(key, value);
+						}
+					})
+				}
+
+				//去除视频上传和图片上传 纯文件内容才检测URL
+				if (v.txt.indexOf("/chat_video") < 0 && v.txt.indexOf("/chat_img") < 0) {
+					let hasUrl = false;
+					let httpReg = new RegExp(
+						"(http[s]{0,1}|ftp)://[a-zA-Z0-9\\.\\-]+\\.([a-zA-Z]{2,4})(:\\d+)?(/[a-zA-Z0-9\\.\\-~!@#$%^&amp;*+?:_/=<>]*)?",
+						"gi");
+					let formatTxtContent = v.txt.replace(httpReg, function(httpText) {
+						if (httpText.indexOf("/img/emotion/") >= 0) return httpText;
+						hasUrl = true;
+						return '<a style="color: #3F92F8;" href="' + httpText + '">' + httpText +
+							'</a>';
+					});
+					if (hasUrl) {
+						v.txt = formatTxtContent;
+						v.psr = "uparse";
+					}
+				}
+
+				let msgbean = {
+					chatType: "2",
+					chatid: this.toid,
+					type: "USER_TXT",
+					bean: v
+				}
+				let list = [msgbean];
+				let str = uni.getStorageSync(this.user.id + "#" + msgbean.chatid +
+					'_CHAT_MESSAGE');
+				if (str && str != "") {
+					var jsonObj = JSON.parse(str);
+					jsonObj = jsonObj.concat(list);
+
+					var newJsonObj = jsonObj;
+					uni.setStorageSync(this.user.id + "#" + msgbean.chatid + '_CHAT_MESSAGE', JSON
+						.stringify(
+							newJsonObj));
+					if (jsonObj.length > 50) {
+						jsonObj.splice(0, jsonObj.length - 50);
+					}
+
+					this.updateChatMessageMap({
+						key: this.user.id + "#" + msgbean.chatid,
+						value: newJsonObj
+					})
+					if (this.curChatEntity && this.curChatEntity.id == v.toUid) {
+						this.setCurChatMsgList(newJsonObj)
+
+						let v1 = {
+							toUid: msgbean.chatid,
+							fromUid: this.user.id
+						}
+
+						this.WEBSOCKET_SEND({
+							body: {
+								toUid: msgbean.chatid,
+								fromUid: this.user.id
+							},
+							CMD: MessageType.CHAT_MSG_READ_ED
+						})
+					}
+				} else {
+					var newList = list;
+					uni.setStorageSync(this.user.id + "#" + msgbean.chatid + '_CHAT_MESSAGE', JSON
+						.stringify(
+							newList));
+					this.updateChatMessageMap({
+						key: this.user.id + "#" + msgbean.chatid,
+						value: newList
+					})
+					if (this.curChatEntity && this.curChatEntity.id == v.toUid) {
+						this.setCurChatMsgList(newList)
+					}
+
+				}
+				this.setChatMyLoadding(false);
+			},
+
+			checkStopSpeak() {
+				let _this = this;
+				let memberIds = _this.curChatEntity ? _this.curChatEntity.memberMgr_ids : [];
+				//管理者没限制
+				if (this.entity.owner_UUID == this.user.id ||
+					memberIds.indexOf(_this.user.id) >= 0) {
+					return true;
+				}
+				if (this.entity.stopSpeak && this.entity.stopSpeak == 1) {
+					return false;
+				}
 				return true;
-			}
-			if (this.entity.stopSpeak && this.entity.stopSpeak == 1) {
-				return false;
-			}
-			return true;
-		},
-		altOrShiftEnter() {
-			this.input_is_focus = false;
-			this.txt += '\n';
-			this.isAltOrShiftEnter = true;
-			setTimeout(() => {
-				this.input_is_focus = true;
-				this.isAltOrShiftEnter = false;
-			}, 300)
-		},
-		send() { //群组发送
-			let _this = this;
-			setTimeout(() => {
-				if (this.isAltOrShiftEnter) return;
+			},
+			altOrShiftEnter() {
 				this.input_is_focus = false;
+				this.txt += '\n';
+				this.isAltOrShiftEnter = true;
+				setTimeout(() => {
+					this.input_is_focus = true;
+					this.isAltOrShiftEnter = false;
+				}, 300)
+			},
+			send() { //群组发送
+				let _this = this;
+				setTimeout(() => {
+					if (this.isAltOrShiftEnter) return;
+					this.input_is_focus = false;
+					if (this.stopSpeak == 1) return;
+					if (!this.checkStopSpeak()) return;
+					let v = {
+						txt: this.txt.replace(/\n/g, "<br/>"),
+						toGroupid: this.toid,
+						fromUid: this.user.id,
+						uuid: uuid(),
+					}
+					if (this.txt.trim() == "") {
+						return;
+					}
+
+					console.log(this.aite_map);
+					let aite = "";
+					for (var [key, value] of this.aite_map) {
+						if (this.txt.indexOf(key) >= 0) {
+							aite += (value + "#");
+						}
+					}
+					this.aite_map.clear();
+					v.aite = aite;
+					this.WEBSOCKET_SEND({
+						body: v,
+						CMD: MessageType.GROUP_CHAT_SEND_TXT
+					})
+					this.setChatMyLoadding(true);
+					this.sendBaseDo(v);
+
+					this.txt = "";
+					this.showjia = true;
+					this.sendCount = this.sendCount + 1;
+					setTimeout(function() {
+						_this.scrollToBottom();
+						_this.input_is_focus = true;
+					}, 300)
+				}, 100);
+			},
+			send2() { //个人发送
+				let _this = this;
+				setTimeout(() => {
+					if (this.isAltOrShiftEnter) return;
+					this.input_is_focus = false;
+					let v = {
+						txt: this.txt.replace(/\n/g, "<br/>"),
+						toUid: this.toid,
+						fromUid: this.user.id,
+						uuid: uuid(),
+					}
+					if (this.txt.trim() == "") {
+						return;
+					}
+					this.txt = "";
+					this.WEBSOCKET_SEND({
+						body: v,
+						CMD: MessageType.USER_CHAT_SEND_TXT
+					})
+					this.setChatMyLoadding(true);
+					this.sendBaseDo2(v);
+					this.showjia = true;
+					this.sendCount = this.sendCount + 1;
+					setTimeout(function() {
+						_this.scrollToBottom();
+						_this.input_is_focus = true;
+					}, 300)
+				}, 100)
+
+			},
+			sendEmotion(_a, _b) {
+				let _this = this;
+				if (this.stopSpeak == 1) return;
+				this.txt = this.txt + ("[f" + _a + "#" + _b + "]");
+				let f = ".gif";
+				if (_a == 1) f = ".png";
+				let img = this.$store.state.img_url + "/img/emotion/face" + (_a < 10 ? "0" + _a : _a) + "/" +
+					_b + f;
+				//this.temp_txt = this.temp_txt + ("<img  style='max-width: 100px;' class='face' src='"+img+"'>");
+				let s = "";
+				if (_a == 0) {
+					s = "<img  style='max-width: 24px;max-height:24px;' class='face face1' src='" + img + "'>";
+				} else if (_a == 1) {
+					s = "<img style='max-width: 100px;max-height:100px;' class='face face2' src='" + img +
+						"'>";
+				} else {
+					s = "<img  style='max-width: 150px;max-height:150px;' class='face face3' src='" + img +
+						"'>";
+				}
+
+				if (!this.temp_map.has("[f" + _a + "#" + _b + "]")) {
+					this.temp_map.set("[f" + _a + "#" + _b + "]", s)
+				}
+				this.showjia = false;
+			},
+			InputFocus(e) {
+				var that = this
+				setTimeout(function() { // 加上延时会使页面看起来更流畅
+					document.body.scrollTop = document.body.scrollHeight;
+				}, 500)
+			},
+			InputBlur(e) {
+				var that = this
+				setTimeout(function() { // 加上延时会使页面看起来更流畅
+					document.body.scrollTop = document.body.scrollHeight;
+				}, 500)
+			},
+
+			ChooseVideo() {
 				if (this.stopSpeak == 1) return;
 				if (!this.checkStopSpeak()) return;
-				let v = {
-					txt: this.txt.replace(/\n/g, "<br/>"),
-					toGroupid: this.toid,
-					fromUid: this.user.id,
-					uuid: uuid(),
-				}
-				if (this.txt.trim() == "") {
-					return;
-				}
-
-				console.log(this.aite_map);
-				let aite = "";
-				for (var [key, value] of this.aite_map) {
-					if (this.txt.indexOf(key) >= 0) {
-						aite += (value + "#");
-					}
-				}
-				this.aite_map.clear();
-				v.aite = aite;
-				this.WEBSOCKET_SEND({
-					body: v,
-					CMD: MessageType.GROUP_CHAT_SEND_TXT
-				})
-				this.setChatMyLoadding(true);
-				this.sendBaseDo(v);
-
-				this.txt = "";
-				this.showjia = true;
-				this.sendCount = this.sendCount + 1;
-				setTimeout(function() {
-					_this.scrollToBottom();
-					_this.input_is_focus = true;
-				}, 300)
-			}, 100);
-		},
-		send2() { //个人发送
-			let _this = this;
-			setTimeout(() => {
-				if (this.isAltOrShiftEnter) return;
-				this.input_is_focus = false;
-				let v = {
-					txt: this.txt.replace(/\n/g, "<br/>"),
-					toUid: this.toid,
-					fromUid: this.user.id,
-					uuid: uuid(),
-				}
-				if (this.txt.trim() == "") {
-					return;
-				}
-				this.txt = "";
-				this.WEBSOCKET_SEND({
-					body: v,
-					CMD: MessageType.USER_CHAT_SEND_TXT
-				})
-				this.setChatMyLoadding(true);
-				this.sendBaseDo2(v);
-				this.showjia = true;
-				this.sendCount = this.sendCount + 1;
-				setTimeout(function() {
-					_this.scrollToBottom();
-					_this.input_is_focus = true;
-				}, 300)
-			}, 100)
-
-		},
-		sendEmotion(_a, _b) {
-			let _this = this;
-			if (this.stopSpeak == 1) return;
-			this.txt = this.txt + ("[f" + _a + "#" + _b + "]");
-			let f = ".gif";
-			if (_a == 1) f = ".png";
-			let img = this.$store.state.img_url + "/img/emotion/face" + (_a < 10 ? "0" + _a : _a) + "/" +
-				_b + f;
-			//this.temp_txt = this.temp_txt + ("<img  style='max-width: 100px;' class='face' src='"+img+"'>");
-			let s = "";
-			if (_a == 0) {
-				s = "<img  style='max-width: 24px;max-height:24px;' class='face face1' src='" + img + "'>";
-			} else if (_a == 1) {
-				s = "<img style='max-width: 100px;max-height:100px;' class='face face2' src='" + img +
-					"'>";
-			} else {
-				s = "<img  style='max-width: 150px;max-height:150px;' class='face face3' src='" + img +
-					"'>";
-			}
-
-			if (!this.temp_map.has("[f" + _a + "#" + _b + "]")) {
-				this.temp_map.set("[f" + _a + "#" + _b + "]", s)
-			}
-			this.showjia = false;
-		},
-		InputFocus(e) {
-			var that = this
-			setTimeout(function() { // 加上延时会使页面看起来更流畅
-				document.body.scrollTop = document.body.scrollHeight;
-			}, 500)
-		},
-		InputBlur(e) {
-			var that = this
-			setTimeout(function() { // 加上延时会使页面看起来更流畅
-				document.body.scrollTop = document.body.scrollHeight;
-			}, 500)
-		},
-
-		ChooseVideo() {
-			if (this.stopSpeak == 1) return;
-			if (!this.checkStopSpeak()) return;
-			let _this = this;
-			uni.chooseVideo({
-				sourceType: ['album', 'camera'],
-				success: (res) => {
-					//#ifdef H5
-					//大于15M。则报
-					if (res.tempFile.size > 1024 * 1024 * 15) {
-						uni.showToast({
-							icon: 'none',
-							title: "视频大小不能高于15M"
-						});
-						return;
-					}
-					//#endif
-					this.setChatMyLoadding(true);
-					let userToken = uni.getStorageSync("token")
-					setTimeout(() => {
-						_this.scrollTop = 99999999 + Math.random();
-					}, 100)
-					var uper = uni.uploadFile({
-						// 需要上传的地址
-						url: _this.reqUrl + '/user/file/uploadVideo',
-						header: {
-							["member-token"]: userToken,
-						},
-						// filePath  需要上传的文件
-						filePath: res.tempFilePath,
-						name: 'file',
-						success(res1) {
-							let json = eval("(" + res1.data + ")");
-							// 显示上传信息
-							if (json.code == 200) {
-								let v = {
-									txt: json.msg,
-									fromUid: _this.user.id,
-									uuid: uuid(),
-								};
-								let type = "";
-								if (this.isGroupChat) {
-									v.toGroupid = _this.toid
-									type = MessageType.GROUP_CHAT_SEND_TXT
-								} else {
-									v.toUid = _this.toid
-									type = MessageType.USER_CHAT_SEND_TXT
-								}
-								_this.WEBSOCKET_SEND({
-									body: v,
-									CMD: TYPE
-								})
-
-								let videoSrc = _this.imgUrl + json.msg;
-								_this.temp_txt = _this.temp_txt + (
-									"<video  style='max-width: 150px;max-height:150px;' class='face' src='" +
-									videoSrc + "'>");
-								v.psr = "video";
-								v.simple_content = "[视频]";
-								_this.sendBaseDo(v);
-								setTimeout(function() {
-									_this.scrollToBottom();
-								}, 100)
-							}
+				let _this = this;
+				uni.chooseVideo({
+					sourceType: ['album', 'camera'],
+					success: (res) => {
+						//#ifdef H5
+						//大于15M。则报
+						if (res.tempFile.size > 1024 * 1024 * 15) {
+							uni.showToast({
+								icon: 'none',
+								title: "视频大小不能高于15M"
+							});
+							return;
 						}
-					});
-				}
-			});
-		},
-		ChooseVideo2() { //个人选择视频
-			let _this = this;
-			uni.chooseVideo({
-				sourceType: ['album', 'camera'],
-				success: (res) => {
-					//#ifdef H5
-					//大于15M。则报
-					if (res.tempFile.size > 1024 * 1024 * 15) {
-						uni.showToast({
-							icon: 'none',
-							title: "视频大小不能高于15M"
-						});
-						return;
-					}
-					//#endif
-					this.setChatMyLoadding(true);
-					let userToken = uni.getStorageSync("token")
-
-					setTimeout(() => {
-						_this.scrollTop = 99999999 + Math.random();
-					}, 100)
-					var uper = uni.uploadFile({
-						// 需要上传的地址
-						url: _this.reqUrl + '/user/file/uploadVideo',
-						header: {
-							["member-token"]: userToken,
-						},
-						// filePath  需要上传的文件
-						filePath: res.tempFilePath,
-						name: 'file',
-						success(res1) {
-							let json = eval("(" + res1.data + ")");
-							// 显示上传信息
-							if (json.code == 200) {
-
-								let v = {
-									txt: json.msg,
-									fromUid: _this.user.id,
-									uuid: uuid(),
-								};
-								let type = ""
-								if (this.isGroupChat) {
-									v.toGroupid = _this.toid
-									type = MessageType.GROUP_CHAT_SEND_TXT
-								} else {
-									v.toUid = _this.toid
-									type = MessageType.USER_CHAT_SEND_TXT
-								}
-								_this.WEBSOCKET_SEND({
-									body: v,
-									CMD: TYPE
-								})
-
-								let videoSrc = _this.imgUrl + json.msg;
-								_this.temp_txt = _this.temp_txt + (
-									"<video  style='max-width: 150px;max-height:150px;' class='face' src='" +
-									videoSrc + "'>");
-								v.psr = "video";
-								v.simple_content = "[视频]";
-								_this.sendBaseDo2(v);
-								setTimeout(function() {
-									_this.scrollToBottom();
-								}, 100)
-							}
-						}
-					});
-				}
-			});
-		},
-
-		ChooseImage() {
-			if (this.stopSpeak == 1) return;
-			if (!this.checkStopSpeak()) return;
-			let _this = this;
-			uni.chooseImage({
-				count: 4, //默认9
-				sizeType: ['compressed'], //可以指定是原图还是压缩图，默认二者都有
-				sourceType: ['album', 'camera'], //从相册选择
-				success: (res) => {
-
-					//大于3M。则报
-					if (res.tempFiles[0].size > 1024 * 3072) {
-						uni.showToast({
-							icon: 'none',
-							title: "图片大小不能高于3M"
-						});
-						return;
-					}
-
-					let arrs = res.tempFilePaths;
-					this.setChatMyLoadding(true);
-					let userToken = uni.getStorageSync("token")
-					setTimeout(function() {
-						_this.scrollToBottom();
-					}, 100)
-					arrs.forEach(item => {
+						//#endif
+						this.setChatMyLoadding(true);
+						let userToken = uni.getStorageSync("token")
+						setTimeout(() => {
+							_this.scrollTop = 99999999 + Math.random();
+						}, 100)
 						var uper = uni.uploadFile({
 							// 需要上传的地址
-							url: _this.reqUrl +
-								'/user/file/upload',
+							url: _this.reqUrl + '/user/file/uploadVideo',
 							header: {
 								["member-token"]: userToken,
 							},
 							// filePath  需要上传的文件
-							filePath: item,
+							filePath: res.tempFilePath,
 							name: 'file',
 							success(res1) {
 								let json = eval("(" + res1.data + ")");
 								// 显示上传信息
 								if (json.code == 200) {
-
 									let v = {
 										txt: json.msg,
 										fromUid: _this.user.id,
@@ -2100,69 +1943,64 @@
 										body: v,
 										CMD: TYPE
 									})
-									let img = _this.imgUrl + json
-										.msg;
+
+									let videoSrc = _this.imgUrl + json.msg;
 									_this.temp_txt = _this.temp_txt + (
-										"<img  style='max-width: 150px;max-height:150px;' class='face' src='" +
-										img + "'>");
-									v.psr = "uparse";
-									v.simple_content = "[图片]";
+										"<video  style='max-width: 150px;max-height:150px;' class='face' src='" +
+										videoSrc + "'>");
+									v.psr = "video";
+									v.simple_content = "[视频]";
 									_this.sendBaseDo(v);
-
 									setTimeout(function() {
 										_this.scrollToBottom();
 									}, 100)
 								}
 							}
 						});
-					});
-				}
-			});
-		},
-		ChooseImage2() {
-			let _this = this;
-			uni.chooseImage({
-				count: 4, //默认9
-				sizeType: ['compressed'], //可以指定是原图还是压缩图，默认二者都有
-				sourceType: ['album', 'camera'], //从相册选择
-				success: (res) => {
-
-					//大于3M。则报
-					if (res.tempFiles[0].size > 1024 * 3072) {
-						uni.showToast({
-							icon: 'none',
-							title: "图片大小不能高于3M"
-						});
-						return;
 					}
+				});
+			},
+			ChooseVideo2() { //个人选择视频
+				let _this = this;
+				uni.chooseVideo({
+					sourceType: ['album', 'camera'],
+					success: (res) => {
+						//#ifdef H5
+						//大于15M。则报
+						if (res.tempFile.size > 1024 * 1024 * 15) {
+							uni.showToast({
+								icon: 'none',
+								title: "视频大小不能高于15M"
+							});
+							return;
+						}
+						//#endif
+						this.setChatMyLoadding(true);
+						let userToken = uni.getStorageSync("token")
 
-					let arrs = res.tempFilePaths;
-					this.setChatMyLoadding(true);
-					let userToken = uni.getStorageSync("token")
-					setTimeout(function() {
-						_this.scrollToBottom();
-					}, 100)
-					arrs.forEach(item => {
+						setTimeout(() => {
+							_this.scrollTop = 99999999 + Math.random();
+						}, 100)
 						var uper = uni.uploadFile({
 							// 需要上传的地址
-							url: _this.reqUrl +
-								'/user/file/upload',
+							url: _this.reqUrl + '/user/file/uploadVideo',
 							header: {
 								["member-token"]: userToken,
 							},
 							// filePath  需要上传的文件
-							filePath: item,
+							filePath: res.tempFilePath,
 							name: 'file',
 							success(res1) {
 								let json = eval("(" + res1.data + ")");
 								// 显示上传信息
 								if (json.code == 200) {
+
 									let v = {
 										txt: json.msg,
 										fromUid: _this.user.id,
 										uuid: uuid(),
 									};
-									let type = "";
+									let type = ""
 									if (this.isGroupChat) {
 										v.toGroupid = _this.toid
 										type = MessageType.GROUP_CHAT_SEND_TXT
@@ -2174,173 +2012,323 @@
 										body: v,
 										CMD: TYPE
 									})
-									let img = _this.imgUrl + json
-										.msg;
-									_this.temp_txt = _this.temp_txt + (
-										"<img  style='max-width: 150px;max-height:150px;' class='face' src='" +
-										img + "'>");
-									v.psr = "uparse";
-									v.simple_content = "[图片]";
-									_this.sendBaseDo2(v);
 
+									let videoSrc = _this.imgUrl + json.msg;
+									_this.temp_txt = _this.temp_txt + (
+										"<video  style='max-width: 150px;max-height:150px;' class='face' src='" +
+										videoSrc + "'>");
+									v.psr = "video";
+									v.simple_content = "[视频]";
+									_this.sendBaseDo2(v);
 									setTimeout(function() {
 										_this.scrollToBottom();
 									}, 100)
 								}
 							}
 						});
-					});
-				}
-			});
-		},
-		checkAuthorize() {
-			this.startRecord();
-		},
+					}
+				});
+			},
 
-		//录音开始UI效果
-		recordBegin(e) {
-			//this.recording = true;
-			//this.='  结束';
-			uni.showToast({
-				title: '正在录音',
-				image: '../../../static/luyin.png',
-				duration: 60000
-			});
-			this.recordLength = 0;
-			this.recordTimer = setInterval(() => {
-				this.recordLength++;
-			}, 1000)
-		},
-		//录音结束(回调文件)
-		recordEnd(e) {
-			let _this = this;
-			let user = uni.getStorageSync("USER");
+			ChooseImage() {
+				if (this.stopSpeak == 1) return;
+				if (!this.checkStopSpeak()) return;
+				let _this = this;
+				uni.chooseImage({
+					count: 4, //默认9
+					sizeType: ['compressed'], //可以指定是原图还是压缩图，默认二者都有
+					sourceType: ['album', 'camera'], //从相册选择
+					success: (res) => {
 
-			clearInterval(this.recordTimer);
+						//大于3M。则报
+						if (res.tempFiles[0].size > 1024 * 3072) {
+							uni.showToast({
+								icon: 'none',
+								title: "图片大小不能高于3M"
+							});
+							return;
+						}
 
-			uni.hideToast();
-			let msg = "";
-			let min = parseInt(this.recordLength / 60);
-			let sec = this.recordLength % 60;
-			min = min < 10 ? '0' + min : min;
-			sec = sec < 10 ? '0' + sec : sec;
-			msg = min + ':' + sec;
-			_this.voicePath = e.tempFilePath;
-			_this.Audio2dataURL(_this.voicePath, msg)
-			setTimeout(() => {
-				_this.scrollTop = 99999999 + Math.random();
-			}, 100)
-		},
-		startRecord() {
-			uni.showToast({
-				title: '正在录音',
-				image: '../../../static/luyin.png',
-				duration: 60000
-			});
-			this.RECORDER.start({
-				format: 'mp3'
-			});
-
-		},
-		videoChangeFC(e) {
-			if (!e.detail.fullScreen) {
-				this.showVideo = false;
-				this.videoSrc = "";
-			}
-		},
-		clickVideo(_vpath) {
-			uni.navigateTo({
-				url: "/pages/custom/myVideo?item=" + _vpath
-			})
-		},
-		clickVoice(_vpath, _index) {
-			let _this = this;
-			if (this.selVoiceIndex == _index) {
-				this.selVoiceIndex = -1;
-				if (this.player) {
-					this.player.stop();
-				}
-				return;
-			}
-			var src = _this.imgUrl + _vpath;
-			this.selVoiceIndex = _index;
-			//this.voicePath = _vpath;
-			this.player = uni.createInnerAudioContext();
-			this.player.src = src; //音频地址
-			this.player.onEnded(() => {
-				_this.selVoiceIndex = -1;
-			});
-			this.player.onStop(() => {
-				_this.selVoiceIndex = -1;
-			});
-
-			this.player.play();
-		},
-		scrollToBottom: function() {
-			let _this = this;
-			// 等待dom渲染完成后再执行滚动到页面底部，不然dom没渲染这个是无效的。
-			this.$nextTick(function() {
-				// 滚动至页面底部
-				if (_this.$refs["chatVew"]) {
-					setTimeout(() => {
-						_this.scrollTop = 9999999 + Math.random();
-					}, 50)
-				} else {
-					setTimeout(() => {
-						_this.scrollToBottom();
-					}, 100);
-
-				}
-			})
-
-		},
-		getMotionImg(index) {
-			let post = index == 1 ? 'png' : 'gif';
-			return '../../static/emotion/face0' + index + '/face-lbl.' + post;
-		},
-		/**
-		 * 录音语音文件转base64字符串
-		 * @param {Object} path
-		 */
-		Audio2dataURL(path, timeStr) {
-			let _this = this;
-			let user = uni.getStorageSync("USER");
-			let userToken = uni.getStorageSync("token")
-			var uper = uni.uploadFile({
-				// 需要上传的地址
-				url: _this.reqUrl + '/user/file/uploadVoice',
-				header: {
-					["member-token"]: userToken,
-				},
-				// filePath  需要上传的文件
-				filePath: path,
-				name: 'file',
-				success(res1) {
-					let json = eval("(" + res1.data + ")");
-					// 显示上传信息
-					if (json.code == 200) {
-						// 显示上传信息
-						console.log(json.msg);
-						if (json.code == 200) {
-							_this.WEBSOCKET_SEND({
-								body: {
-									txt: json.msg,
-									toGroupid: _this.toid,
-									fromUid: _this.user.id,
-									sub_txt: timeStr,
-									uuid: uuid(),
+						let arrs = res.tempFilePaths;
+						this.setChatMyLoadding(true);
+						let userToken = uni.getStorageSync("token")
+						setTimeout(function() {
+							_this.scrollToBottom();
+						}, 100)
+						arrs.forEach(item => {
+							var uper = uni.uploadFile({
+								// 需要上传的地址
+								url: _this.reqUrl +
+									'/user/file/upload',
+								header: {
+									["member-token"]: userToken,
 								},
-								CMD: MessageType.GROUP_CHAT_SEND_VOICE
-							})
-							setTimeout(function() {
-								_this.scrollToBottom();
-							}, 100)
+								// filePath  需要上传的文件
+								filePath: item,
+								name: 'file',
+								success(res1) {
+									let json = eval("(" + res1.data + ")");
+									// 显示上传信息
+									if (json.code == 200) {
+
+										let v = {
+											txt: json.msg,
+											fromUid: _this.user.id,
+											uuid: uuid(),
+										};
+										let type = "";
+										if (this.isGroupChat) {
+											v.toGroupid = _this.toid
+											type = MessageType.GROUP_CHAT_SEND_TXT
+										} else {
+											v.toUid = _this.toid
+											type = MessageType.USER_CHAT_SEND_TXT
+										}
+										_this.WEBSOCKET_SEND({
+											body: v,
+											CMD: TYPE
+										})
+										let img = _this.imgUrl + json
+											.msg;
+										_this.temp_txt = _this.temp_txt + (
+											"<img  style='max-width: 150px;max-height:150px;' class='face' src='" +
+											img + "'>");
+										v.psr = "uparse";
+										v.simple_content = "[图片]";
+										_this.sendBaseDo(v);
+
+										setTimeout(function() {
+											_this.scrollToBottom();
+										}, 100)
+									}
+								}
+							});
+						});
+					}
+				});
+			},
+			ChooseImage2() {
+				let _this = this;
+				uni.chooseImage({
+					count: 4, //默认9
+					sizeType: ['compressed'], //可以指定是原图还是压缩图，默认二者都有
+					sourceType: ['album', 'camera'], //从相册选择
+					success: (res) => {
+
+						//大于3M。则报
+						if (res.tempFiles[0].size > 1024 * 3072) {
+							uni.showToast({
+								icon: 'none',
+								title: "图片大小不能高于3M"
+							});
+							return;
+						}
+
+						let arrs = res.tempFilePaths;
+						this.setChatMyLoadding(true);
+						let userToken = uni.getStorageSync("token")
+						setTimeout(function() {
+							_this.scrollToBottom();
+						}, 100)
+						arrs.forEach(item => {
+							var uper = uni.uploadFile({
+								// 需要上传的地址
+								url: _this.reqUrl +
+									'/user/file/upload',
+								header: {
+									["member-token"]: userToken,
+								},
+								// filePath  需要上传的文件
+								filePath: item,
+								name: 'file',
+								success(res1) {
+									let json = eval("(" + res1.data + ")");
+									// 显示上传信息
+									if (json.code == 200) {
+										let v = {
+											txt: json.msg,
+											fromUid: _this.user.id,
+											uuid: uuid(),
+										};
+										let type = "";
+										if (this.isGroupChat) {
+											v.toGroupid = _this.toid
+											type = MessageType.GROUP_CHAT_SEND_TXT
+										} else {
+											v.toUid = _this.toid
+											type = MessageType.USER_CHAT_SEND_TXT
+										}
+										_this.WEBSOCKET_SEND({
+											body: v,
+											CMD: TYPE
+										})
+										let img = _this.imgUrl + json
+											.msg;
+										_this.temp_txt = _this.temp_txt + (
+											"<img  style='max-width: 150px;max-height:150px;' class='face' src='" +
+											img + "'>");
+										v.psr = "uparse";
+										v.simple_content = "[图片]";
+										_this.sendBaseDo2(v);
+
+										setTimeout(function() {
+											_this.scrollToBottom();
+										}, 100)
+									}
+								}
+							});
+						});
+					}
+				});
+			},
+			checkAuthorize() {
+				this.startRecord();
+			},
+
+			//录音开始UI效果
+			recordBegin(e) {
+				//this.recording = true;
+				//this.='  结束';
+				uni.showToast({
+					title: '正在录音',
+					image: '../../../static/luyin.png',
+					duration: 60000
+				});
+				this.recordLength = 0;
+				this.recordTimer = setInterval(() => {
+					this.recordLength++;
+				}, 1000)
+			},
+			//录音结束(回调文件)
+			recordEnd(e) {
+				let _this = this;
+				let user = uni.getStorageSync("USER");
+
+				clearInterval(this.recordTimer);
+
+				uni.hideToast();
+				let msg = "";
+				let min = parseInt(this.recordLength / 60);
+				let sec = this.recordLength % 60;
+				min = min < 10 ? '0' + min : min;
+				sec = sec < 10 ? '0' + sec : sec;
+				msg = min + ':' + sec;
+				_this.voicePath = e.tempFilePath;
+				_this.Audio2dataURL(_this.voicePath, msg)
+				setTimeout(() => {
+					_this.scrollTop = 99999999 + Math.random();
+				}, 100)
+			},
+			startRecord() {
+				uni.showToast({
+					title: '正在录音',
+					image: '../../../static/luyin.png',
+					duration: 60000
+				});
+				this.RECORDER.start({
+					format: 'mp3'
+				});
+
+			},
+			videoChangeFC(e) {
+				if (!e.detail.fullScreen) {
+					this.showVideo = false;
+					this.videoSrc = "";
+				}
+			},
+			clickVideo(_vpath) {
+				uni.navigateTo({
+					url: "/pages/custom/myVideo?item=" + _vpath
+				})
+			},
+			clickVoice(_vpath, _index) {
+				let _this = this;
+				if (this.selVoiceIndex == _index) {
+					this.selVoiceIndex = -1;
+					if (this.player) {
+						this.player.stop();
+					}
+					return;
+				}
+				var src = _this.imgUrl + _vpath;
+				this.selVoiceIndex = _index;
+				//this.voicePath = _vpath;
+				this.player = uni.createInnerAudioContext();
+				this.player.src = src; //音频地址
+				this.player.onEnded(() => {
+					_this.selVoiceIndex = -1;
+				});
+				this.player.onStop(() => {
+					_this.selVoiceIndex = -1;
+				});
+
+				this.player.play();
+			},
+			scrollToBottom: function() {
+				let _this = this;
+				// 等待dom渲染完成后再执行滚动到页面底部，不然dom没渲染这个是无效的。
+				this.$nextTick(function() {
+					// 滚动至页面底部
+					if (_this.$refs["chatVew"]) {
+						setTimeout(() => {
+							_this.scrollTop = 9999999 + Math.random();
+						}, 50)
+					} else {
+						setTimeout(() => {
+							_this.scrollToBottom();
+						}, 100);
+
+					}
+				})
+
+			},
+			getMotionImg(index) {
+				let post = index == 1 ? 'png' : 'gif';
+				return '../../static/emotion/face0' + index + '/face-lbl.' + post;
+			},
+			/**
+			 * 录音语音文件转base64字符串
+			 * @param {Object} path
+			 */
+			Audio2dataURL(path, timeStr) {
+				let _this = this;
+				let user = uni.getStorageSync("USER");
+				let userToken = uni.getStorageSync("token")
+				var uper = uni.uploadFile({
+					// 需要上传的地址
+					url: _this.reqUrl + '/user/file/uploadVoice',
+					header: {
+						["member-token"]: userToken,
+					},
+					// filePath  需要上传的文件
+					filePath: path,
+					name: 'file',
+					success(res1) {
+						let json = eval("(" + res1.data + ")");
+						// 显示上传信息
+						if (json.code == 200) {
+							// 显示上传信息
+							console.log(json.msg);
+							if (json.code == 200) {
+								_this.WEBSOCKET_SEND({
+									body: {
+										txt: json.msg,
+										toGroupid: _this.toid,
+										fromUid: _this.user.id,
+										sub_txt: timeStr,
+										uuid: uuid(),
+									},
+									CMD: MessageType.GROUP_CHAT_SEND_VOICE
+								})
+								setTimeout(function() {
+									_this.scrollToBottom();
+								}, 100)
+							}
 						}
 					}
-				}
-			});
-		},
-	}
+				});
+			},
+		}
 	}
 </script>
 
