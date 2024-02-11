@@ -100,23 +100,24 @@ export default {
 			}).then((res) => {
 				let res_data = eval(res.data);
 				if (res_data.code == 200) {
-					commit("setUser", res_data.body);
-					commit("setUserToken", res_data.token);
-					uni.setStorageSync("USER", res_data.body);
-					uni.setStorageSync("token", res_data.token);
-					commit(
-						"setUnDoFriendAddCount",
-						res_data.body.unDoFriendAddCount
-					);
-					commit(
-						"setUnDoRoomAddCount",
-						res_data.body.unDoRoomAddCount
-					);
+					// 注册成功需要登录，所以这里不需要存用户信息
+					// commit("setUser", res_data.body);
+					// commit("setUserToken", res_data.token);
+					// uni.setStorageSync("USER", res_data.body);
+					// uni.setStorageSync("token", res_data.token);
+					// commit(
+					// 	"setUnDoFriendAddCount",
+					// 	res_data.body.unDoFriendAddCount
+					// );
+					// commit(
+					// 	"setUnDoRoomAddCount",
+					// 	res_data.body.unDoRoomAddCount
+					// );
 					//生成websocket id和当前用户对应上
 					random32String(res_data.body.id)
-					dispatch("socket/" + SocketType.WEBSOCKET_INIT, null, {
-						root: true
-					});
+					// dispatch("socket/" + SocketType.WEBSOCKET_INIT, null, {
+					// 	root: true
+					// });
 					// 保存clientid到服务器，最好延迟一下获取信息否则有时会获取不到
 					// #ifdef APP-PLUS
 					setTimeout(function() {
@@ -129,19 +130,19 @@ export default {
 							userRole: "用户角色",
 							uid: res_data.body.id,
 						};
-						dispatch("socket/" + SocketType.WEBSOCKET_SEND, {
-							body: pushUser,
-							CMD: MessageType.APP_PUSH_USER_INFO
-						}, {
-							root: true
-						});
+						// dispatch("socket/" + SocketType.WEBSOCKET_SEND, {
+						// 	body: pushUser,
+						// 	CMD: MessageType.APP_PUSH_USER_INFO
+						// }, {
+						// 	root: true
+						// });
 
 					}, 1000);
 					// #endif
-					dispatch("isEmployeeAction");
-					dispatch("chat/listPageAction", null, {
-						root: true,
-					});
+					// dispatch("isEmployeeAction");
+					// dispatch("chat/listPageAction", null, {
+					// 	root: true,
+					// });
 					resolve(res_data);
 				} else {
 					reject(res_data);

@@ -182,8 +182,11 @@
 				}).then(res => {
 					_this.isRotate = false;
 					if (res.code == 200) {
+						uni.showToast({
+							title:"注册成功,请登录！"
+						})
 						uni.navigateTo({
-							url: "/pages/index/index",
+							url: "/pages/login/login",
 						});
 					} else {
 						uni.showToast({
