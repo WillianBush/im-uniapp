@@ -9,7 +9,7 @@ import {
 let TAG = "SOCKET-ACTION";
 let wsOpenDo = true;
 let heartCheck;
-let wsUrl = "ws://180.178.43.202:9998/ws";
+let wsUrl = "wss://180.178.43.202:9998/ws";
 
 export default {
 	WEBSOCKET_INIT({
@@ -42,11 +42,13 @@ export default {
 			state.socketTask.close();
 		}
 		// var i = Math.floor(Math.random() * rootState.reqUrl.length);
-		console.log("====osName", rootState.app.reqUrl)
+		console.log("====reqUrl", rootState.app.reqUrl)
+		console.log("====wsUrl", rootState.app.socketUrl)
+		let ws = rootState.app.socketUrl[0] +"/ws"
 		// let websocket_id = uni.getStorageSync("websocket_id");
 		Log.d(TAG, "WEBSOCKET_INIT", rootState.user);
 		commit("setSocketTask", uni.connectSocket({
-			url: wsUrl,
+			url: ws,
 			// 【非常重要】必须确保你的服务器是成功的,如果是手机测试千万别使用ws://127.0.0.1:9099【特别容易犯的错误】
 			success(data) {
 				commit("setLock", false);

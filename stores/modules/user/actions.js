@@ -100,24 +100,23 @@ export default {
 			}).then((res) => {
 				let res_data = eval(res.data);
 				if (res_data.code == 200) {
-					// 注册成功需要登录，所以这里不需要存用户信息
-					// commit("setUser", res_data.body);
-					// commit("setUserToken", res_data.token);
-					// uni.setStorageSync("USER", res_data.body);
-					// uni.setStorageSync("token", res_data.token);
-					// commit(
-					// 	"setUnDoFriendAddCount",
-					// 	res_data.body.unDoFriendAddCount
-					// );
-					// commit(
-					// 	"setUnDoRoomAddCount",
-					// 	res_data.body.unDoRoomAddCount
-					// );
+					commit("setUser", res_data.body);
+					commit("setUserToken", res_data.token);
+					uni.setStorageSync("USER", res_data.body);
+					uni.setStorageSync("token", res_data.token);
+					commit(
+						"setUnDoFriendAddCount",
+						res_data.body.unDoFriendAddCount
+					);
+					commit(
+						"setUnDoRoomAddCount",
+						res_data.body.unDoRoomAddCount
+					);
 					//生成websocket id和当前用户对应上
 					random32String(res_data.body.id)
-					// dispatch("socket/" + SocketType.WEBSOCKET_INIT, null, {
-					// 	root: true
-					// });
+					dispatch("socket/" + SocketType.WEBSOCKET_INIT, null, {
+						root: true
+					});
 					// 保存clientid到服务器，最好延迟一下获取信息否则有时会获取不到
 					// #ifdef APP-PLUS
 					setTimeout(function() {
@@ -130,19 +129,19 @@ export default {
 							userRole: "用户角色",
 							uid: res_data.body.id,
 						};
-						// dispatch("socket/" + SocketType.WEBSOCKET_SEND, {
-						// 	body: pushUser,
-						// 	CMD: MessageType.APP_PUSH_USER_INFO
-						// }, {
-						// 	root: true
-						// });
+						dispatch("socket/" + SocketType.WEBSOCKET_SEND, {
+							body: pushUser,
+							CMD: MessageType.APP_PUSH_USER_INFO
+						}, {
+							root: true
+						});
 
 					}, 1000);
 					// #endif
-					// dispatch("isEmployeeAction");
-					// dispatch("chat/listPageAction", null, {
-					// 	root: true,
-					// });
+					dispatch("isEmployeeAction");
+					dispatch("chat/listPageAction", null, {
+						root: true,
+					});
 					resolve(res_data);
 				} else {
 					reject(res_data);
@@ -166,41 +165,43 @@ export default {
 			}).then((res) => {
 				let res_data = eval(res.data);
 				if (res_data.code == 200) {
-					commit("setUser", res_data.body);
-					uni.setStorageSync("USER", res_data.body);
-					uni.setStorageSync("token", res_data.token);
-					commit("setUserToken", res_data.token);
+					// 注册成功需要登录，所以这里不需要存用户信息
 					
-					commit(
-						"setUnDoRoomAddCount",
-						res_data.body.unDoRoomAddCount
-					);
-					commit(
-						"setUnDoFriendAddCount",
-						res_data.body.unDoFriendAddCount
-					);
-					dispatch("socket/" + SocketType.WEBSOCKET_INIT, null, {
-						root: true
-					});
+					// commit("setUser", res_data.body);
+					// uni.setStorageSync("USER", res_data.body);
+					// uni.setStorageSync("token", res_data.token);
+					// commit("setUserToken", res_data.token);
+					
+					// commit(
+					// 	"setUnDoRoomAddCount",
+					// 	res_data.body.unDoRoomAddCount
+					// );
+					// commit(
+					// 	"setUnDoFriendAddCount",
+					// 	res_data.body.unDoFriendAddCount
+					// );
+					// dispatch("socket/" + SocketType.WEBSOCKET_INIT, null, {
+					// 	root: true
+					// });
 					// 保存clientid到服务器，最好延迟一下获取信息否则有时会获取不到
 					// #ifdef APP-PLUS
-					setTimeout(function() {
-						const clientInfo = plus.push.getClientInfo();
-						let pushUser = {
-							clientid: clientInfo.clientid,
-							appid: clientInfo.appid,
-							appkey: clientInfo.appkey,
-							userName: "用户名",
-							userRole: "用户角色",
-							uid: res_data.body.id,
-						};
-						dispatch("socket/" + SocketType.WEBSOCKET_SEND, {
-							body: pushUser,
-							CMD: MessageType.APP_PUSH_USER_INFO
-						}, {
-							root: true
-						});
-					}, 10000);
+					// setTimeout(function() {
+					// 	const clientInfo = plus.push.getClientInfo();
+					// 	let pushUser = {
+					// 		clientid: clientInfo.clientid,
+					// 		appid: clientInfo.appid,
+					// 		appkey: clientInfo.appkey,
+					// 		userName: "用户名",
+					// 		userRole: "用户角色",
+					// 		uid: res_data.body.id,
+					// 	};
+					// 	dispatch("socket/" + SocketType.WEBSOCKET_SEND, {
+					// 		body: pushUser,
+					// 		CMD: MessageType.APP_PUSH_USER_INFO
+					// 	}, {
+					// 		root: true
+					// 	});
+					// }, 10000);
 					// #endif
 					resolve(res_data);
 				} else {
