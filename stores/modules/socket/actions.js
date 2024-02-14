@@ -46,7 +46,7 @@ export default {
 		console.log("====wsurl", rootState.app.socketUrl)
 		// let websocket_id = uni.getStorageSync("websocket_id");
 		Log.d(TAG, "WEBSOCKET_INIT", rootState.user);
-		let ws = rootState.app.socketUrl[0] +"/ws"
+		let ws = rootState.app.socketUrl[0]
 		commit("setSocketTask", uni.connectSocket({
 			url: ws,
 			// 【非常重要】必须确保你的服务器是成功的,如果是手机测试千万别使用ws://127.0.0.1:9099【特别容易犯的错误】
