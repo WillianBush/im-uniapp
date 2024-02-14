@@ -44,7 +44,7 @@ export default {
 		// var i = Math.floor(Math.random() * rootState.reqUrl.length);
 		console.log("====reqUrl", rootState.app.reqUrl)
 		console.log("====wsUrl", rootState.app.socketUrl)
-		let ws = rootState.app.socketUrl[0] +"/ws"
+		let ws = rootState.app.socketUrl[0]
 		// let websocket_id = uni.getStorageSync("websocket_id");
 		Log.d(TAG, "WEBSOCKET_INIT", rootState.user);
 		commit("setSocketTask", uni.connectSocket({
