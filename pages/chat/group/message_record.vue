@@ -357,11 +357,11 @@
 
 						}, 400);
 					} else if (res_data.code == 200) {
-						if (res_data.body && res_data.body.records.length != 0) {
+						if (res_data.body && res_data.body.list.length != 0) {
 
 							let cList = [];
-							for (let i = 0; i < res_data.body.records.length; i++) { //从[0]中取出
-								cList.push(res_data.body.records[i][0])
+							for (let i = 0; i < res_data.body.list.length; i++) { //从[0]中取出
+								cList.push(res_data.body.list[i][0])
 							} //遍历
 							_this.syncMessageArr.unshift.apply(_this.syncMessageArr, cList)
 							let user = uni.getStorageSync("USER");
@@ -386,14 +386,14 @@
 						}
 						_this.pageParams = res_data.body
 						if (_this.pageParams.pageNumber > 1) {
-							for (let i = 0; i < res_data.body.records.length; i++) { //从[0]中取出
-								res_data.body.records[i] = res_data.body.records[i][0].bean
+							for (let i = 0; i < res_data.body.list.length; i++) { //从[0]中取出
+								res_data.body.list[i] = res_data.body.list[i][0].bean
 							} //遍历拿出数组bean
-							_this.chatLogs = _this.chatLogs.concat(res_data.body.records);
+							_this.chatLogs = _this.chatLogs.concat(res_data.body.list);
 							uni.hideLoading();
 						} else {
 							uni.hideLoading();
-							_this.chatLogs = res_data.body.records
+							_this.chatLogs = res_data.body.list
 						}
 						for (let i = 0; i < _this.chatLogs.length; i++) { //从[0]中取出
 							_this.chatLogs[i] = _this.chatLogs[i][0].bean

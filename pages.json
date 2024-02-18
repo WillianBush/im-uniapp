@@ -58,7 +58,7 @@
 		,{
 		    "path" : "pages/chat/user/message_record",
 		    "style" : {
-				"enablePullDownRefresh":true
+			// 	"enablePullDownRefresh":true
 			}
 		}
         ,{

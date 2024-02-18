@@ -1,5 +1,4 @@
 <template>
-	<!-- <view style="background: red;height: 100%;" > -->
 	<view ref="topVew"
 		:style="chatCfg.chatBackgroundImage&&chatCfg.chatBackgroundImage!=''?'background-image: url('+imgUrl+chatCfg.chatBackgroundImage+')':''"
 		style="background-size: 100%;min-height: 100vh;">
@@ -7,25 +6,24 @@
 			<block slot="backText"></block>
 			<block slot="content">
 				<view class="topname">
-					<text class="topname-showname">{{showname}} <text
-							v-if="chatCfg.showUserOnline==1">{{entity.online==0?' (オフライン)':' (オンライン)'}}</text>
+					<text class="topname-showname">{{showNameStr}} <text style="margin-left: 2upx;"
+							v-if="chatCfg.showUserOnline==1">{{entity.online==0?' (离线)':' (在线)'}}</text>
 					</text>
-					<text v-show="temp.inputIng" style="font-size: 26upx;margin-left:10upx;">-
-						タイピング...</text>
-					<text v-show="toIP" style="font-size: 14upx; color: #FFCC99; margin-left:10upx;">{{toIP}}</text>
+					<text v-if="temp.inputIng" style="font-size: 26upx;">正在输入中...</text>
+					<text v-show="toIP" style="font-size: 26upx; color: #FFCC99; margin-left:2upx;">{{toIP}}</text>
 				</view>
 			</block>
 			<block slot="right">
-				<view>
+				<view style="display: flex;flex-direction: row;align-items: center;">
 					<image @click="justRefresh" style="float:left;width:60rpx;height:60rpx;margin-right:10px"
 						src="/static/tabbar/synchronize.png"></image>
 					<uni-text @tap="goMgr(entity.id)" style="font-size: 22px;color: #fff;margin-right: 14px;"
 						class="lg text-gray cuIcon-more">
-						<span></span></uni-text>
+						</uni-text>
 				</view>
 			</block>
 		</cu-custom>
-		<scroll-view @scroll="scrollFn" :scroll-top="scrollTop" scroll-y="true" ref="chatVew" @tap="clickChat()"
+		<scroll-view @scroll="scrollFn" :scroll-top="scrollTop" :scroll-y="true" ref="chatVew" @tap="clickChat()"
 			class="cu-chat" :style="'height: calc(100vh - '+CustomBar+'px - '+(120+InputBottom)+'upx)'">
 			<block v-for="(item,index) in curChatMsgList">
 				<block v-if="item.opt&&item.opt=='undo'">
@@ -112,21 +110,29 @@
 					<!--自己发出的-->
 					<view v-if="item.bean.fromUid==user.id" class="cu-item self">
 						<view class="main">
-
 							<block v-if="WAIT_SEND_MSG.indexOf(item.bean.uuid)<0">
 								<block v-if="chatCfg.showUserMsgReadStatus==1">
 									<view v-if="item.bean.read==1&&chatCfg.showUserMsgReadStatus==1"
 										style="margin-right:30upx;color: #999;font-size: 24upx;">已读</view>
 								</block>
 							</block>
+
+							<!-- 消息发送失败...-->
 							<view v-else class="action text-grey">
-								<text class="cuIcon-warnfill text-red text-xxl"></text>
+								<text class="cuIcon-warnfill text-red text-sl"></text>
 							</view>
+
+							<!-- 消息发送中...-->
+							<view v-if="item.bean.read == 0 && !item.uuid">
+								<text class="iconfont cu-load load-cuIcon loading text-xxxl"
+									style="color: #ddd;"></text>
+							</view>
+
 							<view v-if="item.bean.psr!='video'" @longtap="onLongPress($event,item.bean)"
 								:class="[item.bean.psr=='uparse'?'':'content bg-green shadow']"
 								:style="{backgroundColor:item.bean.psr=='uparse'? 'none':'#fff'}" style="color:#222;">
-								<u-parse v-if="item.bean.psr=='uparse'" :content="item.bean.txt" @preview="preview"
-									@navigate="navigate"></u-parse>
+								<u-parse v-if="item.bean.psr=='uparse'" :content="transMessage(item.bean.txt)"
+									@preview="preview" @navigate="navigate"></u-parse>
 								<view @tap="clickVoice(item.bean.txt,index)" v-else-if="item.bean.psr=='voice'">
 									<text v-show="selVoiceIndex != index"
 										style="text-align: right; float:right;width:100upx;font-size: 52upx;position: relative;top: 4upx;"
@@ -139,7 +145,8 @@
 									<text v-show="selVoiceIndex == index"
 										style="float:right;font-size: 26upx;position: relative;top: 6upx;">{{item.bean.sub_txt}}"</text>
 								</view>
-								<rich-text style="max-width:440upx" v-else :nodes="item.bean.txt"></rich-text>
+								<rich-text style="max-width:440upx" v-else
+									:nodes="transMessage(item.bean.txt)"></rich-text>
 							</view>
 						</view>
 						<view v-if="item.bean.psr!='video'" class="cu-avatar radius"
@@ -154,10 +161,10 @@
 						<view class="main">
 							<view @longtap="onLongPress($event,item.bean)"
 								:class="[item.bean.psr=='uparse'?'':'content shadow']" style="color:#222;">
-								<u-parse v-if="item.bean.psr=='video'" :content="item.bean.txt" @preview="preview"
-									@navigate="navigate"></u-parse>
-								<u-parse v-else-if="item.bean.psr=='uparse'" :content="item.bean.txt" @preview="preview"
-									@navigate="navigate"></u-parse>
+								<u-parse v-if="item.bean.psr=='video'" :content="transMessage(item.bean.txt)"
+									@preview="preview" @navigate="navigate"></u-parse>
+								<u-parse v-else-if="item.bean.psr=='uparse'" :content="transMessage(item.bean.txt)"
+									@preview="preview" @navigate="navigate"></u-parse>
 								<view @tap="clickVoice(item.bean.txt,index)" v-else-if="item.bean.psr=='voice'">
 									<text v-show="selVoiceIndex != index"
 										style="text-align: right; float:right;width:100upx;font-size: 52upx;position: relative;top: 4upx;"
@@ -170,7 +177,8 @@
 									<text v-show="selVoiceIndex == index"
 										style="float:right;font-size: 26upx;position: relative;top: 6upx;">{{item.bean.sub_txt}}"</text>
 								</view>
-								<rich-text style="max-width:440upx" v-else :nodes="item.bean.txt"></rich-text>
+								<rich-text style="max-width:440upx" v-else
+									:nodes="transMessage(item.bean.txt)"></rich-text>
 							</view>
 						</view>
 						<view class="date "> {{item.bean.date}}</view>
@@ -189,6 +197,10 @@
 							</block>
 							<view v-else class="action text-grey">
 								<text class="cuIcon-warnfill text-red text-xxl"></text>
+							</view>
+							<view v-if="item.bean.read == 0 && !item.uuid">
+								<text class="iconfont cu-load load-cuIcon loading text-xxxl"
+									style="color: #ddd;"></text>
 							</view>
 							<view v-if="item.bean.psr!='video'" @longpress="onLongPress($event,item.bean)"
 								:class="[item.bean.psr=='uparse'?'':'content bg-green shadow']"
@@ -256,18 +268,13 @@
 					</view>
 					<!--#endif-->
 				</block>
-
-
 			</block>
-
 			<view class="cu-item self" v-show="chatMyLoadding">
 				<view class="main">
 					<view style="background-color: #F1F1F1;" class="cu-load load-cuIcon loading"></view>
 				</view>
 				<view class="cu-avatar radius" :style="'background-image:url('+getHeadPic(user.headpic)+');'"></view>
 			</view>
-
-
 		</scroll-view>
 		<view style="position:absolute;bottom:50px;width:100%;text-align:center">
 			<image @click="deduplication()" style="width:80rpx;height:80rpx;" src="/static/tabbar/bottom.png"></image>
@@ -310,7 +317,7 @@
 			style="box-shadow: none;-webkit-box-shadow: none;display: block;background: #fff;height:330upx;margin-bottom:80upx;">
 			<scroll-view scroll-y class="indexes" style="height:330upx;padding-bottom:20upx;padding-top: 10upx;"
 				:scroll-with-animation="true" :enable-back-to-top="true">
-				<view v-if="emotion <=1">
+				<view v-if="emotion <1">
 					<view v-for="(ele,i) in 14" :key="i" style="display: flex;">
 						<view v-for="(ele1,item) in 8" :key="item" @tap="sendEmotion(0,i*8 +item)"
 							style="flex:1;text-align: center;">
@@ -320,8 +327,18 @@
 						</view>
 					</view>
 				</view>
+				<view v-else-if="emotion == 1">
+					<view v-for="(ele,i) in 5" :key="i" style="display: flex;">
+						<view v-for="(ele1,item) in 3" :key="item" @tap="sendEmotion(1,i*3 +item)"
+							style="flex:1;text-align: center;">
+							<image lazy-load v-if="(i*3) +item <=9"
+								:src="'../../../static/emotion/face0'+emotion+'/'+(i*3 +item)+ '.gif'"
+								style="width:200upx;height:200upx;margin-top: 10upx;"></image>
+						</view>
+					</view>
+				</view>
 				<view v-else>
-					<view v-for="(ele,i) in 4" :key="i" style="display: flex;">
+					<view v-for="(ele,i) in 5" :key="i" style="display: flex;">
 						<view v-for="(ele1,item) in 6" :key="item" @tap="sendEmotion(emotion,i*5 +item)"
 							style="flex:1;text-align: center;">
 							<image v-show="(i*5 +item)<=15" lazy-load
@@ -333,10 +350,9 @@
 			</scroll-view>
 			<view
 				style="width:100%;height:80upx;background: #f6f6f6;border-top:1px solid #eee;bottom:0;position: fixed;display: flex;">
-				<view v-for="(item,index) in 6" :key="item" @tap="showEmotion(index)"
+				<view v-for="(item,index) in 7" :key="item" @tap="showEmotion(index)"
 					:style="emotion==index?'background: #fff;':''" style="flex:1;height:100%;text-align: center;">
-					<image lazy-load
-						:src="'../../../static/emotion/face0'+index+'/face-lbl.'+(index ==  1 ? 'png':'gif')"
+					<image lazy-load :src="'../../../static/emotion/face0'+index+'/face-lbl.gif'"
 						style="width:50upx;height:50upx;margin-top: 10upx;;"></image>
 				</view>
 			</view>
@@ -391,9 +407,7 @@
 
 <script>
 	import uParse from '@/components/u-parse/u-parse.vue'
-	//const recorderManager = uni.getRecorderManager();
 	const innerAudioContext = uni.createInnerAudioContext();
-	//innerAudioContext.autoplay = true;
 	import {
 		mapState,
 		mapActions,
@@ -413,7 +427,10 @@
 	import {
 		dateFormat,
 		uniqueArr,
-		uuid
+		uuid,
+		parseEmotion,
+		showToast,
+		getHeadPic
 	} from '../../../common/utils';
 	import {
 		MessageType
@@ -441,35 +458,22 @@
 				temp_txt: "",
 				temp_map: new Map(),
 				showjia: true,
-				emotion: 1,
+				emotion: 0,
 				showItem: 0,
 				scrollTop: 0,
-				style: {
-					pageHeight: 0,
-					contentViewHeight: 0,
-					footViewHeight: 90,
-					mitemHeight: 0
-				},
-				sendCount: 0, //这里为了。第一次发送需要延迟拉下拉
-
-				// RECORDER:uni.getRecorderManager(),
 				RECORDER: '',
 				AUDIO: uni.createInnerAudioContext(),
 				recordTimer: null,
 				recordLength: 0,
 				pageParams: {
-					pageNumber: '1',
+					pageNumber: 1,
 					pageCount: '30',
 				},
 				voicePath: "",
-				isRecord: false, // 记录状态,录音中或者是未开始
-				intervalTime: 0,
 				timer: null,
-				v_base64: "",
 				/* 窗口尺寸 */
 				winSize: {},
 				/* 显示遮罩 */
-				chatLogs: [],
 				syncMessageArr: [],
 				showShade: false,
 				/* 显示操作弹窗 */
@@ -477,9 +481,6 @@
 				/* 弹窗按钮列表 */
 				popButton: ["复制", "转发", "收藏", "删除", "撤消"],
 				popButtonStore: ["复制", "转发", "收藏", "删除", "撤消"],
-				/* 对应图标class */
-				//popButtonIcon:["icon-fuzhi","icon-zhuanfa","icon-collection-b","icon-shanchu","icon-shangjiachexiaoshenqingrenzhengliebiao"],
-				/* 弹窗定位样式 */
 				popStyle: "",
 				/* 选择的用户下标 */
 				pickerUserIndex: -1,
@@ -488,10 +489,9 @@
 				temp_uuid: "",
 				chatCfg: {},
 				temp_bean: null,
-				showOpenRed: false,
 				showname: "",
 				toIP: "",
-				touchNum: 0, //h5 双击
+				toName: ""
 			};
 		},
 		onBackPress() {
@@ -512,128 +512,36 @@
 				'chatMessageMap',
 				'temp',
 				"WAIT_SEND_MSG",
-				"arList"
+				"arList",
+				"curChatEntity"
 			]),
 			...mapState('app', [
 				'imgUrl',
 				'reqUrl'
 			]),
+			showNameStr() {
+				return this.showname.length > 9 ? this.showname.substring(0, 6) + "..." : this.showname
+			}
 		},
 		onShow() {
-			let _this = this;
-			uni.$on("scrollTopFn", () => {
-				console.log("触发了-scrollTopFn");
-				let svH = _this.winH - _this.CustomBar - 50;
-				console.log("svH:" + svH);
-				console.log(_this.scrollDetail.scrollHeight - _this.scrollDetail.scrollTop - svH);
-				if ((_this.scrollDetail.scrollHeight - _this.scrollDetail.scrollTop - svH) < 300) {
-					//#ifdef APP-PLUS
-					setTimeout(() => {
-						_this.scrollTop = 99999999 + Math.random();
-					}, 1200)
-					//#endif
-					//#ifdef H5
-					setTimeout(() => {
-						_this.scrollTop = 99999999 + Math.random();
-					}, 500)
-					//#endif
-				}
-			});
-
-			let s = uni.getStorageSync(this.toid + "_NOTE");
-			if (s && s != "") {
-				this.showname = s;
-			}
-			this.WEBSOCKET_SEND({
-				body: {
-					toUid: this.toid,
-					fromUid: this.user.id
-				},
-				CMD: MessageType.CHAT_MSG_READ_ED
-			})
+			this.loadName()
 		},
 		onLoad(option) {
-			if (!option.toid) return;
-			this.setCurChatMsgList([]);
-			this.setChatMyLoadding(false);
-			this.toid = option.toid;
-			let _this = this;
-			let user = uni.getStorageSync("USER");
-			this.getWindowSize();
-			if (this.chatMessageMap.has(user.id + "#" + this.toid)) {
-				let msg_list = this.chatMessageMap.get(user.id + "#" + this.toid);
-				if (msg_list && msg_list.length > 0) {
-					var newMsgList = msg_list;
-					this.setCurChatMsgList(newMsgList);
-				}
-			} else {
-				let str = uni.getStorageSync(user.id + "#" + this.toid + '_CHAT_MESSAGE');
-				if (str && str != "") {
-					var jsonObj = JSON.parse(str);
-					this.updateChatMessageMap({
-						key: user.id + "#" + this.toid,
-						value: jsonObj
-					});
-					this.setCurChatMsgList(jsonObj);
-				} else {
-					//如果什么都没记录的话，则从云端加载
-				}
-			}
-
-			/*获取聊天的对象 user数据*/
-			getTalkUserInfo({
-				toid: _this.toid
-			}).then(res => {
-				let res_data = eval(res.data);
-				if (res_data.code == 200) {
-					_this.toIP = res_data.body.ip + "(" + res_data.body.ipAddr + ")";
-				}
-			}).catch(error => {
-				uni.showToast({
-					icon: 'none',
-					position: 'bottom',
-					title: error.msg ? error.msg : "服务器异常!"
-				});
-			})
-
-			_this.loadTalkUserAction({
-				toid: _this.toid
-			}).then(res => {
-				_this.entity = res;
-				setTimeout(function() {
-					if (_this.showname == "") {
-						_this.showname = _this.entity.nickName;
-					}
-				}, 100)
-			}).catch(error => {
-				uni.showToast({
-					icon: 'none',
-					position: 'bottom',
-					title: error.msg ? error.msg : "服务器异常!"
-				});
-			});;
-			_this.saveOrUpdateAction(_this.toid);
-			this.scrollToBottom();
-			getChatCfg().then(res => {
-				let res_data = eval(res.data);
-				if (res_data.code == 200) {
-					_this.chatCfg = res_data.body;
-				}
-			}).catch(error => {
-				uni.showToast({
-					icon: 'none',
-					position: 'bottom',
-					title: error.msg ? error.msg : "服务器异常!"
-				});
-			})
+			this.initData(option);
 		},
 		mounted() {
 			if (!this.toid) return;
-			if (!this.curChatMsgList.length > 0) {
+			//#ifdef APP-PLUS
+			if (this.curChatMsgList.length == 0) {
 				this.tongbuMsg();
 			} else {
 				this.deduplication()
 			}
+			//#endif
+
+			//#ifdef H5
+			this.tongbuMsg();
+			//#endif
 		},
 		methods: {
 			...mapMutations('chat', [
@@ -646,7 +554,12 @@
 				'setArList'
 			]),
 			...mapActions('socket', [
-				'WEBSOCKET_SEND'
+				"sendChatMessage",
+				"sendShowInputing",
+				"sendHideInputing",
+				"sendVoiceMessage",
+				"sendChatMessageUndo",
+				"sendChatMessageReaded"
 			]),
 			...mapActions('chat', [
 				'loadTalkUserAction',
@@ -654,31 +567,127 @@
 				'uploadVideoAction',
 				'uploadImageAction',
 				'uploadVoiceAction',
-				'collectAction'
-
+				'collectAction',
+				"sendBaseDaoAction"
 			]),
+			transMessage(message) {
+				return parseEmotion(message);
+			},
 			getHeadPic(headpic) {
-				if (headpic && headpic.indexOf('static/header') != -1) {
-					return headpic;
-				} else {
-					return this.imgUrl + headpic;
-				}
+				return getHeadPic(headpic, this.imgUrl)
 			},
 			clearMsg() {
 				this.setCurChatEntity(null);
 				this.setCurChatMsgList([]);
+				this.setChatMyLoadding(false);
 			},
-			loadmore() { //加载更多
-				this.pageParams.pageNumber++
-				this.tongbuMsg(this.pageParams.pageCount, this.pageParams.pageNumber);
+			initData(option) {
+				if (!option.toid) return;
+				this.clearMsg();
+				this.toid = option.toid;
+				this.toName = option.name;
+				let _this = this;
+				let user = uni.getStorageSync("USER");
+				this.getWindowSize();
+				//#ifdef APP-PLUS
+				if (this.chatMessageMap.has(user.id + "#" + this.toid)) {
+					let msg_list = this.chatMessageMap.get(user.id + "#" + this.toid);
+					if (msg_list && msg_list.length > 0) {
+						var newMsgList = msg_list;
+						this.setCurChatMsgList(newMsgList);
+					}
+				} else {
+					let str = uni.getStorageSync(user.id + "#" + this.toid + '_CHAT_MESSAGE');
+					if (str && str != "") {
+						var jsonObj = JSON.parse(str);
+						this.updateChatMessageMap({
+							key: user.id + "#" + this.toid,
+							value: jsonObj
+						});
+						this.setCurChatMsgList(jsonObj);
+					}
+				}
+				//#endif
+				this.loadTalkUserInfo()
+				this.loadChatCfg()
+				_this.saveOrUpdateAction(_this.toid);
+				this.scrollToBottom();
+				uni.$on("scrollTopFn", () => {
+					let svH = _this.winH - _this.CustomBar - 50;
+					let solt = _this.scrollDetail.scrollHeight - _this.scrollDetail.scrollTop - svH
+					if (solt < 300) {
+						//#ifdef APP-PLUS
+						setTimeout(() => {
+							_this.scrollTop = 99999999 + Math.random();
+						}, 1200)
+						//#endif
+						//#ifdef H5
+						setTimeout(() => {
+							_this.scrollTop = 99999999 + Math.random();
+						}, 500)
+						//#endif
+					}
+				});
+				this.sendChatMessageReaded({
+					toUid: this.toid,
+					fromUid: this.user.id
+				})
+
+			},
+			loadName() {
+				let s = uni.getStorageSync(this.toid + "_NOTE");
+				if (s && s != "") {
+					this.showname = s;
+				} else {
+					this.showname = this.toName;
+				}
+			},
+			loadChatCfg() {
+				getChatCfg().then(res => {
+					let res_data = eval(res.data);
+					if (res_data.code == 200) {
+						this.chatCfg = res_data.body;
+					}
+				}).catch(error => {
+					uni.showToast({
+						icon: 'none',
+						position: 'bottom',
+						title: error.msg ? error.msg : "服务器异常!"
+					});
+				})
+			},
+			loadTalkUserInfo() {
+				this.loadTalkUserAction({
+					toid: this.toid
+				}).then(res => {
+					this.entity = res;
+				}).catch(error => {
+					uni.showToast({
+						icon: 'none',
+						position: 'bottom',
+						title: error.msg ? error.msg : "服务器异常!"
+					});
+				});
+				/*获取聊天的对象 user数据*/
+				getTalkUserInfo({
+					toid: this.toid
+				}).then(res => {
+					let res_data = eval(res.data);
+					if (res_data.code == 200) {
+						this.toIP = res_data.body.ip + (res_data.body.ipAddr? "(" + res_data.body.ipAddr + ")" : "");
+					}
+				}).catch(error => {
+					uni.showToast({
+						icon: 'none',
+						position: 'bottom',
+						title: error.msg ? error.msg : "服务器异常!"
+					});
+				})
+
 			},
 			justRefresh() {
-				this.tongbuMsg(this.pageParams.pageCount, this.pageParams.pageNumber);
+				this.tongbuMsg();
 				this.scrollToBottom();
-				uni.showToast({
-					title: "请点击右上角获取完整记录同步",
-					icon: "none"
-				})
 			},
 			refresherrefresh() {
 				let _this = this;
@@ -692,36 +701,13 @@
 				}
 				//pageNum + 1
 				this.pageParams.pageNumber++;
-				this.loadStoreData(this.pageParams.pageCount, this.pageParams.pageNumber);
+				// this.loadStoreData(this.pageParams.pageCount, this.pageParams.pageNumber);
 			},
 			lineFeed() {
 				this.txt = this.txt + '\n'
 			},
-			scrollFn(e) {},
-			tongbuMsg_1stInNoData() {
-				let _this = this;
-				uni.showLoading()
-				syncMsgData({
-					chatid: _this.toid
-				}).then(res => {
-					let res_data = eval(res.data);
-					if (res_data.code == 201) {
-						//没缓存数据，把加载取消
-						setTimeout(() => {
-							uni.hideLoading();
-						}, 400);
-					} else if (res_data.code == 200) {
-						setTimeout(() => {
-							uni.hideLoading();
-						}, 400);
-					}
-				}).catch(error => {
-					uni.showToast({
-						icon: 'none',
-						position: 'bottom',
-						title: error.msg ? error.msg : "服务器异常!"
-					});
-				})
+			scrollFn(e) {
+				this.scrollDetail = e.detail;
 			},
 			tongbuMsg() { //当前页面聊天记录&页码请求
 				let _this = this;
@@ -730,25 +716,19 @@
 					chatid: _this.toid,
 					pageNumber: this.pageParams.pageNumber,
 				}).then(res => {
-					uni.hideLoading()
-					console.log("syncMsgData", res)
 					let res_data = eval(res.data);
 					if (res_data.code == 201) {
 						//没缓存数据，把加载取消
 						setTimeout(() => {
 							_this.moreShow = false
-							uni.hideLoading();
-							// uni.showToast({
-							// 	title: "没有云端数据",
-							// 	icon: "none"
-							// })
-
 						}, 400);
 					} else if (res_data.code == 200) {
 						if (res_data.body && res_data.body.list.length != 0) {
 							let cList = [];
 							for (let i = 0; i < res_data.body.list.length; i++) { //从[0]中取出
-								cList.push(res_data.body.list[i][0])
+								let msg = res_data.body.list[i][0]
+								msg.uuid = msg.bean.uuid;
+								cList.push(msg);
 							} //遍历
 							_this.syncMessageArr = cList
 							let user = uni.getStorageSync("USER");
@@ -756,42 +736,29 @@
 							_this.setCurChatMsgList([])
 							_this.setCurChatMsgList(_this.syncMessageArr);
 
+
+							//#ifdef APP-PLUS
 							//2：再清除和刷新大消息列表当前聊天对象数据
 							if (_this.chatMessageMap.has(user.id + "#" + _this.toid)) {
 								_this.updateChatMessageMap({
 									key: user.id + "#" + _this.toid,
 									value: _this.curChatMsgList
-								})
+								});
+								//4：刷新本地存储的数据
+								uni.setStorageSync(user.id + "#" + _this.toid + '_CHAT_MESSAGE', JSON.stringify(
+									_this
+									.curChatMsgList));
 							}
+							//#endif
 							//3:设置最后一个信息
-							if (_this.curChatMsgList.length != 0) {
-								_this.curChatMsgList[_this.curChatMsgList.length - 1]
-									.bean.simple_content;
-							}
-							//4：刷新本地存储的数据
-							uni.setStorageSync(user.id + "#" + _this.toid + '_CHAT_MESSAGE', JSON.stringify(_this
-								.curChatMsgList));
+							// if (_this.curChatMsgList.length != 0) {
+							// 	_this.curChatMsgList[_this.curChatMsgList.length - 1]
+							// 		.bean.simple_content;
+							// }
+							_this.scrollToBottom()
 						}
-
-						_this.pageParams = res_data.body
-						if (_this.pageParams.pageNumber > 1) {
-							for (let i = 0; i < res_data.body.list.length; i++) { //从[0]中取出
-								res_data.body.list[i] = res_data.body.list[i][0].bean
-							} //遍历拿出数组bean
-							// _this.chatLogs = _this.chatLogs.concat(res_data.body.list);
-							_this.chatLogs.unshift.apply(_this.chatLogs, res_data.body.list)
-							uni.hideLoading();
-						} else {
-							uni.hideLoading();
-							_this.chatLogs = res_data.body.list
-						}
-						for (let i = 0; i < _this.chatLogs.length; i++) { //从[0]中取出
-							_this.chatLogs[i] = _this.chatLogs[i][0].bean
-						} //遍历拿出数组bean
-						setTimeout(() => {
-							uni.hideLoading();
-						}, 400);
 					}
+					uni.hideLoading()
 				}).catch(error => {
 					uni.hideLoading();
 					uni.showToast({
@@ -802,7 +769,6 @@
 				})
 			},
 			getPopButton(item) {
-				// popButton: ["复制", "转发", "收藏","删除","撤消"],
 				if (item == "复制") return "icon-fuzhi";
 				else if (item == "转发") return "icon-zhuanfa";
 				else if (item == "收藏") return "icon-collection-b";
@@ -821,13 +787,6 @@
 				uni.navigateTo({
 					url: "/pages/chat/card/sendCard"
 				})
-			},
-			voiceCall() {
-				uni.showToast({
-					icon: 'none',
-					position: 'bottom',
-					title: '敬请期待'
-				});
 			},
 			goFavourite() {
 				uni.navigateTo({
@@ -946,7 +905,6 @@
 						_this.temp_content = "";
 					}
 					//#endif
-
 				} else if (name == '转发') {
 					this.setTempContent(_this.temp_content)
 					uni.navigateTo({
@@ -1000,16 +958,12 @@
 						}
 					}
 				} else if (name == '撤消') {
-					this.WEBSOCKET_SEND({
-						body: {
-							txt: _this.temp_bean.uuid,
-							toUid: _this.temp_bean.toUid,
-							fromUid: _this.temp_bean.fromUid
-						},
-						CMD: MessageType.CHAT_MSG_UNDO
+					this.sendChatMessageUndo({
+						txt: _this.temp_bean.uuid,
+						toUid: _this.temp_bean.toUid,
+						fromUid: _this.temp_bean.fromUid
 					})
 				} else if (name == '收藏') {
-
 					if (_this.temp_content.indexOf("voice") >= 0) {
 						uni.showToast({
 							title: '语音无法收藏',
@@ -1021,13 +975,6 @@
 					_this.collectAction(JSON.stringify(_this.temp_bean))
 				}
 				this.hidePop();
-			},
-			/* 列表触摸事件 */
-			listTap() {
-				/* 因弹出遮罩问题，所以需要在遮罩弹出的情况下阻止列表事件的触发 */
-				if (this.showShade) {
-					return;
-				}
 			},
 			selType(_t) {
 				this.c_type = _t;
@@ -1054,7 +1001,6 @@
 				}
 				if (i == 1) {
 					this.c_type = 1;
-					// this.txt = "";
 					this.showjia = true;
 				}
 				this.showItem = i;
@@ -1067,7 +1013,6 @@
 				setTimeout(function() {
 					_this.scrollToBottom();
 				}, 100)
-
 			},
 			showEmotion(i) {
 				this.emotion = i;
@@ -1100,96 +1045,14 @@
 					url: "/pages/chat/user/mgr?id=" + _id
 				})
 			},
-			sendBaseDo(v) {
-				v.fromHeadpic = this.user.headpic;
-				let date = new Date();
-				v.date = dateFormat("Y/mm/dd H:M", date);
-				v.fromName = this.user.nickName;
-				v.dateTime = date.getTime();
-				v.read = 0;
-				v.oldTxt = v.txt;
-				v.simple_content = v.txt;
-				if (this.temp_txt != "") {
-					v.txt = this.temp_txt;
-					this.temp_txt = "";
-				}
-				if (this.temp_map.size > 0) {
-					this.temp_map.forEach((value, key, map) => {
-						while (v.txt.indexOf(key) >= 0) {
-							v.txt = v.txt.replace(key, value);
-						}
-					})
-				}
-				//去除视频上传和图片上传 纯文件内容才检测URL
-				if (v.txt.indexOf("/chat_video") < 0 && v.txt.indexOf("/chat_img") < 0) {
-					let hasUrl = false;
-					let httpReg = new RegExp(
-						"(http[s]{0,1}|ftp)://[a-zA-Z0-9\\.\\-]+\\.([a-zA-Z]{2,4})(:\\d+)?(/[a-zA-Z0-9\\.\\-~!@#$%^&amp;*+?:_/=<>]*)?",
-						"gi");
-					let formatTxtContent = v.txt.replace(httpReg, function(httpText) {
-						if (httpText.indexOf("/img/emotion/") >= 0) return httpText;
-						hasUrl = true;
-						return '<a style="color: #3F92F8;" href="' + httpText + '">' + httpText + '</a>';
-					});
-					if (hasUrl) {
-						v.txt = formatTxtContent;
-						v.psr = "uparse";
-					}
-				}
-				let msgbean = {
-					chatType: "2",
-					chatid: v.toUid,
-					type: "USER_TXT",
-					bean: v
-				}
-				let list = [msgbean];
-				let str = uni.getStorageSync(this.user.id + "#" + msgbean.chatid + '_CHAT_MESSAGE');
-				if (str && str != "") {
-					var jsonObj = JSON.parse(str);
-					jsonObj = jsonObj.concat(list);
-					var newJsonObj = jsonObj;
-					uni.setStorageSync(this.user.id + "#" + msgbean.chatid + '_CHAT_MESSAGE', JSON.stringify(
-						newJsonObj));
-					if (jsonObj.length > 50) {
-						jsonObj.splice(0, jsonObj.length - 50);
-					}
-					this.updateChatMessageMap({
-						key: this.user.id + "#" + msgbean.chatid,
-						value: newJsonObj
-					})
-					if (this.curChatEntity && this.curChatEntity.id == v.toUid) {
-						this.setCurChatMsgList(newJsonObj)
-						this.WEBSOCKET_SEND({
-							body: {
-								toUid: msgbean.chatid,
-								fromUid: this.user.id
-							},
-							CMD: MessageType.CHAT_MSG_READ_ED,
-						})
-					}
-				} else {
-					var newList = list;
-					uni.setStorageSync(this.user.id + "#" + msgbean.chatid + '_CHAT_MESSAGE', JSON.stringify(
-						newList));
-					this.updateChatMessageMap({
-						key: this.user.id + "#" + msgbean.chatid,
-						value: newList
-					})
-					if (this.curChatEntity && this.curChatEntity.id == v.toUid) {
-						this.setCurChatMsgList(uniqueArr(newList, "uuid"))
-					}
-				}
-				//2023-1-8 修复数组去重 拉到最下面
-				this.deduplication()
-				//
-			},
 			deduplication() {
 				this.setChatMyLoadding(false)
-				let tempList = this.curChatMsgList;
-				tempList.forEach((item) => {
-					item.uuid = item.bean.uuid
-				});
-				this.setCurChatMsgList(uniqueArr(tempList, "uuid"))
+				// let tempList = this.curChatMsgList;
+				// tempList.forEach((item) => {
+				// 	item.uuid = item.bean.uuid
+				// });
+				// let msgList = uniqueArr(tempList, "uuid")
+				// this.setCurChatMsgList(msgList)
 				this.scrollToBottom();
 			},
 			altOrShiftEnter() {
@@ -1205,31 +1068,25 @@
 			send() {
 				let _this = this;
 				setTimeout(() => {
-					if (this.isAltOrShiftEnter) return;
-					this.input_is_focus = false;
-					let v = {
-						txt: this.txt.replace(/\n/g, "<br/>"),
-						toUid: this.toid,
-						fromUid: this.user.id,
-						uuid: uuid(),
-					}
-					if (this.txt.trim() == "") {
+					if (_this.isAltOrShiftEnter) return;
+					if (_this.txt.trim() == "") {
+						showToast("消息不能为空!");
 						return;
 					}
-					this.WEBSOCKET_SEND({
-						body: {
-							txt: this.txt.replace(/\n/g, "<br/>"),
-							toUid: this.toid,
-							fromUid: this.user.id,
-							uuid: uuid(),
-						},
-						CMD: MessageType.USER_CHAT_SEND_TXT,
-					})
-					this.txt = "";
-					this.setChatMyLoadding(true)
-					this.sendBaseDo(v);
-					this.showjia = true;
-					this.sendCount = this.sendCount + 1;
+					_this.input_is_focus = false;
+					let v = {
+						txt: _this.txt.replace(/\n/g, "<br/>"),
+						toUid: _this.toid,
+						fromUid: _this.user.id,
+						uuid: uuid(),
+					}
+					_this.sendChatMessage(v);
+					_this.txt = "";
+					_this.setChatMyLoadding(true)
+					//#ifdef APP-PLUS
+					_this.sendBaseDaoAction(v);
+					//#endif
+					_this.showjia = true;
 					setTimeout(function() {
 						_this.scrollToBottom();
 						_this.input_is_focus = true;
@@ -1237,191 +1094,54 @@
 				}, 100)
 			},
 			sendEmotion(_a, _b) {
-				let _this = this;
 				this.txt = this.txt + ("[f" + _a + "#" + _b + "]");
-				let f = ".gif";
-				if (_a == 1) f = ".png";
-				let img = this.imgUrl + "/img/emotion/face" + (_a < 10 ? "0" + _a : _a) + "/" + _b + f;
-				let s = "";
-				if (_a == 0) {
-					s = "<img  style='max-width: 24px;max-height:24px;' class='face face1' src='" + img + "'>";
-				} else if (_a == 1) {
-					s = "<img style='max-width: 100px;max-height:100px;' class='face face2' src='" + img + "'>";
-				} else {
-					s = "<img  style='max-width: 150px;max-height:150px;' class='face face3' src='" + img + "'>";
-				}
-
-				if (!this.temp_map.has("[f" + _a + "#" + _b + "]")) {
-					this.temp_map.set("[f" + _a + "#" + _b + "]", s)
-				}
-
 				this.showjia = false;
-
 			},
 			InputFocus(e) {
-				var that = this
 				setTimeout(function() { // 加上延时会使页面看起来更流畅
-					// that.domHeight=document.documentElement.clientHeight;
 					document.body.scrollTop = document.body.scrollHeight;
 				}, 500)
-
-
-				this.WEBSOCKET_SEND({
-					body: {
-						toUid: this.toid,
-						fromUid: this.user.id
-					},
-					CMD: MessageType.SHOW_INPUT_ING
-				})
+				this.sendShowInputing({
+					toUid: this.toid,
+					fromUid: this.user.id
+				});
 			},
 			InputBlur(e) {
-				var that = this
 				setTimeout(function() { // 加上延时会使页面看起来更流畅
-					// that.domHeight=document.documentElement.clientHeight;
 					document.body.scrollTop = document.body.scrollHeight;
 				}, 500)
-
-				this.WEBSOCKET_SEND({
-					body: {
-						toUid: this.toid,
-						fromUid: this.user.id
-					},
-					CMD: MessageType.HIDE_INPUT_ING
-				})
+				this.sendHideInputing({
+					toUid: this.toid,
+					fromUid: this.user.id
+				});
 			},
 			ChooseVideo() {
 				let _this = this;
-				uni.chooseVideo({
-					sourceType: ['album', 'camera'],
-					success: (res) => {
-						//#ifdef H5
-						//大于15M。则报
-						if (res.tempFile.size > 1024 * 1024 * 15) {
-							uni.showToast({
-								icon: 'none',
-								title: "视频大小不能高于15M"
-							});
-							return;
-						}
-						//#endif
-						_this.setChatMyLoadding(true)
-						setTimeout(() => {
-							_this.scrollTop = 9999999 + Math.random();
-						}, 100)
-						let token = uni.getStorageSync("token");
-
-						var uper = uni.uploadFile({
-							// 需要上传的地址
-							url: _this.reqUrl + '/user/file/uploadVideo',
-							header: {
-								["member-token"]: token,
-							},
-							// filePath  需要上传的文件
-							filePath: res.tempFilePath,
-							name: 'file',
-							fail(error) {
-								uni.showToast({
-									icon: 'none',
-									position: 'bottom',
-									title: error.msg ? error.msg : "上传失败!"
-								});
-							},
-							success(res1) {
-								let json = eval("(" + res1.data + ")");
-								// 显示上传信息
-								if (json.code == 200) {
-									_this.WEBSOCKET_SEND({
-										body: {
-											txt: json.msg,
-											toUid: _this.toid,
-											fromUid: _this.user.id,
-											uuid: uuid(),
-										},
-										CMD: MessageType.USER_CHAT_SEND_TXT
-									})
-									let videoSrc = _this.imgUrl + json.msg;
-									_this.temp_txt = _this.temp_txt + (
-										"<video  style='max-width: 150px;max-height:150px;' class='face' src='" +
-										videoSrc + "'>");
-									v.psr = "video";
-									v.simple_content = "[视频]";
-									_this.sendBaseDo(v);
-									setTimeout(function() {
-										_this.scrollToBottom();
-									}, 100)
-								}
-							}
-						});
-					}
-				});
+				this.uploadVideoAction(this.toid).then(res => {
+					setTimeout(function() {
+						_this.scrollToBottom();
+					}, 100)
+				}).catch(error => {
+					uni.showToast({
+						icon: 'none',
+						position: 'bottom',
+						title: error.msg ? error.msg : "上传失败!"
+					});
+				})
 			},
 			ChooseImage() {
 				let _this = this;
-				uni.chooseImage({
-					count: 9, //默认9
-					sizeType: ['compressed'], //可以指定是原图还是压缩图，默认二者都有
-					sourceType: ['album', 'camera'], //从相册选择
-					fail(error) {
-						uni.showToast({
-							icon: 'none',
-							position: 'bottom',
-							title: error.msg ? error.msg : "获取图片失败!"
-						});
-					},
-					success: (res) => {
-						let arrs = res.tempFiles;
-						_this.setChatMyLoadding(true)
-						setTimeout(function() {
-							_this.scrollToBottom();
-						}, 100)
-						let token = uni.getStorageSync("token");
-
-						arrs.forEach(item => {
-							var uper = uni.uploadFile({
-								// 需要上传的地址
-								url: _this.reqUrl + '/user/file/upload',
-								header: {
-									["member-token"]: token,
-								},
-								// filePath  需要上传的文件
-								filePath: item.path,
-								name: 'file',
-								fail(error) {
-									uni.showToast({
-										icon: 'none',
-										position: 'bottom',
-										title: error.msg ? error.msg : "上传失败!"
-									});
-								},
-								success(res1) {
-									let json = eval("(" + res1.data + ")");
-									// 显示上传信息
-									if (json.code == 200) {
-										_this.WEBSOCKET_SEND({
-											body: {
-												txt: json.msg,
-												toUid: _this.toid,
-												fromUid: _this.user.id,
-												uuid: uuid(),
-											},
-											CMD: MessageType.USER_CHAT_SEND_TXT
-										})
-										let img = _this.imgUrl + json.msg;
-										_this.temp_txt = _this.temp_txt + (
-											"<img  style='max-width: 150px;max-height:150px;' class='face' src='" +
-											img + "'>");
-										v.psr = "uparse";
-										v.simple_content = "[图片]";
-										_this.sendBaseDo(v);
-										setTimeout(function() {
-											_this.scrollToBottom();
-										}, 100)
-									}
-								}
-							});
-						});
-					}
-				});
+				this.uploadImageAction(this.toid).then(res => {
+					setTimeout(function() {
+						_this.scrollToBottom();
+					}, 100)
+				}).catch(error => {
+					uni.showToast({
+						icon: 'none',
+						position: 'bottom',
+						title: error.msg ? error.msg : "上传失败!"
+					});
+				})
 			},
 			checkAuthorize() {
 				this.startRecord();
@@ -1472,8 +1192,6 @@
 				min = min < 10 ? '0' + min : min;
 				sec = sec < 10 ? '0' + sec : sec;
 				msg = min + ':' + sec;
-				//console.log(msg);
-				//console.log(_this.voicePath);
 				_this.voicePath = e.tempFilePath;
 				_this.Audio2dataURL(_this.voicePath, msg)
 				setTimeout(() => {
@@ -1554,14 +1272,11 @@
 				let _this = this;
 				let user = uni.getStorageSync("USER");
 				let token = uni.getStorageSync("token");
-
 				var uper = uni.uploadFile({
-					// 需要上传的地址
 					url: _this.reqUrl + '/user/file/uploadVoice',
 					header: {
 						["member-token"]: token,
 					},
-					// filePath  需要上传的文件
 					filePath: path,
 					name: 'file',
 					fail(error) {
@@ -1578,19 +1293,18 @@
 							// 显示上传信息
 							console.log(json.msg);
 							if (json.code == 200) {
-								_this.WEBSOCKET_SEND({
-									body: {
-										txt: json.msg,
-										toUid: _this.toid,
-										fromUid: _this.user.id,
-										sub_txt: timeStr,
-										uuid: uuid(),
-									},
-									CMD: MessageType.USER_CHAT_SEND_VOICE
+								_this.sendVoiceMessage({
+									txt: json.msg,
+									toUid: _this.toid,
+									fromUid: _this.user.id,
+									sub_txt: timeStr,
+									uuid: uuid(),
 								})
+								//#ifdef APP-PLUS
 								v.psr = "voice";
 								v.simple_content = "[语音]";
-								_this.sendBaseDo(v);
+								//#endif
+								_this.sendBaseDaoAction(v);
 								setTimeout(function() {
 									_this.scrollToBottom();
 								}, 100)
@@ -1599,27 +1313,12 @@
 					}
 				});
 			}
-
 		}
 	}
 </script>
 
 <style scoped lang="scss">
 	@import url("../../../components/u-parse/u-parse.css");
-
-	.box {
-		width: 100%;
-		padding-left: 30rpx;
-		min-height: 70rpx;
-		display: flex;
-		align-items: center;
-		background-color: #fff;
-		border-radius: 40rpx;
-
-		textarea {
-			width: 100%;
-		}
-	}
 
 	.cu-bar.input {
 		background-color: #F5F5F5;
@@ -1786,11 +1485,11 @@
 	}
 
 	.topname {
-		width: 70%;
+		width: 90%;
 	}
 
 	.topname-showname {
-		width: 30%;
+		width: 50%;
 		float: left;
 		overflow: hidden; //超出的文本隐藏
 		text-overflow: ellipsis; //溢出用省略号显示

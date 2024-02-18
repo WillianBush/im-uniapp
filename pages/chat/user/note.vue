@@ -15,7 +15,7 @@
 			<input maxlength="-1" v-model="txt" placeholder="请输入备注" />
 		</view>
 		<view style="margin-top:20upx;color:#999;margin-left:30upx;font-size:26upx">
-			{{i18n.originalnickname}}：{{$store.state.cur_chat_entity.nickName}}
+			{{i18n.originalnickname}}：{{curChatEntity.nickName}}
 		</view>
 	</view>
 	</view>
@@ -79,8 +79,6 @@
 					duration: 2000
 				});
 			}
-
-
 		}
 	}
 </script>

@@ -35,6 +35,9 @@ export default {
 	setCurChatMsgList(state, payload) {
 		state.curChatMsgList = payload;
 	},
+	addCurChatMsg(state,payload){
+		state.curChatMsgList.push(payload);
+	},
 	setCurChatAiteToMyList(state, payload) {
 		state.curChatAiteToMyList = payload
 	},

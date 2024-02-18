@@ -442,92 +442,114 @@ export default {
 			});
 		});
 	},
+
 	async uploadVideoAction({
 		commit,
 		dispatch,
 		rootState
 	}, payload) {
-		let uploadRes = await dispatch("");
-		if (!uploadRes.tempFilePath) {
-			uni.showToast({
-				title: "视频上传失败",
-				duration: 2000,
-			});
-			return;
-		}
-		uni.uploadFile({
-			// 需要上传的地址
-			url: rootState.app.reqUrl + "/user/file/uploadVideo",
-			header: {
-				["member-token"]: rootState.user.userToken,
-			},
-			// filePath  需要上传的文件
-			filePath: uploadRes.tempFilePath,
-			name: "file",
-			success(res1) {
-				let json = eval("(" + res1.data + ")");
-				// 显示上传信息
-				if (json.code == 200) {
-					dispatch(
-						"socket/" + SocketType.WEBSOCKET_SEND, {
-							body: {
-								txt: json.msg,
-								toUid: payload,
-								fromUid: rootState.user.user.id,
-							},
-							CMD: MessageType.USER_CHAT_SEND_TXT,
-						}, {
-							root: true,
-						}
-					);
-				}
-			},
-		});
-	},
-	async uploadImageAction({
-		commit,
-		dispatch,
-		rootState
-	}, payload) {
-		let uploadRes = await dispatch("");
-		if (!uploadRes.tempFilePath) {
-			uni.showToast({
-				title: "图片上传失败",
-				duration: 2000,
-			});
-			return;
-		}
-		let arrs = uploadRes.tempFilePaths;
-		arrs.forEach((item) => {
-			var uper = uni.uploadFile({
+		return new Promise(async(resolve,rejcet)=>{
+			let uploadRes = await dispatch("chooseVideoAction");
+			if (!uploadRes.tempFilePath) {
+				uni.showToast({
+					title: "视频上传失败",
+					duration: 2000,
+				});
+				reject(false);
+			}
+			let token = uni.getStorageSync("token");
+			uni.uploadFile({
 				// 需要上传的地址
-				url: rootState.app.reqUrl + "/user/file/upload",
+				url: rootState.app.reqUrl + "/user/file/uploadVideo",
 				header: {
-					["member-token"]: rootState.user.userToken,
+					["member-token"]: token,
 				},
 				// filePath  需要上传的文件
-				filePath: item,
+				filePath: uploadRes.tempFilePath,
 				name: "file",
 				success(res1) {
 					let json = eval("(" + res1.data + ")");
 					// 显示上传信息
 					if (json.code == 200) {
-						dispatch(
-							"socket/" + SocketType.WEBSOCKET_SEND, {
-								body: {
-									txt: json.msg,
-									toUid: payload,
-									fromUid: rootState.user.user.id,
-								},
-								CMD: MessageType.USER_CHAT_SEND_TXT,
-							}, {
-								root: true,
-							}
-						);
+						dispatch("socket/sendChatMessage", {
+							txt: json.msg,
+							toUid: payload,
+							fromUid: rootState.user.user.id,
+						}, {
+							root: true
+						});
+						//#ifdef APP-PLUS
+						v.psr = "video";
+						v.simple_content = "[视频]";
+						dispatch("sendBaseDaoAction", v);
+						//#endif
+						resolve(true)
+					}else{
+						rejcet(false)
 					}
 				},
+				fail(error) {
+					rejcet(error);
+				}
 			});
-		});
+		})
+	},
+ uploadImageAction({
+		commit,
+		dispatch,
+		rootState
+	}, payload) {
+		return new Promise(async (resolve,reject)=>{
+			let uploadRes = await dispatch("chooseImageAction");
+			if (!uploadRes.tempFilePath) {
+				uni.showToast({
+					title: "图片上传失败",
+					duration: 2000,
+				});
+				reject(false);
+			}
+			let arrs = uploadRes.tempFilePaths;
+			let token = uni.getStorageSync("token");
+			
+			arrs.forEach((item) => {
+				var uper = uni.uploadFile({
+					// 需要上传的地址
+					url: rootState.app.reqUrl + "/user/file/upload",
+					header: {
+						["member-token"]: token,
+					},
+					filePath: item,
+					name: "file",
+					success(res1) {
+						let json = eval("(" + res1.data + ")");
+						// 显示上传信息
+						if (json.code == 200) {
+							dispatch("socket/sendChatMessage", {
+								txt: json.msg,
+								toUid: payload,
+								fromUid: rootState.user.user.id,
+							}, {
+								root: true
+							});
+							//#ifdef APP-PLUS
+							v.psr = "uparse";
+							v.simple_content = "[图片]";
+							dispatch("sendBaseDaoAction", v);
+							//#endif
+							setTimeout(()=>{
+								resolve(true)
+							},5*1000)
+						}else{
+							reject(json)
+						}
+						
+					},
+					fail(error) {
+						reject(error)
+					}
+				});
+			});
+		})
 	},
 	uploadVoiceAction({
 		commit
@@ -540,19 +562,17 @@ export default {
 				let json = eval(res.data);
 				// 显示上传信息
 				if (json.code == 200) {
-					dispatch(
-						"socket/" + SocketType.WEBSOCKET_SEND, {
-							body: {
-								txt: json.msg,
-								toUid: payload.toid,
-								fromUid: rootState.user.user.id,
-								sub_txt: timeStr,
-							},
-							CMD: MessageType.USER_CHAT_SEND_VOICE,
-						}, {
-							root: true,
-						}
-					);
+					dispatch("socket/sendVoiceMessage", {
+						txt: json.msg,
+						toUid: payload.toid,
+						fromUid: rootState.user.user.id,
+						sub_txt: timeStr,
+					}, {
+						root: true
+					});
+					//#ifdef APP-PLUS
+					dispatch("sendBaseDaoAction", v);
+					//#endif
 				}
 			}
 		});
@@ -573,6 +593,21 @@ export default {
 		v.read = 0;
 		v.oldTxt = v.txt;
 		v.simple_content = v.txt;
+		//去除视频上传和图片上传 纯文件内容才检测URL
+		if (v.txt.indexOf("/chat_video") < 0 && v.txt.indexOf("/chat_img") < 0) {
+			let hasUrl = false;
+			let httpReg = new RegExp(
+				"(http[s]{0,1}|ftp)://[a-zA-Z0-9\\.\\-]+\\.([a-zA-Z]{2,4})(:\\d+)?(/[a-zA-Z0-9\\.\\-~!@#$%^&amp;*+?:_/=<>]*)?",
+				"gi");
+			let formatTxtContent = v.txt.replace(httpReg, function(httpText) {
+				hasUrl = true;
+				return '<a style="color: #3F92F8;" href="' + httpText + '">' + httpText + '</a>';
+			});
+			if (hasUrl) {
+				v.txt = formatTxtContent;
+				v.psr = "uparse";
+			}
+		}
 		let msgbean = {
 			chatType: "2",
 			chatid: v.toUid,
@@ -585,59 +620,21 @@ export default {
 		);
 		if (str && str != "") {
 			var jsonObj = JSON.parse(str);
-			jsonObj = jsonObj.concat(list);
-			uni.setStorageSync(
-				user.id + "#" + msgbean.chatid + "_CHAT_MESSAGE",
-				JSON.stringify(jsonObj)
-			);
-			if (jsonObj.length > 50) {
-				jsonObj.splice(0, jsonObj.length - 50);
-			}
-			commit("updateChatMessageMap", {
-				key: user.id + "#" + msgbean.chatid,
-				value: jsonObj,
-			});
-
-			if (state.curChatEntity && state.curChatEntity.id == v.toUid) {
-				commit("setCurChatMsgList", jsonObj);
-
-				let v1 = {
-					toUid: msgbean.chatid,
-					fromUid: user.id,
-				};
-				dispatch(
-					"socket/" + SocketType.WEBSOCKET_SEND, {
-						body: {
-							toUid: msgbean.chatid,
-							fromUid: user.id,
-						},
-						CMD: MessageType.CHAT_MSG_READ_ED,
-					}, {
-						root: true,
-					}
-				);
-			}
-			uni.setStorageSync(
-				user.id + "#" + msgbean.chatid + "_CHAT_MESSAGE_LASTCONTENT",
-				jsonObj[jsonObj.length - 1].bean.simple_content
-			);
-		} else {
-			uni.setStorageSync(
-				user.id + "#" + msgbean.chatid + "_CHAT_MESSAGE",
-				JSON.stringify(list)
-			);
-			commit("updateChatMessageMap", {
-				key: user.id + "#" + msgbean.chatid,
-				value: list,
-			});
-			if (state.curChatEntity && state.curChatEntity.id == v.toUid) {
-				commit("setCurChatMsgList", list);
-			}
-			uni.setStorageSync(
-				user.id + "#" + msgbean.chatid + "_CHAT_MESSAGE_LASTCONTENT",
-				""
-			);
+			list = jsonObj.concat(list);
 		}
+		uni.setStorageSync(
+			user.id + "#" + msgbean.chatid + "_CHAT_MESSAGE",
+			JSON.stringify(list)
+		);
+		commit("updateChatMessageMap", {
+			key: user.id + "#" + msgbean.chatid,
+			value: list,
+		});
+		uni.setStorageSync(
+			user.id + "#" + msgbean.chatid + "_CHAT_MESSAGE_LASTCONTENT",
+			list[list.length - 1].bean.simple_content
+		);
+		commit("setCurChatMsgList", list);
 		commit("setChatMyLoadding", false);
 	},
 	transMessageAction({

@@ -12,7 +12,7 @@
     margin-top: 10px!important;" class="margin-top">
 			<view style="width:150upx;padding-top:30upx;padding-bottom:30upx;margin-left: 10upx;">
 				<view class="cu-avatar radius margin-left"
-					:style="'height:100upx;width:100upx;background-image:url('+imgUrl+cur_user.headpic+');'">
+					:style="'height:100upx;width:100upx;background-image:url('+getHeadPic(cur_user.headpic)+');'">
 				</view>
 				<view
 					style="margin:auto auto;color: #999;font-size:24upx;text-align: center;margin-top:8upx;overflow: hidden;height:34upx;width:100upx;">
@@ -92,7 +92,8 @@
 	import {
 		MessageType
 	} from '../../../const/MessageType';
-
+import { getHeadPic } from '../../../common/utils';
+getHeadPic()
 	export default {
 		data() {
 			return {
@@ -106,12 +107,8 @@
 			}
 		},
 		onShow() {
-			let s = uni.getStorageSync(this.id + "_NOTE");
-			if (s && s != "") {
-				this.user_note = s;
-			}
+			this.loadName()
 		},
-
 		computed: {
 			i18n() {
 				return this.$t('index')
@@ -140,10 +137,7 @@
 				let res_data = eval(res.data);
 				if (res_data.code == 200) {
 					_this.cur_user = res_data.body;
-					let s = uni.getStorageSync(_this.id + "_NOTE");
-					if (s && s != "") {
-						_this.cur_user.nickName = s;
-					}
+					this.loadName();
 				}
 			}).catch(error => {
 					uni.showToast({
@@ -211,6 +205,16 @@
 			...mapActions('socket', [
 				'WEBSOCKET_SEND'
 			]),
+			getHeadPic(headPic){
+				return getHeadPic(headPic,this.imgUrl)
+			},
+			loadName(){
+				let s = uni.getStorageSync(this.id + "_NOTE");
+				if (s && s != "") {
+					this.user_note = s;
+					_this.cur_user.nickName = s;
+				}
+			},
 			removeFriend() {
 				let _this = this;
 				let user = uni.getStorageSync("USER");

@@ -189,6 +189,9 @@ export default {
 			dispatch("parseRevMessage", res);
 		})
 	},
+	WEBSOCKET_CLOSE({state}){
+		state.socketTask.close()
+	},
 	parseRevMessage({
 		state,
 		commit,
@@ -299,7 +302,8 @@ export default {
 		dispatch
 	}, payload) {
 		let data = payload;
-		let user = rootState.user;
+		let user = rootState.user.user;
+		let messageBean = data.body;
 		//#ifndef H5
 		if (data.CMD == MessageType.USER_CHAT_MESSAGE || data.CMD == MessageType.GROUP_CHAT_MESSAGE) {
 			if (!rootState.app.appShow) {
@@ -414,9 +418,9 @@ export default {
 			var jsonObj = JSON.parse(str);
 			jsonObj = jsonObj.concat(data.body);
 
-			if (jsonObj.length > 100) {
-				jsonObj.splice(0, jsonObj.length - 100);
-			}
+			// if (jsonObj.length > 100) {
+			// 	jsonObj.splice(0, jsonObj.length - 100);
+			// }
 
 			uni.setStorageSync(
 				user.id + "#" + data.body[0].chatid + "_CHAT_MESSAGE",
@@ -435,16 +439,19 @@ export default {
 				rootState.chat.curChatEntity &&
 				rootState.chat.curChatEntity.id == data.body[0].chatid
 			) {
+				
 				//1-9修正 把直接赋值改为先去重
 				jsonObj.forEach((item) => {
 					item.uuid = item.bean.uuid;
 				});
+				let msgList = uniqueArr(jsonObj, "uuid")
 				commit(
 					"chat/setCurChatMsgList",
-					uniqueArr(jsonObj, "uuid"), {
+					msgList, {
 						root: true
 					}
 				);
+				
 				// store.commit("setCur_chat_msg_list",jsonObj);
 				let v = {
 					toUid: data.body[0].chatid,
@@ -1002,6 +1009,43 @@ export default {
 			root: true
 		});
 	},
+	sendChatMessage({dispatch},payload){
+		dispatch("WEBSOCKET_SEND",{
+			body:payload,
+			CMD:MessageType.USER_CHAT_SEND_TXT
+		})
+	},
+	sendShowInputing({dispatch},payload){
+		dispatch("WEBSOCKET_SEND",{
+			body:payload,
+			CMD:MessageType.SHOW_INPUT_ING
+		})
+	},
+	sendHideInputing({dispatch},payload){
+		dispatch("WEBSOCKET_SEND",{
+			body:payload,
+			CMD:MessageType.HIDE_INPUT_ING
+		})
+	},
+	sendVoiceMessage({dispatch},payload){
+		dispatch("WEBSOCKET_SEND",{
+			body:payload,
+			CMD:MessageType.USER_CHAT_SEND_VOICE
+		})
+	},
+	sendChatMessageUndo({dispatch},payload){
+		dispatch("WEBSOCKET_SEND",{
+			body:payload,
+			CMD:MessageType.CHAT_MSG_UNDO
+		})
+	},
+	sendChatMessageReaded({dispatch},payload){
+		dispatch("WEBSOCKET_SEND",{
+			body:payload,
+			CMD:MessageType.CHAT_MSG_READ_ED
+		})
+	},
+	
 	WEBSOCKET_SEND({
 		commit,
 		dispatch,

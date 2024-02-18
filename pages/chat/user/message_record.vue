@@ -11,7 +11,7 @@
 				{{i18n.nochat}}
 			</view>
 
-			<scroll-view :scroll-y="true" :refresher-enabled="false" :refresher-triggered="refresherTriggered"
+			<scroll-view :scroll-y="true" :refresher-enabled="true" :refresher-triggered="refresherTriggered"
 				@refresherrefresh="refresherrefresh" @refresherrestore="refresherrestore"
 				@refresherabort="refresherabort" @scrolltolower="scrollLower">
 				<block v-for="(item,index) in chatLogs">
@@ -37,7 +37,7 @@
 														margin: auto auto;display: flex;">
 										<view style="width:90upx;margin-top: 26upx;width: 80upx;height: 80upx;"
 											class="cu-avatar radius"
-											:style="'background-image:url('+imgUrl+item.mheadpic+');'">
+											:style="'background-image:url('+getHeadPic(item.mheadpic)+');'">
 										</view>
 										<view
 											style="width: 240upx;;margin-top: 30upx;margin-left: 12upx; text-align: left;">
@@ -58,12 +58,12 @@
 								</view>
 							</view>
 							<view class="cu-avatar radius"
-								:style="'background-image:url('+imgUrl+item.fromHeadpic+');'"></view>
+								:style="'background-image:url('+getHeadPic(item.fromHeadpic)+');'"></view>
 							<view class="date">{{item.date}}</view>
 						</view>
 						<view v-else class="cu-item">
 							<view @tap.stop="goUserDetail(item.fromUid)" class="cu-avatar radius"
-								:style="'background-image:url('+imgUrl+item.fromHeadpic+');'"></view>
+								:style="'background-image:url('+getHeadPic(item.fromHeadpic)+');'"></view>
 							<view class="main">
 								<view @tap="clickCard(item)"
 									style="border: 1px solid #eee;background-color: #fff;width:400upx;height:180upx;border-radius: 6px;">
@@ -73,7 +73,7 @@
 														margin: auto auto;display: flex;">
 										<view style="width:90upx;margin-top: 26upx;width: 80upx;height: 80upx;"
 											class="cu-avatar radius"
-											:style="'background-image:url('+imgUrl+item.mheadpic+');'">
+											:style="'background-image:url('+getHeadPic(item.mheadpic)+');'">
 										</view>
 										<view
 											style="width: 240upx;;margin-top: 30upx;margin-left: 12upx; text-align: left;">
@@ -126,13 +126,13 @@
 								</view>
 							</view>
 							<view class="cu-avatar radius"
-								:style="'background-image:url('+imgUrl+item.fromHeadpic+');'"></view>
+								:style="'background-image:url('+getHeadPic(item.fromHeadpic)+');'"></view>
 							<view class="date">{{item.date}}</view>
 						</view>
 
 						<view v-else class="cu-item">
 							<view @tap.stop="goUserDetail(item.fromUid)" class="cu-avatar radius"
-								:style="'background-image:url('+imgUrl+item.fromHeadpic+');'"></view>
+								:style="'background-image:url('+getHeadPic(item.fromHeadpic)+');'"></view>
 							<view class="main">
 								<view class="content shadow" style="
 				color:#222;">
@@ -161,9 +161,6 @@
 				</block>
 			</scroll-view>
 		</view>
-
-
-
 	</view>
 </template>
 
@@ -183,6 +180,8 @@
 		syncMsgData,
 		chatListPage
 	} from '../../../common/api';
+import { getHeadPic } from '../../../common/utils';
+	getHeadPic()
 	export default {
 		components: {
 			uParse
@@ -255,7 +254,7 @@
 				pageSize: 50, //50条
 				status: "more", // 加载状态
 				pageParams: {
-					pageNumber: '1',
+					pageNumber: 1,
 					pageCount: '30',
 				},
 				timer: null,
@@ -294,11 +293,16 @@
 				'updateChatMessageMap',
 				'setTempBean'
 			]),
+			getHeadPic(headPic){
+				return getHeadPic(headPic,this.imgUrl)
+			},
 			loadmore() {
 				this.pageParams.pageNumber++
 				this.tongbuMsg(this.pageParams.pageCount, this.pageParams.pageNumber);
 			},
 			refresherrefresh() {
+				console.log('自定义下拉刷新refresherrefresh');
+				
 				let _this = this;
 				if (_this._refresherTriggered) {
 					return;
@@ -309,7 +313,7 @@
 					_this.refresherTriggered = true;
 				}
 				//pageNum + 1
-				this.pageParams.pageNumber++;
+				this.pageParams.pageNumber ++;
 				this.loadStoreData(this.pageParams.pageCount, this.pageParams.pageNumber);
 			},
 			refresherrestore() {
@@ -353,11 +357,11 @@
 
 						}, 400);
 					} else if (res_data.code == 200) {
-						if (res_data.body && res_data.body.records.length != 0) {
+						if (res_data.body && res_data.body.list.length != 0) {
 
 							let cList = [];
-							for (let i = 0; i < res_data.body.records.length; i++) { //从[0]中取出
-								cList.push(res_data.body.records[i][0])
+							for (let i = 0; i < res_data.body.list.length; i++) { //从[0]中取出
+								cList.push(res_data.body.list[i][0])
 							} //遍历
 							_this.syncMessageArr.unshift.apply(_this.syncMessageArr, cList)
 
@@ -385,15 +389,15 @@
 
 						_this.pageParams = res_data.body
 						if (_this.pageParams.pageNumber > 1) {
-							for (let i = 0; i < res_data.body.records.length; i++) { //从[0]中取出
-								res_data.body.records[i] = res_data.body.records[i][0].bean
+							for (let i = 0; i < res_data.body.list.length; i++) { //从[0]中取出
+								res_data.body.list[i] = res_data.body.list[i][0].bean
 							} //遍历拿出数组bean
 							// _this.chatLogs = _this.chatLogs.concat(res_data.body.list);
-							_this.chatLogs.unshift.apply(_this.chatLogs, res_data.body.records)
+							_this.chatLogs.unshift.apply(_this.chatLogs, res_data.body.list)
 							uni.hideLoading();
 						} else {
 							uni.hideLoading();
-							_this.chatLogs = res_data.body.records
+							_this.chatLogs = res_data.body.list
 						}
 						for (let i = 0; i < _this.chatLogs.length; i++) { //从[0]中取出
 							_this.chatLogs[i] = _this.chatLogs[i][0].bean
@@ -410,6 +414,7 @@
 						position: 'bottom',
 						title: error.msg ? error.msg : "服务器异常!"
 					});
+					console.log(error)
 				})
 			},
 			loadStoreData(pSize, pNumber) {
@@ -426,9 +431,9 @@
 						if (res_data_1.code == 200) {
 							this.pageParams.pageNumber = res_data_1.body.pageNumber;
 							if (this.pageParams.pageNumber > 1) {
-								_this.allList = _this.allList.concat(res_data_1.body.records);
+								_this.allList = _this.allList.concat(res_data_1.body.list);
 							} else {
-								_this.allList = res_data_1.body.records;
+								_this.allList = res_data_1.body.list;
 							}
 							this.closeRefresh();
 						} else {
@@ -519,16 +524,6 @@
 				}
 				uni.navigateTo({
 					url: "/pages/chat/user/mgr?id=" + _id
-				})
-			},
-			send() {
-				this.WEBSOCKET_SEND({
-					body: {
-						txt: this.txt,
-						toUid: this.toid,
-						fromUid: this.user.id
-					},
-					CMD: MessageType.USER_CHAT_SEND_TXT
 				})
 			},
 			InputFocus(e) {

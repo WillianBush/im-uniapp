@@ -289,7 +289,8 @@
 				'setUnReadMsgSum'
 			]),
 			...mapActions('socket',[
-				'WEBSOCKET_SEND'
+				'WEBSOCKET_SEND',
+				'sendChatMessage'
 			]),
 			...mapActions('chat',[
 				'loadTalkUserAction',
@@ -368,28 +369,22 @@
 				if (this.txt.trim() == "") {
 					return;
 				}
-				this.WEBSOCKET_SEND({
-					body:{
+				this.sendChatMessage({
 						txt: this.txt,
 						toUid: this.toid,
 						fromUid: this.user.id
-					},
-					CMD:MessageType.USER_CHAT_SEND_TXT
-				})
+					})
 				this.txt = "";
 				this.showjia = true;
 				this.sendCount = this.sendCount + 1;
 				this.scrollToBottom();
 			},
 			sendEmotion(_a, _b) {				
-				this.WEBSOCKET_SEND({
-					body:{
+				this.sendChatMessage({
 						txt: "[f" + _a + "#" + _b + "]",
 						toUid: this.toid,
 						fromUid: this.user.id
-					},
-					CMD:MessageType.USER_CHAT_SEND_TXT
-				})
+					})
 				this.txt = "";
 				this.showjia = true;
 				this.sendCount = this.sendCount + 1;

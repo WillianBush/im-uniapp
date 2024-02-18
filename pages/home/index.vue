@@ -23,7 +23,6 @@
 		<!--#ifdef APP-PLUS -->
 		<view v-show="showMenu" :style="true?'height: 380upx;':'height: 300upx;'" style="position: absolute;
 				width: 280upx;
-
 				background: #4A484D;
 				top: 140upx;
 				right: 40upx;
@@ -121,9 +120,9 @@
 							<view class="text-cut" style="position: relative;top: 4px;">
 								<text style="margin-right: 6px;"
 									v-if="item.typeid=='2'&&item.online==0&&item.id!='-1'">{{ i18n.lastlogin }}{{item.lastLoginDate}}
-									- </text>
+									 </text>
 								<text style="margin-right: 6px;color:red"
-									v-if="item.aiteCount>0">[{{ i18n.youhave }}{{item.aiteCount}}{{i18n.listmsg}}]</text>
+									v-if="item.aiteCount>0">- [{{ i18n.youhave }}{{item.aiteCount}}{{i18n.listmsg}}]</text>
 								{{item.content}}
 							</view>
 						</view>
@@ -350,7 +349,7 @@
 					} else {
 						if (item.typeid == "2") {
 							uni.navigateTo({
-								url: "/pages/chat/user/index?toid=" + item.id
+								url: "/pages/chat/user/index?toid=" + item.id +"&name=" +item.title
 							})
 						} else {
 							uni.navigateTo({
