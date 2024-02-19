@@ -8,11 +8,11 @@
 				<block slot="content">
 					<view class="cu-avatar radius" style="margin-right: 5px; border-radius: 50%"
 						:style="'background-image:url('+getHeadPic(friendPic,imgUrl)+');'"></view>
-					{{showname}} <text v-if="chatCfg.showUserOnline==1">{{entity.online==0?' (离线)':' (在线)'}}</text>
-					<text v-show="temp.input_ing" style="font-size: 26upx;margin-left:10upx;">-
+					{{showNameStr}} <text v-if="chatCfg.showUserOnline==1">{{entity.online==0?' (离线)':' (在线)'}}</text>
+					<text v-show="temp.inputIng" style="font-size: 26upx;">
 						正在输入...</text>
 					<text v-show="toIP"
-						style="font-size: 16upx; color: #FFCC99; margin-left:10upx;">{{"IP："+toIP}}</text>
+						style="font-size: 26upx; color: #FFCC99; margin-left:2upx;">{{"IP："+toIP}}</text>
 				</block>
 				<block slot="right">
 					<uni-text @tap="goMgr(entity.id)"
@@ -104,8 +104,6 @@
 						</view>
 					</block>
 					<block v-else>
-						<!--视频在移动端的底层窗口渲染层级在最上层，但是H5不是，这里做了两套处理-->
-						<!--#ifdef H5-->
 						<!--自己发出的-->
 						<view v-if="item.bean.fromUid==user.id" class="cu-item self">
 							<view class="main">
@@ -120,14 +118,18 @@
 								<view v-else class="action text-grey">
 									<text class="cuIcon-warnfill text-red text-xxl"></text>
 								</view>
-
+								<!-- 消息发送中...-->
+								<view v-if="item.bean.read == 0 && !item.uuid">
+									<text class="iconfont cu-load load-cuIcon loading text-xxxl"
+										style="color: #ddd;"></text>
+								</view>
 								<view v-if="item.bean.psr!='video'" @contextmenu="clickRight($event, item.bean)"
 									@longpress="onLongPress($event,item.bean)"
 									:class="[item.bean.psr=='uparse'?'':'content bg-green shadow']"
 									:style="{backgroundColor:item.bean.psr=='uparse'? 'none':'#fff'}"
 									style="color:#222;">
-									<u-parse v-if="item.bean.psr=='uparse'" :content="item.bean.txt" @preview="preview"
-										@navigate="navigate" @moreBtn="publicmoreUrl"></u-parse>
+									<u-parse v-if="item.bean.psr=='uparse'" :content="transMessage(item.bean.txt)"
+										@preview="preview" @navigate="navigate" @moreBtn="publicmoreUrl"></u-parse>
 									<view @tap="clickVoice(item.bean.txt,index)" v-else-if="item.bean.psr=='voice'">
 										<text v-show="selVoiceIndex != index"
 											style="text-align: right; float:right;width:100upx;font-size: 52upx;position: relative;top: 4upx;"
@@ -140,7 +142,8 @@
 										<text v-show="selVoiceIndex == index"
 											style="float:right;font-size: 26upx;position: relative;top: 6upx;">{{item.bean.sub_txt}}"</text>
 									</view>
-									<rich-text style="max-width:440upx" v-else :nodes="item.bean.txt"></rich-text>
+									<rich-text style="max-width:440upx" v-else
+										:nodes="transMessage(item.bean.txt)"></rich-text>
 								</view>
 							</view>
 							<view v-if="item.bean.psr!='video'" class="cu-avatar radius"
@@ -156,9 +159,9 @@
 								<view @longpress="onLongPress($event,item.bean)"
 									@contextmenu="clickRight($event, item.bean)"
 									:class="[item.bean.psr=='uparse'?'':'content shadow']" style="color:#222;">
-									<u-parse v-if="item.bean.psr=='video'" :content="item.bean.txt" @preview="preview"
-										@navigate="navigate"></u-parse>
-									<u-parse v-else-if="item.bean.psr=='uparse'" :content="item.bean.txt"
+									<u-parse v-if="item.bean.psr=='video'" :content="transMessage(item.bean.txt)"
+										@preview="preview" @navigate="navigate"></u-parse>
+									<u-parse v-else-if="item.bean.psr=='uparse'" :content="transMessage(item.bean.txt)"
 										@preview="preview" @navigate="navigate"></u-parse>
 									<view @tap="clickVoice(item.bean.txt,index)" v-else-if="item.bean.psr=='voice'">
 										<text v-show="selVoiceIndex != index"
@@ -172,113 +175,24 @@
 										<text v-show="selVoiceIndex == index"
 											style="float:right;font-size: 26upx;position: relative;top: 6upx;">{{item.bean.sub_txt}}"</text>
 									</view>
-									<rich-text style="max-width:440upx" v-else :nodes="item.bean.txt"></rich-text>
+									<rich-text style="max-width:440upx" v-else
+										:nodes="transMessage(item.bean.txt)"></rich-text>
 								</view>
 							</view>
 							<view class="date "> {{item.bean.date}}</view>
 						</view>
-						<!--#endif-->
-
-
-						<!--#ifdef APP-PLUS-->
-						<!--自己发出的-->
-						<view v-if="item.bean.fromUid==user.id" class="cu-item self">
-							<view class="main">
-
-								<block v-if="WAIT_SEND_MSG.indexOf(item.bean.uuid)<0">
-									<block v-if="chatCfg.showUserMsgReadStatus==1">
-										<view v-if="item.bean.read==0&&chatCfg.showUserMsgReadStatus==1"
-											style="margin-right:30upx;color: #999;font-size: 24upx;">未读</view>
-										<view v-if="item.bean.read==1&&chatCfg.showUserMsgReadStatus==1"
-											style="margin-right:30upx;color: #999;font-size: 24upx;">已读</view>
-									</block>
-								</block>
-								<view v-else class="action text-grey">
-									<text class="cuIcon-warnfill text-red text-xxl"></text>
-								</view>
-
-								<view v-if="item.bean.psr!='video'" @longpress="onLongPress($event,item.bean)"
-									@contextmenu="clickRight($event, item.bean)"
-									:class="[item.bean.psr=='uparse'?'':'content bg-green shadow']"
-									:style="{backgroundColor:item.bean.psr=='uparse'? 'none':'#fff'}"
-									style="color:#222;">
-
-									<!--因为视频在底层窗口的显示等级是最上层，所以无法嵌套在scroll里面滑动，这里用image 代替-->
-									<image @tap="clickVideo(imgUrl+item.bean.oldTxt)"
-										v-if="item.bean.psr=='uparse' && item.bean.txt.indexOf(videoCheck) != -1"
-										style="width:418upx;height:335upx;border-radius: 5px"
-										src="../../../static/images/video.png"></image>
-
-									<u-parse
-										v-else-if="item.bean.psr=='uparse' && item.bean.txt.indexOf(verdeoCheck)  == -1"
-										:content="item.bean.txt" @preview="preview" @navigate="navigate"></u-parse>
-									<view @tap="clickVoice(item.bean.txt,index)" v-else-if="item.bean.psr=='voice'">
-										<text v-show="selVoiceIndex != index"
-											style="text-align: right; float:right;width:100upx;font-size: 52upx;position: relative;top: 4upx;"
-											class="iconfont icon-yuyin1 text-xxl "></text>
-										<text v-show="selVoiceIndex != index"
-											style="float:right;font-size: 26upx;position: relative;top: 4upx;">{{item.bean.sub_txt}}"</text>
-										<text v-show="selVoiceIndex == index"
-											style="text-align: right;float:right;width:100upx;font-size: 52upx;position: relative;top:0;line-height: 38upx;"
-											class="iconfont cu-load load-cuIcon loading text-xxl "></text>
-										<text v-show="selVoiceIndex == index"
-											style="float:right;font-size: 26upx;position: relative;top: 6upx;">{{item.bean.sub_txt}}"</text>
-									</view>
-									<rich-text style="max-width:440upx" v-else :nodes="item.bean.txt"></rich-text>
-								</view>
-							</view>
-							<view v-if="item.bean.psr!='video'" class="cu-avatar radius"
-								:style="'background-image:url('+getHeadPic(item.bean.fromHeadpic,imgUrl)+');'"></view>
-							<view v-if="item.bean.psr!='video'" class="date">{{item.bean.date}}</view>
-						</view>
-
-						<!--别人发来的-->
-						<view v-else class="cu-item">
-							<view @tap.stop="goUserDetail(item.bean.fromUid)" class="cu-avatar radius"
-								:style="'background-image:url('+getHeadPic(item.bean.fromHeadpic)+');'"></view>
-							<view class="main">
-								<view @longpress="onLongPress($event,item.bean)"
-									@contextmenu="clickRight($event, item.bean)"
-									:class="[item.bean.psr=='uparse'?'':'content shadow']" style="color:#222;">
-									<!--因为视频在底层窗口的显示等级是最上层，所以无法嵌套在scroll里面滑动，这里用image 代替-->
-									<image @tap="clickVideo(imgUrl+item.bean.oldTxt)"
-										v-if="item.bean.psr=='video' && item.bean.txt.indexOf(videoCheck) != -1"
-										style="width:418upx;height:335upx;border-radius: 5px"
-										src="../../../static/images/video.png"></image>
-									<u-parse v-else-if="item.bean.psr=='uparse'" :content="item.bean.txt"
-										@preview="preview" @navigate="navigate"></u-parse>
-									<view @tap="clickVoice(item.bean.txt,index)" v-else-if="item.bean.psr=='voice'">
-										<text v-show="selVoiceIndex != index"
-											style="text-align: right; float:right;width:100upx;font-size: 52upx;position: relative;top: 4upx;"
-											class="iconfont icon-yuyin1 text-xxl "></text>
-										<text v-show="selVoiceIndex != index"
-											style="float:right;font-size: 26upx;position: relative;top: 4upx;">{{item.bean.sub_txt}}"</text>
-										<text v-show="selVoiceIndex == index"
-											style="text-align: right;float:right;width:100upx;font-size: 52upx;position: relative;top:0;line-height: 38upx;"
-											class="iconfont cu-load load-cuIcon loading text-xxl "></text>
-										<text v-show="selVoiceIndex == index"
-											style="float:right;font-size: 26upx;position: relative;top: 6upx;">{{item.bean.sub_txt}}"</text>
-									</view>
-									<rich-text style="max-width:440upx" v-else :nodes="item.bean.txt"></rich-text>
-								</view>
-							</view>
-							<view class="date "> {{item.bean.date}}</view>
-						</view>
-						<!--#endif-->
 					</block>
 				</block>
 				<view class="cu-item self" v-show="chatMyLoadding">
 					<view class="main">
 						<view style="background-color: #F1F1F1;" class="cu-load load-cuIcon loading"></view>
 					</view>
-					<view class="cu-avatar radius"
-						:style="'background-image:url('+getHeadPic(user.headpic)+');'"></view>
+					<view class="cu-avatar radius" :style="'background-image:url('+getHeadPic(user.headpic)+');'">
+					</view>
 				</view>
 			</scroll-view>
 			<view class="cu-bar foot input" :style="[{bottom:InputBottom+'upx'}]"
 				style="flex-direction: row; height:120px; width: calc(80% - 54px);left: calc(20% + 54px); background-color:#fff">
-
-				<!-- @focus="InputFocus" @blur="InputBlur"-->
 				<input id="testInput" auto-height="true" :show-confirm-bar="true" confirm-type="send" @confirm="send"
 					@keydown.shift.enter="altOrShiftEnter" @keydown.alt.enter="altOrShiftEnter"
 					@keyup.ctrl.enter="lineFeed()" @focus="InputFocus" @blur="InputBlur" v-show="c_type==1"
@@ -305,13 +219,23 @@
 				style="box-shadow: none;-webkit-box-shadow: none;display: block;background: #fff;height:330upx;margin-bottom:80upx; width: calc(80% - 54px);left: calc(20% + 54px);">
 				<scroll-view scroll-y class="indexes" style="height:330upx;padding-bottom:20upx;padding-top: 10upx;"
 					:scroll-with-animation="true" :enable-back-to-top="true">
-					<view v-if="emotion <=1">
+					<view v-if="emotion <1">
 						<view v-for="(ele,i) in 14" :key="i" style="display: flex;">
 							<view v-for="(ele1,item) in 8" :key="item" @tap="sendEmotion(0,i*8 +item)"
 								style="flex:1;text-align: center;">
 								<image v-if="(i*8 +item)<=104" lazy-load
-									:src="'../../../static/emotion/face0'+emotion+'/'+(i*8 +item)+ (emotion == 0?'.gif':'.png')"
+									:src="'../../../static/emotion/face00/'+(i*8 +item)+'.gif'"
 									style="width:50upx;height:50upx;margin-top: 10upx;;"></image>
+							</view>
+						</view>
+					</view>
+					<view v-else-if="emotion == 1">
+						<view v-for="(ele,i) in 5" :key="i" style="display: flex;">
+							<view v-for="(ele1,item) in 3" :key="item" @tap="sendEmotion(1,i*3 +item)"
+								style="flex:1;text-align: center;">
+								<image lazy-load v-if="(i*3) +item <=9"
+									:src="'../../../static/emotion/face01/'+(i*3 +item)+ '.gif'"
+									style="width:200upx;height:200upx;margin-top: 10upx;"></image>
 							</view>
 						</view>
 					</view>
@@ -408,7 +332,10 @@
 	import {
 		dateFormat,
 		uniqueArr,
-		uuid
+		uuid,
+		parseEmotion,
+		showToast,
+		getHeadPic
 	} from '../../../common/utils';
 	import {
 		MessageType
@@ -416,9 +343,6 @@
 	//#ifdef H5
 	import h5Copy from '@/common/junyi-h5-copy.js'
 	//#endif
-	import {
-		getHeadPic
-	} from '../../../common/utils';
 	export default {
 		name: 'UserChat',
 		components: {
@@ -450,6 +374,9 @@
 				'imgUrl',
 				'reqUrl'
 			]),
+			showNameStr() {
+				return this.showname.length > 9 ? this.showname.substring(0, 6) + "..." : this.showname
+			}
 		},
 		data() {
 			return {
@@ -474,14 +401,6 @@
 				emotion: 0,
 				showItem: 0,
 				scrollTop: 0,
-				style: {
-					pageHeight: 0,
-					contentViewHeight: 0,
-					footViewHeight: 90,
-					mitemHeight: 0
-				},
-				sendCount: 0, //这里为了。第一次发送需要延迟拉下拉
-
 				RECORDER: "",
 				AUDIO: uni.createInnerAudioContext(),
 				recordTimer: null,
@@ -515,7 +434,12 @@
 				showname: "",
 				toIP: "",
 				pasteImgUrl: '',
-				showPickureDialog: false
+				showPickureDialog: false,
+				syncMessageArr: [],
+				pageParams: {
+					pageNumber: 1,
+					pageCount: '30',
+				},
 			};
 		},
 		watch: {
@@ -549,7 +473,12 @@
 				'setArList'
 			]),
 			...mapActions('socket', [
-				'WEBSOCKET_SEND'
+				"sendChatMessage",
+				"sendShowInputing",
+				"sendHideInputing",
+				"sendVoiceMessage",
+				"sendChatMessageUndo",
+				"sendChatMessageReaded"
 			]),
 			...mapActions('chat', [
 				'loadTalkUserAction',
@@ -557,9 +486,12 @@
 				'uploadVideoAction',
 				'uploadImageAction',
 				'uploadVoiceAction',
-				'collectAction'
-
+				'collectAction',
+				"sendBaseDaoAction"
 			]),
+			transMessage(message) {
+				return parseEmotion(message);
+			},
 			getHeadPic(img) {
 				return getHeadPic(img, this.imgUrl)
 			},
@@ -698,42 +630,9 @@
 			onLoadMethod() {
 				this.setCurChatMsgList([]);
 				this.setChatMyLoadding(false);
-
-				// #ifndef H5
-				//录音开始事件
-				this.RECORDER.onStart((e) => {
-					this.recordBegin(e);
-				})
-				//录音结束事件
-				this.RECORDER.onStop((e) => {
-					this.recordEnd(e);
-				})
-				// #endif
-
-				let _this = this;
-				let user = uni.getStorageSync("USER");
 				this.getWindowSize();
-				if (this.chatMessageMap.has(user.id + "#" + this.toid)) {
-					let msg_list = this.chatMessageMap.get(user.id + "#" + this.toid);
-					if (msg_list && msg_list.length > 0) {
-						var newMsgList = msg_list;
-						this.setCurChatMsgList(newMsgList);
-					}
-				} else {
-					let str = uni.getStorageSync(user.id + "#" + this.toid + '_CHAT_MESSAGE');
-					if (str && str != "") {
-						var jsonObj = JSON.parse(str);
-						this.updateChatMessageMap({
-							key: user.id + "#" + this.toid,
-							value: jsonObj,
-						});
-						this.setCurChatMsgList(jsonObj);
-					} else {
-						//如果什么都没记录的话，则从云端加载
-						//this.tongbuMsg_1stInNoData();
-					}
-				}
-
+				this.tongbuMsg();
+				let _this = this;
 				/*获取聊天的对象 user数据*/
 				getTalkUserInfo({
 						toid: _this.toid
@@ -741,7 +640,8 @@
 					.then((res) => {
 						let res_data = eval(res.data);
 						if (res_data.code == 200) {
-							_this.toIP = res_data.body.ip + "(" + res_data.body.ipAddr + ")";
+							_this.toIP = res_data.body.ip + (res_data.body.ipAddr ? "(" + res_data.body.ipAddr + ")" :
+								"");
 						}
 					})
 					.catch((error) => {
@@ -775,58 +675,42 @@
 			scrollFn(e) {
 				this.scrollDetail = e.detail;
 			},
-			tongbuMsg_1stInNoData() {
-				let _this = this;
-				uni.showLoading()
-				syncMsgData({
-						chatid: _this.toid,
-					})
-					.then((res) => {
-						let res_data = eval(res.data);
-						if (res_data.code == 201) {
-							//没缓存数据，把加载取消
-							setTimeout(() => {
-								uni.hideLoading();
-							}, 400);
-						} else if (res_data.code == 200) {
-							setTimeout(() => {
-								uni.hideLoading();
-							}, 400);
-						}
-					})
-					.catch((error) => {
-						uni.showToast({
-							icon: "none",
-							position: "bottom",
-							title: error.msg ? error.msg : "服务器异常!",
-						});
-					});
-			},
 			tongbuMsg() {
 				let _this = this;
-				_this.chatMessageMap.delete(_this.user.id + "#" + _this.toid);
-				uni.removeStorageSync(_this.user.id + "#" + _this.toid + '_CHAT_MESSAGE');
 				_this.setCurChatMsgList([]);
-				uni.removeStorageSync(_this.user.id + "#" + _this.toid + '_CHAT_MESSAGE_LASTCONTENT');
 				uni.removeStorageSync(_this.user.id + "#" + _this.toid + '_CHAT_MESSAGE_UNREAD');
 				uni.showLoading()
 				syncMsgData({
 						chatid: _this.toid,
+						pageNumber: this.pageParams.pageNumber,
 					})
 					.then((res) => {
 						let res_data = eval(res.data);
-						if (res_data.code == 201) {
-							//没缓存数据，把加载取消
-							setTimeout(() => {
-								uni.hideLoading();
-							}, 400);
-						} else if (res_data.code == 200) {
-							setTimeout(() => {
-								uni.hideLoading();
-							}, 400);
+						if (res_data.code == 200) {
+							if (res_data.body && res_data.body.list.length != 0) {
+								let cList = [];
+								for (let i = 0; i < res_data.body.list.length; i++) { //从[0]中取出
+									let msg = res_data.body.list[i][0]
+									msg.uuid = msg.bean.uuid;
+									cList.push(msg);
+								} //遍历
+								_this.syncMessageArr = cList
+								let user = uni.getStorageSync("USER");
+								//1：先清楚和刷新当前显示列表
+								_this.setCurChatMsgList([])
+								_this.setCurChatMsgList(_this.syncMessageArr);
+								//3:设置最后一个信息
+								// if (_this.curChatMsgList.length != 0) {
+								// 	_this.curChatMsgList[_this.curChatMsgList.length - 1]
+								// 		.bean.simple_content;
+								// }
+								_this.scrollToBottom()
+							}
 						}
+						uni.hideLoading();
 					})
 					.catch((error) => {
+						uni.hideLoading();
 						uni.showToast({
 							icon: "none",
 							position: "bottom",
@@ -1043,13 +927,6 @@
 				}
 				this.hidePop();
 			},
-			/* 列表触摸事件 */
-			listTap() {
-				/* 因弹出遮罩问题，所以需要在遮罩弹出的情况下阻止列表事件的触发 */
-				if (this.showShade) {
-					return;
-				}
-			},
 			selType(_t) {
 				this.c_type = _t;
 				this.showjia = true;
@@ -1098,11 +975,7 @@
 				}, 100)
 			},
 			inputTxt() {
-				if (this.txt.trim() == "") {
-					this.showjia = true;
-				} else {
-					this.showjia = false;
-				}
+				this.showjia = this.txt.trim() == "";
 			},
 			goUserDetail(_id) {
 				uni.navigateTo({
@@ -1115,93 +988,6 @@
 					type: 'user'
 				})
 			},
-			sendBaseDo(v) {
-
-				v.fromHeadpic = this.user.headpic;
-				let date = new Date();
-				v.date = dateFormat("Y/m/d H:M", date);
-				v.fromName = this.user.nickName;
-				v.dateTime = date.getTime();
-				v.read = 0;
-				v.oldTxt = v.txt;
-				v.simple_content = v.txt;
-				if (this.temp_txt != "") {
-					v.txt = this.temp_txt;
-					this.temp_txt = "";
-				}
-				if (this.temp_map.size > 0) {
-					this.temp_map.forEach((value, key, map) => {
-						while (v.txt.indexOf(key) >= 0) {
-							v.txt = v.txt.replace(key, value);
-						}
-					})
-				}
-				//去除视频上传和图片上传 纯文件内容才检测URL
-				if (v.txt.indexOf("/chat_video") < 0 && v.txt.indexOf("/chat_img") < 0) {
-					let hasUrl = false;
-					let httpReg = new RegExp(
-						"(http[s]{0,1}|ftp)://[a-zA-Z0-9\\.\\-]+\\.([a-zA-Z]{2,4})(:\\d+)?(/[a-zA-Z0-9\\.\\-~!@#$%^&amp;*+?:_/=<>]*)?",
-						"gi");
-					let formatTxtContent = v.txt.replace(httpReg, function(httpText) {
-						if (httpText.indexOf("/img/emotion/") >= 0) return httpText;
-						hasUrl = true;
-						return '<a style="color: #3F92F8;" href="' + httpText + '">' + httpText + '</a>';
-					});
-					if (hasUrl) {
-						v.txt = formatTxtContent;
-						v.psr = "uparse";
-					}
-				}
-
-				let msgbean = {
-					chatType: "2",
-					chatid: this.toid,
-					type: "USER_TXT",
-					bean: v
-				}
-				let list = [msgbean];
-				let str = uni.getStorageSync(this.user.id + "#" + msgbean.chatid + '_CHAT_MESSAGE');
-				if (str && str != "") {
-					var jsonObj = JSON.parse(str);
-					jsonObj = jsonObj.concat(list);
-
-					var newJsonObj = jsonObj;
-					uni.setStorageSync(this.user.id + "#" + msgbean.chatid + '_CHAT_MESSAGE', JSON.stringify(
-						newJsonObj));
-					if (jsonObj.length > 50) {
-						jsonObj.splice(0, jsonObj.length - 50);
-					}
-
-					this.updateChatMessageMap({
-						key: this.user.id + "#" + msgbean.chatid,
-						value: newJsonObj,
-					});
-
-					if (this.curChatEntity && this.curChatEntity.id == v.toUid) {
-						this.setCurChatMsgList(newJsonObj);
-						this.WEBSOCKET_SEND({
-							body: {
-								toUid: msgbean.chatid,
-								fromUid: this.user.id,
-							},
-							CMD: MessageType.CHAT_MSG_READ_ED,
-						});
-
-					}
-				} else {
-					var newList = list;
-					uni.setStorageSync(this.$store.state.user.id + "#" + msgbean.chatid + '_CHAT_MESSAGE', JSON.stringify(
-						newList));
-					this.updateChatMessageMap({
-						key: this.user.id + "#" + msgbean.chatid,
-						value: newList,
-					});
-					if (this.curChatEntity && this.curChatEntity.id == v.toUid) {
-						this.setCurChatMsgList(uniqueArr(newList, "uuid"));
-					}
-				}
-				this.setChatMyLoadding(false)
-			},
 			altOrShiftEnter() {
 				this.input_is_focus = false;
 				this.txt += '\n';
@@ -1210,71 +996,47 @@
 					this.input_is_focus = true;
 					this.isAltOrShiftEnter = false;
 				}, 300)
-
 			},
 			send() {
 				let _this = this;
 				setTimeout(() => {
-					if (this.isAltOrShiftEnter) return;
-					this.input_is_focus = false;
-					if (this.txt.trim() == "") {
+					if (_this.isAltOrShiftEnter) return;
+					if (_this.txt.trim() == "") {
+						showToast("消息不能为空!");
 						return;
 					}
-					this.txt = "";
-					this.WEBSOCKET_SEND({
-						body: {
-							txt: this.txt.replace(/\n/g, "<br/>"),
-							toUid: this.toid,
-							fromUid: this.user.id,
-							uuid: uuid(),
-						},
-						CMD: MessageType.USER_CHAT_SEND_TXT,
-					});
-					this.setChatMyLoadding(true);
-					this.sendBaseDo(v);
-					this.showjia = true;
-					this.sendCount = this.sendCount + 1;
+					_this.input_is_focus = false;
+					let v = {
+						txt: _this.txt.replace(/\n/g, "<br/>"),
+						toUid: _this.toid,
+						fromUid: _this.user.id,
+						uuid: uuid(),
+					}
+					_this.sendChatMessage(v);
+					_this.txt = "";
+					_this.setChatMyLoadding(true)
+					//#ifdef APP-PLUS
+					_this.sendBaseDaoAction(v);
+					//#endif
+					_this.showjia = true;
 					setTimeout(function() {
 						_this.scrollToBottom();
 						_this.input_is_focus = true;
 					}, 300)
 				}, 100)
-
 			},
 			sendEmotion(_a, _b) {
-				let _this = this;
 				this.txt = this.txt + ("[f" + _a + "#" + _b + "]");
-				let f = ".gif";
-				if (_a == 1) f = ".png";
-				let img = this.imgUrl + "/img/emotion/face" + (_a < 10 ? "0" + _a : _a) + "/" + _b + f;
-				let s = "";
-				if (_a == 0) {
-					s = "<img  style='max-width: 24px;max-height:24px;' class='face face1' src='" + img + "'>";
-				} else if (_a == 1) {
-					s = "<img style='max-width: 100px;max-height:100px;' class='face face2' src='" + img + "'>";
-				} else {
-					s = "<img  style='max-width: 150px;max-height:150px;' class='face face3' src='" + img + "'>";
-				}
-
-				if (!this.temp_map.has("[f" + _a + "#" + _b + "]")) {
-					this.temp_map.set("[f" + _a + "#" + _b + "]", s)
-				}
-
 				this.showjia = false;
 			},
 			InputFocus(e) {
 				var that = this
 				setTimeout(function() { // 加上延时会使页面看起来更流畅
-					// that.domHeight=document.documentElement.clientHeight;
 					document.body.scrollTop = document.body.scrollHeight;
 				}, 500)
-
-				this.WEBSOCKET_SEND({
-					body: {
-						toUid: this.toid,
-						fromUid: this.user.id,
-					},
-					CMD: MessageType.SHOW_INPUT_ING,
+				this.sendShowInputing({
+					toUid: this.toid,
+					fromUid: this.user.id
 				});
 			},
 			InputBlur(e) {
@@ -1282,183 +1044,38 @@
 				setTimeout(function() { // 加上延时会使页面看起来更流畅
 					document.body.scrollTop = document.body.scrollHeight;
 				}, 500)
-				this.WEBSOCKET_SEND({
-					body: {
-						toUid: this.toid,
-						fromUid: this.user.id,
-					},
-					CMD: MessageType.HIDE_INPUT_ING,
+				this.sendHideInputing({
+					toUid: this.toid,
+					fromUid: this.user.id
 				});
 			},
 			ChooseVideo() {
 				let _this = this;
-				uni.chooseVideo({
-					sourceType: ['album', 'camera'],
-					success: (res) => {
-						//#ifdef H5
-						//大于15M。则报
-						if (res.tempFile.size > 1024 * 1024 * 15) {
-							uni.showToast({
-								icon: 'none',
-								title: "视频大小不能高于15M"
-							});
-							return;
-						}
-						//#endif
-						_this.setChatMyLoadding(true);
-						setTimeout(() => {
-							_this.scrollTop = 9999999 + Math.random();
-						}, 100)
-						let token = uni.getStorageInfoSync('token')
-						var uper = uni.uploadFile({
-							// 需要上传的地址
-							url: _this.reqUrl + "/user/file/uploadVideo",
-							header: {
-								["member-token"]: token,
-							},
-							// filePath  需要上传的文件
-							filePath: res.tempFilePath,
-							name: 'file',
-							success(res1) {
-								let json = eval("(" + res1.data + ")");
-								// 显示上传信息
-								if (json.code == 200) {
-									_this.WEBSOCKET_SEND({
-										body: {
-											txt: json.msg,
-											toUid: _this.toid,
-											fromUid: _this.user.id,
-											uuid: uuid(),
-										},
-										CMD: MessageType.USER_CHAT_SEND_TXT,
-									});
-									let videoSrc = _this.imgUrl + json.msg;
-									_this.temp_txt = _this.temp_txt + (
-										"<video  style='max-width: 150px;max-height:150px;' class='face' src='" +
-										videoSrc + "'>");
-									v.psr = "video";
-									v.simple_content = "[视频]";
-									_this.sendBaseDo(v);
-									setTimeout(function() {
-										_this.scrollToBottom();
-									}, 100)
-								}
-							}
-						});
-					}
-				});
+				this.uploadVideoAction(this.toid).then(res => {
+					setTimeout(function() {
+						_this.scrollToBottom();
+					}, 100)
+				}).catch(error => {
+					uni.showToast({
+						icon: 'none',
+						position: 'bottom',
+						title: error.msg ? error.msg : "上传失败!"
+					});
+				})
 			},
-
 			ChooseImage() {
-				console.log("上传文件");
 				let _this = this;
-				uni.chooseImage({
-					count: 4, //默认9
-					sizeType: ['compressed'], //可以指定是原图还是压缩图，默认二者都有
-					sourceType: ['album', 'camera'], //从相册选择
-					success: (res) => {
-						console.log('res', res)
-						//大于2M。则报
-						if (res.tempFiles[0].size > 1024 * 2048) {
-							uni.showToast({
-								icon: 'none',
-								title: "图片大小不能高于2M"
-							});
-							return;
-						}
-
-						let arrs = res.tempFilePaths;
-						_this.setChatMyLoadding(true);
-						let token = uni.getStorageInfoSync('token')
-						setTimeout(function() {
-							_this.scrollToBottom();
-						}, 100)
-						arrs.forEach(item => {
-							var uper = uni.uploadFile({
-								// 需要上传的地址
-								url: _this.reqUrl + "/user/file/upload",
-								header: {
-									["member-token"]: token,
-								},
-								// filePath  需要上传的文件
-								filePath: item,
-								name: 'file',
-								success(res1) {
-									let json = eval("(" + res1.data + ")");
-									// 显示上传信息
-									if (json.code == 200) {
-										_this.WEBSOCKET_SEND({
-											body: {
-												txt: json.msg,
-												toUid: _this.toid,
-												fromUid: _this.user.id,
-												uuid: uuid(),
-											},
-											CMD: MessageType.USER_CHAT_SEND_TXT,
-										});
-										let img = _this.imgUrl + json.msg;
-										_this.temp_txt = _this.temp_txt + (
-											"<img  style='max-width: 150px;max-height:150px;' class='face' src='" +
-											img + "'>");
-										v.psr = "uparse";
-										v.simple_content = "[图片]";
-										_this.sendBaseDo(v);
-
-										setTimeout(function() {
-											_this.scrollToBottom();
-										}, 100)
-									}
-								}
-							});
-						});
-					}
-				});
-			},
-			//录音开始UI效果
-			recordBegin(e) {
-				uni.showToast({
-					title: '正在录音',
-					image: '../../../static/luyin.png',
-					duration: 60000
-				});
-				this.recordLength = 0;
-				this.recordTimer = setInterval(() => {
-					this.recordLength++;
-				}, 1000)
-			},
-			// 结束录音
-			voiceEnd(e) {
-				this.RECORDER.stop(); //录音结束
-			},
-			// 录音被打断
-			voiceCancel() {
-				this.RECORDER.stop(); //录音结束
-			},
-			//录音结束(回调文件)
-			recordEnd(e) {
-				let _this = this;
-				let user = uni.getStorageSync("USER");
-				clearInterval(this.recordTimer);
-				uni.hideToast();
-				let msg = "";
-				let min = parseInt(this.recordLength / 60);
-				let sec = this.recordLength % 60;
-				min = min < 10 ? '0' + min : min;
-				sec = sec < 10 ? '0' + sec : sec;
-				msg = min + ':' + sec;
-
-				_this.voicePath = e.tempFilePath;
-				_this.Audio2dataURL(_this.voicePath, msg)
-				setTimeout(() => {
-					_this.scrollTop = 9999999 + Math.random();
-				}, 100)
-			},
-
-			videoChangeFC(e) {
-				if (!e.detail.fullScreen) {
-					this.showVideo = false;
-					this.videoSrc = "";
-				}
+				this.uploadImageAction(this.toid).then(res => {
+					setTimeout(function() {
+						_this.scrollToBottom();
+					}, 100)
+				}).catch(error => {
+					uni.showToast({
+						icon: 'none',
+						position: 'bottom',
+						title: error.msg ? error.msg : "上传失败!"
+					});
+				})
 			},
 			clickVideo(_vpath) {
 				uni.navigateTo({
@@ -1477,7 +1094,6 @@
 				var src = _this.imgUrl + _vpath;
 				console.log(src);
 				this.selVoiceIndex = _index;
-
 				this.player = uni.createInnerAudioContext();
 				this.player.src = src; //音频地址
 				this.player.onEnded(() => {
@@ -1487,10 +1103,6 @@
 					_this.selVoiceIndex = -1;
 				});
 				this.player.play();
-			},
-			getMotionImg(index) {
-				let post = index == 1 ? 'png' : 'gif';
-				return '../../static/emotion/face0' + index + '/face-lbl.' + post;
 			},
 			scrollToBottom: function() {
 				let _this = this;
@@ -1508,47 +1120,6 @@
 					}
 				})
 			},
-			/**
-			 * 录音语音文件转base64字符串
-			 * @param {Object} path
-			 */
-			Audio2dataURL(path, timeStr) {
-				let _this = this;
-				let user = uni.getStorageSync("USER");
-				let token = uni.getStorageSync('token')
-				var uper = uni.uploadFile({
-					// 需要上传的地址
-					url: _this.reqUrl + "/user/file/uploadVoice",
-					header: {
-						["member-token"]: token,
-					},
-					// filePath  需要上传的文件
-					filePath: path,
-					name: 'file',
-					success(res1) {
-						let json = eval("(" + res1.data + ")");
-						// 显示上传信息
-						if (json.code == 200) {
-							// 显示上传信息
-							if (json.code == 200) {
-								_this.WEBSOCKET_SEND({
-									body: {
-										txt: json.msg,
-										toUid: _this.toid,
-										fromUid: _this.user.id,
-										sub_txt: timeStr,
-										uuid: uuid(),
-									},
-									CMD: MessageType.USER_CHAT_SEND_VOICE,
-								});
-								setTimeout(function() {
-									_this.scrollToBottom();
-								}, 100)
-							}
-						}
-					}
-				});
-			}
 		}
 	}
 </script>

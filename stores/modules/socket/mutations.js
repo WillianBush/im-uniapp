@@ -3,12 +3,6 @@ import { MessageType } from "../../../const/MessageType";
 
 let TAG = "SOCKET-MUTATIONS"
 export default {
-	WEBSOCKET_INIT(state){
-		
-	},
-	WEBSOCKET_SEND(state, p) {
-		
-	},
 	clearData(state){
 		state = {
 			socketTask: null,

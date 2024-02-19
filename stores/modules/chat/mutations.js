@@ -35,6 +35,9 @@ export default {
 	setCurChatMsgList(state, payload) {
 		state.curChatMsgList = payload;
 	},
+	addCurChatMsg(state,payload){
+		state.curChatMsgList.push(payload);
+	},
 	setCurChatAiteToMyList(state, payload) {
 		state.curChatAiteToMyList = payload
 	},
@@ -73,12 +76,6 @@ export default {
 	},
 	setYaoqingAuditAble(state, payload) {
 		state.curChatEntity.yaoqingAuditAble = payload;
-	},
-	setTouserid(state,payload){
-		state.touserid = payload;
-	},
-	setChatShowName(state,payload){
-		state.chatShowName = payload
 	},
 	clearData(state) {
 		state = {

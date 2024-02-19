@@ -71,6 +71,43 @@ export const dateFormat = (fmt, date) => {
 	return fmt;
 }
 
+
+
+// [f0#0] xxx
+export const parseEmotion = (str) => {
+	const regex = /\[f\d{1,2}#\d+\]/g;
+	let matchArr = [...str.matchAll(regex)];
+	let temp = str;
+	matchArr.forEach(item => {
+		let imgs = productEmotion(item[0]);
+		temp = temp.replace(item[0], imgs);
+	})
+	return temp;
+}
+
+const productEmotion = (str) => {
+	let emotionArr = str.replace("[f", "").replace("]", "").split("#");
+	let _a = emotionArr[0];
+	let _b = emotionArr[1];
+	let img = "/static/emotion/face" + (_a < 10 ? "0" + _a : _a) + "/" + _b + ".gif";
+	let s = "";
+	if (_a == 0) {
+		s = "<img  style='max-width: 24px;max-height:24px;' class='face face1' src='" + img + "'>";
+	} else if (_a == 1) {
+		s = "<img style='max-width: 300px;max-height:400px;' class='face face2' src='" + img + "'>";
+	} else {
+		s = "<img  style='max-width: 150px;max-height:150px;' class='face face3' src='" + img + "'>";
+	}
+	return s;
+}
+
+export const showToast = (message, duration = 1500) => {
+	uni.showToast({
+		title: message,
+		duration: duration
+	})
+}
+
 export const getHeadPic = (headpic, url) => {
 		if (headpic && headpic.indexOf('static/header') != -1) {
 			return headpic;

@@ -71,9 +71,6 @@ export default{
 	setGreetingpic5(state,payload){
 		state.greetingpic5 = payload;
 	},
-	setOpenRefresh(state,payload){
-		state = payload
-	},
 	clearData(state){
 		state = {
 			...state,

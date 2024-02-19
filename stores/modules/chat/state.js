@@ -9,8 +9,6 @@ export const state = {
 	curChatMsgList: [], //当前正在聊天的记录列表
 	chatMyLoadding: false,
 	memberLength:"",
-	touserid:"",
-	chatShowName:"",
 	//临时属性
 	temp: {
 		base64: "", //【作用于群二维码发给朋友临时存等等，因为直接使用带参数页面跳转会导致特殊符号过滤掉】
