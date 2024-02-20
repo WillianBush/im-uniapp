@@ -41,10 +41,10 @@ export default {
 			}
 			state.socketTask.close();
 		}
-		// var i = Math.floor(Math.random() * rootState.reqUrl.length);
+		var i = Math.floor(Math.random() * rootState.socketUrl.length);
 		console.log("====reqUrl", rootState.app.reqUrl)
 		console.log("====wsUrl", rootState.app.socketUrl)
-		let ws = rootState.app.socketUrl[0]
+		let ws = rootState.app.socketUrl[i]
 		// let websocket_id = uni.getStorageSync("websocket_id");
 		Log.d(TAG, "WEBSOCKET_INIT", rootState.user);
 		commit("setSocketTask", uni.connectSocket({
@@ -56,6 +56,9 @@ export default {
 			},
 			fail(e) {
 				Log.e(TAG, "=====ws链接失败", e);
+				if(heartCheck){
+					heartCheck.reset();
+				}
 			},
 		}))
 		//心跳检测
