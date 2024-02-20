@@ -1079,6 +1079,7 @@
 						toUid: _this.toid,
 						fromUid: _this.user.id,
 						uuid: uuid(),
+						chatType:'2'
 					}
 					_this.sendChatMessage(v);
 					_this.txt = "";
@@ -1117,7 +1118,9 @@
 			},
 			ChooseVideo() {
 				let _this = this;
-				this.uploadVideoAction(this.toid).then(res => {
+				this.uploadVideoAction({
+					toUid:this.toid
+				}).then(res => {
 					setTimeout(function() {
 						_this.scrollToBottom();
 					}, 100)
@@ -1131,7 +1134,9 @@
 			},
 			ChooseImage() {
 				let _this = this;
-				this.uploadImageAction(this.toid).then(res => {
+				this.uploadImageAction({
+					toUid:this.toid
+				}).then(res => {
 					setTimeout(function() {
 						_this.scrollToBottom();
 					}, 100)
@@ -1299,12 +1304,13 @@
 									fromUid: _this.user.id,
 									sub_txt: timeStr,
 									uuid: uuid(),
+									chatType:'2'
 								})
 								//#ifdef APP-PLUS
 								v.psr = "voice";
 								v.simple_content = "[语音]";
-								//#endif
 								_this.sendBaseDaoAction(v);
+								//#endif
 								setTimeout(function() {
 									_this.scrollToBottom();
 								}, 100)

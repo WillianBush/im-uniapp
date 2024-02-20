@@ -41,10 +41,10 @@ export default {
 			}
 			state.socketTask.close();
 		}
-		// var i = Math.floor(Math.random() * rootState.reqUrl.length);
+		var i = Math.floor(Math.random() * rootState.socketUrl.length);
 		console.log("====reqUrl", rootState.app.reqUrl)
 		console.log("====wsUrl", rootState.app.socketUrl)
-		let ws = rootState.app.socketUrl[0]
+		let ws = rootState.app.socketUrl[i]
 		// let websocket_id = uni.getStorageSync("websocket_id");
 		Log.d(TAG, "WEBSOCKET_INIT", rootState.user);
 		commit("setSocketTask", uni.connectSocket({
@@ -56,6 +56,7 @@ export default {
 			},
 			fail(e) {
 				Log.e(TAG, "=====ws链接失败", e);
+				heartCheck && heartCheck.reset();
 			},
 		}))
 		//心跳检测
@@ -189,7 +190,9 @@ export default {
 			dispatch("parseRevMessage", res);
 		})
 	},
-	WEBSOCKET_CLOSE({state}){
+	WEBSOCKET_CLOSE({
+		state
+	}) {
 		state.socketTask.close()
 	},
 	parseRevMessage({
@@ -409,18 +412,13 @@ export default {
 				}
 			}
 		}
-
+		//#ifndef H5
 		let str = uni.getStorageSync(
 			user.id + "#" + data.body[0].chatid + "_CHAT_MESSAGE"
 		);
-
 		if (str && str != "") {
 			var jsonObj = JSON.parse(str);
 			jsonObj = jsonObj.concat(data.body);
-
-			// if (jsonObj.length > 100) {
-			// 	jsonObj.splice(0, jsonObj.length - 100);
-			// }
 
 			uni.setStorageSync(
 				user.id + "#" + data.body[0].chatid + "_CHAT_MESSAGE",
@@ -439,7 +437,7 @@ export default {
 				rootState.chat.curChatEntity &&
 				rootState.chat.curChatEntity.id == data.body[0].chatid
 			) {
-				
+
 				//1-9修正 把直接赋值改为先去重
 				jsonObj.forEach((item) => {
 					item.uuid = item.bean.uuid;
@@ -451,16 +449,6 @@ export default {
 						root: true
 					}
 				);
-				
-				// store.commit("setCur_chat_msg_list",jsonObj);
-				let v = {
-					toUid: data.body[0].chatid,
-					fromUid: user.id,
-				};
-				dispatch("WEBSOCKET_SEND", {
-					cmd: MessageType.CHAT_MSG_READ_ED,
-					...v
-				})
 			}
 			uni.setStorageSync(
 				user.id + "#" + data.body[0].chatid + "_CHAT_MESSAGE_LASTCONTENT",
@@ -489,6 +477,29 @@ export default {
 				user.id + "#" + data.body[0].chatid + "_CHAT_MESSAGE_LASTCONTENT",
 				data.body.simple_content
 			);
+		}
+		//#endif
+
+
+		//#ifdef H5
+		commit(
+			"chat/addCurChatMsg",
+			data.body, {
+				root: true
+			}
+		);
+		//#endif
+
+		let v = {
+			toUid: data.body[0].chatid,
+			fromUid: user.id,
+		};
+		if (rootState.chat.curChatEntity && rootState.chat.curChatEntity.id == data.body[0].chatid && data.body[0].bean
+			.fromUid != user.id) {
+			dispatch("WEBSOCKET_SEND", {
+				cmd: MessageType.CHAT_MSG_READ_ED,
+				...v
+			})
 		}
 
 		//更新联系记录最后一条显示内容和未读统计信息
@@ -1009,43 +1020,71 @@ export default {
 			root: true
 		});
 	},
-	sendChatMessage({dispatch},payload){
-		dispatch("WEBSOCKET_SEND",{
-			body:payload,
-			CMD:MessageType.USER_CHAT_SEND_TXT
+	sendChatMessage({
+		dispatch
+	}, payload) {
+		dispatch("WEBSOCKET_SEND", {
+			body: payload,
+			CMD: MessageType.USER_CHAT_SEND_TXT
 		})
 	},
-	sendShowInputing({dispatch},payload){
-		dispatch("WEBSOCKET_SEND",{
-			body:payload,
-			CMD:MessageType.SHOW_INPUT_ING
+	sendGroupChatMessage({
+		dispatch
+	}, payload) {
+		dispatch("WEBSOCKET_SEND", {
+			body: payload,
+			CMD: MessageType.GROUP_CHAT_SEND_TXT
 		})
 	},
-	sendHideInputing({dispatch},payload){
-		dispatch("WEBSOCKET_SEND",{
-			body:payload,
-			CMD:MessageType.HIDE_INPUT_ING
+	sendShowInputing({
+		dispatch
+	}, payload) {
+		dispatch("WEBSOCKET_SEND", {
+			body: payload,
+			CMD: MessageType.SHOW_INPUT_ING
 		})
 	},
-	sendVoiceMessage({dispatch},payload){
-		dispatch("WEBSOCKET_SEND",{
-			body:payload,
-			CMD:MessageType.USER_CHAT_SEND_VOICE
+	sendHideInputing({
+		dispatch
+	}, payload) {
+		dispatch("WEBSOCKET_SEND", {
+			body: payload,
+			CMD: MessageType.HIDE_INPUT_ING
 		})
 	},
-	sendChatMessageUndo({dispatch},payload){
-		dispatch("WEBSOCKET_SEND",{
-			body:payload,
-			CMD:MessageType.CHAT_MSG_UNDO
+	sendVoiceMessage({
+		dispatch
+	}, payload) {
+		dispatch("WEBSOCKET_SEND", {
+			body: payload,
+			CMD: MessageType.USER_CHAT_SEND_VOICE
 		})
 	},
-	sendChatMessageReaded({dispatch},payload){
-		dispatch("WEBSOCKET_SEND",{
-			body:payload,
-			CMD:MessageType.CHAT_MSG_READ_ED
+	sendGroupVoiceMessage({
+		dispatch
+	}, payload) {
+		dispatch("WEBSOCKET_SEND", {
+			body: payload,
+			CMD: MessageType.GROUP_CHAT_SEND_VOICE
 		})
 	},
-	
+	sendChatMessageUndo({
+		dispatch
+	}, payload) {
+		dispatch("WEBSOCKET_SEND", {
+			body: payload,
+			CMD: MessageType.CHAT_MSG_UNDO
+		})
+	},
+	sendChatMessageReaded({
+		dispatch
+	}, payload) {
+		dispatch("WEBSOCKET_SEND", {
+			body: payload,
+			CMD: MessageType.CHAT_MSG_READ_ED
+		})
+	},
+
 	WEBSOCKET_SEND({
 		commit,
 		dispatch,

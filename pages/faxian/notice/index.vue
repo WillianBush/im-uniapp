@@ -7,9 +7,9 @@
 			</block>
 		</cu-custom>
 		<view v-if="list.length>0" class="cu-timeline margin-top">
-			<block v-for="item in list">
+			<block v-for="item in list" :keys="item.id">
 				<view class="cu-time">{{item.dateStr}}</view>
-				<view v-for="item1 in item.list" class="cu-item" @tap="detail(item1)">
+				<view v-for="item1 in item.list" class="cu-item" @tap="detail(item1)" :keys="item1.id">
 					<view class="content">
 						<view class="cu-capsule radius">
 							<view class="cu-tag bg-cyan">{{item1.amOrPm}}</view>

@@ -471,11 +471,20 @@ export default {
 					let json = eval("(" + res1.data + ")");
 					// 显示上传信息
 					if (json.code == 200) {
-						dispatch("socket/sendChatMessage", {
+						let v = {
 							txt: json.msg,
-							toUid: payload,
 							fromUid: rootState.user.user.id,
-						}, {
+							chatType:'2'
+						}
+						let cmd = "socket/sendChatMessage"
+						if(payload.toGroupid){
+							v.toGroupid = payload.toGroupid
+							v.chatType = '1'
+							cmd = "socket/sendGroupChatMessage"
+						}else{
+							v.toUid = payload.toUid
+						}
+						dispatch(cmd, v, {
 							root: true
 						});
 						//#ifdef APP-PLUS
@@ -524,11 +533,20 @@ export default {
 						let json = eval("(" + res1.data + ")");
 						// 显示上传信息
 						if (json.code == 200) {
-							dispatch("socket/sendChatMessage", {
+							let v = {
 								txt: json.msg,
-								toUid: payload,
 								fromUid: rootState.user.user.id,
-							}, {
+								chatType:'2'
+							}
+							let cmd = "socket/sendChatMessage"
+							if(payload.toGroupid){
+								v.toGroupid = payload.toGroupid
+								v.chatType = '1'
+								cmd = "socket/sendGroupChatMessage"
+							}else{
+								v.toUid = payload.toUid
+							}
+							dispatch(cmd,v, {
 								root: true
 							});
 							//#ifdef APP-PLUS
@@ -609,7 +627,7 @@ export default {
 			}
 		}
 		let msgbean = {
-			chatType: "2",
+			chatType: v.chatType,
 			chatid: v.toUid,
 			type: "USER_TXT",
 			bean: v,
