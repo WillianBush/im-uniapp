@@ -25,6 +25,7 @@ import {
 	dateFormat,
 	uuid
 } from "../../../common/utils";
+import { MessageType } from "../../../const/MessageType";
 
 export default {
 	refreshChatList({
@@ -628,31 +629,38 @@ export default {
 		}
 		let msgbean = {
 			chatType: v.chatType,
-			chatid: v.toUid,
+			chatId: v.toUid,
 			type: "USER_TXT",
 			bean: v,
 		};
 		let list = [msgbean];
+		// #ifdef APP
 		let str = uni.getStorageSync(
-			user.id + "#" + msgbean.chatid + "_CHAT_MESSAGE"
+			user.id + "#" + msgbean.chatId + "_CHAT_MESSAGE"
 		);
 		if (str && str != "") {
 			var jsonObj = JSON.parse(str);
 			list = jsonObj.concat(list);
 		}
 		uni.setStorageSync(
-			user.id + "#" + msgbean.chatid + "_CHAT_MESSAGE",
+			user.id + "#" + msgbean.chatId + "_CHAT_MESSAGE",
 			JSON.stringify(list)
 		);
 		commit("updateChatMessageMap", {
-			key: user.id + "#" + msgbean.chatid,
+			key: user.id + "#" + msgbean.chatId,
 			value: list,
 		});
 		uni.setStorageSync(
-			user.id + "#" + msgbean.chatid + "_CHAT_MESSAGE_LASTCONTENT",
+			user.id + "#" + msgbean.chatId + "_CHAT_MESSAGE_LASTCONTENT",
 			list[list.length - 1].bean.simple_content
 		);
 		commit("setCurChatMsgList", list);
+		// #endif
+		
+		// #ifdef H5
+		commit("addCurChatMsg", msgbean);
+		// #endif
+		
 		commit("setChatMyLoadding", false);
 	},
 	transMessageAction({
@@ -692,15 +700,17 @@ export default {
 							fromUid: user.id,
 							uuid: uuid(),
 						};
+						let cmd = MessageType.USER_CHAT_SEND_TXT
 						if (item.typeid == "1") {
 							v.toGroupid = id;
+							cmd = MessageType.GROUP_CHAT_SEND_TXT
 						} else {
 							v.toUid = id;
 						}
 						dispatch(
 							"socket/" + SocketType.WEBSOCKET_SEND, {
 								body: v,
-								CMD: MessageType.GROUP_CHAT_SEND_TXT,
+								CMD: cmd,
 							}, {
 								root: true,
 							}

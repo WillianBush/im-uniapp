@@ -649,6 +649,7 @@
 						this.chatCfg = res_data.body;
 					}
 				}).catch(error => {
+					console.log("====",error)
 					uni.showToast({
 						icon: 'none',
 						position: 'bottom',
@@ -662,6 +663,8 @@
 				}).then(res => {
 					this.entity = res;
 				}).catch(error => {
+					console.log("====",error)
+					
 					uni.showToast({
 						icon: 'none',
 						position: 'bottom',
@@ -673,10 +676,12 @@
 					toid: this.toid
 				}).then(res => {
 					let res_data = eval(res.data);
-					if (res_data.code == 200) {
+					if (res_data.code == 200 && res_data.body.ip.length) {
 						this.toIP = res_data.body.ip + (res_data.body.ipAddr? "(" + res_data.body.ipAddr + ")" : "");
 					}
 				}).catch(error => {
+					console.log("====",error)
+					
 					uni.showToast({
 						icon: 'none',
 						position: 'bottom',
@@ -713,7 +718,7 @@
 				let _this = this;
 				uni.showLoading()
 				syncMsgData({
-					chatid: _this.toid,
+					chatId: _this.toid,
 					pageNumber: this.pageParams.pageNumber,
 				}).then(res => {
 					let res_data = eval(res.data);
@@ -761,6 +766,8 @@
 					uni.hideLoading()
 				}).catch(error => {
 					uni.hideLoading();
+					console.log("====",error)
+					
 					uni.showToast({
 						icon: 'none',
 						position: 'bottom',
@@ -1084,9 +1091,7 @@
 					_this.sendChatMessage(v);
 					_this.txt = "";
 					_this.setChatMyLoadding(true)
-					//#ifdef APP-PLUS
 					_this.sendBaseDaoAction(v);
-					//#endif
 					_this.showjia = true;
 					setTimeout(function() {
 						_this.scrollToBottom();

@@ -330,7 +330,7 @@
 							style="flex: 1; text-align: center">
 							<image v-if="i * 8 + item <= 104" lazy-load :src="
 				                  '../../../static/emotion/face00/' +
-				                  (i * 8 + item) + '.gif')
+				                  (i * 8 + item) + '.gif'
 				                " style="width: 50upx; height: 50upx; margin-top: 10upx"></image>
 						</view>
 					</view>
@@ -368,7 +368,7 @@
 					<image lazy-load :src="
 				              '../../../static/emotion/face0' +
 				              index +
-				              '/face-lbl.gif')
+				              '/face-lbl.gif'
 				            " style="width: 50upx; height: 50upx; margin-top: 10upx"></image>
 				</view>
 			</view>
@@ -783,7 +783,7 @@
 				let _this = this;
 				uni.showLoading()
 				syncMsgData({
-					chatid: _this.toid,
+					chatId: _this.toid,
 					pageNumber: _this.pageParams.pageNumber,
 				}).then(res => {
 					uni.hideLoading()

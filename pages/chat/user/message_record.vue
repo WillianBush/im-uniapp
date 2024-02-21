@@ -341,7 +341,7 @@ import { getHeadPic } from '../../../common/utils';
 
 				uni.showLoading()
 				syncMsgData({
-					chatid: _this.toid,
+					chatId: _this.toid,
 					pageNumber: this.pageParams.pageNumber,
 				}).then(res => {
 					let res_data = eval(res.data);

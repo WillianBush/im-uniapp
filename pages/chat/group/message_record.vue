@@ -341,7 +341,7 @@
 				let _this = this;
 				uni.showLoading()
 				syncMsgData({
-					chatid: _this.curChatEntity.id,
+					chatId: _this.curChatEntity.id,
 					pageNumber: this.pageParams.pageNumber,
 				}).then(res => {
 					let res_data = eval(res.data);

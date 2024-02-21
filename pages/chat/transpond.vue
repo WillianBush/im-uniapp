@@ -27,7 +27,7 @@
 				<view class="cu-list menu-avatar no-padding">
 					<view class="cu-item" v-for="(items,index1) in friend_list" :key="index1">
 						<view class="cu-avatar round lg"
-							:style="{'backgroundImage': 'url('+imgUrl+ items.img +')' }"
+							:style="{'backgroundImage': 'url('+getHeadPic(items.img) +')' }"
 							style="width: 80upx;height: 80upx;background-size: 100% 100%;"></view>
 						<view class="content">
 							<view class="text-grey" style="float:left;">{{items.title}}</view>
@@ -50,7 +50,7 @@
 
 <script>
 	import { mapState,mapActions,mapMutations} from 'vuex'
-	
+import { getHeadPic } from '../../common/utils';
 	export default {
 		data() {
 			return {
@@ -113,6 +113,9 @@
 			...mapActions('chat',[
 				'transMessageAction'
 			]),
+			getHeadPic(headPic){
+				return getHeadPic(headPic,this.imgUrl)
+			},
 			tijiao() {
 				let _this = this;
 				let user = uni.getStorageSync("USER");
