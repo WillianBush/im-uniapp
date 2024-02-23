@@ -1,9 +1,8 @@
 <template>
 	<view>
 		<view class="cu-custom" :style="[{height:CustomBar + 'px'}]">
-			<view class="group-cu-bar" :style="style" style="background-color: #eee; width: 100%; color:#000;border-bottom: 1px solid #bdbaba;"  :class="[bgImage!=''?'none-bg text-white bg-img':'',bgColor]">
+			<view class="group-cu-bar" :style="style" style="background-color: #fff; width: 100%; color:#000;border-bottom: 1px solid #bdbaba;"  :class="[bgImage!=''?'none-bg text-white bg-img':'',bgColor]">
 				<view class="action" style="display: inline;margin-left:1%;"  v-if="isBack">
-					<!-- <text class="cuIcon-back"></text> -->
 					<slot name="backText"></slot>
 				</view>
 				<view v-if="!nameToLeft" class="content group-content" style="text-align: left;margin-left: 65px" :style="[{top:StatusBar + 'px'}]">
@@ -19,6 +18,11 @@
 </template>
 
 <script>
+	import {
+		mapState,
+		mapActions,
+		mapMutations
+	} from 'vuex'
 	export default {
 		data() {
 			return {
@@ -70,8 +74,11 @@
 			}
 		},
 		methods: {
+			...mapMutations('chat', [
+				'setCurChatMsgList',
+				'setCurChatEntity',
+			]),
 			BackPage() {
-				console.log(this.backUrl);
 				if(this.backUrl=="") {
 					uni.navigateBack({
 						delta: 1
@@ -79,8 +86,8 @@
 				} else {
 					if(this.backUrl.indexOf("pages/index/index")>=0) {
 						//清除当前窗口数据
-						this.$store.commit("setCur_chat_entity",null);
-						this.$store.commit("setCur_chat_msg_list",[]);
+						this.setCurChatEntity(null);
+						this.setCurChatMsgList([]);
 					}
 					uni.navigateTo({
 						url:this.backUrl

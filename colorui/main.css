@@ -1882,13 +1882,6 @@ button.cuIcon.lg {
 	width: calc(100% - 440upx);
 }
 
-/* #ifdef MP-ALIPAY */
-.cu-custom .cu-bar .action .cuIcon-back {
-	opacity: 0;
-}
-
-/* #endif */
-
 .cu-custom .cu-bar .content image {
 	height: 60upx;
 	width: 240upx;
@@ -1896,12 +1889,6 @@ button.cuIcon.lg {
 
 .cu-custom .cu-bar {
 	min-height: 0px;
-	/* #ifdef MP-WEIXIN */
-	padding-right: 220upx;
-	/* #endif */
-	/* #ifdef MP-ALIPAY */
-	padding-right: 150upx;
-	/* #endif */
 	box-shadow: 0upx 0upx 0upx;
 	z-index: 1;
 }

@@ -112,7 +112,7 @@
 		<view style="height: calc(100vh - 50upx);width: 70%; float: left; border-left: 1px solid #ddd">
 			<scroll-view :scroll-y="modalName==null" style="width: 100%" class="page"
 				:class="modalName!=null?'show':''">
-				<GroupChat :msgToGroupId="msgToGroupId" :isGroupChat="isGroupChat" :isRandom="random" :msgToId="msgToId"
+				<GroupChat :msgToGroupId="msgToGroupId" :toName="toName" :isGroupChat="isGroupChat" :isRandom="random" :msgToId="msgToId"
 					@openModal="openModal" @openAtModal="openAtModal"></GroupChat>
 			</scroll-view>
 		</view>
@@ -169,7 +169,8 @@
 				kw: "",
 				list: [],
 				super_user: 0,
-				roomid: ''
+				roomid: '',
+				toName:''
 			};
 		},
 		computed: {
@@ -333,11 +334,11 @@
 					this.msgToId = item.id;
 					this.isGroupChat = false;
 					this.random = this.random + 1
-					console.log("=========222")
+					this.toName = item.title
+					console.log("========",this.toName)
 				} else {
 					this.msgToGroupId = item.id;
 					this.isGroupChat = true;
-					console.log("=========111")
 					this.random = this.random + 1
 				}
 			},

@@ -307,27 +307,7 @@ export default {
 		let data = payload;
 		let user = rootState.user.user;
 		let messageBean = data.body;
-		//#ifndef H5
-		if (data.CMD == MessageType.USER_CHAT_MESSAGE || data.CMD == MessageType.GROUP_CHAT_MESSAGE) {
-			if (!rootState.app.appShow) {
-				setTimeout(() => {
-					let options = {
-						cover: false,
-						sound: "system",
-						title: data.body[0].bean.fromName,
-					};
-					plus.push.createMessage(
-						data.body[0].bean.simple_content,
-						"",
-						options
-					);
-				}, 100);
-			}
-		}
-		//#endif
-
 		uni.$emit("scrollTopFn");
-
 		let darao = uni.getStorageSync(data.body[0].chatId + "_darao");
 		if (data.body[0].bean.fromUid != user.id) {
 			if (!darao && data.act == "none") {
@@ -360,23 +340,12 @@ export default {
 			//多端同步的问题
 
 		} else {
-			//#ifndef H5
-			setTimeout(() => {
-				uni.pageScrollTo({
-					scrollTop: 9999999999,
-					duration: 0,
-				});
-			}, 350);
-			//#endif
-
-			//#ifdef H5
 			setTimeout(() => {
 				uni.pageScrollTo({
 					scrollTop: 9999999999,
 					duration: 0,
 				});
 			}, 200);
-			//#endif
 			//如果是云端加载数据则不需要执行下面的
 			if (data.act && data.act != "cloudStorageData") {
 				//如果当前打开窗口为此信息对应的窗口，则不需要把信息再次缓存，所以这里直接执行return;就可以了

@@ -35,8 +35,19 @@ export default {
 	setCurChatMsgList(state, payload) {
 		state.curChatMsgList = payload;
 	},
-	addCurChatMsg(state,payload){
-		state.curChatMsgList.push(payload);
+	addCurChatMsg(state, payload) {
+		if(payload.length == 1){
+			state.curChatMsgList.push(payload);
+		}else{
+			state.curChatMsgList.push(...payload);
+		}
+	},
+	updateCurChatMsg(state, payload) {
+		state.curChatMsgList.forEach(item => {
+			if (item.bean.uuid == payload.uuid) {
+				item.uuid = payload.uuid;
+			}
+		})
 	},
 	setCurChatAiteToMyList(state, payload) {
 		state.curChatAiteToMyList = payload
@@ -77,7 +88,7 @@ export default {
 	setYaoqingAuditAble(state, payload) {
 		state.curChatEntity.yaoqingAuditAble = payload;
 	},
-	setTouserid(state,payload){
+	setTouserid(state, payload) {
 		state.touserid = payload
 	},
 	clearData(state) {
