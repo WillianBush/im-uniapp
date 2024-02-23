@@ -41,7 +41,7 @@ export default {
 			}
 			state.socketTask.close();
 		}
-		var i = Math.floor(Math.random() * rootState.socketUrl.length);
+		var i = Math.floor(Math.random() * rootState.app.socketUrl.length);
 		console.log("====reqUrl", rootState.app.reqUrl)
 		console.log("====wsUrl", rootState.app.socketUrl)
 		let ws = rootState.app.socketUrl[i]
@@ -56,9 +56,7 @@ export default {
 			},
 			fail(e) {
 				Log.e(TAG, "=====ws链接失败", e);
-				if(heartCheck){
-					heartCheck.reset();
-				}
+				heartCheck && heartCheck.reset();
 			},
 		}))
 		//心跳检测
@@ -192,7 +190,9 @@ export default {
 			dispatch("parseRevMessage", res);
 		})
 	},
-	WEBSOCKET_CLOSE({state}){
+	WEBSOCKET_CLOSE({
+		state
+	}) {
 		state.socketTask.close()
 	},
 	parseRevMessage({
@@ -328,7 +328,7 @@ export default {
 
 		uni.$emit("scrollTopFn");
 
-		let darao = uni.getStorageSync(data.body[0].chatid + "_darao");
+		let darao = uni.getStorageSync(data.body[0].chatId + "_darao");
 		if (data.body[0].bean.fromUid != user.id) {
 			if (!darao && data.act == "none") {
 				if (
@@ -383,7 +383,7 @@ export default {
 				//意思就是自己发的信息已经在发的时候缓存 过了。这里return;就可以了。不需要执行下去
 				if (
 					rootState.chat.curChatEntity &&
-					rootState.chat.curChatEntity.id == data.body[0].chatid &&
+					rootState.chat.curChatEntity.id == data.body[0].chatId &&
 					(data.CMD == MessageType.USER_CHAT_MESSAGE ||
 						data.CMD == MessageType.GROUP_CHAT_MESSAGE)
 				) {
@@ -394,14 +394,14 @@ export default {
 						data.body[0].type != "USER_CARD"
 					) {
 						rootState.chat.arList.forEach((item) => {
-							if (item.id == data.body[0].chatid) {
-								// let s = uni.getStorageSync(user.id+"#"+data.body[0].chatid+'_CHAT_MESSAGE_LASTCONTENT');
+							if (item.id == data.body[0].chatId) {
+								// let s = uni.getStorageSync(user.id+"#"+data.body[0].chatId+'_CHAT_MESSAGE_LASTCONTENT');
 								let s = data.body[0].bean.simple_content;
 								item.content = null == s ? "" : s;
 								uni.setStorageSync(
 									user.id +
 									"#" +
-									data.body[0].chatid +
+									data.body[0].chatId +
 									"_CHAT_MESSAGE_LASTCONTENT",
 									s
 								);
@@ -412,27 +412,22 @@ export default {
 				}
 			}
 		}
-
+		//#ifndef H5
 		let str = uni.getStorageSync(
-			user.id + "#" + data.body[0].chatid + "_CHAT_MESSAGE"
+			user.id + "#" + data.body[0].chatId + "_CHAT_MESSAGE"
 		);
-
 		if (str && str != "") {
 			var jsonObj = JSON.parse(str);
 			jsonObj = jsonObj.concat(data.body);
 
-			// if (jsonObj.length > 100) {
-			// 	jsonObj.splice(0, jsonObj.length - 100);
-			// }
-
 			uni.setStorageSync(
-				user.id + "#" + data.body[0].chatid + "_CHAT_MESSAGE",
+				user.id + "#" + data.body[0].chatId + "_CHAT_MESSAGE",
 				JSON.stringify(jsonObj)
 			);
 
 
 			commit("chat/updateChatMessageMap", {
-				key: user.id + "#" + data.body[0].chatid,
+				key: user.id + "#" + data.body[0].chatId,
 				value: jsonObj,
 			}, {
 				root: true
@@ -440,9 +435,9 @@ export default {
 
 			if (
 				rootState.chat.curChatEntity &&
-				rootState.chat.curChatEntity.id == data.body[0].chatid
+				rootState.chat.curChatEntity.id == data.body[0].chatId
 			) {
-				
+
 				//1-9修正 把直接赋值改为先去重
 				jsonObj.forEach((item) => {
 					item.uuid = item.bean.uuid;
@@ -454,44 +449,60 @@ export default {
 						root: true
 					}
 				);
-				
-				// store.commit("setCur_chat_msg_list",jsonObj);
-				let v = {
-					toUid: data.body[0].chatid,
-					fromUid: user.id,
-				};
-				dispatch("WEBSOCKET_SEND", {
-					cmd: MessageType.CHAT_MSG_READ_ED,
-					...v
-				})
 			}
 			uni.setStorageSync(
-				user.id + "#" + data.body[0].chatid + "_CHAT_MESSAGE_LASTCONTENT",
+				user.id + "#" + data.body[0].chatId + "_CHAT_MESSAGE_LASTCONTENT",
 				jsonObj[jsonObj.length - 1].bean.simple_content
 			);
 		} else {
 			uni.setStorageSync(
-				user.id + "#" + data.body[0].chatid + "_CHAT_MESSAGE",
+				user.id + "#" + data.body[0].chatId + "_CHAT_MESSAGE",
 				JSON.stringify(data.body)
 			);
 			commit("chat/updateChatMessageMap", {
-				key: user.id + "#" + data.body[0].chatid,
+				key: user.id + "#" + data.body[0].chatId,
 				value: data.body,
 			}, {
 				root: true
 			});
 			if (
 				rootState.chat.curChatEntity &&
-				rootState.chat.curChatEntity.id == data.body[0].chatid
+				rootState.chat.curChatEntity.id == data.body[0].chatId
 			) {
 				commit("chat/setCurChatMsgList", data.body, {
 					root: true
 				});
 			}
 			uni.setStorageSync(
-				user.id + "#" + data.body[0].chatid + "_CHAT_MESSAGE_LASTCONTENT",
+				user.id + "#" + data.body[0].chatId + "_CHAT_MESSAGE_LASTCONTENT",
 				data.body.simple_content
 			);
+		}
+		//#endif
+
+		//#ifdef H5
+		if(rootState.chat.curChatEntity && rootState.chat.curChatEntity.id == data.body[0].chatId){
+			messageBean[0].uuid = messageBean[0].bean.uuid
+			console.log("message:",messageBean)
+			commit(
+				"chat/updateCurChatMsg",
+				messageBean[0], {
+					root: true
+				}
+			);
+		}
+		//#endif
+
+		let v = {
+			toUid: data.body[0].chatId,
+			fromUid: user.id,
+		};
+		if (rootState.chat.curChatEntity && rootState.chat.curChatEntity.id == data.body[0].chatId && data.body[0].bean
+			.fromUid != user.id) {
+			dispatch("WEBSOCKET_SEND", {
+				cmd: MessageType.CHAT_MSG_READ_ED,
+				...v
+			})
 		}
 
 		//更新联系记录最后一条显示内容和未读统计信息
@@ -502,23 +513,23 @@ export default {
 		if (!darao) {
 			if (
 				(!rootState.chat.curChatEntity ||
-					data.body[0].chatid != rootState.chat.curChatEntity.id) &&
+					data.body[0].chatId != rootState.chat.curChatEntity.id) &&
 				data.body[0].bean.fromUid != user.id
 			) {
 				//处理用户信息未读统计
 				str = uni.getStorageSync(
-					user.id + "#" + data.body[0].chatid + "_CHAT_MESSAGE_UNREAD"
+					user.id + "#" + data.body[0].chatId + "_CHAT_MESSAGE_UNREAD"
 				);
 				if (str && str != "") {
 					c = parseInt(str) + 1;
 					uni.setStorageSync(
-						user.id + "#" + data.body[0].chatid + "_CHAT_MESSAGE_UNREAD",
+						user.id + "#" + data.body[0].chatId + "_CHAT_MESSAGE_UNREAD",
 						c + ""
 					);
 				} else {
 					c = 1;
 					uni.setStorageSync(
-						user.id + "#" + data.body[0].chatid + "_CHAT_MESSAGE_UNREAD",
+						user.id + "#" + data.body[0].chatId + "_CHAT_MESSAGE_UNREAD",
 						"1"
 					);
 				}
@@ -526,11 +537,11 @@ export default {
 		}
 
 		rootState.chat.arList.forEach((item) => {
-			if (item.id == data.body[0].chatid) {
+			if (item.id == data.body[0].chatId) {
 				let s = uni.getStorageSync(
 					user.id +
 					"#" +
-					data.body[0].chatid +
+					data.body[0].chatId +
 					"_CHAT_MESSAGE_LASTCONTENT"
 				);
 				item.content = null == s ? "" : s;
@@ -552,7 +563,7 @@ export default {
 		let data = payload;
 		let user = uni.getStorageSync("USER");
 		let str = uni.getStorageSync(
-			user.id + "#" + data.body.chatid + "_CHAT_MESSAGE"
+			user.id + "#" + data.body.chatId + "_CHAT_MESSAGE"
 		);
 		if (str && str != "") {
 			var arrs = JSON.parse(str);
@@ -576,13 +587,13 @@ export default {
 						uni.setStorageSync(
 							user.id +
 							"#" +
-							data.body.chatid +
+							data.body.chatId +
 							"_CHAT_MESSAGE_LASTCONTENT",
 							last_content
 						);
 						try {
 							rootState.chat.arList.forEach((item) => {
-								if (item.id == data.body.chatid) {
+								if (item.id == data.body.chatId) {
 									item.content = last_content;
 									throw Error();
 								}
@@ -609,12 +620,12 @@ export default {
 			}
 
 			uni.setStorageSync(
-				user.id + "#" + data.body.chatid + "_CHAT_MESSAGE",
+				user.id + "#" + data.body.chatId + "_CHAT_MESSAGE",
 				JSON.stringify(arrs)
 			);
 
 			commit("app/updateChatMessageMap", {
-				key: user.id + "#" + data.body.chatid,
+				key: user.id + "#" + data.body.chatId,
 				value: arrs,
 			}, {
 				root: true
@@ -622,7 +633,7 @@ export default {
 
 			if (
 				rootState.chat.curChatEntity &&
-				rootState.chat.curChatEntity.id == data.body.chatid
+				rootState.chat.curChatEntity.id == data.body.chatId
 			) {
 				commit("chat/setCurChatMsgList", arrs, {
 					root: true
@@ -659,7 +670,8 @@ export default {
 		commit,
 		rootState
 	}, payload) {
-		let data = payload;
+		let data = payload
+		console.log("data",data)
 		let user = uni.getStorageSync("USER");
 		if (rootState.chat.arList.length > 0) {
 			let lastContent = "";
@@ -900,24 +912,24 @@ export default {
 		//@群成员
 		let arrs = data.body.split("#");
 		let fromuid = arrs[0];
-		let chatid = arrs[1];
+		let chatId = arrs[1];
 		let touid = arrs[2];
 		let msgUuid = arrs[3];
 		let fromName = arrs[4];
 
 		let v = {
 			fromuid: fromuid,
-			chatid: chatid,
+			chatId: chatId,
 			touid: touid,
 			msgUuid: msgUuid,
 			fromName: fromName,
 		};
 
 		rootState.chat.arList.forEach((item) => {
-			if (item.id == chatid) {
+			if (item.id == chatId) {
 				if (
 					rootState.chat.curChatEntity &&
-					v.chatid == rootState.chat.curChatEntity.id
+					v.chatId == rootState.chat.curChatEntity.id
 				) {
 					let list = rootState.chat.curChatAiteToMyList;
 					list.push(v);
@@ -935,14 +947,14 @@ export default {
 					});
 				} else {
 					let list = [];
-					let str = uni.getStorageSync(chatid + "#AITE_LIST");
+					let str = uni.getStorageSync(chatId + "#AITE_LIST");
 					if (str && str != "") {
 						list = JSON.parse(str);
 					}
 					list.push(v);
-					uni.setStorageSync(chatid + "#AITE_LIST", JSON.stringify(list));
+					uni.setStorageSync(chatId + "#AITE_LIST", JSON.stringify(list));
 					item.aiteCount = item.aiteCount + 1;
-					uni.setStorageSync(chatid + "#AITE_COUNT", item.aiteCount);
+					uni.setStorageSync(chatId + "#AITE_COUNT", item.aiteCount);
 				}
 			}
 		});
@@ -1012,43 +1024,72 @@ export default {
 			root: true
 		});
 	},
-	sendChatMessage({dispatch},payload){
-		dispatch("WEBSOCKET_SEND",{
-			body:payload,
-			CMD:MessageType.USER_CHAT_SEND_TXT
+	sendChatMessage({
+		dispatch,
+		commit
+	}, payload) {
+		dispatch("WEBSOCKET_SEND", {
+			body: payload,
+			CMD: MessageType.USER_CHAT_SEND_TXT
 		})
 	},
-	sendShowInputing({dispatch},payload){
-		dispatch("WEBSOCKET_SEND",{
-			body:payload,
-			CMD:MessageType.SHOW_INPUT_ING
+	sendGroupChatMessage({
+		dispatch
+	}, payload) {
+		dispatch("WEBSOCKET_SEND", {
+			body: payload,
+			CMD: MessageType.GROUP_CHAT_SEND_TXT
 		})
 	},
-	sendHideInputing({dispatch},payload){
-		dispatch("WEBSOCKET_SEND",{
-			body:payload,
-			CMD:MessageType.HIDE_INPUT_ING
+	sendShowInputing({
+		dispatch
+	}, payload) {
+		dispatch("WEBSOCKET_SEND", {
+			body: payload,
+			CMD: MessageType.SHOW_INPUT_ING
 		})
 	},
-	sendVoiceMessage({dispatch},payload){
-		dispatch("WEBSOCKET_SEND",{
-			body:payload,
-			CMD:MessageType.USER_CHAT_SEND_VOICE
+	sendHideInputing({
+		dispatch
+	}, payload) {
+		dispatch("WEBSOCKET_SEND", {
+			body: payload,
+			CMD: MessageType.HIDE_INPUT_ING
 		})
 	},
-	sendChatMessageUndo({dispatch},payload){
-		dispatch("WEBSOCKET_SEND",{
-			body:payload,
-			CMD:MessageType.CHAT_MSG_UNDO
+	sendVoiceMessage({
+		dispatch
+	}, payload) {
+		dispatch("WEBSOCKET_SEND", {
+			body: payload,
+			CMD: MessageType.USER_CHAT_SEND_VOICE
 		})
 	},
-	sendChatMessageReaded({dispatch},payload){
-		dispatch("WEBSOCKET_SEND",{
-			body:payload,
-			CMD:MessageType.CHAT_MSG_READ_ED
+	sendGroupVoiceMessage({
+		dispatch
+	}, payload) {
+		dispatch("WEBSOCKET_SEND", {
+			body: payload,
+			CMD: MessageType.GROUP_CHAT_SEND_VOICE
 		})
 	},
-	
+	sendChatMessageUndo({
+		dispatch
+	}, payload) {
+		dispatch("WEBSOCKET_SEND", {
+			body: payload,
+			CMD: MessageType.CHAT_MSG_UNDO
+		})
+	},
+	sendChatMessageReaded({
+		dispatch
+	}, payload) {
+		dispatch("WEBSOCKET_SEND", {
+			body: payload,
+			CMD: MessageType.CHAT_MSG_READ_ED
+		})
+	},
+
 	WEBSOCKET_SEND({
 		commit,
 		dispatch,

@@ -1,16 +1,7 @@
 <template>
 	<view style="height: 100vh; margin-left:66px">
-		<view style="    position: fixed;
-    top: 0;
-    z-index: 99999999999;
-    background: #E54D42;
-    width: 100%;
-    height: 60upx;
-    line-height: 60upx;
-    color: #fff;
-    text-align: center;
-    font-size: 24upx;opacity: .92;" v-show="isCloseNet()">网络已断开，请检查网络稳定性</view>
-
+		<view class="ws-disconnect" v-show="isCloseNet()">网络已断开，请检查网络稳定性</view>
+		
 		<home :isBlank="isBlank" v-if="PageCur=='home'"></home>
 		<addressBook :isBlank="isBlank" v-if="PageCur=='addressBook'"></addressBook>
 		<faxian v-show="PageCur=='faxian'"></faxian>
@@ -19,7 +10,7 @@
 			<view class="action">
 				<view class='cuIcon-cu-image'></view>
 			</view>
-			<view class="action">
+			<view class="action" @click="switchNav" data-cur="mine">
 				<view class='cuIcon-cu-image'>
 					<view class="cu-avatar radius" style="margin-right: 5px; border-radius: 50%"
 						:style="'background-image:url('+getHeadPic(user.headpic)+');'"></view>
@@ -42,8 +33,9 @@
 				<view class='cuIcon-cu-image'>
 					<text class="iconfont icon-tongxunlu1" :style="'color:'+(PageCur=='addressBook'?'#3F92F8':'#888')"
 						style="font-size: 52upx;"><span></span></text>
-					<view v-show="(unDoFriendAddCount+unDoRoomAddCount)>0" style="top:0"
-						class="cu-tag badge">{{unDoFriendAddCount+unDoRoomAddCount}}</view>
+					<view v-show="(unDoFriendAddCount+unDoRoomAddCount)>0" style="top:0" class="cu-tag badge">
+						{{unDoFriendAddCount+unDoRoomAddCount}}
+					</view>
 				</view>
 				<view style="margin-top: 2upx;" :style="'color:'+(PageCur=='addressBook'?'#3F92F8':'#888')">通讯录</view>
 			</view>
@@ -83,7 +75,7 @@
 		mapMutations,
 		mapActions
 	} from 'vuex'
-import {
+	import {
 		getHeadPic
 	} from '../../common/utils';
 	export default {
@@ -141,8 +133,8 @@ import {
 				'getShimingCfgAction',
 				'getFriendListAction'
 			]),
-			getHeadPic(img){
-				return getHeadPic(img,this.imgUrl)
+			getHeadPic(img) {
+				return getHeadPic(img, this.imgUrl)
 			},
 			switchNav: function(e) {
 				let _this = this;
@@ -160,7 +152,6 @@ import {
 					this.isBlank = true;
 				} else {
 					if (e.currentTarget.dataset.cur == "addressBook") { //通讯录
-
 						this.isBlank = true;
 						if (
 							!this.friendList ||
@@ -201,7 +192,6 @@ import {
 			}
 		},
 		mounted() {
-
 			let _this = this;
 			//清除当前窗口数据
 			this.setCurChatEntity(null);
@@ -230,23 +220,7 @@ import {
 			}
 		},
 		onBackPress() {
-			console.log("首页返回");
-			// #ifdef APP-PLUS
-			this.backButtonPress++;
-			if (this.backButtonPress > 1) {
-				plus.runtime.quit();
-			} else {
-				plus.nativeUI.toast('再按一次退出应用');
-			}
-			setTimeout(function() {
-				this.backButtonPress = 0;
-			}, 1000);
-			// #endif
-
-			//H5并不支持浏览器返回按钮
-			// #ifdef H5
 			uni.navigateBack();
-			// #endif
 			return true;
 		}
 	}
@@ -256,3 +230,18 @@ import {
 	uni-web-view {
 		z-index: 0 !important;
 	}
+
+	.ws-disconnect {
+		position: fixed;
+		top: 0;
+		z-index: 99999999999;
+		background: #E54D42;
+		width: 100%;
+		height: 60upx;
+		line-height: 60upx;
+		color: #fff;
+		text-align: center;
+		font-size: 24upx;
+		opacity: .92;
+	}
+</style>

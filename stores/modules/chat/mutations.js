@@ -77,6 +77,9 @@ export default {
 	setYaoqingAuditAble(state, payload) {
 		state.curChatEntity.yaoqingAuditAble = payload;
 	},
+	setTouserid(state,payload){
+		state.touserid = payload
+	},
 	clearData(state) {
 		state = {
 			chatCfg: {},

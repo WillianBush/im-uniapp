@@ -192,7 +192,7 @@
 				</view>
 			</scroll-view>
 			<view class="cu-bar foot input" :style="[{bottom:InputBottom+'upx'}]"
-				style="flex-direction: row; height:120px; width: calc(80% - 54px);left: calc(20% + 54px); background-color:#fff">
+				style="flex-direction: row; height:120px; width: calc(70% - 54px);left: calc(30% + 54px); background-color:#fff">
 				<input id="testInput" auto-height="true" :show-confirm-bar="true" confirm-type="send" @confirm="send"
 					@keydown.shift.enter="altOrShiftEnter" @keydown.alt.enter="altOrShiftEnter"
 					@keyup.ctrl.enter="lineFeed()" @focus="InputFocus" @blur="InputBlur" v-show="c_type==1"
@@ -681,7 +681,7 @@
 				uni.removeStorageSync(_this.user.id + "#" + _this.toid + '_CHAT_MESSAGE_UNREAD');
 				uni.showLoading()
 				syncMsgData({
-						chatid: _this.toid,
+						chatId: _this.toid,
 						pageNumber: this.pageParams.pageNumber,
 					})
 					.then((res) => {

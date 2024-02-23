@@ -24,39 +24,37 @@
 				<button class="refresh-btn" @click="refresherrefresh">刷新</button>
 
 			</view>
-			<!--#ifdef H5 -->
-			<view v-show="showMenu" :style="super_user==1?'height: 110upx;':'height: 110upx;'" style="position: absolute;
+			<view v-show="showMenu" :style="super_user==1?'height: 310upx;':'height: 310upx;'" style="position: absolute;
 					width: 280upx;
 					background: #4A484D;
 					top: 140upx;
-					left: calc(20% - 87px);
+					left: calc(30% - 87px);
 					z-index: 9999;
 					border-radius: 12upx;
 					color: #fff;
 					padding: 20upx;">
-				<view @tap.stop="createGroup()" style="float:left;width:98%;padding-bottom:10upx;"><text
+				<view @tap.stop="createGroup()" style="float:left;width:98%;padding-bottom:10upx;cursor: pointer;"><text
 						style="float:left;font-size:46upx;margin-top:6upx;margin-left:10upx"
 						class="iconfont icon-liaotian1"></text><text
 						style="float:left;margin-top:10upx;margin-left:20upx;font-size: 28upx;">发起群聊</text></view>
-				<view v-if="false" @tap.stop="addFriend()"
-					style="border-top:1px solid #777;float:left;width:98%;padding-top:10upx;">
+				<view  @tap.stop="addFriend()"
+					style="border-top:1px solid #777;float:left;width:98%;padding-top:10upx;cursor: pointer;">
 					<text style="float:left;font-size:46upx;margin-top:6upx;margin-left:10upx"
 						class="iconfont icon-tianjiahaoyou1"></text><text
 						style="float:left;margin-top:10upx;margin-left:20upx;font-size: 28upx;">添加好友</text>
 				</view>
-				<view v-if="false" @tap.stop="searchGroup()"
-					style="border-top:1px solid #777;float:left;width:98%;padding-top:10upx;">
+				<view  @tap.stop="searchGroup()"
+					style="border-top:1px solid #777;float:left;width:98%;padding-top:10upx;cursor: pointer;">
 					<text style="float:left;font-size:46upx;margin-top:6upx;margin-left:10upx"
 						class="iconfont icon-chazhao"></text><text
 						style="float:left;margin-top:10upx;margin-left:20upx;font-size: 28upx;">查找群组</text>
 				</view>
 				<view v-if="super_user==1" @tap.stop="searchUser"
-					style="border-top:1px solid #777;float:left;width:98%;padding-top:10upx;"><text
+					style="border-top:1px solid #777;float:left;width:98%;padding-top:10upx;cursor: pointer;"><text
 						style="float:left;font-size:44upx;margin-top:6upx;margin-left:10upx"
 						class="iconfont icon-zuoce-tongxun-gaoliang"></text><text
 						style="float:left;margin-top:10upx;margin-left:20upx;font-size: 28upx;">超级通讯</text></view>
 			</view>
-			<!--#endif -->
 
 			<scroll-view style="height: calc(100vh - 135px);width: 100%;" :scroll-y="modalName==null" class="page"
 				:class="modalName!=null?'show':''">
@@ -79,10 +77,10 @@
 								<view class="text-cut" style="position: relative;top: 4px;">
 									<text style="margin-right: 6px;"
 										v-if="item.typeid=='2'&&item.online==0&&item.id!='-1'">最近登陆于{{item.lastLoginDate}}
-										-
+							
 									</text>
 									<text style="margin-right: 6px;color:red"
-										v-if="item.aiteCount>0">[你有{{item.aiteCount}}条消息]</text>
+										v-if="item.aiteCount>0">-[你有{{item.aiteCount}}条消息]</text>
 									{{item.content}}
 								</view>
 							</view>
@@ -335,9 +333,11 @@
 					this.msgToId = item.id;
 					this.isGroupChat = false;
 					this.random = this.random + 1
+					console.log("=========222")
 				} else {
 					this.msgToGroupId = item.id;
 					this.isGroupChat = true;
+					console.log("=========111")
 					this.random = this.random + 1
 				}
 			},

@@ -36,7 +36,7 @@
 
 		<scroll-view @scroll="scrollFn" :scroll-into-view="viewId" :scroll-top="scrollTop" scroll-y="true" ref="chatVew"
 			@tap="clickChat()" class="cu-chat" style="background: #eee;"
-			:style="'height: calc(100vh - '+CustomBar+'px - 118px - '+(120+InputBottom)+'upx)'">
+			:style="'height: calc(100vh - 118px - '+(120+InputBottom)+'upx)'">
 			<block v-for="(item,index) in curChatMsgList">
 				<block v-if="item.opt&&item.opt=='undo'">
 					<view class="cu-info round">{{item.name}} 撤回一条消息</view> -->
@@ -126,7 +126,7 @@
 					<!--发送者-->
 					<view :id="item.bean.uuid" v-if="item.bean.fromUid==user.id" class="cu-item self">
 						<view class="main">
-							<view v-if="$store.state.WAIT_SEND_MSG.indexOf(item.bean.uuid)>=0" class="action text-grey">
+							<view v-if="WAIT_SEND_MSG.indexOf(item.bean.uuid)>=0" class="action text-grey">
 								<text class="cuIcon-warnfill text-red text-xxl"></text>
 							</view>
 
@@ -313,18 +313,8 @@
 			<text @tap.stop="clearAiteToMy" class="cuIcon-close text-red " style="margin-left: 16upx;"></text>
 		</view>
 
-		<view v-if="isGroupChat" class="cu-bar foot input" :style="[{bottom:InputBottom+'upx'}]"
-			style="flex-direction: row;height:180px; width: calc(80% - 54px);left: calc(20% + 54px);background-color: #fff;">
-			<!-- #ifndef H5 -->
-			<view @tap="selType(2)" v-show="c_type==1" class="action">
-				<text class="cuIcon-sound text-grey"></text>
-			</view>
-			<view @tap="selType(1)" v-show="c_type==2" class="action">
-				<text class="cuIcon-keyboard text-grey"></text>
-			</view>
-			<!-- #endif -->
-
-			<!-- @focus="InputFocus" @blur="InputBlur"-->
+		<view class="cu-bar foot input" :style="[{bottom:InputBottom+'upx'}]"
+			style="flex-direction: row;height:180px; width: calc(70% - 50px);left: calc(30% + 50px);background-color: #fff;">
 			<input @keydown.enter="send" style="background: #eee!important;" disabled="true" placeholder="禁言"
 				placeholder-style="text-align:center;background: #eee;" v-show="isGroupChat && stopSpeak==1"
 				class="solid-bottom" :adjust-position="true" :focus="false" maxlength="300" cursor-spacing="10"></input>
@@ -348,100 +338,50 @@
 
 		</view>
 
-		<view v-if="!isGroupChat" class="cu-bar foot input" :style="[{bottom:InputBottom+'upx'}]"
-			style="flex-direction: row;height:180px; width: calc(80% - 54px);left: calc(20% + 54px);background-color: #fff;">
-			<!-- #ifndef H5 -->
-			<view @tap="selType(2)" v-show="c_type==1" class="action">
-				<text class="cuIcon-sound text-grey"></text>
-			</view>
-			<view @tap="selType(1)" v-show="c_type==2" class="action">
-				<text class="cuIcon-keyboard text-grey"></text>
-			</view>
-			<!-- #endif -->
-
-
-			<!-- @focus="InputFocus" @blur="InputBlur"-->
-			<input @keydown.enter="send2" style="background: #eee!important;" disabled="true" placeholder="禁言"
-				placeholder-style="text-align:center;background: #eee;" v-show="stopSpeak==1" class="solid-bottom"
-				:adjust-position="true" :focus="false" maxlength="300" cursor-spacing="10"></input>
-			<input id="testInputg2" placeholder="请输入信息" style="height:160px !important;line-height:30px;width: 100%;"
-				confirm-type="send" @confirm="send2" @keydown.shift.enter="altOrShiftEnter"
-				@keydown.alt.enter="altOrShiftEnter" @focus="InputFocus" @blur="InputBlur"
-				v-show="c_type==1&&stopSpeak==0" v-model="txt" @input="inputTxt" class="solid-bottom"
-				:adjust-position="true" :focus="input_is_focus" maxlength="-1" cursor-spacing="10"></input>
-			<view @tap="ChooseImage2()" style="cursor: pointer;position: absolute;top: 5px; left: 10px;"><text
-					style="font-size: 60upx;color:#3F92F8" class="iconfont icon-zhaopian-cuxiantiao-fill"></text></view>
-			<view @tap="ChooseVideo2()" style="cursor: pointer;position: absolute;top: 5px; left: 50px;"><text
-					style="font-size: 60upx;color:#F39F90" class="iconfont icon-paishe"></text></view>
-			<view v-if="false" @tap="sendCard2()" style="cursor: pointer;position: absolute;top: 5px; left: 80px;"><text
-					style="font-size: 60upx;color:#FA9B4E" class="iconfont icon-mingpian2"></text></view>
-			<view style="cursor: pointer;position: absolute;top: 5px; left: 80px;" class="action"
-				@tap="showItemIndex(1)">
-				<text class="cuIcon-emojifill text-grey" style="position: absolute;top: 0;left: 0px"></text>
-			</view>
-			<button style="top:55px;min-width: 50px;padding:0px!important" v-show="!showjia" @tap.stop="send2()"
-				class="cu-btn bg-green shadow">发送</button>
-
-		</view>
-
 		<view v-show="showItem==1" class="cu-bar foot "
-			style="box-shadow: none;-webkit-box-shadow: none;display: block;background: #fff;height:330upx;margin-bottom:80upx;width: calc(80% - 54px);left: calc(20% + 54px);">
-			<scroll-view scroll-y class="indexes" style="height:330upx;padding-bottom:20upx;padding-top: 10upx;"
+			style="box-shadow: none;-webkit-box-shadow: none;display: block;background: #fff;height:330upx;margin-bottom:80upx;width: calc(70% - 50px);left: calc(30% + 50px);">
+			<scroll-view scroll-y class="indexes" style="height:330upx;padding-bottom:10upx;padding-top: 10upx;"
 				:scroll-with-animation="true" :enable-back-to-top="true">
-				<view v-if="emotion <= 1">
-					<view v-for="(ele, i) in 14" :key="i" style="display: flex">
-						<view v-for="(ele1, item) in 8" :key="item" @tap="sendEmotion(0, i * 8 + item)"
+				<view v-if="emotion < 1">
+					<view v-for="(ele, i) in 7" :key="i" style="display: flex;cursor:pointer">
+						<view v-for="(ele1, item) in 16" :key="item" @tap="sendEmotion(0, i * 8 + item)"
 							style="flex: 1; text-align: center">
-							<image v-if="i * 8 + item <= 104" lazy-load :src="
-								                  '../../../static/emotion/face0' +
-								                  emotion +
-								                  '/' +
-								                  (i * 8 + item) +
-								                  (emotion == 0 ? '.gif' : '.png')
-								                " style="width: 50upx; height: 50upx; margin-top: 10upx"></image>
+							<image v-if="i * 16 + item <= 104" lazy-load
+								:src="`/static/emotion/face00/${i * 16 + item}.gif`"
+								style="width: 50upx; height: 50upx; margin-top: 10upx"></image>
+						</view>
+					</view>
+				</view>
+				<view v-else-if="emotion == 1">
+					<view v-for="(ele,i) in 3" :key="i" style="display: flex;cursor:pointer">
+						<view v-for="(ele1,item) in 6" :key="item" @tap="sendEmotion(1,i*3 +item)"
+							style="flex:1;text-align: center;">
+							<image lazy-load v-if="(i*6) +item <=9" :src="`/static/emotion/face01/${i*6 +item}.gif`"
+								style="width:250upx;height:300upx;margin-top: 10upx;"></image>
 						</view>
 					</view>
 				</view>
 				<view v-else>
-					<view v-for="(ele, i) in 4" :key="i" style="display: flex">
-						<view v-for="(ele1, item) in 6" :key="item" @tap="sendEmotion(emotion, i * 5 + item)"
+					<view v-for="(ele, i) in 4" :key="i" style="display: flex;cursor:pointer">
+						<view v-for="(ele1, item) in 5" :key="item" @tap="sendEmotion(emotion, i * 5 + item)"
 							style="flex: 1; text-align: center">
-							<image v-show="i * 5 + item <= 15" lazy-load :src="
-								                  '../../../static/emotion/face0' +
-								                  emotion +
-								                  '/' +
-								                  (i * 5 + item) +
-								                  '.gif'
-								                " style="width: 50upx; height: 50upx; margin-top: 10upx"></image>
+							<image v-show="i * 5 + item <= 15" lazy-load
+								:src="`/static/emotion/face0${emotion}/${i * 5 + item}.gif`"
+								style="width: 100upx; height: 100upx; margin-top: 10upx"></image>
 						</view>
 					</view>
 				</view>
 			</scroll-view>
 			<view
-				style="width:100%;height:80upx;background: #f6f6f6;border-top:1px solid #eee;bottom:0;position: fixed;display: flex;">
+				style="width:calc(70% - 50px);height:80upx;background: #f6f6f6;border-top:1px solid #eee;bottom:0;position: fixed;display: flex;cursor:pointer">
 				<view v-for="(item, index) in 7" :key="item" @tap="showEmotion(index)"
 					:style="emotion == index ? 'background: #fff;' : ''"
 					style="flex: 1; height: 100%; text-align: center">
-					<image lazy-load :src="
-								              '../../../static/emotion/face0' +
-								              index +
-								              '/face-lbl.' +
-								              (index == 1 ? 'png' : 'gif')
-								            " style="width: 50upx; height: 50upx; margin-top: 10upx"></image>
+					<image lazy-load :src="`/static/emotion/face0${index}/face-lbl.gif`"
+						style="width: 50upx; height: 50upx; margin-top: 10upx"></image>
 				</view>
 			</view>
 		</view>
-
-		<view v-show="showItem==2" class="cu-bar foot "
-			style="box-shadow: none;-webkit-box-shadow: none;display: block;background: #fff;height:410upx;width: calc(80% - 54px);left: calc(20% + 54px);">
-			<scroll-view scroll-y class="indexes" style="height:410upx;padding-bottom:20upx;padding-top: 10upx;"
-				:scroll-with-animation="true" :enable-back-to-top="true">
-				<view>
-
-				</view>
-			</scroll-view>
-		</view>
-
 		<view @longpress="hidePop" class="shade" v-show="showShade" @tap="hidePop">
 			<view style="text-align: center;" class="pop" :style="popStyle" :class="{'show':showPop}">
 				<view v-for="(item,index) in popButton" :key="index" @tap="pickerMenu" :data-name="item"
@@ -457,7 +397,7 @@
 					left: 50%;
 					width: 100%;
 					transform: translate(-50%,-50%);
-					text-align: center;" :src="$store.state.img_url+videoSrc"></video>
+					text-align: center;" :src="imgUrl+videoSrc"></video>
 
 	</view>
 </template>
@@ -486,14 +426,12 @@
 		dateFormat,
 		uniqueArr,
 		uuid,
-		getHeadPic
+		getHeadPic,
+		showToast
 	} from '../../../common/utils';
 	import uParse from '@/components/u-parse/u-parse.vue'
 	const innerAudioContext = uni.createInnerAudioContext();
-
-	//#ifdef H5
 	import h5Copy from '@/common/junyi-h5-copy.js'
-	//#endif
 
 	export default {
 		name: 'GroupChat',
@@ -539,7 +477,7 @@
 				temp_txt: "",
 				temp_map: new Map(),
 				showjia: true,
-				emotion: 1,
+				emotion: 0,
 				showItem: 0,
 				scrollTop: 0,
 				style: {
@@ -548,8 +486,6 @@
 					footViewHeight: 90,
 					mitemHeight: 0
 				},
-				sendCount: 0, //这里为了。第一次发送需要延迟拉下拉
-
 				RECORDER: "",
 				AUDIO: uni.createInnerAudioContext(),
 				recordTimer: null,
@@ -650,17 +586,21 @@
 				'setUnReadMsgSum'
 			]),
 			...mapActions('socket', [
-				'WEBSOCKET_SEND'
+				'WEBSOCKET_SEND',
+				'sendChatMessage',
+				'sendGroupChatMessage'
 			]),
 			...mapActions('chat', [
 				'loadTalkUserAction',
 				'saveOrUpdateAction',
 				'uploadVideoAction',
 				'uploadImageAction',
-				'uploadVoiceAction'
+				'uploadVoiceAction',
+				'sendBaseDaoAction'
+
 			]),
-			getHeadPic(img){
-				return getHeadPic(img,this.imgUrl)
+			getHeadPic(img) {
+				return getHeadPic(img, this.imgUrl)
 			},
 			determineGroup() { //判断是否是群组聊天；
 				if (this.isGroupChat) {
@@ -685,7 +625,7 @@
 			onShowMethod2() {
 				let _this = this;
 				uni.$on("scrollTopFn", () => {
-					let svH = _this.winH - _this.CustomBar - 50;
+					let svH = _this.winH - 50;
 					if ((_this.scrollDetail.scrollHeight - _this.scrollDetail.scrollTop - svH) < 300) {
 						//#ifdef H5
 						setTimeout(() => {
@@ -715,17 +655,6 @@
 			onLoadMethod2() {
 				this.setCurChatMsgList([])
 				this.setChatMyLoadding(false)
-				// #ifndef H5
-				//录音开始事件
-				this.RECORDER.onStart((e) => {
-					this.recordBegin(e);
-				})
-				//录音结束事件
-				this.RECORDER.onStop((e) => {
-					this.recordEnd(e);
-				})
-				// #endif
-
 				let _this = this;
 				let user = uni.getStorageSync("USER");
 				this.getWindowSize();
@@ -1026,7 +955,7 @@
 			onShowMethod() {
 				let _this = this;
 				uni.$on("scrollTopFn", () => {
-					let svH = _this.winH - _this.CustomBar - 50;
+					let svH = _this.winH - 50;
 					if ((_this.scrollDetail.scrollHeight - _this.scrollDetail.scrollTop - svH) < 300) {
 						//#ifdef APP-PLUS
 						setTimeout(() => {
@@ -1149,7 +1078,7 @@
 				uni.showLoading()
 
 				syncMsgData({
-					chatid: _this.toid
+					chatId: _this.toid
 				}).then(res => {
 					uni.hideLoading();
 					console.log("没有缓存数据")
@@ -1622,13 +1551,13 @@
 
 				let msgbean = {
 					chatType: "1",
-					chatid: this.toid,
+					chatId: this.toid,
 					type: "USER_TXT",
 					bean: v
 				}
 
 				let list = [msgbean];
-				let str = uni.getStorageSync(this.user.id + "#" + msgbean.chatid +
+				let str = uni.getStorageSync(this.user.id + "#" + msgbean.chatId +
 					'_CHAT_MESSAGE');
 				if (str && str != "") {
 					var jsonObj = JSON.parse(str);
@@ -1636,25 +1565,25 @@
 					// if(jsonObj.length>50) {
 					//  jsonObj.splice(0,jsonObj.length-50);
 					// }
-					uni.setStorageSync(this.user.id + "#" + msgbean.chatid + '_CHAT_MESSAGE', JSON
+					uni.setStorageSync(this.user.id + "#" + msgbean.chatId + '_CHAT_MESSAGE', JSON
 						.stringify(
 							jsonObj));
 					if (jsonObj.length > 50) {
 						jsonObj.splice(0, jsonObj.length - 50);
 					}
 					this.updateChatMessageMap({
-						key: this.user.id + "#" + msgbean.chatid,
+						key: this.user.id + "#" + msgbean.chatId,
 						value: jsonObj
 					})
 					if (this.curChatEntity && this.curChatEntity.id == v.toGroupid) {
 						this.setCurChatMsgList(jsonObj)
 					}
 				} else {
-					uni.setStorageSync(this.user.id + "#" + msgbean.chatid + '_CHAT_MESSAGE', JSON
+					uni.setStorageSync(this.user.id + "#" + msgbean.chatId + '_CHAT_MESSAGE', JSON
 						.stringify(
 							list));
 					this.updateChatMessageMap({
-						key: this.user.id + "#" + msgbean.chatid,
+						key: this.user.id + "#" + msgbean.chatId,
 						value: list
 					})
 					if (this.curChatEntity && this.curChatEntity.id == v.toGroupid) {
@@ -1706,19 +1635,19 @@
 
 				let msgbean = {
 					chatType: "2",
-					chatid: this.toid,
+					chatId: this.toid,
 					type: "USER_TXT",
 					bean: v
 				}
 				let list = [msgbean];
-				let str = uni.getStorageSync(this.user.id + "#" + msgbean.chatid +
+				let str = uni.getStorageSync(this.user.id + "#" + msgbean.chatId +
 					'_CHAT_MESSAGE');
 				if (str && str != "") {
 					var jsonObj = JSON.parse(str);
 					jsonObj = jsonObj.concat(list);
 
 					var newJsonObj = jsonObj;
-					uni.setStorageSync(this.user.id + "#" + msgbean.chatid + '_CHAT_MESSAGE', JSON
+					uni.setStorageSync(this.user.id + "#" + msgbean.chatId + '_CHAT_MESSAGE', JSON
 						.stringify(
 							newJsonObj));
 					if (jsonObj.length > 50) {
@@ -1726,20 +1655,20 @@
 					}
 
 					this.updateChatMessageMap({
-						key: this.user.id + "#" + msgbean.chatid,
+						key: this.user.id + "#" + msgbean.chatId,
 						value: newJsonObj
 					})
 					if (this.curChatEntity && this.curChatEntity.id == v.toUid) {
 						this.setCurChatMsgList(newJsonObj)
 
 						let v1 = {
-							toUid: msgbean.chatid,
+							toUid: msgbean.chatId,
 							fromUid: this.user.id
 						}
 
 						this.WEBSOCKET_SEND({
 							body: {
-								toUid: msgbean.chatid,
+								toUid: msgbean.chatId,
 								fromUid: this.user.id
 							},
 							CMD: MessageType.CHAT_MSG_READ_ED
@@ -1747,11 +1676,11 @@
 					}
 				} else {
 					var newList = list;
-					uni.setStorageSync(this.user.id + "#" + msgbean.chatid + '_CHAT_MESSAGE', JSON
+					uni.setStorageSync(this.user.id + "#" + msgbean.chatId + '_CHAT_MESSAGE', JSON
 						.stringify(
 							newList));
 					this.updateChatMessageMap({
-						key: this.user.id + "#" + msgbean.chatid,
+						key: this.user.id + "#" + msgbean.chatId,
 						value: newList
 					})
 					if (this.curChatEntity && this.curChatEntity.id == v.toUid) {
@@ -1784,101 +1713,55 @@
 					this.isAltOrShiftEnter = false;
 				}, 300)
 			},
-			send() { //群组发送
+			send() { //发送消息
 				let _this = this;
 				setTimeout(() => {
 					if (this.isAltOrShiftEnter) return;
 					this.input_is_focus = false;
-					if (this.stopSpeak == 1) return;
-					if (!this.checkStopSpeak()) return;
+					if (this.txt.trim() == "") {
+						showToast("消息不能为空!");
+						return;
+					}
+					if (this.isGroupChat) {
+						if (this.stopSpeak == 1) return;
+						if (!this.checkStopSpeak()) return;
+					}
 					let v = {
 						txt: this.txt.replace(/\n/g, "<br/>"),
-						toGroupid: this.toid,
 						fromUid: this.user.id,
 						uuid: uuid(),
 					}
-					if (this.txt.trim() == "") {
-						return;
-					}
-
-					console.log(this.aite_map);
-					let aite = "";
-					for (var [key, value] of this.aite_map) {
-						if (this.txt.indexOf(key) >= 0) {
-							aite += (value + "#");
+					let cmd = ""
+					if (this.isGroupChat) {
+						v.toGroupid = this.toid;
+						v.chatType = '1'
+						let aite = "";
+						for (var [key, value] of this.aite_map) {
+							if (this.txt.indexOf(key) >= 0) {
+								aite += (value + "#");
+							}
 						}
+						this.aite_map.clear();
+						v.aite = aite;
+						this.sendGroupChatMessage(v)
+					} else {
+						v.toUid = this.toid;
+						v.chatType = '2'
+						this.sendChatMessage(v);
 					}
-					this.aite_map.clear();
-					v.aite = aite;
-					this.WEBSOCKET_SEND({
-						body: v,
-						CMD: MessageType.GROUP_CHAT_SEND_TXT
-					})
 					this.setChatMyLoadding(true);
-					this.sendBaseDo(v);
-
+					this.sendBaseDaoAction(v)
 					this.txt = "";
 					this.showjia = true;
-					this.sendCount = this.sendCount + 1;
 					setTimeout(function() {
 						_this.scrollToBottom();
 						_this.input_is_focus = true;
 					}, 300)
 				}, 100);
 			},
-			send2() { //个人发送
-				let _this = this;
-				setTimeout(() => {
-					if (this.isAltOrShiftEnter) return;
-					this.input_is_focus = false;
-					let v = {
-						txt: this.txt.replace(/\n/g, "<br/>"),
-						toUid: this.toid,
-						fromUid: this.user.id,
-						uuid: uuid(),
-					}
-					if (this.txt.trim() == "") {
-						return;
-					}
-					this.txt = "";
-					this.WEBSOCKET_SEND({
-						body: v,
-						CMD: MessageType.USER_CHAT_SEND_TXT
-					})
-					this.setChatMyLoadding(true);
-					this.sendBaseDo2(v);
-					this.showjia = true;
-					this.sendCount = this.sendCount + 1;
-					setTimeout(function() {
-						_this.scrollToBottom();
-						_this.input_is_focus = true;
-					}, 300)
-				}, 100)
-
-			},
 			sendEmotion(_a, _b) {
-				let _this = this;
-				if (this.stopSpeak == 1) return;
+				if (this.stopSpeak == 1 && this.isGroupChat) return;
 				this.txt = this.txt + ("[f" + _a + "#" + _b + "]");
-				let f = ".gif";
-				if (_a == 1) f = ".png";
-				let img = this.$store.state.img_url + "/img/emotion/face" + (_a < 10 ? "0" + _a : _a) + "/" +
-					_b + f;
-				//this.temp_txt = this.temp_txt + ("<img  style='max-width: 100px;' class='face' src='"+img+"'>");
-				let s = "";
-				if (_a == 0) {
-					s = "<img  style='max-width: 24px;max-height:24px;' class='face face1' src='" + img + "'>";
-				} else if (_a == 1) {
-					s = "<img style='max-width: 100px;max-height:100px;' class='face face2' src='" + img +
-						"'>";
-				} else {
-					s = "<img  style='max-width: 150px;max-height:150px;' class='face face3' src='" + img +
-						"'>";
-				}
-
-				if (!this.temp_map.has("[f" + _a + "#" + _b + "]")) {
-					this.temp_map.set("[f" + _a + "#" + _b + "]", s)
-				}
 				this.showjia = false;
 			},
 			InputFocus(e) {

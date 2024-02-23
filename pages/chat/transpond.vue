@@ -133,22 +133,22 @@
 				v.simple_content = v.txt;
 				let msgbean = {
 					chatType: "2",
-					chatid: this.toid,
+					chatId: this.toid,
 					type: "USER_TXT",
 					bean: v
 				}
 				let list = [msgbean];
-				let str = uni.getStorageSync(this.user.id + "#" + msgbean.chatid + '_CHAT_MESSAGE');
+				let str = uni.getStorageSync(this.user.id + "#" + msgbean.chatId + '_CHAT_MESSAGE');
 				if (str && str != "") {
 					var jsonObj = JSON.parse(str);
 					jsonObj = jsonObj.concat(list);
-					uni.setStorageSync(this.user.id + "#" + msgbean.chatid + '_CHAT_MESSAGE', JSON.stringify(
+					uni.setStorageSync(this.user.id + "#" + msgbean.chatId + '_CHAT_MESSAGE', JSON.stringify(
 						jsonObj));
 					if (jsonObj.length > 50) {
 						jsonObj.splice(0, jsonObj.length - 50);
 					}
 					this.updateChatMessageMap({
-						key: this.user.id + "#" + msgbean.chatid,
+						key: this.user.id + "#" + msgbean.chatId,
 						value: jsonObj,
 					});
 
@@ -156,25 +156,25 @@
 						this.setCurChatMsgList(newJsonObj);
 						this.WEBSOCKET_SEND({
 							body: {
-								toUid: msgbean.chatid,
+								toUid: msgbean.chatId,
 								fromUid: this.user.id,
 							},
 							CMD: MessageType.CHAT_MSG_READ_ED,
 						});
 					}
-					uni.setStorageSync(this.user.id + "#" + msgbean.chatid + '_CHAT_MESSAGE_LASTCONTENT',
+					uni.setStorageSync(this.user.id + "#" + msgbean.chatId + '_CHAT_MESSAGE_LASTCONTENT',
 						jsonObj[jsonObj.length - 1].bean.simple_content);
 				} else {
-					uni.setStorageSync(this.user.id + "#" + msgbean.chatid + '_CHAT_MESSAGE', JSON.stringify(
+					uni.setStorageSync(this.user.id + "#" + msgbean.chatId + '_CHAT_MESSAGE', JSON.stringify(
 						list));
 					this.updateChatMessageMap({
-						key: this.user.id + "#" + msgbean.chatid,
+						key: this.user.id + "#" + msgbean.chatId,
 						value: list,
 					});
 					if (this.curChatEntity && this.curChatEntity.id == v.toUid) {
 						this.setCurChatMsgList(uniqueArr(newList, "uuid"));
 					}
-					uni.setStorageSync(this.user.id + "#" + msgbean.chatid + '_CHAT_MESSAGE_LASTCONTENT', "");
+					uni.setStorageSync(this.user.id + "#" + msgbean.chatId + '_CHAT_MESSAGE_LASTCONTENT', "");
 				}
 				this.setChatMyLoadding(false);
 			},

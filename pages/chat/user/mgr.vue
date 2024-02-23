@@ -459,7 +459,7 @@
 				uni.showLoading()
 
 				syncMsgData({
-					chatid: localStorage.getItem('toUser'),
+					chatId: localStorage.getItem('toUser'),
 					pageNumber: this.pageNumber,
 				}).then(res => {
 					let res_data = eval(res.data);

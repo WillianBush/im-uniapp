@@ -25,6 +25,7 @@ import {
 	dateFormat,
 	uuid
 } from "../../../common/utils";
+import { MessageType } from "../../../const/MessageType";
 
 export default {
 	refreshChatList({
@@ -609,29 +610,29 @@ export default {
 			}
 		}
 		let msgbean = {
-			chatType: "2",
-			chatid: v.toUid,
+			chatType: v.chatType,
+			chatId: v.toUid,
 			type: "USER_TXT",
 			bean: v,
 		};
 		let list = [msgbean];
 		let str = uni.getStorageSync(
-			user.id + "#" + msgbean.chatid + "_CHAT_MESSAGE"
+			user.id + "#" + msgbean.chatId + "_CHAT_MESSAGE"
 		);
 		if (str && str != "") {
 			var jsonObj = JSON.parse(str);
 			list = jsonObj.concat(list);
 		}
 		uni.setStorageSync(
-			user.id + "#" + msgbean.chatid + "_CHAT_MESSAGE",
+			user.id + "#" + msgbean.chatId + "_CHAT_MESSAGE",
 			JSON.stringify(list)
 		);
 		commit("updateChatMessageMap", {
-			key: user.id + "#" + msgbean.chatid,
+			key: user.id + "#" + msgbean.chatId,
 			value: list,
 		});
 		uni.setStorageSync(
-			user.id + "#" + msgbean.chatid + "_CHAT_MESSAGE_LASTCONTENT",
+			user.id + "#" + msgbean.chatId + "_CHAT_MESSAGE_LASTCONTENT",
 			list[list.length - 1].bean.simple_content
 		);
 		commit("setCurChatMsgList", list);

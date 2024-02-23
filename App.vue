@@ -5,13 +5,11 @@
 	export default {
 		onLaunch: function() {
 			Log.d(TAG, "onLaunch")
-
 			this.$store.commit("app/setAppUuid")
 			this.$store.dispatch("app/setAppConfig")
 		},
 		onLoad(e) {},
 		onShow: function(e) {
-
 			this.$store.commit("app/setAppShow", true);
 			//重要，初始化net 绑定
 			this.$store.dispatch("app/initNetBind");
