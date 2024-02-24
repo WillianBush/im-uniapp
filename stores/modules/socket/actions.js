@@ -429,12 +429,18 @@ export default {
 		let messageList = []
 		if (str && str != "") {
 			var jsonObj = JSON.parse(str);
-			// 自己发出的消息就跳过，因为已经添加
 			if (user.id != messageBean[0].bean.fromUid) {
 				jsonObj = jsonObj.concat(messageBean);
 				if (jsonObj.length > 30) {
-					jsonObj.splice(jsonObj.length - 30, jsonObj.length);
+					jsonObj = jsonObj.splice(jsonObj.length - 30, jsonObj.length);
 				}
+			} else {
+				// 如果是自己发的消息就改变消息发送成功的状态
+				jsonObj.forEach((item) => {
+					if (item.bean.uuid == messageBean[0].uuid) {
+						item = messageBean[0];
+					}
+				});
 			}
 			messageList = jsonObj
 		} else {
@@ -447,7 +453,7 @@ export default {
 		);
 		uni.setStorageSync(
 			user.id + "#" + chatId + "_CHAT_MESSAGE_LASTCONTENT",
-			messageList[messageList.length - 1].bean.simple_content
+			messageBean[0].bean.simple_content
 		);
 
 		let v = {

@@ -643,17 +643,17 @@ export default {
 			var jsonObj = JSON.parse(str);
 			list = jsonObj.concat(list);
 			if (list.length > 30) {
-				list.splice(list.length - 30, list.length);
+				list = list.splice(list.length - 30, list.length);
 			}
 		}
 		uni.setStorageSync(
 			user.id + "#" + msgbean.chatId + "_CHAT_MESSAGE",
 			JSON.stringify(list)
 		);
-		
+
 		uni.setStorageSync(
 			user.id + "#" + msgbean.chatId + "_CHAT_MESSAGE_LASTCONTENT",
-			list[list.length - 1].bean.simple_content
+			msgbean.bean.simple_content
 		);
 		commit("setCurChatMsgList", list);
 		commit("setChatMyLoadding", false);

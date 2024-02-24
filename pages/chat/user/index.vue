@@ -23,8 +23,10 @@
 				</view>
 			</block>
 		</cu-custom>
-		<scroll-view @scroll="scrollFn" :scroll-top="scrollTop" :scroll-y="true" ref="chatVew" @tap="clickChat()"
-			class="cu-chat" :style="'height: calc(100vh - '+CustomBar+'px - '+(120+InputBottom)+'upx)'">
+		<scroll-view @scroll="scrollFn" :scroll-top="scrollTop" refresher-enabled="hasMore"
+			@scrolltoupper="scrollToUpper" :refresher-triggered="isRefreshTrigger" @refresherpulling="refresh"
+			:scroll-y="true" ref="chatVew" @tap="clickChat()" class="cu-chat"
+			:style="'height: calc(100vh - '+CustomBar+'px - '+(120+InputBottom)+'upx)'">
 			<block v-for="(item,index) in curChatMsgList">
 				<block v-if="item.opt&&item.opt=='undo'">
 					<view style="display: none"></view>
@@ -491,7 +493,9 @@
 				temp_bean: null,
 				showname: "",
 				toIP: "",
-				toName: ""
+				toName: "",
+				isRefreshTrigger: false,
+				hasMore: true
 			};
 		},
 		onBackPress() {
@@ -575,6 +579,17 @@
 				this.setCurChatEntity(null);
 				this.setCurChatMsgList([]);
 				this.setChatMyLoadding(false);
+			},
+			refresh() {
+				console.log("==========refresh")
+			},
+			scrollToUpper() {
+				console.log("==========scrollToUpper")
+				if (!this.isRefreshTrigger && this.hasMore) {
+					this.isRefreshTrigger = true;
+					this.pageParams.pageNumber++;
+					this.tongbuMsg(true);
+				}
 			},
 			initData(option) {
 				if (!option.toid) return;
@@ -687,7 +702,6 @@
 
 			},
 			justRefresh() {
-				this.tongbuMsg();
 				this.scrollToBottom();
 			},
 			refresherrefresh() {
@@ -712,18 +726,23 @@
 			},
 			tongbuMsg(isRefresh) { //当前页面聊天记录&页码请求
 				let _this = this;
+				let params = {
+					chatId: _this.toid,
+					pageNumber: this.pageParams.pageNumber,
+				}
 				if (!isRefresh) {
 					_this.setCurChatMsgList([]);
 					uni.removeStorageSync(_this.user.id + "#" + _this.toid + '_CHAT_MESSAGE');
 					uni.removeStorageSync(_this.user.id + "#" + _this.toid +
 						'_CHAT_MESSAGE_LASTCONTENT');
 					uni.removeStorageSync(_this.user.id + "#" + _this.toid + '_CHAT_MESSAGE_UNREAD');
+				} else {
+					if (this.curChatMsgList.length) {
+						params.messageId = this.curChatMsgList[0].bean.messageId;
+					}
 				}
 				uni.showLoading()
-				syncMsgData({
-					chatId: _this.toid,
-					pageNumber: this.pageParams.pageNumber,
-				}).then(res => {
+				syncMsgData(parms).then(res => {
 					let res_data = eval(res.data);
 					if (res_data.code == 201) {
 						//没缓存数据，把加载取消
@@ -744,7 +763,7 @@
 								_this.setCurChatMsgList(cList);
 								// 缓存30条数据到本地
 								if (cList.length > 30) {
-									cList.splice(cList.length - 30, cList.length)
+									cList = cList.splice(cList.length - 30, cList.length)
 								}
 								//2：再清除和刷新大消息列表当前聊天对象数据
 								uni.setStorageSync(user.id + "#" + _this.toid + '_CHAT_MESSAGE', JSON.stringify(
@@ -752,6 +771,7 @@
 								_this.scrollToBottom()
 							} else {
 								//上拉刷新
+								this.hasMore = res_data.body.pageCount != res_data.body.pageNumber
 								this.addCurChatMsg(cList)
 							}
 						}
@@ -760,7 +780,6 @@
 				}).catch(error => {
 					uni.hideLoading();
 					console.log("====", error)
-
 					uni.showToast({
 						icon: 'none',
 						position: 'bottom',

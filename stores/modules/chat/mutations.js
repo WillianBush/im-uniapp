@@ -39,7 +39,8 @@ export default {
 		if (payload.length == 1) {
 			state.curChatMsgList.push(payload[0]);
 		} else {
-			state.curChatMsgList.push(...payload);
+			let tempList = state.curChatMsgList;
+			state.curChatMsgList = payload.concat(tempList);
 		}
 	},
 	updateCurChatMsg(state, payload) {
