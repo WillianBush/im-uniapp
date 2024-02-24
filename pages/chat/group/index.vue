@@ -735,7 +735,9 @@
 				'setUnReadMsgSum'
 			]),
 			...mapActions('socket', [
-				'WEBSOCKET_SEND'
+				'WEBSOCKET_SEND',
+				'sendGroupChatMessage'
+				
 			]),
 			...mapActions('chat', [
 				'loadTalkUserAction',
@@ -743,7 +745,7 @@
 				'uploadVideoAction',
 				'uploadImageAction',
 				'uploadVoiceAction',
-				'sendGroupChatMessage'
+				'sendBaseDaoAction'
 			]),
 			transMessage(message) {
 				return parseEmotion(message);
@@ -1263,9 +1265,7 @@
 					v.aite = aite;
 					this.sendGroupChatMessage(v)
 					this.setChatMyLoadding(true);
-					//#ifdef APP-PLUS
-					_this.sendBaseDaoAction(v);
-					//#endif
+					this.sendBaseDaoAction(v);
 					this.txt = "";
 					this.showjia = true;
 					setTimeout(function() {

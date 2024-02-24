@@ -52,7 +52,7 @@
 				<view :class="'indexItem-' + item.h" :id="'indexes-' + item.h" :data-index="item.h">
 					<view class="padding">{{item.h}}</view>
 					<view class="cu-list menu-avatar no-padding">
-						<view @tap="goUserDetail(items.member_uuid)" class="cu-item" v-for="(items,index1) in item.list"
+						<view @tap="goUserDetail(items)" class="cu-item" v-for="(items,index1) in item.list"
 							:key="index1">
 							<view class="cu-avatar round lg"
 								:style="{'backgroundImage': 'url('+getHeadPic(items.headpic) +')' }"
@@ -215,9 +215,9 @@
 					url: "/pages/addressBook/blacklist/index"
 				})
 			},
-			goUserDetail(_id) {
+			goUserDetail(item) {
 				uni.navigateTo({
-					url: "/pages/chat/user_detail?id=" + _id
+					url: "/pages/chat/user_detail?id=" + item.member_uuid 
 				})
 			},
 			goNewFriends() {

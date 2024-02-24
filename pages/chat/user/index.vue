@@ -676,7 +676,7 @@
 					toid: this.toid
 				}).then(res => {
 					let res_data = eval(res.data);
-					if (res_data.code == 200 && res_data.body.ip.length) {
+					if (res_data.code == 200 && res_data.body&&res_data.body.ip.length) {
 						this.toIP = res_data.body.ip + (res_data.body.ipAddr? "(" + res_data.body.ipAddr + ")" : "");
 					}
 				}).catch(error => {

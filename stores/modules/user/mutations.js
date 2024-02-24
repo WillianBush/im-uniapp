@@ -13,6 +13,7 @@ export default {
 	},
 	setUser(state,payload) {
 		state.user=payload;
+		uni.setStorageSync("USER",state.user)
 	},
 	setFriendList(state,payload){
 		state.friendList = payload;
@@ -35,15 +36,19 @@ export default {
 	},
 	updateUserHeadpic(state,payload){
 		state.user.headpic = payload;
+		uni.setStorageSync("USER",state.user)
 	},
 	updateUsername(state,payload){
 		state.user.nickName = payload;
+		uni.setStorageSync("USER",state.user)
 	},
 	updateTelPhone(state,payload){
 		state.user.telphone = payload;
+		uni.setStorageSync("USER",state.user)
 	},
 	updateSex(state,payload){
 		state.user.sex = payload;
+		uni.setStorageSync("USER",state.user)
 	},
 	setShimingCfg(state,payload){
 		state.shimingCfg = payload;

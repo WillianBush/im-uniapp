@@ -41,7 +41,7 @@
 		</view>
 
 		<block v-if="userDetail.id!=user.id">
-			<view v-if="isMyFri" @tap="goChat(userDetail.id)" style="clear: both;" class="cu-list menu">
+			<view v-if="isMyFri" @tap="goChat(userDetail)" style="clear: both;" class="cu-list menu">
 				<view class="margin-top" style="text-align: center;background: #fff;height:100upx;line-height: 100upx;">
 					<text style="color: #485D83;font-size: 50upx;position: relative;top:6upx;"
 						class="iconfont icon-icon--"></text>
@@ -206,9 +206,9 @@
 					url: "/pages/addressBook/new_friend/add_friend_verify?uuid=" + _id
 				})
 			},
-			goChat(_id) {
+			goChat(user) {
 				uni.navigateTo({
-					url: "/pages/chat/user/index?toid=" + _id
+					url: "/pages/chat/user/index?toid=" + user.id+ '&name='+user.nickName
 				})
 			}
 
