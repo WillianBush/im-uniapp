@@ -486,7 +486,7 @@ export default {
 				data.body[0].bean.fromUid != user.id
 			) {
 				//处理用户信息未读统计
-				str = uni.getStorageSync(
+			let	str = uni.getStorageSync(
 					user.id + "#" + data.body[0].chatId + "_CHAT_MESSAGE_UNREAD"
 				);
 				if (str && str != "") {
