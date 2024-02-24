@@ -611,8 +611,8 @@ export default {
 		}
 		let msgbean = {
 			chatType: v.chatType,
-			chatId: v.toUid,
-			type: "USER_TXT",
+			chatId: v.toUid ? v.toUid:v.toGroupid,
+			messageType: "USER_TXT",
 			bean: v,
 		};
 		let list = [msgbean];
@@ -622,15 +622,18 @@ export default {
 		if (str && str != "") {
 			var jsonObj = JSON.parse(str);
 			list = jsonObj.concat(list);
+			if (list.length > 30) {
+				list.splice(list.length - 30, list.length);
+			}
 		}
 		uni.setStorageSync(
 			user.id + "#" + msgbean.chatId + "_CHAT_MESSAGE",
 			JSON.stringify(list)
 		);
-		commit("updateChatMessageMap", {
-			key: user.id + "#" + msgbean.chatId,
-			value: list,
-		});
+		// commit("updateChatMessageMap", {
+		// 	key: user.id + "#" + msgbean.chatId,
+		// 	value: list,
+		// });
 		uni.setStorageSync(
 			user.id + "#" + msgbean.chatId + "_CHAT_MESSAGE_LASTCONTENT",
 			list[list.length - 1].bean.simple_content

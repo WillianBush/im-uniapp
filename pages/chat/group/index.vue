@@ -42,13 +42,13 @@
 					<view class="cu-info round">{{item.name}} 撤回一条消息</view> -->
 					<view style="display: none"></view>
 				</block>
-				<block v-else-if="item.type=='SYS_TXT'">
+				<block v-else-if="item.messageType=='SYS_TXT'">
 					<view class="cu-info round">
-						<rich-text :nodes="item.bean.txt"></rich-text>
+						<rich-text :nodes="transMessage(item.bean.txt)"></rich-text>
 					</view>
 				</block>
-				<block v-else-if="item.type=='USER_CARD'">
-					<view v-if="item.bean.fromUid==user.id" class="cu-item self">
+				<block v-else-if="item.messageType=='USER_CARD'">
+					<view v-if="item.bean&&item.bean.fromUid==user.id" class="cu-item self">
 						<view class="main">
 							<view @longpress="onLongPress($event,item.bean)" @tap="clickCard(item.bean)"
 								style="border: 1px solid #eee;background-color: #fff;width:400upx;height:180upx;border-radius: 6px;">
@@ -133,7 +133,7 @@
 								@longpress="onLongPress($event,item.bean)"
 								:class="[item.bean.psr=='uparse'?'':'content bg-green shadow']"
 								:style="{backgroundColor:item.bean.psr=='uparse'? 'none':'#fff'}" style="color:#222;">
-								<u-parse v-if="item.bean.psr=='uparse'" :content="item.bean.txt" @preview="preview"
+								<u-parse v-if="item.bean.psr=='uparse'" :content="transMessage(item.bean.txt)" @preview="preview"
 									@navigate="navigate"></u-parse>
 								<view @tap="clickVoice(item.bean.txt,index)" v-else-if="item.bean.psr=='voice'">
 									<text v-show="selVoiceIndex != index"
@@ -147,7 +147,7 @@
 									<text v-show="selVoiceIndex == index"
 										style="float:left;font-size: 26upx;position: relative;top: 6upx;">{{item.bean.sub_txt}}"</text>
 								</view>
-								<rich-text style="max-width:440upx" v-else :nodes="item.bean.txt"></rich-text>
+								<rich-text style="max-width:440upx" v-else :nodes="transMessage(item.bean.txt)"></rich-text>
 							</view>
 						</view>
 						<view v-if="item.bean.psr!='video'" class="cu-avatar radius"
@@ -174,9 +174,9 @@
 							<view @contextmenu="clickRight($event, item.bean)"
 								@longpress="onLongPress($event,item.bean)"
 								:class="[item.bean.psr=='uparse'?'':'content shadow']" style="color:#222;">
-								<u-parse v-if="item.bean.psr=='video'" :content="item.bean.txt" @preview="preview"
+								<u-parse v-if="item.bean.psr=='video'" :content="transMessage(item.bean.txt)" @preview="preview"
 									@navigate="navigate"></u-parse>
-								<u-parse v-else-if="item.bean.psr=='uparse'" :content="item.bean.txt" @preview="preview"
+								<u-parse v-else-if="item.bean.psr=='uparse'" :content="transMessage(item.bean.txt)" @preview="preview"
 									@navigate="navigate"></u-parse>
 								<view @tap="clickVoice(item.bean.txt,index)" v-else-if="item.bean.psr=='voice'">
 									<text v-show="selVoiceIndex != index"
@@ -190,7 +190,7 @@
 									<text v-show="selVoiceIndex == index"
 										style="float:right;font-size: 26upx;position: relative;top: 6upx;">{{item.bean.sub_txt}}"</text>
 								</view>
-								<rich-text style="max-width:440upx" v-else :nodes="item.bean.txt"></rich-text>
+								<rich-text style="max-width:440upx" v-else :nodes="transMessage(item.bean.txt)"></rich-text>
 							</view>
 						</view>
 						<view class="date "> {{item.bean.date}}</view>
@@ -864,7 +864,7 @@
 								_this.setCurChatMsgList(cList);
 								// 缓存30条数据到本地
 								if (cList.length > 30) {
-									cList.splice(0, 30)
+									cList.splice(cList.length-30,cList.length)
 								}
 								//2：再清除和刷新大消息列表当前聊天对象数据
 								uni.setStorageSync(user.id + "#" + _this.toid + '_CHAT_MESSAGE', JSON.stringify(

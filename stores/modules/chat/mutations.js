@@ -37,7 +37,7 @@ export default {
 	},
 	addCurChatMsg(state, payload) {
 		if(payload.length == 1){
-			state.curChatMsgList.push(payload);
+			state.curChatMsgList.push(payload[0]);
 		}else{
 			state.curChatMsgList.push(...payload);
 		}

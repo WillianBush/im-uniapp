@@ -307,9 +307,16 @@ export default {
 		let data = payload;
 		let user = rootState.user.user;
 		let messageBean = data.body;
+		console.log("==========收到消息",messageBean)
+		messageBean[0].uuid = messageBean[0].bean.uuid
 		uni.$emit("scrollTopFn");
-		let darao = uni.getStorageSync(data.body[0].chatId + "_darao");
-		if (data.body[0].bean.fromUid != user.id) {
+		// 获取是否设置免打扰
+		let chatId = messageBean[0].bean.fromUid != user.id ? messageBean[0].bean.fromUid : data.body[0].bean.toUid;
+		if (messageBean[0].bean.toGroupid) {
+			chatId = messageBean[0].bean.toGroupid
+		}
+		let darao = uni.getStorageSync(chatId + "_darao");
+		if (messageBean[0].bean.fromUid != user.id) {
 			if (!darao && data.act == "none") {
 				if (
 					rootState.chat.temp.msgMp3Playtime == 0 ||
@@ -338,7 +345,6 @@ export default {
 			}
 		} else if (data.body[0].bean.fromUid == user.id) {
 			//多端同步的问题
-
 		} else {
 			setTimeout(() => {
 				uni.pageScrollTo({
@@ -381,92 +387,75 @@ export default {
 				}
 			}
 		}
-		//#ifndef H5
-		let str = uni.getStorageSync(
-			user.id + "#" + data.body[0].chatId + "_CHAT_MESSAGE"
-		);
-		if (str && str != "") {
-			var jsonObj = JSON.parse(str);
-			jsonObj = jsonObj.concat(data.body);
-
-			uni.setStorageSync(
-				user.id + "#" + data.body[0].chatId + "_CHAT_MESSAGE",
-				JSON.stringify(jsonObj)
-			);
-
-
-			commit("chat/updateChatMessageMap", {
-				key: user.id + "#" + data.body[0].chatId,
-				value: jsonObj,
-			}, {
-				root: true
-			});
-
-			if (
-				rootState.chat.curChatEntity &&
-				rootState.chat.curChatEntity.id == data.body[0].chatId
-			) {
-
-				//1-9修正 把直接赋值改为先去重
-				jsonObj.forEach((item) => {
-					item.uuid = item.bean.uuid;
-				});
-				let msgList = uniqueArr(jsonObj, "uuid")
+		
+		if (
+			rootState.chat.curChatEntity &&
+			rootState.chat.curChatEntity.id == chatId
+		) {
+			// 判断是否是当前聊天窗体
+			//1-9修正 把直接赋值改为先去重
+			// messageList.forEach((item) => {
+			// 	item.uuid = item.bean.uuid;
+			// });
+			// let msgList = uniqueArr(messageList, "uuid")
+			// commit(
+			// 	"chat/setCurChatMsgList",
+			// 	msgList, {
+			// 		root: true
+			// 	}
+			// );
+			if (user.id == messageBean[0].bean.fromUid) { // 自己发出的消息
 				commit(
-					"chat/setCurChatMsgList",
-					msgList, {
+					"chat/updateCurChatMsg",
+					messageBean[0], {
+						root: true
+					}
+				);
+			} else { // 别人发来的消息
+			console.log("==========收到别人发来的消息",messageBean)
+			
+				commit(
+					"chat/addCurChatMsg",
+					messageBean, {
 						root: true
 					}
 				);
 			}
-			uni.setStorageSync(
-				user.id + "#" + data.body[0].chatId + "_CHAT_MESSAGE_LASTCONTENT",
-				jsonObj[jsonObj.length - 1].bean.simple_content
-			);
-		} else {
-			uni.setStorageSync(
-				user.id + "#" + data.body[0].chatId + "_CHAT_MESSAGE",
-				JSON.stringify(data.body)
-			);
-			commit("chat/updateChatMessageMap", {
-				key: user.id + "#" + data.body[0].chatId,
-				value: data.body,
-			}, {
-				root: true
-			});
-			if (
-				rootState.chat.curChatEntity &&
-				rootState.chat.curChatEntity.id == data.body[0].chatId
-			) {
-				commit("chat/setCurChatMsgList", data.body, {
-					root: true
-				});
-			}
-			uni.setStorageSync(
-				user.id + "#" + data.body[0].chatId + "_CHAT_MESSAGE_LASTCONTENT",
-				data.body.simple_content
-			);
 		}
-		//#endif
-
-		//#ifdef H5
-		if(rootState.chat.curChatEntity && rootState.chat.curChatEntity.id == data.body[0].chatId){
-			messageBean[0].uuid = messageBean[0].bean.uuid
-			console.log("message:",messageBean)
-			commit(
-				"chat/updateCurChatMsg",
-				messageBean[0], {
-					root: true
+		
+		let str = uni.getStorageSync(
+			user.id + "#" + chatId + "_CHAT_MESSAGE"
+		);
+		let messageList = []
+		if (str && str != "") {
+			var jsonObj = JSON.parse(str);
+			// 自己发出的消息就跳过，因为已经添加
+			if (user.id != messageBean[0].bean.fromUid) {
+				jsonObj = jsonObj.concat(messageBean);
+				if (jsonObj.length > 30) {
+					jsonObj.splice(jsonObj.length - 30, jsonObj.length);
 				}
-			);
+			}
+			messageList = jsonObj
+		} else {
+			messageList = messageBean;
 		}
-		//#endif
+			console.log("==========收到别人发来的消息",messageList)
+		uni.setStorageSync(
+			user.id + "#" + chatId + "_CHAT_MESSAGE",
+			JSON.stringify(messageList)
+		);
+		uni.setStorageSync(
+			user.id + "#" + chatId + "_CHAT_MESSAGE_LASTCONTENT",
+			messageList[messageList.length - 1].bean.simple_content
+		);
 
 		let v = {
-			toUid: data.body[0].chatId,
+			toUid: chatId,
 			fromUid: user.id,
 		};
-		if (rootState.chat.curChatEntity && rootState.chat.curChatEntity.id == data.body[0].chatId && data.body[0].bean
+		// 当前窗体接受到对方发来的消息，发送已读命令
+		if (rootState.chat.curChatEntity && rootState.chat.curChatEntity.id == chatId && messageBean[0].bean
 			.fromUid != user.id) {
 			dispatch("WEBSOCKET_SEND", {
 				cmd: MessageType.CHAT_MSG_READ_ED,
@@ -476,29 +465,27 @@ export default {
 
 		//更新联系记录最后一条显示内容和未读统计信息
 		let unreadCount = 0;
-
 		let c = 0; //未读数量
-
-		if (!darao) {
+		if (!darao) { // 这里没有开启免打扰功能才设置未读信息(是否合理？)
 			if (
 				(!rootState.chat.curChatEntity ||
-					data.body[0].chatId != rootState.chat.curChatEntity.id) &&
-				data.body[0].bean.fromUid != user.id
-			) {
+					chatId != rootState.chat.curChatEntity.id) &&
+				messageBean[0].bean.fromUid != user.id
+			) { // 当前聊天没有在聊天页面，或者，不是正在聊天的对象，也不是自己发的消息。则计算未读
 				//处理用户信息未读统计
-			let	str = uni.getStorageSync(
-					user.id + "#" + data.body[0].chatId + "_CHAT_MESSAGE_UNREAD"
+				let str = uni.getStorageSync(
+					user.id + "#" + chatId + "_CHAT_MESSAGE_UNREAD"
 				);
 				if (str && str != "") {
 					c = parseInt(str) + 1;
 					uni.setStorageSync(
-						user.id + "#" + data.body[0].chatId + "_CHAT_MESSAGE_UNREAD",
+						user.id + "#" + chatId + "_CHAT_MESSAGE_UNREAD",
 						c + ""
 					);
 				} else {
 					c = 1;
 					uni.setStorageSync(
-						user.id + "#" + data.body[0].chatId + "_CHAT_MESSAGE_UNREAD",
+						user.id + "#" + chatId + "_CHAT_MESSAGE_UNREAD",
 						"1"
 					);
 				}
@@ -506,11 +493,11 @@ export default {
 		}
 
 		rootState.chat.arList.forEach((item) => {
-			if (item.id == data.body[0].chatId) {
+			if (item.id == messageBean[0].chatId) {
 				let s = uni.getStorageSync(
 					user.id +
 					"#" +
-					data.body[0].chatId +
+					chatId +
 					"_CHAT_MESSAGE_LASTCONTENT"
 				);
 				item.content = null == s ? "" : s;
@@ -640,7 +627,7 @@ export default {
 		rootState
 	}, payload) {
 		let data = payload
-		console.log("data",data)
+		console.log("data", data)
 		let user = uni.getStorageSync("USER");
 		if (rootState.chat.arList.length > 0) {
 			let lastContent = "";
@@ -802,7 +789,7 @@ export default {
 		});
 		if (
 			rootState.chat.curChatEntity &&
-			rootState.curChatEntity.id == data.body
+			rootState.chat.curChatEntity.id == data.body
 		) {
 			rootState.chat.curChatEntity.online = 1;
 			commit("chat/setCurChatEntity", rootState.chat.curChatEntity, {
