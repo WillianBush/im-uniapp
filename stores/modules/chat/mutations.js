@@ -39,7 +39,10 @@ export default {
 		if(payload.length == 1){
 			state.curChatMsgList.push(payload[0]);
 		}else{
-			state.curChatMsgList.push(...payload);
+			let tempList = state.curChatMsgList			
+			state.curChatMsgList = payload.concat(tempList)
+			console.log("=======刷新消息",state.curChatMsgList)
+			
 		}
 	},
 	updateCurChatMsg(state, payload) {

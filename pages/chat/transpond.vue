@@ -144,8 +144,8 @@
 					jsonObj = jsonObj.concat(list);
 					uni.setStorageSync(this.user.id + "#" + msgbean.chatId + '_CHAT_MESSAGE', JSON.stringify(
 						jsonObj));
-					if (jsonObj.length > 50) {
-						jsonObj.splice(0, jsonObj.length - 50);
+					if (jsonObj.length > 30) {
+						jsonObj = jsonObj.splice(jsonObj.length - 30,0);
 					}
 					this.updateChatMessageMap({
 						key: this.user.id + "#" + msgbean.chatId,

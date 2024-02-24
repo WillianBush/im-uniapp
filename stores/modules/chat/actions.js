@@ -623,7 +623,7 @@ export default {
 			var jsonObj = JSON.parse(str);
 			list = jsonObj.concat(list);
 			if (list.length > 30) {
-				list.splice(list.length - 30, list.length);
+				list = list.splice(list.length - 30, list.length);
 			}
 		}
 		uni.setStorageSync(

@@ -33,10 +33,10 @@
 		<uni-notice-bar v-if="isGroupChat" showIcon="" speed="35" scrollable="true" single="true"
 			:text="curChatEntity.descri"></uni-notice-bar>
 
-		<scroll-view @scroll="scrollFn" :refresher-enabled="true" @scrolltoupper="scrollToUpper"
-			:refresher-triggered="isRefreshTrigger" @refresherpulling="refresh" :scroll-into-view="viewId" :scroll-top="scrollTop"
-			:scroll-y="true" ref="chatVew" @tap="clickChat()" class="cu-chat" style="background: #fff;"
-			:style="'height: calc(100vh - 168px - '+(120+InputBottom)+'upx)'">
+		<scroll-view @scroll="scrollFn" :refresher-enabled="hasMore" @scrolltoupper="scrollToUpper"
+			:refresher-triggered="isRefreshTrigger" @refresherpulling="refresh" :scroll-into-view="viewId"
+			:scroll-top="scrollTop" :scroll-y="true" ref="chatVew" @tap="clickChat()" class="cu-chat"
+			style="background: #fff;" :style="'height: calc(100vh - 168px - '+(120+InputBottom)+'upx)'">
 			<block v-for="(item,index) in curChatMsgList">
 				<block v-if="item.opt&&item.opt=='undo'">
 					<view class="cu-info round">{{item.name}} 撤回一条消息</view> -->
@@ -133,8 +133,8 @@
 								@longpress="onLongPress($event,item.bean)"
 								:class="[item.bean.psr=='uparse'?'':'content bg-green shadow']"
 								:style="{backgroundColor:item.bean.psr=='uparse'? 'none':'#fff'}" style="color:#222;">
-								<u-parse v-if="item.bean.psr=='uparse'" :content="transMessage(item.bean.txt)" @preview="preview"
-									@navigate="navigate"></u-parse>
+								<u-parse v-if="item.bean.psr=='uparse'" :content="transMessage(item.bean.txt)"
+									@preview="preview" @navigate="navigate"></u-parse>
 								<view @tap="clickVoice(item.bean.txt,index)" v-else-if="item.bean.psr=='voice'">
 									<text v-show="selVoiceIndex != index"
 										style="float:left;width:100upx;font-size: 52upx;position: relative;top: 4upx;"
@@ -147,7 +147,8 @@
 									<text v-show="selVoiceIndex == index"
 										style="float:left;font-size: 26upx;position: relative;top: 6upx;">{{item.bean.sub_txt}}"</text>
 								</view>
-								<rich-text style="max-width:440upx" v-else :nodes="transMessage(item.bean.txt)"></rich-text>
+								<rich-text style="max-width:440upx" v-else
+									:nodes="transMessage(item.bean.txt)"></rich-text>
 							</view>
 						</view>
 						<view v-if="item.bean.psr!='video'" class="cu-avatar radius"
@@ -174,10 +175,10 @@
 							<view @contextmenu="clickRight($event, item.bean)"
 								@longpress="onLongPress($event,item.bean)"
 								:class="[item.bean.psr=='uparse'?'':'content shadow']" style="color:#222;">
-								<u-parse v-if="item.bean.psr=='video'" :content="transMessage(item.bean.txt)" @preview="preview"
-									@navigate="navigate"></u-parse>
-								<u-parse v-else-if="item.bean.psr=='uparse'" :content="transMessage(item.bean.txt)" @preview="preview"
-									@navigate="navigate"></u-parse>
+								<u-parse v-if="item.bean.psr=='video'" :content="transMessage(item.bean.txt)"
+									@preview="preview" @navigate="navigate"></u-parse>
+								<u-parse v-else-if="item.bean.psr=='uparse'" :content="transMessage(item.bean.txt)"
+									@preview="preview" @navigate="navigate"></u-parse>
 								<view @tap="clickVoice(item.bean.txt,index)" v-else-if="item.bean.psr=='voice'">
 									<text v-show="selVoiceIndex != index"
 										style="text-align: right; float:right;width:100upx;font-size: 52upx;position: relative;top: 4upx;"
@@ -190,7 +191,8 @@
 									<text v-show="selVoiceIndex == index"
 										style="float:right;font-size: 26upx;position: relative;top: 6upx;">{{item.bean.sub_txt}}"</text>
 								</view>
-								<rich-text style="max-width:440upx" v-else :nodes="transMessage(item.bean.txt)"></rich-text>
+								<rich-text style="max-width:440upx" v-else
+									:nodes="transMessage(item.bean.txt)"></rich-text>
 							</view>
 						</view>
 						<view class="date "> {{item.bean.date}}</view>
@@ -428,7 +430,8 @@
 				aite_map: new Map(), //@的用户列表 key:@昵称 value:用户ID
 				viewId: "",
 				showname: "",
-				isRefreshTrigger:false
+				isRefreshTrigger: false,
+				hasMore:true
 			};
 		},
 		watch: {
@@ -541,12 +544,11 @@
 			},
 			scrollToUpper() {
 				console.log("==========scrollToUpper")
-				if(!this.isRefreshTrigger){
+				if (!this.isRefreshTrigger &&this.hasMore) {
 					this.isRefreshTrigger = true;
-					this.pageParams.pageNumber ++;
-					this.tongbuMsg();
+					this.pageParams.pageNumber++;
+					this.tongbuMsg(true);
 				}
-				
 			},
 			loadOrRefreshDate() {
 				var _this = this;
@@ -832,21 +834,27 @@
 			},
 			tongbuMsg(isRefresh) {
 				let _this = this;
-				if(!isRefresh){
+				let params = {
+					chatId: _this.toid,
+					pageNumber: this.pageParams.pageNumber,
+				}
+				if (!isRefresh) {
 					_this.setCurChatMsgList([]);
 					uni.removeStorageSync(_this.user.id + "#" + _this.toid + '_CHAT_MESSAGE');
 					uni.removeStorageSync(_this.user.id + "#" + _this.toid +
 						'_CHAT_MESSAGE_LASTCONTENT');
 					uni.removeStorageSync(_this.user.id + "#" + _this.toid + '_CHAT_MESSAGE_UNREAD');
+				} else {
+					if(this.curChatMsgList.length){
+						params.messageId = this.curChatMsgList[0].bean.messageId;
+					}
 				}
 				uni.showLoading()
-				syncMsgData({
-					chatId: _this.toid,
-					pageNumber: this.pageParams.pageNumber,
-				}).then(res => {
+
+				syncMsgData(params).then(res => {
 					uni.hideLoading()
 					let res_data = eval(res.data);
-					if(isRefresh){
+					if (isRefresh) {
 						this.isRefreshTrigger = false;
 					}
 					if (res_data.code == 200) {
@@ -858,23 +866,25 @@
 								cList.push(msg);
 							} //遍历
 							let user = uni.getStorageSync("USER");
-							if(!isRefresh){ 
+							if (!isRefresh) {
 								//1：先清楚和刷新当前显示列表
 								_this.setCurChatMsgList([])
 								_this.setCurChatMsgList(cList);
 								// 缓存30条数据到本地
 								if (cList.length > 30) {
-									cList.splice(cList.length-30,cList.length)
+									cList = cList.splice(cList.length - 30, cList.length)
 								}
 								//2：再清除和刷新大消息列表当前聊天对象数据
 								uni.setStorageSync(user.id + "#" + _this.toid + '_CHAT_MESSAGE', JSON.stringify(
 									cList));
 								_this.scrollToBottom()
-							}else{
+							} else {
+								this.hasMore = res_data.body.pageCount != res_data.body.pageNumber
 								//上拉刷新
 								this.addCurChatMsg(cList)
+								
 							}
-							
+
 						}
 					}
 				});

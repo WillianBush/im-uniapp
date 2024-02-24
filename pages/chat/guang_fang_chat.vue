@@ -261,8 +261,8 @@
 				let str = uni.getStorageSync(user.id + "#" + this.toid + '_CHAT_MESSAGE');
 				if (str && str != "") {
 					var jsonObj = JSON.parse(str);
-					if (jsonObj.length > 50) {
-						jsonObj.splice(0, jsonObj.length - 50);
+					if (jsonObj.length > 30) {
+						jsonObj = jsonObj.splice(jsonObj.length - 30,jsonObj.length);
 					}
 					this.updateChatMessageMap({
 						key: user.id + "#" + this.toid,

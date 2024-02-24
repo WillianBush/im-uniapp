@@ -110,7 +110,7 @@ export default {
     },
     removeImageUrl(src) {
       const { imageUrls } = this;
-      imageUrls.splice(imageUrls.indexOf(src), 1);
+     imageUrls = imageUrls.splice(imageUrls.indexOf(src), 1);
     },
   },
 };

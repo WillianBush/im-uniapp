@@ -16,12 +16,11 @@
 					</view>
 					<div v-else v-for="(item,index) in chatLogs">
 						<div v-if="item.opt&&item.opt=='undo'">
-
 							<view style="display: none"></view>
 						</div>
 						<div v-else-if="item.type=='SYS_TXT'">
 							<view class="cu-info round">
-								<rich-text :nodes="item.bean.txt"></rich-text>
+								<rich-text :nodes="transMessage(item.bean.txt)"></rich-text>
 							</view>
 						</div>
 
@@ -109,7 +108,7 @@
 										style="margin-right:30upx;color: #999;font-size: 24upx;">已读</view>
 									<view class="content bg-green shadow" style="background-color: #98E165;
 			color:#222;">
-										<u-parse v-if="item.bean.psr=='uparse'" :content="item.bean.txt"
+										<u-parse v-if="item.bean.psr=='uparse'" :content="transMessage(item.bean.txt)"
 											@preview="preview" @navigate="navigate"></u-parse>
 										<view @tap="clickVoice(item.bean.txt,index)" v-else-if="item.bean.psr=='voice'">
 											<text v-show="selVoiceIndex != index"
@@ -125,7 +124,7 @@
 										</view>
 										<video direction="0" v-else-if="item.bean.psr=='video'"
 											:src="imgUrl+item.bean.txt"></video>
-										<rich-text v-else :nodes="item.bean.txt"></rich-text>
+										<rich-text v-else :nodes="transMessage(item.bean.txt)"></rich-text>
 
 									</view>
 								</view>
@@ -142,7 +141,7 @@
 								<view class="main">
 									<view class="content shadow" style="
 			color:#222;">
-										<u-parse v-if="item.bean.psr=='uparse'" :content="item.bean.txt"
+										<u-parse v-if="item.bean.psr=='uparse'" :content="transMessage(item.bean.txt)"
 											@preview="preview" @navigate="navigate"></u-parse>
 										<view @tap="clickVoice(item.bean.txt,index)" v-else-if="item.bean.psr=='voice'">
 											<text v-show="selVoiceIndex != index"
@@ -158,7 +157,7 @@
 										</view>
 										<video direction="0" v-else-if="item.bean.psr=='video'"
 											:src="imgUrl+item.bean.txt"></video>
-										<rich-text v-else :nodes="item.bean.txt"></rich-text>
+										<rich-text v-else :nodes="transMessage(item.bean.txt)"></rich-text>
 									</view>
 								</view>
 								<view class="date "> {{item.bean.date}}</view>
@@ -248,7 +247,7 @@
 				</view>
 				<view class="cu-item margin-top" style="margin-bottom: 80upx;" @tap="removeFriend()">
 					<view class="content" style="text-align: center;">
-						<text class="text-grey" style="color:#FF2442;">删除</text>
+						<text class="text-grey" style="color:#FF2442;cursor: pointer;">删除</text>
 					</view>
 				</view>
 			</view>
@@ -277,7 +276,8 @@
 		MessageType
 	} from '../../../const/MessageType';
 	import {
-		getHeadPic
+		getHeadPic,
+		parseEmotion
 	} from '../../../common/utils';
 	export default {
 		props: {
@@ -421,6 +421,9 @@
 			getHeadPic(img){
 				return getHeadPic(img,this.imgUrl)
 			},
+			transMessage(message){
+				return parseEmotion(message)
+			},
 			loadmore() { //页码更换
 				this.pageNumber++;
 				this.tongbuMsg() //recall pagination datas.
@@ -510,6 +513,8 @@
 						this.totalCount = res_data.body.totalCount * res_data.body.pageCount;
 					}
 				}).catch(error => {
+					console.log("=====error",error)
+					
 					uni.showToast({
 						title: error.msg ? error.msg : "同步失败",
 						duration: 2000
@@ -608,6 +613,7 @@
 						_this.super_user = parseInt(res_data.msg);
 					}
 				}).catch(error => {
+					console.log("=====error",error)
 					uni.showToast({
 						icon: 'none',
 						position: 'bottom',
@@ -631,6 +637,8 @@
 						});
 					}
 				}).catch(error => {
+					console.log("=====error",error)
+					
 					uni.showToast({
 						icon: 'none',
 						position: 'bottom',
@@ -703,6 +711,8 @@
 								});
 							}
 						}).catch(error => {
+							console.log("=====error",error)
+							
 							uni.showToast({
 								icon: 'none',
 								position: 'bottom',
@@ -803,6 +813,8 @@
 						});
 					}
 				}).catch(error => {
+					console.log("=====error",error)
+					
 					uni.showToast({
 						icon: 'none',
 						position: 'bottom',
