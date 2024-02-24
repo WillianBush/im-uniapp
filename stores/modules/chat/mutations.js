@@ -35,20 +35,21 @@ export default {
 	setCurChatMsgList(state, payload) {
 		state.curChatMsgList = payload;
 	},
-	addCurChatMsg(state,payload){
-		state.curChatMsgList.push(payload);
+	addCurChatMsg(state, payload) {
+		if (payload.length == 1) {
+			state.curChatMsgList.push(payload[0]);
+		} else {
+			state.curChatMsgList.push(...payload);
+		}
 	},
-	updateCurChatMsg(state,payload){
-		console.log("===curChatMsgList1",state.curChatMsgList)
-		
-		state.curChatMsgList.forEach(item =>{
-			if(item.bean.uuid == payload.uuid){
+	updateCurChatMsg(state, payload) {
+
+		state.curChatMsgList.forEach(item => {
+			if (item.bean.uuid == payload.uuid) {
 				item.uuid = payload.uuid;
-				console.log("update",item)
 			}
 		})
-		console.log("===curChatMsgList2",state.curChatMsgList)
-		
+
 	},
 	setCurChatAiteToMyList(state, payload) {
 		state.curChatAiteToMyList = payload

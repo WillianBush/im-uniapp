@@ -25,7 +25,9 @@ import {
 	dateFormat,
 	uuid
 } from "../../../common/utils";
-import { MessageType } from "../../../const/MessageType";
+import {
+	MessageType
+} from "../../../const/MessageType";
 
 export default {
 	refreshChatList({
@@ -449,7 +451,7 @@ export default {
 		dispatch,
 		rootState
 	}, payload) {
-		return new Promise(async(resolve,rejcet)=>{
+		return new Promise(async (resolve, rejcet) => {
 			let uploadRes = await dispatch("chooseVideoAction");
 			if (!uploadRes.tempFilePath) {
 				uni.showToast({
@@ -475,14 +477,14 @@ export default {
 						let v = {
 							txt: json.msg,
 							fromUid: rootState.user.user.id,
-							chatType:'2'
+							chatType: '2'
 						}
 						let cmd = "socket/sendChatMessage"
-						if(payload.toGroupid){
+						if (payload.toGroupid) {
 							v.toGroupid = payload.toGroupid
 							v.chatType = '1'
 							cmd = "socket/sendGroupChatMessage"
-						}else{
+						} else {
 							v.toUid = payload.toUid
 						}
 						dispatch(cmd, v, {
@@ -494,7 +496,7 @@ export default {
 						dispatch("sendBaseDaoAction", v);
 						//#endif
 						resolve(true)
-					}else{
+					} else {
 						rejcet(false)
 					}
 				},
@@ -504,12 +506,12 @@ export default {
 			});
 		})
 	},
- uploadImageAction({
+	uploadImageAction({
 		commit,
 		dispatch,
 		rootState
 	}, payload) {
-		return new Promise(async (resolve,reject)=>{
+		return new Promise(async (resolve, reject) => {
 			let uploadRes = await dispatch("chooseImageAction");
 			if (!uploadRes.tempFilePath) {
 				uni.showToast({
@@ -520,7 +522,7 @@ export default {
 			}
 			let arrs = uploadRes.tempFilePaths;
 			let token = uni.getStorageSync("token");
-			
+
 			arrs.forEach((item) => {
 				var uper = uni.uploadFile({
 					// 需要上传的地址
@@ -537,17 +539,17 @@ export default {
 							let v = {
 								txt: json.msg,
 								fromUid: rootState.user.user.id,
-								chatType:'2'
+								chatType: '2'
 							}
 							let cmd = "socket/sendChatMessage"
-							if(payload.toGroupid){
+							if (payload.toGroupid) {
 								v.toGroupid = payload.toGroupid
 								v.chatType = '1'
 								cmd = "socket/sendGroupChatMessage"
-							}else{
+							} else {
 								v.toUid = payload.toUid
 							}
-							dispatch(cmd,v, {
+							dispatch(cmd, v, {
 								root: true
 							});
 							//#ifdef APP-PLUS
@@ -555,13 +557,13 @@ export default {
 							v.simple_content = "[图片]";
 							dispatch("sendBaseDaoAction", v);
 							//#endif
-							setTimeout(()=>{
+							setTimeout(() => {
 								resolve(true)
-							},5*1000)
-						}else{
+							}, 5 * 1000)
+						} else {
 							reject(json)
 						}
-						
+
 					},
 					fail(error) {
 						reject(error)
@@ -629,38 +631,31 @@ export default {
 		}
 		let msgbean = {
 			chatType: v.chatType,
-			chatId: v.toUid,
-			type: "USER_TXT",
+			chatId: v.toUid ? v.toUid : v.toGroupid,
+			messageType: "USER_TXT",
 			bean: v,
 		};
 		let list = [msgbean];
-		// #ifdef APP
 		let str = uni.getStorageSync(
 			user.id + "#" + msgbean.chatId + "_CHAT_MESSAGE"
 		);
 		if (str && str != "") {
 			var jsonObj = JSON.parse(str);
 			list = jsonObj.concat(list);
+			if (list.length > 30) {
+				list.splice(list.length - 30, list.length);
+			}
 		}
 		uni.setStorageSync(
 			user.id + "#" + msgbean.chatId + "_CHAT_MESSAGE",
 			JSON.stringify(list)
 		);
-		commit("updateChatMessageMap", {
-			key: user.id + "#" + msgbean.chatId,
-			value: list,
-		});
+		
 		uni.setStorageSync(
 			user.id + "#" + msgbean.chatId + "_CHAT_MESSAGE_LASTCONTENT",
 			list[list.length - 1].bean.simple_content
 		);
 		commit("setCurChatMsgList", list);
-		// #endif
-		
-		// #ifdef H5
-		commit("addCurChatMsg", msgbean);
-		// #endif
-		
 		commit("setChatMyLoadding", false);
 	},
 	transMessageAction({

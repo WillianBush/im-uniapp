@@ -19,7 +19,7 @@
 						src="/static/tabbar/synchronize.png"></image>
 					<uni-text @tap="goMgr(entity.id)" style="font-size: 22px;color: #fff;margin-right: 14px;"
 						class="lg text-gray cuIcon-more">
-						</uni-text>
+					</uni-text>
 				</view>
 			</block>
 		</cu-custom>
@@ -531,17 +531,11 @@
 		},
 		mounted() {
 			if (!this.toid) return;
-			//#ifdef APP-PLUS
 			if (this.curChatMsgList.length == 0) {
 				this.tongbuMsg();
 			} else {
 				this.deduplication()
 			}
-			//#endif
-
-			//#ifdef H5
-			this.tongbuMsg();
-			//#endif
 		},
 		methods: {
 			...mapMutations('chat', [
@@ -551,7 +545,8 @@
 				'updateChatMessageMap',
 				'setTempBean',
 				'setTempContent',
-				'setArList'
+				'setArList',
+				'addCurChatMsg'
 			]),
 			...mapActions('socket', [
 				"sendChatMessage",
@@ -649,7 +644,7 @@
 						this.chatCfg = res_data.body;
 					}
 				}).catch(error => {
-					console.log("====",error)
+					console.log("====", error)
 					uni.showToast({
 						icon: 'none',
 						position: 'bottom',
@@ -663,8 +658,8 @@
 				}).then(res => {
 					this.entity = res;
 				}).catch(error => {
-					console.log("====",error)
-					
+					console.log("====", error)
+
 					uni.showToast({
 						icon: 'none',
 						position: 'bottom',
@@ -676,12 +671,13 @@
 					toid: this.toid
 				}).then(res => {
 					let res_data = eval(res.data);
-					if (res_data.code == 200 && res_data.body&&res_data.body.ip.length) {
-						this.toIP = res_data.body.ip + (res_data.body.ipAddr? "(" + res_data.body.ipAddr + ")" : "");
+					if (res_data.code == 200 && res_data.body && res_data.body.ip.length) {
+						this.toIP = res_data.body.ip + (res_data.body.ipAddr ? "(" + res_data.body.ipAddr + ")" :
+							"");
 					}
 				}).catch(error => {
-					console.log("====",error)
-					
+					console.log("====", error)
+
 					uni.showToast({
 						icon: 'none',
 						position: 'bottom',
@@ -714,8 +710,15 @@
 			scrollFn(e) {
 				this.scrollDetail = e.detail;
 			},
-			tongbuMsg() { //当前页面聊天记录&页码请求
+			tongbuMsg(isRefresh) { //当前页面聊天记录&页码请求
 				let _this = this;
+				if (!isRefresh) {
+					_this.setCurChatMsgList([]);
+					uni.removeStorageSync(_this.user.id + "#" + _this.toid + '_CHAT_MESSAGE');
+					uni.removeStorageSync(_this.user.id + "#" + _this.toid +
+						'_CHAT_MESSAGE_LASTCONTENT');
+					uni.removeStorageSync(_this.user.id + "#" + _this.toid + '_CHAT_MESSAGE_UNREAD');
+				}
 				uni.showLoading()
 				syncMsgData({
 					chatId: _this.toid,
@@ -735,39 +738,29 @@
 								msg.uuid = msg.bean.uuid;
 								cList.push(msg);
 							} //遍历
-							_this.syncMessageArr = cList
 							let user = uni.getStorageSync("USER");
-							//1：先清楚和刷新当前显示列表
-							_this.setCurChatMsgList([])
-							_this.setCurChatMsgList(_this.syncMessageArr);
-
-
-							//#ifdef APP-PLUS
-							//2：再清除和刷新大消息列表当前聊天对象数据
-							if (_this.chatMessageMap.has(user.id + "#" + _this.toid)) {
-								_this.updateChatMessageMap({
-									key: user.id + "#" + _this.toid,
-									value: _this.curChatMsgList
-								});
-								//4：刷新本地存储的数据
+							if (!isRefresh) {
+								//1：先清楚和刷新当前显示列表
+								_this.setCurChatMsgList(cList);
+								// 缓存30条数据到本地
+								if (cList.length > 30) {
+									cList.splice(cList.length - 30, cList.length)
+								}
+								//2：再清除和刷新大消息列表当前聊天对象数据
 								uni.setStorageSync(user.id + "#" + _this.toid + '_CHAT_MESSAGE', JSON.stringify(
-									_this
-									.curChatMsgList));
+									cList));
+								_this.scrollToBottom()
+							} else {
+								//上拉刷新
+								this.addCurChatMsg(cList)
 							}
-							//#endif
-							//3:设置最后一个信息
-							// if (_this.curChatMsgList.length != 0) {
-							// 	_this.curChatMsgList[_this.curChatMsgList.length - 1]
-							// 		.bean.simple_content;
-							// }
-							_this.scrollToBottom()
 						}
 					}
 					uni.hideLoading()
 				}).catch(error => {
 					uni.hideLoading();
-					console.log("====",error)
-					
+					console.log("====", error)
+
 					uni.showToast({
 						icon: 'none',
 						position: 'bottom',
@@ -1086,7 +1079,7 @@
 						toUid: _this.toid,
 						fromUid: _this.user.id,
 						uuid: uuid(),
-						chatType:'2'
+						chatType: '2'
 					}
 					_this.sendChatMessage(v);
 					_this.txt = "";
@@ -1124,7 +1117,7 @@
 			ChooseVideo() {
 				let _this = this;
 				this.uploadVideoAction({
-					toUid:this.toid
+					toUid: this.toid
 				}).then(res => {
 					setTimeout(function() {
 						_this.scrollToBottom();
@@ -1140,7 +1133,7 @@
 			ChooseImage() {
 				let _this = this;
 				this.uploadImageAction({
-					toUid:this.toid
+					toUid: this.toid
 				}).then(res => {
 					setTimeout(function() {
 						_this.scrollToBottom();
@@ -1309,7 +1302,7 @@
 									fromUid: _this.user.id,
 									sub_txt: timeStr,
 									uuid: uuid(),
-									chatType:'2'
+									chatType: '2'
 								})
 								//#ifdef APP-PLUS
 								v.psr = "voice";
