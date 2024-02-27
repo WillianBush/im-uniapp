@@ -133,7 +133,7 @@
 							<view v-if="item.bean.psr!='video'" @longtap="onLongPress($event,item.bean)"
 								:class="[item.bean.psr=='uparse'?'':'content bg-green shadow']"
 								:style="{backgroundColor:item.bean.psr=='uparse'? 'none':'#fff'}" style="color:#222;">
-								<u-parse v-if="item.bean.psr=='uparse'" :content="transMessage(item.bean.txt)"
+								<u-parse v-if="item.bean.psr=='uparse'" :content="parseImage(item.bean.txt)"
 									@preview="preview" @navigate="navigate"></u-parse>
 								<view @tap="clickVoice(item.bean.txt,index)" v-else-if="item.bean.psr=='voice'">
 									<text v-show="selVoiceIndex != index"
@@ -165,7 +165,7 @@
 								:class="[item.bean.psr=='uparse'?'':'content shadow']" style="color:#222;">
 								<u-parse v-if="item.bean.psr=='video'" :content="transMessage(item.bean.txt)"
 									@preview="preview" @navigate="navigate"></u-parse>
-								<u-parse v-else-if="item.bean.psr=='uparse'" :content="transMessage(item.bean.txt)"
+								<u-parse v-else-if="item.bean.psr=='uparse'" :content="parseImage(item.bean.txt)"
 									@preview="preview" @navigate="navigate"></u-parse>
 								<view @tap="clickVoice(item.bean.txt,index)" v-else-if="item.bean.psr=='voice'">
 									<text v-show="selVoiceIndex != index"
@@ -214,9 +214,9 @@
 									style="width:418upx;height:335upx;border-radius: 5px"
 									src="../../../static/images/video.png"></image>
 
-								<u-parse
-									v-else-if="item.bean.psr=='uparse' && item.bean.txt.indexOf(verdeoCheck)  == -1"
-									:content="item.bean.txt" @preview="preview" @navigate="navigate"></u-parse>
+								<u-parse v-else-if="item.bean.psr=='uparse' && item.bean.txt.indexOf(videoCheck)  == -1"
+									:content="parseImage(item.bean.txt)" @preview="preview"
+									@navigate="navigate"></u-parse>
 								<view @tap="clickVoice(item.bean.txt,index)" v-else-if="item.bean.psr=='voice'">
 									<text v-show="selVoiceIndex != index"
 										style="text-align: right; float:right;width:100upx;font-size: 52upx;position: relative;top: 4upx;"
@@ -229,7 +229,8 @@
 									<text v-show="selVoiceIndex == index"
 										style="float:right;font-size: 26upx;position: relative;top: 6upx;">{{item.bean.sub_txt}}"</text>
 								</view>
-								<rich-text style="max-width:440upx" v-else :nodes="item.bean.txt"></rich-text>
+								<rich-text style="max-width:440upx" v-else
+									:nodes="transMessage(item.bean.txt)"></rich-text>
 							</view>
 						</view>
 						<view v-if="item.bean.psr!='video'" class="cu-avatar radius"
@@ -249,8 +250,8 @@
 									v-if="item.bean.psr=='video' && item.bean.txt.indexOf(videoCheck) != -1"
 									style="width:418upx;height:335upx;border-radius: 5px"
 									src="../../../static/images/video.png"></image>
-								<u-parse v-else-if="item.bean.psr=='uparse'" :content="item.bean.txt" @preview="preview"
-									@navigate="navigate"></u-parse>
+								<u-parse v-else-if="item.bean.psr=='uparse'" :content="parseImage(item.bean.txt)"
+									@preview="preview" @navigate="navigate"></u-parse>
 								<view @tap="clickVoice(item.bean.txt,index)" v-else-if="item.bean.psr=='voice'">
 									<text v-show="selVoiceIndex != index"
 										style="text-align: right; float:right;width:100upx;font-size: 52upx;position: relative;top: 4upx;"
@@ -263,7 +264,8 @@
 									<text v-show="selVoiceIndex == index"
 										style="float:right;font-size: 26upx;position: relative;top: 6upx;">{{item.bean.sub_txt}}"</text>
 								</view>
-								<rich-text style="max-width:440upx" v-else :nodes="item.bean.txt"></rich-text>
+								<rich-text style="max-width:440upx" v-else
+									:nodes="transMessage(item.bean.txt)"></rich-text>
 							</view>
 						</view>
 						<view class="date "> {{item.bean.date}}</view>
@@ -432,7 +434,8 @@
 		uuid,
 		parseEmotion,
 		showToast,
-		getHeadPic
+		getHeadPic,
+		parseMedia
 	} from '../../../common/utils';
 	import {
 		MessageType
@@ -535,10 +538,13 @@
 		},
 		mounted() {
 			if (!this.toid) return;
-			if (this.curChatMsgList.length == 0) {
-				this.tongbuMsg();
+			let user = uni.getStorageSync("USER");
+			let str = uni.getStorageSync(user.id + "#" + this.toid + '_CHAT_MESSAGE');
+			if (str&&str!="") {
+				let messages = JSON.parse(str)
+				this.setCurChatMsgList(messages);
 			} else {
-				this.deduplication()
+				this.tongbuMsg()
 			}
 		},
 		methods: {
@@ -571,6 +577,9 @@
 			]),
 			transMessage(message) {
 				return parseEmotion(message);
+			},
+			parseImage(src) {
+				return parseMedia(src, this.imgUrl)
 			},
 			getHeadPic(headpic) {
 				return getHeadPic(headpic, this.imgUrl)
@@ -686,7 +695,7 @@
 					toid: this.toid
 				}).then(res => {
 					let res_data = eval(res.data);
-					if (res_data.code == 200 && res_data.body && res_data.body.ip.length) {
+					if (res_data.code == 200 && res_data.body && res_data.body.ip) {
 						this.toIP = res_data.body.ip + (res_data.body.ipAddr ? "(" + res_data.body.ipAddr + ")" :
 							"");
 					}
@@ -742,7 +751,7 @@
 					}
 				}
 				uni.showLoading()
-				syncMsgData(parms).then(res => {
+				syncMsgData(params).then(res => {
 					let res_data = eval(res.data);
 					if (res_data.code == 201) {
 						//没缓存数据，把加载取消
@@ -1098,8 +1107,10 @@
 						toUid: _this.toid,
 						fromUid: _this.user.id,
 						uuid: uuid(),
-						chatType: '2'
+						chatType: '2',
+						psr:'txt'
 					}
+					v.simpleContent = v.txt
 					_this.sendChatMessage(v);
 					_this.txt = "";
 					_this.setChatMyLoadding(true)

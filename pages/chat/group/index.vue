@@ -1051,8 +1051,8 @@
 							if (flag) {
 								let last_content = "";
 								for (let j = list.length - 1; j >= 0; j--) {
-									if (list[j].bean && list[j].bean.simple_content != "") {
-										last_content = list[j].bean.simple_content;
+									if (list[j].bean && list[j].bean.simpleContent != "") {
+										last_content = list[j].bean.simpleContent;
 										break;
 									}
 								}

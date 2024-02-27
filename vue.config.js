@@ -12,7 +12,7 @@ module.exports = {
 	"devServer" : {
 		"proxy" : {
 			"/user" : {
-				"target" : "http://http.441635.pw",
+				"target" : "https://http.441635.pw",
 				"changeOrigin" : true, //是否跨域
 				"secure" : false, // 是否支持 https 协议的代理
 				"pathRewrite" : {

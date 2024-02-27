@@ -142,6 +142,7 @@ export default {
 			return;
 		}
 		uni.request({
+			method: 'GET',
 			url: state.reqUrl[i] + "/user/health/check", //仅为示例，并非真实接口地址。
 			success: (res) => {
 				let res_data = eval(res.data);

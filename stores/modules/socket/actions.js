@@ -453,7 +453,7 @@ export default {
 		);
 		uni.setStorageSync(
 			user.id + "#" + chatId + "_CHAT_MESSAGE_LASTCONTENT",
-			messageBean[0].bean.simple_content
+			messageBean[0].bean.simpleContent
 		);
 
 		let v = {
@@ -795,7 +795,7 @@ export default {
 		});
 		if (
 			rootState.chat.curChatEntity &&
-			rootState.curChatEntity.id == data.body
+			rootState.chat.curChatEntity.id == data.body
 		) {
 			rootState.chat.curChatEntity.online = 1;
 			commit("chat/setCurChatEntity", rootState.chat.curChatEntity, {

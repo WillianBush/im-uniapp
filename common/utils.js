@@ -83,6 +83,11 @@ export const parseEmotion = (str) => {
 	return temp;
 }
 
+export const parseMedia = (str,imgUrl) =>{
+	let img = str.indexOf('http')==-1? (imgUrl + str) :str;
+	return ("<img  style='max-width: 150px;max-height:150px;' class='face' src='"+img+"'>");
+}
+
 const productEmotion = (str) => {
 	let emotionArr = str.replace("[f", "").replace("]", "").split("#");
 	let _a = emotionArr[0];

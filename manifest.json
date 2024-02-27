@@ -145,12 +145,12 @@
                 "enable" : true
             }
         },
-        "domain" : "http://ws.t6prn1.xyz/",
+        "domain" : "https://http.441635.pw",
         "devServer" : {
             "https" : false,
             "proxy" : {
                 "/user" : {
-                    "target" : "http://ws.t6prn1.xyz/", //请求的目标域名
+                    "target" : "https://http.441635.pw", //请求的目标域名
                     "changeOrigin" : true,
                     "secure" : false,
                     "pathRewrite" : {
@@ -158,7 +158,7 @@
                     }
                 }
             },
-            "port" : 8080
+            "port" : 8081
         }
     }
 }
