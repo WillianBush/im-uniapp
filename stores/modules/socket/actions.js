@@ -371,7 +371,7 @@ export default {
 						rootState.chat.arList.forEach((item) => {
 							if (item.id == data.body[0].chatId) {
 								// let s = uni.getStorageSync(user.id+"#"+data.body[0].chatId+'_CHAT_MESSAGE_LASTCONTENT');
-								let s = data.body[0].bean.simple_content;
+								let s = data.body[0].bean.simpleContent;
 								item.content = null == s ? "" : s;
 								uni.setStorageSync(
 									user.id +
@@ -454,7 +454,7 @@ export default {
 		);
 		uni.setStorageSync(
 			user.id + "#" + chatId + "_CHAT_MESSAGE_LASTCONTENT",
-			messageBean[0].bean.simple_content
+			messageBean[0].bean.simpleContent
 		);
 
 		let v = {
@@ -542,8 +542,8 @@ export default {
 						//如果是最后一个，则把最后last_content设置为撤消
 						let last_content = "";
 						for (let j = arrs.length - 1; j >= 0; j--) {
-							if (arrs[j].bean && arrs[j].bean.simple_content != "") {
-								last_content = arrs[j].bean.simple_content;
+							if (arrs[j].bean && arrs[j].bean.simpleContent != "") {
+								last_content = arrs[j].bean.simpleContent;
 								break;
 							}
 						}

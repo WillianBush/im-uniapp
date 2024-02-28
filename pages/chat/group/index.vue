@@ -133,7 +133,7 @@
 								@longpress="onLongPress($event,item.bean)"
 								:class="[item.bean.psr=='uparse'?'':'content bg-green shadow']"
 								:style="{backgroundColor:item.bean.psr=='uparse'? 'none':'#fff'}" style="color:#222;">
-								<u-parse v-if="item.bean.psr=='uparse'" :content="transMessage(item.bean.txt)"
+								<u-parse v-if="item.bean.psr=='uparse'" :content="parseImage(item.bean.txt)"
 									@preview="preview" @navigate="navigate"></u-parse>
 								<view @tap="clickVoice(item.bean.txt,index)" v-else-if="item.bean.psr=='voice'">
 									<text v-show="selVoiceIndex != index"
@@ -177,7 +177,7 @@
 								:class="[item.bean.psr=='uparse'?'':'content shadow']" style="color:#222;">
 								<u-parse v-if="item.bean.psr=='video'" :content="transMessage(item.bean.txt)"
 									@preview="preview" @navigate="navigate"></u-parse>
-								<u-parse v-else-if="item.bean.psr=='uparse'" :content="transMessage(item.bean.txt)"
+								<u-parse v-else-if="item.bean.psr=='uparse'" :content="parseImage(item.bean.txt)"
 									@preview="preview" @navigate="navigate"></u-parse>
 								<view @tap="clickVoice(item.bean.txt,index)" v-else-if="item.bean.psr=='voice'">
 									<text v-show="selVoiceIndex != index"
@@ -341,7 +341,8 @@
 		uuid,
 		getHeadPic,
 		showToast,
-		parseEmotion
+		parseEmotion,
+		parseMedia
 	} from '../../../common/utils';
 	import uParse from '@/components/u-parse/u-parse.vue'
 	const innerAudioContext = uni.createInnerAudioContext();
@@ -517,6 +518,9 @@
 			transMessage(message) {
 				return parseEmotion(message);
 			},
+			parseImage(message){
+				return parseMedia(message,this.imgUrl)
+			},
 			loadName() {
 				let s = uni.getStorageSync(this.toid + "_NOTE");
 				if (s && s != "") {
@@ -662,6 +666,8 @@
 									v.toUid = _this.toid
 									type = MessageType.USER_CHAT_SEND_TXT
 								}
+								v.psr = "uparse";
+								v.simpleContent = "[图片]";
 								_this.WEBSOCKET_SEND({
 									body: v,
 									CMD: type
@@ -670,8 +676,7 @@
 								_this.temp_txt = _this.temp_txt + (
 									"<img  style='max-width: 150px;max-height:150px;' class='face' src='" +
 									img + "'>");
-								v.psr = "uparse";
-								v.simple_content = "[图片]";
+								
 								_this.sendBaseDaoAction(v);
 								setTimeout(function() {
 									_this.scrollToBottom();
@@ -720,6 +725,7 @@
 					let svH = _this.winH - 50;
 					if ((_this.scrollDetail.scrollHeight - _this.scrollDetail.scrollTop - svH) < 300) {
 						setTimeout(() => {
+							console.log("==========scrolltop fn")
 							_this.scrollTop = 99999999 + Math.random();
 						}, 500)
 					}
@@ -1326,6 +1332,7 @@
 						fromUid: this.user.id,
 						uuid: uuid(),
 					}
+					v.simpleContent = v.txt;
 					let cmd = ""
 					if (this.isGroupChat) {
 						v.toGroupid = this.toid;
@@ -1404,6 +1411,7 @@
 					params.toUid = this.toid;
 				}
 				let _this = this;
+				this.setChatMyLoadding(true)
 				this.uploadImageAction(params).then(res => {
 					setTimeout(function() {
 						_this.scrollToBottom();
@@ -1452,6 +1460,7 @@
 			},
 			scrollToBottom: function() {
 				let _this = this;
+				console.log("=======scrollToBottom")
 				// 等待dom渲染完成后再执行滚动到页面底部，不然dom没渲染这个是无效的。
 				this.$nextTick(function() {
 					// 滚动至页面底部

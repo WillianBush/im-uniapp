@@ -25,7 +25,9 @@ import {
 	dateFormat,
 	uuid
 } from "../../../common/utils";
-import { MessageType } from "../../../const/MessageType";
+import {
+	MessageType
+} from "../../../const/MessageType";
 
 export default {
 	refreshChatList({
@@ -61,15 +63,7 @@ export default {
 							let last_txt = uni.getStorageSync(
 								user.id + "#" + item.id + "_CHAT_MESSAGE_LASTCONTENT"
 							);
-							if (last_txt.indexOf("<img") >= 0) {
-								item.content = "[图片]";
-							} else if (last_txt.indexOf("upload/chat/voice") >= 0) {
-								item.content = "[语音]";
-							} else if (last_txt.indexOf("upload/chat/video") >= 0) {
-								item.content = "[视频]";
-							} else {
-								item.content = last_txt;
-							}
+							item.content = last_txt
 
 							let unRead = uni.getStorageSync(
 								user.id + "#" + item.id + "_CHAT_MESSAGE_UNREAD"
@@ -428,7 +422,6 @@ export default {
 				sizeType: ["original", "compressed"], //可以指定是原图还是压缩图，默认二者都有
 				sourceType: ["album"], //从相册选择
 				success: (res) => {
-					commit("setChatMyLoadding", true);
 					setTimeout(() => {
 						uni.pageScrollTo({
 							scrollTop: 9999999999,
@@ -449,7 +442,7 @@ export default {
 		dispatch,
 		rootState
 	}, payload) {
-		return new Promise(async(resolve,rejcet)=>{
+		return new Promise(async (resolve, rejcet) => {
 			let uploadRes = await dispatch("chooseVideoAction");
 			if (!uploadRes.tempFilePath) {
 				uni.showToast({
@@ -474,18 +467,16 @@ export default {
 					if (json.code == 200) {
 						dispatch("socket/sendChatMessage", {
 							txt: json.msg,
-							toUid: payload,
+							toUid: payload.toUid ? payload.toUid : payload.toGroupid,
 							fromUid: rootState.user.user.id,
 						}, {
 							root: true
 						});
-						//#ifdef APP-PLUS
 						v.psr = "video";
-						v.simple_content = "[视频]";
+						v.simpleContent = "[视频]";
 						dispatch("sendBaseDaoAction", v);
-						//#endif
 						resolve(true)
-					}else{
+					} else {
 						rejcet(false)
 					}
 				},
@@ -495,14 +486,14 @@ export default {
 			});
 		})
 	},
- uploadImageAction({
+	uploadImageAction({
 		commit,
 		dispatch,
 		rootState
 	}, payload) {
-		return new Promise(async (resolve,reject)=>{
+		return new Promise(async (resolve, reject) => {
 			let uploadRes = await dispatch("chooseImageAction");
-			if (!uploadRes.tempFilePath) {
+			if (!uploadRes.tempFilePaths) {
 				uni.showToast({
 					title: "图片上传失败",
 					duration: 2000,
@@ -511,7 +502,7 @@ export default {
 			}
 			let arrs = uploadRes.tempFilePaths;
 			let token = uni.getStorageSync("token");
-			
+
 			arrs.forEach((item) => {
 				var uper = uni.uploadFile({
 					// 需要上传的地址
@@ -522,28 +513,35 @@ export default {
 					filePath: item,
 					name: "file",
 					success(res1) {
-						let json = eval("(" + res1.data + ")");
-						// 显示上传信息
-						if (json.code == 200) {
-							dispatch("socket/sendChatMessage", {
-								txt: json.msg,
-								toUid: payload,
-								fromUid: rootState.user.user.id,
-							}, {
-								root: true
-							});
-							//#ifdef APP-PLUS
-							v.psr = "uparse";
-							v.simple_content = "[图片]";
-							dispatch("sendBaseDaoAction", v);
-							//#endif
-							setTimeout(()=>{
-								resolve(true)
-							},5*1000)
-						}else{
-							reject(json)
+						try {
+
+							let json = eval("(" + res1.data + ")");
+							// 显示上传信息
+							if (json.code == 200) {
+								let v = {
+									txt: json.msg,
+									toUid: payload.toUid ? payload.toUid : payload
+										.toGroupid,
+									fromUid: rootState.user.user.id,
+									chatType:payload.toUid ?'2':'1'
+								}
+								v.psr = "uparse";
+								v.simpleContent = "[图片]";
+								dispatch("socket/sendChatMessage", v, {
+									root: true
+								});
+								console.log("========uploadImageAction",v)
+								dispatch("sendBaseDaoAction", v);
+								setTimeout(() => {
+									resolve(true)
+								}, 5 * 1000)
+							} else {
+								reject(json)
+							}
+						} catch (e) {
+							reject(false)
 						}
-						
+
 					},
 					fail(error) {
 						reject(error)
@@ -571,9 +569,9 @@ export default {
 					}, {
 						root: true
 					});
-					//#ifdef APP-PLUS
+					v.simpleContent = '[文件]';
 					dispatch("sendBaseDaoAction", v);
-					//#endif
+
 				}
 			}
 		});
@@ -593,7 +591,6 @@ export default {
 		v.dateTime = date.getTime();
 		v.read = 0;
 		v.oldTxt = v.txt;
-		v.simple_content = v.txt;
 		//去除视频上传和图片上传 纯文件内容才检测URL
 		if (v.txt.indexOf("/chat_video") < 0 && v.txt.indexOf("/chat_img") < 0) {
 			let hasUrl = false;
@@ -611,34 +608,33 @@ export default {
 		}
 		let msgbean = {
 			chatType: v.chatType,
-			chatId: v.toUid ? v.toUid:v.toGroupid,
+			chatId: v.toUid,
 			messageType: "USER_TXT",
 			bean: v,
 		};
+		console.log("======v", v)
+		
 		let list = [msgbean];
 		let str = uni.getStorageSync(
 			user.id + "#" + msgbean.chatId + "_CHAT_MESSAGE"
 		);
+		let tempList = []
 		if (str && str != "") {
 			var jsonObj = JSON.parse(str);
 			list = jsonObj.concat(list);
 			if (list.length > 30) {
-				list = list.splice(list.length - 30, list.length);
+				tempList = list.splice(list.length - 30, list.length);
 			}
 		}
 		uni.setStorageSync(
 			user.id + "#" + msgbean.chatId + "_CHAT_MESSAGE",
-			JSON.stringify(list)
+			JSON.stringify(tempList)
 		);
-		// commit("updateChatMessageMap", {
-		// 	key: user.id + "#" + msgbean.chatId,
-		// 	value: list,
-		// });
 		uni.setStorageSync(
 			user.id + "#" + msgbean.chatId + "_CHAT_MESSAGE_LASTCONTENT",
-			list[list.length - 1].bean.simple_content
+			msgbean.bean.simpleContent
 		);
-		commit("setCurChatMsgList", list);
+		commit("addCurChatMsg", [msgbean]);
 		commit("setChatMyLoadding", false);
 	},
 	transMessageAction({
@@ -678,6 +674,7 @@ export default {
 							fromUid: user.id,
 							uuid: uuid(),
 						};
+						v.simpleContent = v.txt;
 						if (item.typeid == "1") {
 							v.toGroupid = id;
 						} else {
