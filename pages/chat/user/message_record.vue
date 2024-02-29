@@ -11,9 +11,8 @@
 				{{i18n.nochat}}
 			</view>
 
-			<scroll-view :scroll-y="true" :refresher-enabled="true" :refresher-triggered="refresherTriggered"
-				@refresherrefresh="refresherrefresh" @refresherrestore="refresherrestore"
-				@refresherabort="refresherabort" @scrolltolower="scrollLower">
+			<scroll-view :scroll-y="true" :refresher-enabled="hasMore" :refresher-triggered="refresherTriggered"
+				@refresherrefresh="refresherrefresh" @scrolltoupper="scrollUper" @scrolltolower="scrollLower">
 				<block v-for="(item,index) in chatLogs">
 					<block v-if="item.opt&&item.opt=='undo'">
 						<!-- <view v-if="item.opt_uid==$store.state.user.id"  class="cu-info round">撤回一条消息</view>
@@ -100,14 +99,10 @@
 					<block v-else>
 						<view v-if="item.fromUid==user.id" class="cu-item self">
 							<view class="main">
-								<view v-if="item.read==0" style="margin-right:30upx;color: #999;font-size: 24upx;">未读
-								</view>
-								<view v-if="item.read==1" style="margin-right:30upx;color: #999;font-size: 24upx;">已读
-								</view>
 								<view class="content bg-green shadow" style="background-color: #98E165;
 				color:#222;">
-									<u-parse v-if="item.psr=='uparse'" :content="item.txt" @preview="preview"
-										@navigate="navigate"></u-parse>
+									<u-parse v-if="item.psr=='uparse'" :content="parseImage(item.txt)"
+										@preview="preview" @navigate="navigate"></u-parse>
 									<view @tap="clickVoice(item.txt,index)" v-else-if="item.psr=='voice'">
 										<text v-show="selVoiceIndex != index"
 											style="float:left;width:100upx;font-size: 52upx;position: relative;top: 4upx;"
@@ -121,7 +116,7 @@
 											style="float:left;font-size: 26upx;position: relative;top: 6upx;">{{item.sub_txt}}"</text>
 									</view>
 									<video direction="0" v-else-if="item.psr=='video'" :src="imgUrl+item.txt"></video>
-									<rich-text v-else :nodes="item.txt"></rich-text>
+									<rich-text v-else :nodes="parseEmotion(item.txt)"></rich-text>
 
 								</view>
 							</view>
@@ -136,8 +131,8 @@
 							<view class="main">
 								<view class="content shadow" style="
 				color:#222;">
-									<u-parse v-if="item.psr=='uparse'" :content="item.txt" @preview="preview"
-										@navigate="navigate"></u-parse>
+									<u-parse v-if="item.psr=='uparse'" :content="parseImage(item.txt)"
+										@preview="preview" @navigate="navigate"></u-parse>
 									<view @tap="clickVoice(item.txt,index)" v-else-if="item.psr=='voice'">
 										<text v-show="selVoiceIndex != index"
 											style="text-align: right; float:right;width:100upx;font-size: 52upx;position: relative;top: 4upx;"
@@ -151,7 +146,7 @@
 											style="float:right;font-size: 26upx;position: relative;top: 6upx;">{{item.sub_txt}}"</text>
 									</view>
 									<video direction="0" v-else-if="item.psr=='video'" :src="imgUrl+item.txt"></video>
-									<rich-text v-else :nodes="item.txt"></rich-text>
+									<rich-text v-else :nodes="parseEmotion(item.txt)"></rich-text>
 								</view>
 							</view>
 							<view class="date "> {{item.date}}</view>
@@ -180,7 +175,11 @@
 		syncMsgData,
 		chatListPage
 	} from '../../../common/api';
-import { getHeadPic } from '../../../common/utils';
+	import {
+		getHeadPic,
+		parseEmotion,
+		parseMedia
+	} from '../../../common/utils';
 	getHeadPic()
 	export default {
 		components: {
@@ -190,7 +189,6 @@ import { getHeadPic } from '../../../common/utils';
 			return {
 				toid: "",
 				list: [],
-				allList: [],
 				scrollTop: 0,
 				player: null,
 				selVoiceIndex: -1,
@@ -247,7 +245,7 @@ import { getHeadPic } from '../../../common/utils';
 				temp_bean: null,
 				showOpenRed: false,
 				showname: "",
-				refresherTriggered: false, //下拉刷新状态
+				refresherTriggered: true, //下拉刷新状态
 				_refresherTriggered: false, //防止异步操作
 				numPag: 1, // 第一页
 				allPageNum: 10000, // 总页数
@@ -258,7 +256,8 @@ import { getHeadPic } from '../../../common/utils';
 					pageCount: '30',
 				},
 				timer: null,
-				syncMessageArr: []
+				syncMessageArr: [],
+				hasMore: true
 			};
 		},
 		onLoad(e) {
@@ -293,52 +292,41 @@ import { getHeadPic } from '../../../common/utils';
 				'updateChatMessageMap',
 				'setTempBean'
 			]),
-			getHeadPic(headPic){
-				return getHeadPic(headPic,this.imgUrl)
+			getHeadPic(headPic) {
+				return getHeadPic(headPic, this.imgUrl)
 			},
-			loadmore() {
-				this.pageParams.pageNumber++
-				this.tongbuMsg(this.pageParams.pageCount, this.pageParams.pageNumber);
+			parseEmotion(message) {
+				return parseEmotion(message);
+			},
+			parseImage(message) {
+				return parseMedia(message, this.imgUrl);
 			},
 			refresherrefresh() {
 				console.log('自定义下拉刷新refresherrefresh');
-				
+
 				let _this = this;
 				if (_this._refresherTriggered) {
 					return;
 				}
-				_this._refresherTriggered = true;
 				//界面下拉触发，triggered可能不是true，要设为true
 				if (!_this.refresherTriggered) {
 					_this.refresherTriggered = true;
 				}
 				//pageNum + 1
-				this.pageParams.pageNumber ++;
-				this.loadStoreData(this.pageParams.pageCount, this.pageParams.pageNumber);
-			},
-			refresherrestore() {
-				console.log('自定义下拉刷新被复位');
-				let _this = this;
-				_this.refresherTriggered = false;
-				_this._refresherTriggered = false;
-			},
-			refresherabort() {
-				console.log('自定义下拉刷新被中止    ');
-				let _this = this;
-				_this.refresherTriggered = false;
-				_this._refresherTriggered = false;
+				this.pageParams.pageNumber++;
+				this.tongbuMsg()
 			},
 			scrollLower() {
 				console.log('我滚动到底部了')
 			},
+			scrollUper() {
+				console.log('我滚动到顶部了')
+			},
 			closeRefresh() {
 				this.refresherTriggered = false; //触发onRestore，并关闭刷新图标
-				this._refresherTriggered = false;
 			},
-
 			tongbuMsg() { //当前页面聊天记录&页码请求
 				let _this = this;
-
 				uni.showLoading()
 				syncMsgData({
 					chatId: _this.toid,
@@ -354,58 +342,31 @@ import { getHeadPic } from '../../../common/utils';
 								title: "暂无更多",
 								icon: "none"
 							})
-
+							this.closeRefresh()
+							this.hasMore = false
 						}, 400);
 					} else if (res_data.code == 200) {
 						if (res_data.body && res_data.body.list.length != 0) {
-
-							let cList = [];
-							for (let i = 0; i < res_data.body.list.length; i++) { //从[0]中取出
-								cList.push(res_data.body.list[i][0])
-							} //遍历
-							_this.syncMessageArr.unshift.apply(_this.syncMessageArr, cList)
-
-							let user = uni.getStorageSync("USER");
-							//1：先清楚和刷新当前显示列表
-							_this.setCurChatMsgList([])
-
-							_this.setCurChatMsgList(_this.syncMessageArr)
-							//2：再清除和刷新大消息列表当前聊天对象数据
-							if (this.chatMessageMap.has(user.id + "#" + this.toid)) {
-								_this.updateChatMessageMap({
-									key: user.id + "#" + this.toid,
-									value: _this.curChatMsgList
-								})
-							}
-							//3:设置最后一个信息
-							if (_this.curChatMsgList.length != 0) {
-								_this.curChatMsgList[_this.curChatMsgList.length - 1]
-									.bean.simple_content;
-							}
-							//4：刷新本地存储的数据
-							uni.setStorageSync(user.id + "#" + this.toid + '_CHAT_MESSAGE', JSON.stringify(_this
-								.curChatMsgList));
-						}
-
-						_this.pageParams = res_data.body
-						if (_this.pageParams.pageNumber > 1) {
+							_this.pageParams = res_data.body;
 							for (let i = 0; i < res_data.body.list.length; i++) { //从[0]中取出
 								res_data.body.list[i] = res_data.body.list[i][0].bean
 							} //遍历拿出数组bean
 							// _this.chatLogs = _this.chatLogs.concat(res_data.body.list);
 							_this.chatLogs.unshift.apply(_this.chatLogs, res_data.body.list)
-							uni.hideLoading();
-						} else {
-							uni.hideLoading();
-							_this.chatLogs = res_data.body.list
+							_this.closeRefresh()
+
+							if (_this.pageParams.pageCount == _this.pageParams.pageNumber) {
+								_this.hasMore = false;
+							}
 						}
-						for (let i = 0; i < _this.chatLogs.length; i++) { //从[0]中取出
-							_this.chatLogs[i] = _this.chatLogs[i][0].bean
-						} //遍历拿出数组bean
+
 						setTimeout(() => {
 							uni.hideLoading();
 						}, 400);
-
+						// 第一次加载才需要到底部
+						if (_this.pageParams.pageNumber == 1) {
+							_this.scrollToBottom();
+						}
 					}
 				}).catch(error => {
 					uni.hideLoading()
@@ -416,31 +377,6 @@ import { getHeadPic } from '../../../common/utils';
 					});
 					console.log(error)
 				})
-			},
-			loadStoreData(pSize, pNumber) {
-				let _this = this;
-				let user = uni.getStorageSync("USER");
-				if (user) {
-					chatListPage({
-						pageSize: pSize, //数量
-						pageNumber: pNumber, //页数
-						toMemberid: _this.toid,
-					}).then(res_1 => {
-						let res_data_1 = eval(res_1.data);
-						console.log("test_test", res_data_1)
-						if (res_data_1.code == 200) {
-							this.pageParams.pageNumber = res_data_1.body.pageNumber;
-							if (this.pageParams.pageNumber > 1) {
-								_this.allList = _this.allList.concat(res_data_1.body.list);
-							} else {
-								_this.allList = res_data_1.body.list;
-							}
-							this.closeRefresh();
-						} else {
-							this.closeRefresh();
-						}
-					})
-				}
 			},
 			getPopButton(item) {
 				// popButton: ["复制", "转发", "收藏","删除","撤消"],

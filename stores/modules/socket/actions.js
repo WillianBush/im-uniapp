@@ -163,11 +163,13 @@ export default {
 			Log.d(TAG, "WebSocket重新连接1！");
 			commit("setIsOpenSocket", false);
 			commit("setContinueCloseCount", state.continueCloseCount + 1);
-			uni.showToast({
-				icon: 'none',
-				position: 'bottom',
-				title: "通讯服务器已断开!"
-			});
+			if(state.continueCloseCount == 10){
+				uni.showToast({
+					icon: 'none',
+					position: 'bottom',
+					title: "通讯服务器已断开!"
+				});
+			}
 			heartCheck.reset();
 			dispatch("WEBSOCKET_INIT");
 		});
@@ -178,11 +180,13 @@ export default {
 			commit("setIsOpenSocket", true);
 			commit("setContinueCloseCount", state.continueCloseCount + 1);
 			heartCheck.reset();
-			uni.showToast({
-				icon: 'none',
-				position: 'bottom',
-				title: "通讯服务器异常!"
-			});
+			if(state.continueCloseCount == 10){
+				uni.showToast({
+					icon: 'none',
+					position: 'bottom',
+					title: "通讯服务器异常!"
+				});
+			}
 			dispatch("WEBSOCKET_INIT");
 		});
 
