@@ -620,24 +620,23 @@ export default {
 		let str = uni.getStorageSync(
 			user.id + "#" + msgbean.chatId + "_CHAT_MESSAGE"
 		);
-		let tempList = []
 		if (str && str != "") {
 			var jsonObj = JSON.parse(str);
 			list = jsonObj.concat(list);
 			if (list.length > 30) {
-				tempList = list.splice(list.length - 30, list.length);
+				list = list.splice(list.length - 30, list.length);
 			}
 		}
 		uni.setStorageSync(
 			user.id + "#" + msgbean.chatId + "_CHAT_MESSAGE",
-			JSON.stringify(tempList)
+			JSON.stringify(list)
 		);
 		uni.setStorageSync(
 			user.id + "#" + msgbean.chatId + "_CHAT_MESSAGE_LASTCONTENT",
 			msgbean.bean.simpleContent
 		);
 		if (!v.transType) {
-			commit("setCurChatMsgList", [msgbean]);
+			commit("addCurChatMsg", [msgbean]);
 			commit("setChatMyLoadding", false);
 		}
 
