@@ -182,6 +182,8 @@
 						});
 					}
 				}).catch(error => {
+					console.log("=====error",error)
+					
 					_this.isRotate = false;
 					uni.showToast({
 						icon: "none",

@@ -604,12 +604,14 @@
 							});
 							return;
 						}
-						let unRead = uni.getStorageSync(user.id + "#" + _this.toid + '_CHAT_MESSAGE_UNREAD');
+						let unRead = uni.getStorageSync(_this.user.id + "#" + _this.toid + '_CHAT_MESSAGE_UNREAD');
 						if (unRead && unRead != "") {
-							uni.removeStorageSync(user.id + "#" + _this.toid + '_CHAT_MESSAGE_UNREAD');
+							uni.removeStorageSync(_this.user.id + "#" + _this.toid + '_CHAT_MESSAGE_UNREAD');
 							_this.setUnReadMsgSum(_this.unReadMsgSum - parseInt(unRead))
 						}
 					}).catch(error => {
+						console.log("=====error",error)
+						
 						uni.showToast({
 							icon: 'none',
 							position: 'bottom',
@@ -623,6 +625,8 @@
 						_this.entity = res;
 						_this.friendPic = _this.entity.headpic;
 					}).catch(error => {
+						console.log("=====error",error)
+						
 						uni.showToast({
 							icon: 'none',
 							position: 'bottom',
@@ -814,10 +818,12 @@
 						toid: _this.toid
 					}).then(res => {
 						let res_data = eval(res.data);
-						if (res_data.code == 200) {
+						if (res_data.code == 200 &&res_data.body.ip) {
 							_this.toIP = res_data.body.ip + "(" + res_data.body.ipAddr + ")";
 						}
 					}).catch(error => {
+						console.log("=====error",error)
+						
 						uni.showToast({
 							icon: 'none',
 							position: 'bottom',
@@ -1170,6 +1176,7 @@
 							});
 						}
 					}).catch(error => {
+						console.log("=====error",error)
 						uni.showToast({
 							icon: 'none',
 							position: 'bottom',
@@ -1266,6 +1273,8 @@
 						}
 					}
 				}).catch(error => {
+					console.log("=====error",error)
+					
 					uni.showToast({
 						icon: 'none',
 						position: 'bottom',

@@ -37,6 +37,8 @@ export default {
 				commit("setUnDoRoomAddCount", res_data.body.unDoRoomAddCount);
 			}
 		}).catch(error => {
+			console.log("=====error",error)
+			
 			uni.showToast({
 				icon: 'none',
 				position: 'bottom',
@@ -220,6 +222,8 @@ export default {
 				commit("setShimingCfg", res.data.body);
 			}
 		}).catch(error => {
+			console.log("=====error",error)
+			
 			uni.showToast({
 				icon: 'none',
 				position: 'bottom',
@@ -249,6 +253,8 @@ export default {
 				commit("setFriendList", friendList);
 			}
 		}).catch(error => {
+			console.log("=====error",error)
+			
 			uni.showToast({
 				icon: 'none',
 				position: 'bottom',
@@ -289,6 +295,8 @@ export default {
 					});
 				}
 			}).catch(error => {
+				console.log("=====error",error)
+				
 				uni.showToast({
 					icon: 'none',
 					position: 'bottom',

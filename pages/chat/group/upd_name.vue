@@ -29,7 +29,7 @@
 	export default {
 		data() {
 			return {
-				txt: this.$store.state.cur_chat_entity.name
+				txt: this.$store.state.chat.curChatEntity.name
 			}
 		},
 		computed: {

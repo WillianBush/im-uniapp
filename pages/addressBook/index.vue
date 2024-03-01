@@ -265,6 +265,8 @@
 					}
 				}).catch(error => {
 					uni.hideLoading()
+					console.log("=====error",error)
+					
 					uni.showToast({
 						icon: 'none',
 						position: 'bottom',

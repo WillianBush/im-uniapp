@@ -58,6 +58,8 @@
 						});
 					}
 				}).catch(error => {
+					console.log("=====error",error)
+					
 					uni.showToast({
 						icon: 'none',
 						position: 'bottom',

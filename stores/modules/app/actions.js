@@ -135,10 +135,12 @@ export default {
 		let i = 0;
 		if (state.reqUrl.length == 0) {
 			commit("cleartCheckHttpHealthInterval");
-			uni.showToast({
-				title: "服务器异常，请稍后再试",
-				duration: 2000,
-			});
+			console.log("=====error")
+			
+			// uni.showToast({
+			// 	title: "服务器异常，请稍后再试",
+			// 	duration: 2000,
+			// });
 			return;
 		}
 		uni.request({
@@ -227,6 +229,8 @@ export default {
 				});
 			}
 		}).catch(error => {
+			console.log("=====error",error)
+			
 			uni.showToast({
 				icon: 'none',
 				position: 'bottom',
@@ -240,6 +244,8 @@ export default {
 		getFooterHotItem().then(res => {
 			commit("setHotItem", res.data.body);
 		}).catch(error => {
+			console.log("=====error",error)
+			
 			uni.showToast({
 				icon: 'none',
 				position: 'bottom',
@@ -253,6 +259,8 @@ export default {
 		getListWithMid().then(res => {
 			commit("setFaxianSiteList", res.data.body)
 		}).catch(error => {
+			console.log("=====error",error)
+			
 			uni.showToast({
 				icon: 'none',
 				position: 'bottom',

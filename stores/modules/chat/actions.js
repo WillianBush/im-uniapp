@@ -280,6 +280,8 @@ export default {
 				commit("setArList", list);
 			}
 		}).catch(error => {
+			console.log("=====error",error)
+			
 			uni.showToast({
 				icon: 'none',
 				position: 'bottom',
@@ -298,6 +300,8 @@ export default {
 				commit("setArListShow", res_data.body);
 			}
 		}).catch(error => {
+			console.log("=====error",error)
+			
 			uni.showToast({
 				icon: 'none',
 				position: 'bottom',
@@ -314,6 +318,8 @@ export default {
 				commit("setChatCfg", res_data.body);
 			}
 		}).catch(error => {
+			console.log("=====error",error)
+			
 			uni.showToast({
 				icon: 'none',
 				position: 'bottom',
@@ -384,6 +390,8 @@ export default {
 				});
 			}
 		}).catch(error => {
+			console.log("=====error",error)
+			
 			uni.showToast({
 				icon: 'none',
 				position: 'bottom',
@@ -729,6 +737,8 @@ export default {
 				});
 			}
 		}).catch(error => {
+			console.log("=====error",error)
+			
 			uni.showToast({
 				icon: 'none',
 				position: 'bottom',
@@ -789,6 +799,8 @@ export default {
 				});
 			}
 		}).catch(error => {
+			console.log("=====error",error)
+			
 			uni.showToast({
 				icon: 'none',
 				position: 'bottom',
@@ -820,6 +832,8 @@ export default {
 				});
 			}
 		}).catch(error => {
+			console.log("=====error",error)
+			
 			uni.showToast({
 				icon: 'none',
 				position: 'bottom',
@@ -852,6 +866,8 @@ export default {
 				});
 			}
 		}).catch(error => {
+			console.log("=====error",error)
+			
 			uni.showToast({
 				icon: 'none',
 				position: 'bottom',
@@ -874,6 +890,8 @@ export default {
 				});
 			}
 		}).catch(error => {
+			console.log("=====error",error)
+			
 			uni.showToast({
 				icon: 'none',
 				position: 'bottom',
@@ -900,6 +918,8 @@ export default {
 				});
 			}
 		}).catch(error => {
+			console.log("=====error",error)
+			
 			uni.showToast({
 				icon: 'none',
 				position: 'bottom',

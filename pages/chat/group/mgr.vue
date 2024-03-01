@@ -264,7 +264,7 @@
 						</view>
 					</view>
 					<view v-if="user.id==curChatEntity.img.owner_UUID
-			||curChatEntity.img.memberMgr_ids.indexOf(user.id)>=0" @tap="editGroupNotice()" class="cu-item arrow ">
+			||curChatEntity.memberMgr_ids.indexOf(user.id)>=0" @tap="editGroupNotice()" class="cu-item arrow ">
 						<view class="content">
 							<text class="text-grey" style="color:#333">群公告</text>
 						</view>

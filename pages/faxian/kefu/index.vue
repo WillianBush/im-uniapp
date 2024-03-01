@@ -95,6 +95,8 @@
 					_this.list1 = temp;
 				}
 			}).catch(error => {
+				console.log("=====error",error)
+				
 				uni.showToast({
 					icon: 'none',
 					position: 'bottom',

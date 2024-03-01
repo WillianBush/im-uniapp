@@ -1,9 +1,9 @@
 <template>
 	<view>
-		<view v-show="PageCur=='main'" style="overflow: scroll">
+		<view  style="overflow: scroll">
 			<view style="height: 45px;line-height: 45px;background: #eee;padding-left: 5px; color:#000">
 				<text class="cuIcon-back" @click="goback" style="float:left; margin:0 5px; cursor: pointer;"></text>
-				群组成员({{list.length}}人)
+				群组成员({{totalList.length}}人)
 			</view>
 
 			<view class="cu-bar bg-white search">
@@ -25,7 +25,7 @@
 				<view class="modal-cover">
 					<view @tap="goUserDetail(item.id)"
 						style="display: inline-block;width:20%;margin-bottom:20upx;text-align: center;"
-						v-for="(item,index) in list1">
+						v-for="(item,index) in totalList">
 						<view class="cu-avatar round"
 							:style="'height:100upx;width:100upx;background-image:url('+getHeadPic(item.headpic)+');'">
 						</view>
@@ -37,8 +37,6 @@
 				</view>
 			</view>
 		</view>
-		<UserDetail ref="userdetail" v-show="PageCur=='user_detail'" :keyid="randomKeyId" @goBack="showGroup">
-		</UserDetail>
 	</view>
 </template>
 
@@ -69,8 +67,8 @@
 				pageSize: 50, //50条
 				status: "more", // 加载状态
 				timer: null,
-				inputText: ""
-
+				kw: ""
+				
 			}
 		},
 		computed: {
