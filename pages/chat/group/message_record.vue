@@ -11,9 +11,8 @@
 				暂无聊天记录
 			</view>
 
-			<scroll-view :scroll-y="true" :refresher-enabled="false" :refresher-triggered="refresherTriggered"
-				@refresherrefresh="refresherrefresh" @refresherrestore="refresherrestore"
-				@refresherabort="refresherabort" @scrolltolower="scrollLower">
+			<scroll-view :scroll-y="true" @refresherrefresh="refresherrefresh" :refresher-enabled="hasMore"
+				:refresher-triggered="refresherTriggered" @scrolltoupper="scrollUper" @scrolltolower="scrollLower">
 				<block v-for="(item,index) in chatLogs">
 					<block v-if="item.opt&&item.opt=='undo'">
 						<view style="display: none"></view>
@@ -35,7 +34,7 @@
 														margin: auto auto;display: flex;">
 										<view style="width:90upx;margin-top: 26upx;width: 80upx;height: 80upx;"
 											class="cu-avatar radius"
-											:style="'background-image:url('+imgUrl+item.mheadpic+');'"></view>
+											:style="'background-image:url('+getHeadPic(item.mheadpic)+');'"></view>
 										<view
 											style="width: 240upx;;margin-top: 30upx;margin-left: 12upx; text-align: left;">
 											<view
@@ -55,12 +54,12 @@
 								</view>
 							</view>
 							<view class="cu-avatar radius"
-								:style="'background-image:url('+imgUrl+item.fromHeadpic+');'"></view>
+								:style="'background-image:url('+getHeadPic(item.fromHeadpic)+');'"></view>
 							<view class="date">{{item.date}}</view>
 						</view>
 						<view v-else class="cu-item">
 							<view @tap.stop="goUserDetail(item.fromUid)" class="cu-avatar radius"
-								:style="'background-image:url('+imgUrl+item.fromHeadpic+');'"></view>
+								:style="'background-image:url('+getHeadPic(item.fromHeadpic)+');'"></view>
 							<view class="main">
 								<view @tap="clickCard(item)"
 									style="border: 1px solid #eee;background-color: #fff;width:400upx;height:180upx;border-radius: 6px;">
@@ -70,7 +69,7 @@
 														margin: auto auto;display: flex;">
 										<view style="width:90upx;margin-top: 26upx;width: 80upx;height: 80upx;"
 											class="cu-avatar radius"
-											:style="'background-image:url('+imgUrl+item.mheadpic+');'"></view>
+											:style="'background-image:url('+igetHeadPic(item.mheadpic)+');'"></view>
 										<view
 											style="width: 240upx;;margin-top: 30upx;margin-left: 12upx; text-align: left;">
 											<view
@@ -96,17 +95,10 @@
 					<block v-else>
 						<view v-if="item.fromUid==user.id" class="cu-item self">
 							<view class="main">
-								<!---
-								<view v-if="item.read==-1" class="iconfont cu-load load-cuIcon loading text-xxl" style="margin-right:30upx;color: #999;font-size: 24upx;"></view>
-								-->
-								<view v-if="item.read==0" style="margin-right:30upx;color: #999;font-size: 24upx;">未读
-								</view>
-								<view v-if="item.read==1" style="margin-right:30upx;color: #999;font-size: 24upx;">已读
-								</view>
 								<view class="content bg-green shadow" style="background-color: #98E165;
 				color:#222;">
-									<u-parse v-if="item.psr=='uparse'" :content="item.txt" @preview="preview"
-										@navigate="navigate"></u-parse>
+									<u-parse v-if="item.psr=='picture'" :content="parseImage(item.txt)"
+										@preview="preview" @navigate="navigate"></u-parse>
 									<view @tap="clickVoice(item.txt,index)" v-else-if="item.psr=='voice'">
 										<text v-show="selVoiceIndex != index"
 											style="float:left;width:100upx;font-size: 52upx;position: relative;top: 4upx;"
@@ -120,23 +112,22 @@
 											style="float:left;font-size: 26upx;position: relative;top: 6upx;">{{item.sub_txt}}"</text>
 									</view>
 									<video direction="0" v-else-if="item.psr=='video'" :src="imgUrl+item.txt"></video>
-									<rich-text v-else :nodes="item.txt"></rich-text>
-
+									<rich-text v-else :nodes="parseEmotion(item.txt)"></rich-text>
 								</view>
 							</view>
 							<view class="cu-avatar radius"
-								:style="'background-image:url('+imgUrl+item.fromHeadpic+');'"></view>
+								:style="'background-image:url('+getHeadPic(item.fromHeadpic)+');'"></view>
 							<view class="date">{{item.date}}</view>
 						</view>
 
 						<view v-else class="cu-item">
 							<view @tap.stop="goUserDetail(item.fromUid)" class="cu-avatar radius"
-								:style="'background-image:url('+imgUrl+item.fromHeadpic+');'"></view>
+								:style="'background-image:url('+getHeadPic(item.fromHeadpic)+');'"></view>
 							<view class="main">
 								<view class="content shadow" style="
 				color:#222;">
-									<u-parse v-if="item.psr=='uparse'" :content="item.txt" @preview="preview"
-										@navigate="navigate"></u-parse>
+									<u-parse v-if="item.psr=='picture'" :content="parseImage(item.txt)"
+										@preview="preview" @navigate="navigate"></u-parse>
 									<view @tap="clickVoice(item.txt,index)" v-else-if="item.psr=='voice'">
 										<text v-show="selVoiceIndex != index"
 											style="text-align: right; float:right;width:100upx;font-size: 52upx;position: relative;top: 4upx;"
@@ -150,23 +141,13 @@
 											style="float:right;font-size: 26upx;position: relative;top: 6upx;">{{item.sub_txt}}"</text>
 									</view>
 									<video direction="0" v-else-if="item.psr=='video'" :src="imgUrl+item.txt"></video>
-									<rich-text v-else :nodes="item.txt"></rich-text>
+									<rich-text v-else :nodes="parseEmotion(item.txt)"></rich-text>
 								</view>
 							</view>
 							<view class="date "> {{item.date}}</view>
 						</view>
 					</block>
-
 				</block>
-
-				<view @click="loadmore" v-if="moreShow"
-					style="color:rgb(170, 170, 170);text-align:center;margin-top:30rpx;margin-bottom:20rpx">
-					点击加载更多...
-				</view>
-				<view v-if="!moreShow"
-					style="color:rgb(170, 170, 170);text-align:center;margin-top:30rpx;margin-bottom:20rpx">
-					暂无更多...
-				</view>
 			</scroll-view>
 		</view>
 	</view>
@@ -191,6 +172,11 @@
 	import {
 		MessageType
 	} from '../../../const/MessageType';
+	import {
+		getHeadPic,
+		parseEmotion,
+		parseMedia
+	} from '../../../common/utils';
 	export default {
 		components: {
 			uParse
@@ -267,13 +253,14 @@
 					pageCount: '30',
 				},
 				timer: null,
-				syncMessageArr: []
+				syncMessageArr: [],
+				hasMore: true
 			};
 		},
 		onLoad(e) {
 			this.toid = e.id;
 			let _this = this;
-			this.tongbuMsg(this.pageParams.pageCount, this.pageParams.pageNumber);
+			this.tongbuMsg();
 		},
 		computed: {
 			i18n() {
@@ -298,171 +285,104 @@
 				'updateChatMessageMap',
 				'setTempBean'
 			]),
-			loadmore() {
-				this.pageParams.pageNumber++
-				this.tongbuMsg(this.pageParams.pageCount, this.pageParams.pageNumber);
+			getHeadPic(headPic) {
+				return getHeadPic(headPic, this.imgUrl)
+			},
+			parseEmotion(message) {
+				return parseEmotion(message);
+			},
+			parseImage(message) {
+				return parseMedia(message, this.imgUrl);
 			},
 			refresherrefresh() {
 				console.log('自定义下拉刷新被触发');
 				let _this = this;
-				if (_this._refresherTriggered) {
-					return;
-				}
-				_this._refresherTriggered = true;
+
 				//界面下拉触发，triggered可能不是true，要设为true
 				if (!_this.refresherTriggered) {
 					_this.refresherTriggered = true;
+				} else {
+					return;
 				}
 				//pageNum + 1
 				this.pageParams.pageNumber++;
-				this.loadStoreData(this.pageParams.pageCount, this.pageParams.pageNumber);
+				this.tongbuMsg(true)
 			},
 			refresherrestore() {
 				console.log('自定义下拉刷新被复位');
 				let _this = this;
 				_this.refresherTriggered = false;
-				_this._refresherTriggered = false;
 			},
 			refresherabort() {
 				console.log('自定义下拉刷新被中止    ');
 				let _this = this;
 				_this.refresherTriggered = false;
-				_this._refresherTriggered = false;
 			},
 			scrollLower() {
 				console.log('我滚动到底部了')
 			},
 			closeRefresh() {
 				this.refresherTriggered = false; //触发onRestore，并关闭刷新图标
-				this._refresherTriggered = false;
 			},
 
-			tongbuMsg() { //当前页面聊天记录&页码请求
+			tongbuMsg(isRefresh) { //当前页面聊天记录&页码请求
 				let _this = this;
 				uni.showLoading()
-				syncMsgData({
+				let params = {
 					chatId: _this.curChatEntity.id,
 					pageNumber: this.pageParams.pageNumber,
-				}).then(res => {
+				}
+				if (!isRefresh) {
+					params.messageId = ""
+				} else {
+					if (this.chatLogs.length) {
+						params.messageId = this.chatLogs[0].bean.messageId;
+					}
+				}
+				syncMsgData(params).then(res => {
 					let res_data = eval(res.data);
+					uni.hideLoading();
 					if (res_data.code == 201) {
 						//没缓存数据，把加载取消
 						setTimeout(() => {
-							this.moreShow = false
-							uni.hideLoading();
 							uni.showToast({
 								title: "暂无更多",
 								icon: "none"
 							})
-
+							this.closeRefresh()
+							this.hasMore = false
 						}, 400);
 					} else if (res_data.code == 200) {
 						if (res_data.body && res_data.body.list.length != 0) {
-
-							let cList = [];
-							for (let i = 0; i < res_data.body.list.length; i++) { //从[0]中取出
-								cList.push(res_data.body.list[i][0])
-							} //遍历
-							_this.syncMessageArr.unshift.apply(_this.syncMessageArr, cList)
-							let user = uni.getStorageSync("USER");
-							//1：先清楚和刷新当前显示列表
-							_this.setCurChatMsgList([])
-							_this.setCurChatMsgList(_this.syncMessageArr)
-							//2：再清除和刷新大消息列表当前聊天对象数据
-							if (_this.chatMessageMap.has(user.id + "#" + this.toid)) {
-								_this.updateChatMessageMap({
-									key: user.id + "#" + this.toid,
-									value: this.curChatMsgList
-								})
-							}
-							//3:设置最后一个信息
-							if (_this.curChatMsgList.length != 0) {
-								_this.curChatMsgList[_this.curChatMsgList.length - 1]
-									.bean.simple_content;
-							}
-							//4：刷新本地存储的数据
-							uni.setStorageSync(user.id + "#" + this.toid + '_CHAT_MESSAGE', JSON.stringify(_this
-								.curChatMsgList));
-						}
-						_this.pageParams = res_data.body
-						if (_this.pageParams.pageNumber > 1) {
+							_this.pageParams = res_data.body;
 							for (let i = 0; i < res_data.body.list.length; i++) { //从[0]中取出
 								res_data.body.list[i] = res_data.body.list[i][0].bean
 							} //遍历拿出数组bean
-							_this.chatLogs = _this.chatLogs.concat(res_data.body.list);
-							uni.hideLoading();
-						} else {
-							uni.hideLoading();
-							_this.chatLogs = res_data.body.list
+							// _this.chatLogs = _this.chatLogs.concat(res_data.body.list);
+							_this.chatLogs.unshift.apply(_this.chatLogs, res_data.body.list)
+							_this.closeRefresh()
+
+							if (_this.pageParams.pageCount == _this.pageParams.pageNumber) {
+								_this.hasMore = false;
+							}
 						}
-						for (let i = 0; i < _this.chatLogs.length; i++) { //从[0]中取出
-							_this.chatLogs[i] = _this.chatLogs[i][0].bean
-						} //遍历拿出数组bean
 						setTimeout(() => {
 							uni.hideLoading();
 						}, 400);
-
+						// 第一次加载才需要到底部
+						if (_this.pageParams.pageNumber == 1) {
+							_this.scrollToBottom();
+						}
 					}
 				}).catch(err => {
+					uni.hideLoading();
 					console.log('err=>', err)
 				})
-			},
-			loadStoreData(pSize, pNumber) {
-				let _this = this;
-				let user = uni.getStorageSync("USER");
-				if (user) {
-					listPage({
-						pageSize: pSize, //数量
-						pageNumber: pNumber, //页数
-						toMemberid: _this.curChatEntity.id,
-					}).then(res_1 => {
-						let res_data_1 = eval(res_1.data);
-						if (res_data_1.code == 200) {
-							this.pageParams.pageNumber = res_data_1.body.pageNumber;
-							if (this.pageParams.pageNumber > 1) {
-								_this.allList = _this.allList.concat(res_data_1.body.records);
-							} else {
-								_this.allList = res_data_1.body.records;
-							}
-							this.closeRefresh();
-						} else {
-							this.closeRefresh();
-						}
-					})
-				}
-			},
-			getPopButton(item) {
-				// popButton: ["复制", "转发", "收藏","删除","撤消"],
-				if (item == "复制") return "icon-fuzhi";
-				else if (item == "转发") return "icon-zhuanfa";
-				else if (item == "收藏") return "icon-collection-b";
-				else if (item == "删除") return "icon-shanchu";
-				else if (item == "撤消") return "icon-shangjiachexiaoshenqingrenzhengliebiao";
-				return "";
 			},
 			clickCard(bean) {
 				this.goUserDetail(bean.muuid);
 			},
-			sendCard() {
-				this.showPop = false;
-				this.showItem = 0;
-				this.InputBottom = 0;
 
-				uni.navigateTo({
-					url: "/pages/chat/card/sendCard"
-				})
-				this.setTempBean(this.entity);
-			},
-			goFavourite() {
-				uni.navigateTo({
-					url: "/pages/mine/favourite_list"
-				})
-			},
-			clickChat() {
-				this.showPop = false;
-				this.showItem = 0;
-				this.InputBottom = 0;
-			},
 			scrollToBottom: function() {
 				setTimeout(() => {
 					uni.pageScrollTo({

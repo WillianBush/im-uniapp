@@ -64,7 +64,7 @@ export default {
 								user.id + "#" + item.id + "_CHAT_MESSAGE_LASTCONTENT"
 							);
 							item.content = last_txt
-						
+
 							let unRead = uni.getStorageSync(
 								user.id + "#" + item.id + "_CHAT_MESSAGE_UNREAD"
 							);
@@ -429,12 +429,12 @@ export default {
 							duration: 0,
 						});
 					}, 100);
-					console.log("====uploadImagesucss:",res)
-					
+					console.log("====uploadImagesucss:", res)
+
 					resolve(res);
 				},
 				fail: (error) => {
-					console.log("====uploadImage",error)
+					console.log("====uploadImage", error)
 					reject(error);
 				},
 			});
@@ -473,9 +473,9 @@ export default {
 							txt: json.msg,
 							fromUid: rootState.user.user.id,
 							chatType: '2',
-							uuid:uuid(),
-							psr:"video",
-							simpleContent : "[视频]"
+							uuid: uuid(),
+							psr: "video",
+							simpleContent: "[视频]"
 						}
 						let cmd = "socket/sendChatMessage"
 						if (payload.toGroupid) {
@@ -509,8 +509,10 @@ export default {
 			let uploadRes = await dispatch("chooseImageAction");
 			if (!uploadRes.tempFilePaths) {
 				console.log("======图片选择失败")
-				reject({msg:"图片选择出错"});
-				
+				reject({
+					msg: "图片选择出错"
+				});
+
 			}
 			let arrs = uploadRes.tempFilePaths;
 			let token = uni.getStorageSync("token");
@@ -533,9 +535,9 @@ export default {
 									txt: json.msg,
 									fromUid: rootState.user.user.id,
 									chatType: '2',
-									uuid:uuid(),
-									psr:"picture",
-									simpleContent : "[图片]"
+									uuid: uuid(),
+									psr: "picture",
+									simpleContent: "[图片]"
 								}
 								let cmd = "socket/sendChatMessage"
 								if (payload.toGroupid) {
@@ -548,18 +550,18 @@ export default {
 								dispatch(cmd, v, {
 									root: true
 								});
-								
+
 								dispatch("sendBaseDaoAction", v);
 							} else {
-								console.log("===upload",json)
+								console.log("===upload", json)
 								reject(json)
 							}
-						}catch(error){
+						} catch (error) {
 							reject(error)
 						}
 					},
 					fail(error) {
-						console.log("===upload",error)
+						console.log("===upload", error)
 						reject(error)
 					}
 				});
@@ -649,8 +651,11 @@ export default {
 			user.id + "#" + msgbean.chatId + "_CHAT_MESSAGE_LASTCONTENT",
 			msgbean.bean.simpleContent
 		);
-		commit("setCurChatMsgList", list);
-		commit("setChatMyLoadding", false);
+		// 转发不重新设置当前消息
+		if(!v.transType){
+			commit("setCurChatMsgList", list);
+			commit("setChatMyLoadding", false);
+		}
 	},
 	transMessageAction({
 		dispatch,
@@ -664,16 +669,22 @@ export default {
 			state.arList.forEach((item) => {
 				if (id == item.id) {
 					let v = {};
-					if (state.temp.content.indexOf("[名片USERCARD]#") == 0) {
-						let ss = state.temp.content.split("#");
+					let tempBean = state.temp.bean
+					if (tempBean.psr == 'card') {
+						let ss = tempBean.oldTxt.split("#");
 						v = {
 							muuid: ss[4],
 							fromUid: user.id,
+							psr: tempBean.psr,
+							simpleContent: tempBean.simpleContent,
+							uuid: uuid()
 						};
 						if (item.typeid == "1") {
 							v.toGroupid = id;
+							v.chatType = '1'
 						} else {
 							v.toUid = id;
+							v.chatType = '2'
 						}
 						dispatch(
 							"socket/" + SocketType.WEBSOCKET_SEND, {
@@ -685,17 +696,23 @@ export default {
 						);
 					} else {
 						v = {
-							txt: state.temp.content,
+							txt: tempBean.oldTxt,
 							fromUid: user.id,
 							uuid: uuid(),
+							psr: tempBean.psr,
+							simpleContent: tempBean.simpleContent,
+							transType:true
 						};
 						let cmd = MessageType.USER_CHAT_SEND_TXT
 						if (item.typeid == "1") {
 							v.toGroupid = id;
+							v.chatType = '1'
 							cmd = MessageType.GROUP_CHAT_SEND_TXT
 						} else {
+							v.chatType = '2'
 							v.toUid = id;
 						}
+
 						dispatch(
 							"socket/" + SocketType.WEBSOCKET_SEND, {
 								body: v,

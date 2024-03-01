@@ -101,7 +101,7 @@
 							<view class="main">
 								<view class="content bg-green shadow" style="background-color: #98E165;
 				color:#222;">
-									<u-parse v-if="item.psr=='uparse'" :content="parseImage(item.txt)"
+									<u-parse v-if="item.psr=='picture'" :content="parseImage(item.txt)"
 										@preview="preview" @navigate="navigate"></u-parse>
 									<view @tap="clickVoice(item.txt,index)" v-else-if="item.psr=='voice'">
 										<text v-show="selVoiceIndex != index"
@@ -131,7 +131,7 @@
 							<view class="main">
 								<view class="content shadow" style="
 				color:#222;">
-									<u-parse v-if="item.psr=='uparse'" :content="parseImage(item.txt)"
+									<u-parse v-if="item.psr=='picture'" :content="parseImage(item.txt)"
 										@preview="preview" @navigate="navigate"></u-parse>
 									<view @tap="clickVoice(item.txt,index)" v-else-if="item.psr=='voice'">
 										<text v-show="selVoiceIndex != index"
@@ -305,16 +305,16 @@
 				console.log('自定义下拉刷新refresherrefresh');
 
 				let _this = this;
-				if (_this._refresherTriggered) {
-					return;
-				}
+				
 				//界面下拉触发，triggered可能不是true，要设为true
 				if (!_this.refresherTriggered) {
 					_this.refresherTriggered = true;
+				}else{
+					return;
 				}
 				//pageNum + 1
 				this.pageParams.pageNumber++;
-				this.tongbuMsg()
+				this.tongbuMsg(true)
 			},
 			scrollLower() {
 				console.log('我滚动到底部了')

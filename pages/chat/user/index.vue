@@ -889,7 +889,7 @@
 				let name = e.currentTarget.dataset.name;
 				if (name == '复制') {
 					//console.log(_this.temp_content);
-					if (_this.temp_content.indexOf("images") >= 0) {
+					if (_this.temp_bean.psr == 'picture') {
 						uni.showToast({
 							title: '复制仅限于文本或表情',
 							icon: "none",
@@ -922,7 +922,7 @@
 					}
 					//#endif
 				} else if (name == '转发') {
-					this.setTempContent(_this.temp_content)
+					this.setTempBean(_this.temp_bean)
 					uni.navigateTo({
 						url: "/pages/chat/transpond"
 					})
