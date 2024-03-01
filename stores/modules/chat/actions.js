@@ -636,8 +636,11 @@ export default {
 			user.id + "#" + msgbean.chatId + "_CHAT_MESSAGE_LASTCONTENT",
 			msgbean.bean.simpleContent
 		);
-		commit("addCurChatMsg", [msgbean]);
-		commit("setChatMyLoadding", false);
+		if (!v.transType) {
+			commit("setCurChatMsgList", [msgbean]);
+			commit("setChatMyLoadding", false);
+		}
+
 	},
 	transMessageAction({
 		dispatch,
@@ -651,16 +654,22 @@ export default {
 			state.arList.forEach((item) => {
 				if (id == item.id) {
 					let v = {};
-					if (state.temp.content.indexOf("[名片USERCARD]#") == 0) {
-						let ss = state.temp.content.split("#");
+					let tempBean = state.temp.bean
+					if (tempBean.psr == 'card') {
+						let ss = tempBean.oldTxt.split("#");
 						v = {
 							muuid: ss[4],
 							fromUid: user.id,
+							psr: tempBean.psr,
+							simpleContent: tempBean.simpleContent,
+							uuid: uuid()
 						};
 						if (item.typeid == "1") {
 							v.toGroupid = id;
+							v.chatType = '1'
 						} else {
 							v.toUid = id;
+							v.chatType = '2'
 						}
 						dispatch(
 							"socket/" + SocketType.WEBSOCKET_SEND, {
@@ -672,20 +681,27 @@ export default {
 						);
 					} else {
 						v = {
-							txt: state.temp.content,
+							txt: tempBean.oldTxt,
 							fromUid: user.id,
 							uuid: uuid(),
+							psr: tempBean.psr,
+							simpleContent: tempBean.simpleContent,
+							transType: true
 						};
-						v.simpleContent = v.txt;
+						let cmd = MessageType.USER_CHAT_SEND_TXT
 						if (item.typeid == "1") {
 							v.toGroupid = id;
+							v.chatType = '1'
+							cmd = MessageType.GROUP_CHAT_SEND_TXT
 						} else {
+							v.chatType = '2'
 							v.toUid = id;
 						}
+
 						dispatch(
 							"socket/" + SocketType.WEBSOCKET_SEND, {
 								body: v,
-								CMD: MessageType.GROUP_CHAT_SEND_TXT,
+								CMD: cmd,
 							}, {
 								root: true,
 							}

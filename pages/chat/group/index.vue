@@ -432,7 +432,7 @@
 				viewId: "",
 				showname: "",
 				isRefreshTrigger: false,
-				hasMore:true
+				hasMore: true
 			};
 		},
 		watch: {
@@ -518,8 +518,8 @@
 			transMessage(message) {
 				return parseEmotion(message);
 			},
-			parseImage(message){
-				return parseMedia(message,this.imgUrl)
+			parseImage(message) {
+				return parseMedia(message, this.imgUrl)
 			},
 			loadName() {
 				let s = uni.getStorageSync(this.toid + "_NOTE");
@@ -548,7 +548,7 @@
 			},
 			scrollToUpper() {
 				console.log("==========scrollToUpper")
-				if (!this.isRefreshTrigger &&this.hasMore) {
+				if (!this.isRefreshTrigger && this.hasMore) {
 					this.isRefreshTrigger = true;
 					this.pageParams.pageNumber++;
 					this.tongbuMsg(true);
@@ -676,7 +676,7 @@
 								_this.temp_txt = _this.temp_txt + (
 									"<img  style='max-width: 150px;max-height:150px;' class='face' src='" +
 									img + "'>");
-								
+
 								_this.sendBaseDaoAction(v);
 								setTimeout(function() {
 									_this.scrollToBottom();
@@ -851,7 +851,7 @@
 						'_CHAT_MESSAGE_LASTCONTENT');
 					uni.removeStorageSync(_this.user.id + "#" + _this.toid + '_CHAT_MESSAGE_UNREAD');
 				} else {
-					if(this.curChatMsgList.length){
+					if (this.curChatMsgList.length) {
 						params.messageId = this.curChatMsgList[0].bean.messageId;
 					}
 				}
@@ -888,7 +888,7 @@
 								this.hasMore = res_data.body.pageCount != res_data.body.pageNumber
 								//上拉刷新
 								this.addCurChatMsg(cList)
-								
+
 							}
 
 						}
@@ -1033,7 +1033,7 @@
 				//console.log(`第${index+1}个按钮`);
 				if (name == '复制') {
 					//console.log(_this.temp_content);
-					if (_this.temp_content.indexOf("images") >= 0) {
+					if (_this.temp_bean.psr == 'picture') {
 						uni.showToast({
 							title: '复制仅限于文本或表情',
 							icon: "none",
@@ -1068,6 +1068,7 @@
 				} else if (name == '转发') {
 					//console.log(_this.temp_content);
 					_this.setTempContent(_this.temp_content)
+					_this.setTempBean(_this.temp_bean)
 					uni.navigateTo({
 						url: "/pages/chat/transpond"
 					})
@@ -1080,10 +1081,6 @@
 							return true;
 						});
 						this.setCurChatMsgList(list)
-						this.updateChatMessageMap({
-							key: user.id + "#" + _this.toid,
-							value: list
-						})
 
 						let str = uni.getStorageSync(user.id + "#" + _this.toid + '_CHAT_MESSAGE');
 						if (str && str != "") {
@@ -1331,7 +1328,7 @@
 						txt: this.txt.replace(/\n/g, "<br/>"),
 						fromUid: this.user.id,
 						uuid: uuid(),
-						psr:"txt"
+						psr: "txt"
 					}
 					v.simpleContent = v.txt;
 					let cmd = ""
