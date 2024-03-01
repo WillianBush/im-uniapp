@@ -1037,6 +1037,7 @@
 					//#endif
 				} else if (name == '转发') {
 					_this.setTempContent(_this.temp_content)
+					_this.setTempBean(_this.temp_bean)
 					uni.navigateTo({
 						url: "/pages/chat/transpond"
 					})

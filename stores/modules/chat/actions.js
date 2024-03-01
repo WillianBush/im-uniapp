@@ -653,7 +653,7 @@ export default {
 		);
 		// 转发不重新设置当前消息
 		if(!v.transType){
-			commit("setCurChatMsgList", list);
+			commit("addCurChatMsg", [msgbean]);
 			commit("setChatMyLoadding", false);
 		}
 	},
