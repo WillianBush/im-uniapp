@@ -50,6 +50,7 @@ export default {
 				item.uuid = payload.uuid;
 			}
 		})
+		console.log("========curChatMsgList:",state.curChatMsgList)
 
 	},
 	setCurChatAiteToMyList(state, payload) {

@@ -409,6 +409,8 @@ export default {
 			// 	}
 			// );
 			if (user.id == messageBean[0].bean.fromUid) { // 自己发出的消息
+			console.log("==========收到自己发的消息", messageBean)
+			
 				commit(
 					"chat/updateCurChatMsg",
 					messageBean[0], {
@@ -442,15 +444,16 @@ export default {
 				// 如果是自己发的消息就改变消息发送成功的状态
 				jsonObj.forEach((item) => {
 					if (item.bean.uuid == messageBean[0].uuid) {
-						item = messageBean[0];
+						item.uuid = messageBean[0].uuid;
 					}
 				});
+				console.log("=======jsonObj:",jsonObj)
 			}
 			messageList = jsonObj
 		} else {
 			messageList = messageBean;
 		}
-		console.log("==========收到别人发来的消息", messageList)
+		console.log("==========收到消息", messageList)
 		uni.setStorageSync(
 			user.id + "#" + chatId + "_CHAT_MESSAGE",
 			JSON.stringify(messageList)

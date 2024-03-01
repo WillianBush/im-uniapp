@@ -63,7 +63,7 @@ export default {
 							let last_txt = uni.getStorageSync(
 								user.id + "#" + item.id + "_CHAT_MESSAGE_LASTCONTENT"
 							);
-							item.content = last_txt.simpleContent
+							item.content = last_txt
 						
 							let unRead = uni.getStorageSync(
 								user.id + "#" + item.id + "_CHAT_MESSAGE_UNREAD"
@@ -472,7 +472,10 @@ export default {
 						let v = {
 							txt: json.msg,
 							fromUid: rootState.user.user.id,
-							chatType: '2'
+							chatType: '2',
+							uuid:uuid(),
+							psr:"video",
+							simpleContent : "[视频]"
 						}
 						let cmd = "socket/sendChatMessage"
 						if (payload.toGroupid) {
@@ -485,11 +488,7 @@ export default {
 						dispatch(cmd, v, {
 							root: true
 						});
-						//#ifdef APP-PLUS
-						v.psr = "video";
-						v.simple_content = "[视频]";
 						dispatch("sendBaseDaoAction", v);
-						//#endif
 						resolve(true)
 					} else {
 						rejcet(false)
@@ -534,8 +533,8 @@ export default {
 									txt: json.msg,
 									fromUid: rootState.user.user.id,
 									chatType: '2',
-									psr : "uparse",
 									uuid:uuid(),
+									psr:"picture",
 									simpleContent : "[图片]"
 								}
 								let cmd = "socket/sendChatMessage"

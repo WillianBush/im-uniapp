@@ -78,6 +78,7 @@
 	import {
 		MessageType
 	} from '../../../const/MessageType';
+import { uuid } from '../../../common/utils';
 	export default {
 		data() {
 			return {
@@ -205,7 +206,9 @@
 						body: {
 							muuid: this.selFriendBean.member_uuid,
 							toGroupid: this.temp.bean.id,
-							fromUid: this.user.id
+							fromUid: this.user.id,
+							psr:"card",
+							uuid:uuid()
 						},
 						CMD: MessageType.CHAT_SEND_CARD
 					});
@@ -215,7 +218,9 @@
 						body: {
 							muuid: this.selFriendBean.member_uuid,
 							toUid: this.temp.bean.id,
-							fromUid: this.user.id
+							fromUid: this.user.id,
+							psr:"card",
+							uuid:uuid()
 						},
 						CMD: MessageType.CHAT_SEND_CARD
 					})

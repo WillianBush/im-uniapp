@@ -1,10 +1,10 @@
 <template>
-	<view ref="topVew" v-if="curChatEntity"
+	<view ref="topVew"
 		:style="chatCfg.chatBackgroundImage&&chatCfg.chatBackgroundImage!=''?'background-image: url('+imgUrl+chatCfg.chatBackgroundImage+')':''"
 		style="background-size: 100%;min-height: 100vh;">
 		<cu-custom backUrl="/pages/index/index" bgColor="bg-blue" :isBack="true" :nameToLeft="true">
 			<block slot="backText"></block>
-			<block slot="content">{{curChatEntity.name}}({{curChatEntity.memberCount}})人
+			<block slot="content" v-if="entity.name">{{entity.name}}({{entity.memberCount}})人
 			</block>
 			<block slot="right">
 				<view style="display: flex;flex-direction: row;align-items: center;">
@@ -16,9 +16,10 @@
 				</view>
 			</block>
 		</cu-custom>
-		<uni-notice-bar showIcon="" scrollable="true" single="true" v-if="curChatEntity.descri"
-			:text="curChatEntity.descri"></uni-notice-bar>
-		<scroll-view @scroll="scrollFn" :scroll-into-view="viewId" :scroll-top="scrollTop" scroll-y="true" ref="chatVew"
+		<uni-notice-bar showIcon="" scrollable="true" single="true" v-if="entity.descri"
+			:text="entity.descri"></uni-notice-bar>
+		<scroll-view @scroll="scrollFn" :scroll-into-view="viewId" :scroll-top="scrollTop" :refresher-enabled="hasMore"
+			@scrolltoupper="scrollToUpper" :refresher-triggered="isRefreshTrigger" :scroll-y="true" ref="chatVew"
 			@tap="clickChat()" class="cu-chat"
 			:style="'height: calc(100vh - '+CustomBar+'px - '+(120+InputBottom)+'upx)'">
 			<block v-for="(item,index) in curChatMsgList">
@@ -71,7 +72,7 @@
 						</view>
 						<view class="main" style="display: block!important;">
 							<view style="height: 40upx;font-size: 12px;color: #8799a3;">{{item.bean.fromName}}
-								<text style="color:#FFB502" v-if="item.bean.fromUid==curChatEntity.owner_UUID"
+								<text style="color:#FFB502" v-if="item.bean.fromUid==entity.owner_UUID"
 									class="iconfont icon-tianchongxing-"></text>
 							</view>
 							<view @longpress="onLongPress($event,item.bean)" @tap="clickCard(item.bean)"
@@ -119,9 +120,9 @@
 									style="color: #ddd;"></text>
 							</view>
 							<view v-if="item.bean.psr!='video'" @longtap="onLongPress($event,item.bean)"
-								:class="[item.bean.psr=='uparse'?'':'content bg-green shadow']"
-								:style="{backgroundColor:item.bean.psr=='uparse'? 'none':'#fff'}" style="color:#222;">
-								<u-parse v-if="item.bean.psr=='uparse'" :content="transMessage(item.bean.txt)"
+								:class="[item.bean.psr=='picture'?'':'content bg-green shadow']"
+								:style="{backgroundColor:item.bean.psr=='picture'? 'none':'#fff'}" style="color:#222;">
+								<u-parse v-if="item.bean.psr=='picture'" :content="parseImage(item.bean.txt)"
 									@preview="preview" @navigate="navigate"></u-parse>
 								<view @tap="clickVoice(item.bean.txt,index)" v-else-if="item.bean.psr=='voice'">
 									<text v-show="selVoiceIndex != index"
@@ -150,18 +151,18 @@
 						<view class="main" style="display: block!important;">
 							<view style="height: 40upx;font-size: 12px;color: #8799a3;">
 								<text style="color:#FFB502;margin-right:6upx;    font-size: 36upx;"
-									v-if="item.bean.fromUid==curChatEntity.owner_UUID"
+									v-if="item.bean.fromUid==entity.owner_UUID"
 									class="iconfont icon-tianchongxing-"></text>
 								<text style="color:#FF4633;margin-right:6upx;    font-size: 28upx;"
-									v-if="curChatEntity.memberMgr_ids&&curChatEntity.memberMgr_ids.indexOf(item.bean.fromUid)>=0"
+									v-if="curChatEntity&&curChatEntity.memberMgr_ids&&curChatEntity.memberMgr_ids.indexOf(item.bean.fromUid)>=0"
 									class="iconfont icon-maozi"></text>
 								{{item.bean.fromName}}
 							</view>
 							<view @longtap="onLongPress($event,item.bean)"
-								:class="[item.bean.psr=='uparse'?'':'content shadow']" style="color:#222;">
+								:class="[item.bean.psr=='picture'?'':'content shadow']" style="color:#222;">
 								<u-parse v-if="item.bean.psr=='video'" :content="item.bean.txt" @preview="preview"
 									@navigate="navigate"></u-parse>
-								<u-parse v-else-if="item.bean.psr=='uparse'" :content="transMessage(item.bean.txt)"
+								<u-parse v-else-if="item.bean.psr=='picture'" :content="parseImage(item.bean.txt)"
 									@preview="preview" @navigate="navigate"></u-parse>
 								<view @tap="clickVoice(item.bean.txt,index)" v-else-if="item.bean.psr=='voice'">
 									<text v-show="selVoiceIndex != index"
@@ -191,15 +192,15 @@
 							</view>
 
 							<view v-if="item.bean.psr!='video'" @longpress="onLongPress($event,item.bean)"
-								:class="[item.bean.psr=='uparse'?'':'content bg-green shadow']"
-								:style="{backgroundColor:item.bean.psr=='uparse'? 'none':'#fff'}" style="color:#222;">
+								:class="[item.bean.psr=='picture'?'':'content bg-green shadow']"
+								:style="{backgroundColor:item.bean.psr=='picture'? 'none':'#fff'}" style="color:#222;">
 								<!--因为视频在底层窗口的显示等级是最上层，所以无法嵌套在scroll里面滑动，这里用image 代替-->
 								<image @tap="clickVideo(imgUrl+item.bean.oldTxt)"
-									v-if="item.bean.psr=='uparse' && item.bean.txt.indexOf(videoCheck) != -1"
+									v-if="item.bean.psr=='picture'"
 									style="width:418upx;height:335upx;border-radius: 5px"
 									src="../../../static/images/video.png"></image>
-								<u-parse v-else-if="item.bean.psr=='uparse' && item.bean.txt.indexOf(videoCheck) == -1"
-									:content="transMessage(item.bean.txt)" @preview="preview"
+								<u-parse v-else-if="item.bean.psr=='picture'"
+									:content="parseImage(item.bean.txt)" @preview="preview"
 									@navigate="navigate"></u-parse>
 								<view @tap="clickVoice(item.bean.txt,index)" v-else-if="item.bean.psr=='voice'">
 									<text v-show="selVoiceIndex != index"
@@ -230,21 +231,21 @@
 						<view class="main" style="display: block!important;">
 							<view style="height: 40upx;font-size: 12px;color: #8799a3;">
 								<text style="color:#FFB502;margin-right:6upx;    font-size: 36upx;"
-									v-if="item.bean.fromUid==curChatEntity.owner_UUID"
+									v-if="curChatEntity&&item.bean.fromUid==curChatEntity.owner_UUID"
 									class="iconfont icon-tianchongxing-"></text>
 								<text style="color:#FF4633;margin-right:6upx;    font-size: 28upx;"
-									v-if="curChatEntity.memberMgr_ids&&curChatEntity.memberMgr_ids.indexOf(item.bean.fromUid)>=0"
+									v-if="curChatEntity&&curChatEntity.memberMgr_ids&&curChatEntity.memberMgr_ids.indexOf(item.bean.fromUid)>=0"
 									class="iconfont icon-maozi"></text>
 								{{item.bean.fromName}}
 							</view>
 							<view @longpress="onLongPress($event,item.bean)"
-								:class="[item.bean.psr=='uparse'?'':'content shadow']" style="color:#222;">
+								:class="[item.bean.psr=='picture'?'':'content shadow']" style="color:#222;">
 								<!--因为视频在底层窗口的显示等级是最上层，所以无法嵌套在scroll里面滑动，这里用image 代替-->
 								<image @tap="clickVideo(imgUrl+item.bean.oldTxt)"
-									v-if="item.bean.psr=='video' && item.bean.txt.indexOf(videoCheck) != -1"
+									v-if="item.bean.psr=='video'"
 									style="width:418upx;height:335upx;border-radius: 5px"
 									src="../../../static/images/video.png"></image>
-								<u-parse v-else-if="item.bean.psr=='uparse'" :content="transMessage(item.bean.txt)"
+								<u-parse v-else-if="item.bean.psr=='picture'" :content="parseImage(item.bean.txt)"
 									@preview="preview" @navigate="navigate"></u-parse>
 								<view @tap="clickVoice(item.bean.txt,index)" v-else-if="item.bean.psr=='voice'">
 									<text v-show="selVoiceIndex != index"
@@ -273,7 +274,7 @@
 				</view>
 				<view class="cu-avatar radius" :style="'background-image:url('+getHeadPic(user.headpic)+');'"></view>
 			</view>
-			<view v-show="curChatEntity.stopSpeak&&curChatEntity.stopSpeak==1" class="cu-info">
+			<view v-show="curChatEntity&&curChatEntity.stopSpeak&&curChatEntity.stopSpeak==1" class="cu-info">
 				<text class="cuIcon-roundclosefill text-red " style="margin-right: 8upx;"></text> 全员禁言中
 			</view>
 		</scroll-view>
@@ -425,6 +426,9 @@
 		saveOrUpdate,
 		getChatCfg
 	} from '../../../common/api';
+	//#ifdef H5
+	import h5Copy from '@/common/junyi-h5-copy.js'
+	//#endif
 	import {
 		MessageType
 	} from '../../../const/MessageType';
@@ -439,7 +443,8 @@
 		uuid,
 		parseEmotion,
 		showToast,
-		getHeadPic
+		getHeadPic,
+		parseMedia
 	} from '../../../common/utils';
 	const innerAudioContext = uni.createInnerAudioContext();
 	export default {
@@ -506,6 +511,8 @@
 				aite_map: new Map(), //@的用户列表 key:@昵称 value:用户ID
 				viewId: "",
 				touchNum: 0, //h5 双击
+				hasMore: true,
+				isRefreshTrigger: false
 			};
 		},
 		onBackPress() {
@@ -582,77 +589,20 @@
 		},
 		onLoad(option) {
 			this.setCurChatMsgList([])
-			this.setChatMyLoadding(false)
+			this.setChatMyLoadding(true)
 			this.getWindowSize();
 			let _this = this;
 			this.toid = option.toid;
 			if (!this.toid) return;
 			let user = uni.getStorageSync("USER");
-			loadRoom({
-				roomid: _this.toid
-			}).then(res => {
-				let res_data = eval(res.data);
-				if (res_data.code == 200) {
-					_this.entity = res_data.body;
-					_this.setCurChatEntity(res_data.body)
-					if (!_this.checkStopSpeak()) {
-						_this.stopSpeak = 1;
-					} else {
-						isStopSpeak4User({
-							roomid: _this.toid,
-							uid: _this.user.id
-						}).then(res => {
-							let res_data = eval(res.data);
-							if (res_data.code == 200) {
-								if (res_data.msg == "1") {
-									_this.stopSpeak = 1;
-								}
-							}
-						})
-					}
-
-				} else {
-					uni.showModal({
-						title: '信息提示',
-						content: res_data.msg,
-						showCancel: false,
-						success: function(res) {
-							if (res.confirm) {
-								uni.navigateBack({
-									delta: 1
-								})
-							}
-						}
-					});
-					return;
-				}
-				let unRead = uni.getStorageSync(user.id + "#" + _this.toid + '_CHAT_MESSAGE_UNREAD');
-				if (unRead && unRead != "") {
-					uni.removeStorageSync(user.id + "#" + _this.toid + '_CHAT_MESSAGE_UNREAD');
-					_this.setUnReadMsgSum(_this.unReadMsgSum - parseInt(unRead))
-				}
-			}).catch(error => {
-				uni.showToast({
-					icon: 'none',
-					position: 'bottom',
-					title: error.msg ? error.msg : "服务器异常!"
-				});
-			})
-			if (this.chatMessageMap.has(user.id + "#" + this.toid)) {
-				let msg_list = this.chatMessageMap.get(user.id + "#" + this.toid);
-				if (msg_list && msg_list.length > 0) {
-					this.setCurChatMsgList(msg_list)
-				}
+			this.loadRoomFunc();
+			this.saveOrUpdateMesage();
+			let str = uni.getStorageSync(user.id + "#" + this.toid + '_CHAT_MESSAGE');
+			if (str && str != "") {
+				var jsonObj = JSON.parse(str);
+				this.setCurChatMsgList(jsonObj)
 			} else {
-				let str = uni.getStorageSync(user.id + "#" + this.toid + '_CHAT_MESSAGE');
-				if (str && str != "") {
-					var jsonObj = JSON.parse(str);
-					this.updateChatMessageMap({
-						key: user.id + "#" + this.toid,
-						value: jsonObj
-					})
-					this.setCurChatMsgList(jsonObj)
-				} else {}
+				this.tongbuMsg()
 			}
 			try {
 				let str = uni.getStorageSync(this.toid + '#AITE_LIST');
@@ -677,34 +627,7 @@
 					}
 				})
 			} catch (e) {}
-			saveOrUpdate({
-				type: 1,
-				eid: this.toid
-			}).then(res => {
-				let res_data = eval(res.data);
-				if (res_data.code == 200) {
-					//更新消息列表
-				} else {
-					uni.showModal({
-						title: '信息提示',
-						content: res_data.msg,
-						showCancel: false,
-						success: function(res) {
-							if (res.confirm) {
-								uni.navigateBack({
-									delta: 1
-								})
-							}
-						}
-					});
-				}
-			}).catch(error => {
-				uni.showToast({
-					icon: 'none',
-					position: 'bottom',
-					title: error.msg ? error.msg : "服务器异常!"
-				});
-			})
+
 			getChatCfg().then(res => {
 				let res_data = eval(res.data);
 				if (res_data.code == 200) {
@@ -714,11 +637,11 @@
 			this.scrollToBottom();
 		},
 		mounted() {
-			if (this.curChatMsgList.length == 0) {
-				this.tongbuMsg();
-			} else {
-				this.deduplication()
-			}
+			// if (this.curChatMsgList.length == 0) {
+			// 	this.tongbuMsg();
+			// } else {
+			// 	this.deduplication()
+			// }
 		},
 		methods: {
 			...mapMutations('chat', [
@@ -729,7 +652,8 @@
 				'setCurChatAiteToMyList',
 				'setTempBean',
 				'setTempContent',
-				'setArList'
+				'setArList',
+				'addCurChatMsg'
 			]),
 			...mapMutations('user', [
 				'setUnReadMsgSum'
@@ -737,7 +661,7 @@
 			...mapActions('socket', [
 				'WEBSOCKET_SEND',
 				'sendGroupChatMessage'
-				
+
 			]),
 			...mapActions('chat', [
 				'loadTalkUserAction',
@@ -753,25 +677,113 @@
 			getHeadPic(headpic) {
 				return getHeadPic(headpic, this.imgUrl)
 			},
+			parseImage(message) {
+				return parseMedia(message, this.imgUrl)
+			},
 			justRefresh() {
-				this.tongbuMsg(this.pageParams.pageCount, this.pageParams.pageNumber);
+				this.pageParams.pageNumber =1;
+				this.hasMore = true;
+				this.tongbuMsg();
 				this.scrollToBottom();
 			},
-			refresherrefresh() {
+			saveOrUpdateMesage() {
+				saveOrUpdate({
+					type: 1,
+					eid: this.toid
+				}).then(res => {
+					let res_data = eval(res.data);
+					if (res_data.code == 200) {
+						//更新消息列表
+					} else {
+						uni.showModal({
+							title: '信息提示',
+							content: res_data.msg,
+							showCancel: false,
+							success: function(res) {
+								if (res.confirm) {
+									uni.navigateBack({
+										delta: 1
+									})
+								}
+							}
+						});
+					}
+				}).catch(error => {
+					console.log("error:", error)
+
+					uni.showToast({
+						icon: 'none',
+						position: 'bottom',
+						title: error.msg ? error.msg : "服务器异常!"
+					});
+				})
+			},
+			loadRoomFunc() {
 				let _this = this;
-				if (_this._refresherTriggered) {
-					return;
-				}
-				_this._refresherTriggered = true;
-				//界面下拉触发，triggered可能不是true，要设为true
-				if (!_this.refresherTriggered) {
-					_this.refresherTriggered = true;
-				}
-				this.pageParams.pageNumber++;
-				this.loadStoreData(this.pageParams.pageCount, this.pageParams.pageNumber);
+				loadRoom({
+					roomid: this.toid
+				}).then(res => {
+					this.setChatMyLoadding(false)
+					let res_data = eval(res.data);
+					if (res_data.code == 200) {
+						_this.entity = res_data.body;
+						_this.setCurChatEntity(res_data.body)
+						if (!_this.checkStopSpeak()) {
+							_this.stopSpeak = 1;
+						} else {
+							isStopSpeak4User({
+								roomid: _this.toid,
+								uid: _this.user.id
+							}).then(res => {
+								let res_data = eval(res.data);
+								if (res_data.code == 200) {
+									if (res_data.msg == "1") {
+										_this.stopSpeak = 1;
+									}
+								}
+							})
+						}
+
+					} else {
+						uni.showModal({
+							title: '信息提示',
+							content: res_data.msg,
+							showCancel: false,
+							success: function(res) {
+								if (res.confirm) {
+									uni.navigateBack({
+										delta: 1
+									})
+								}
+							}
+						});
+						return;
+					}
+					let unRead = uni.getStorageSync(_this.user.id + "#" + _this.toid + '_CHAT_MESSAGE_UNREAD');
+					if (unRead && unRead != "") {
+						uni.removeStorageSync(_this.user.id + "#" + _this.toid + '_CHAT_MESSAGE_UNREAD');
+						_this.setUnReadMsgSum(_this.unReadMsgSum - parseInt(unRead))
+					}
+				}).catch(error => {
+					this.setChatMyLoadding(false)
+					console.log("error:", error)
+					uni.showToast({
+						icon: 'none',
+						position: 'bottom',
+						title: error.msg ? error.msg : "服务器异常!"
+					});
+				})
 			},
 			scrollFn(e) {
 				this.scrollDetail = e.detail;
+			},
+			scrollToUpper() {
+				console.log("==========scrollToUpper")
+				if (!this.isRefreshTrigger && this.hasMore) {
+					this.isRefreshTrigger = true;
+					this.pageParams.pageNumber++;
+					this.tongbuMsg(true);
+				}
 			},
 			deduplication() {
 				this.setChatMyLoadding(false)
@@ -781,8 +793,24 @@
 				this.setCurChatMsgList(uniqueArr(this.curChatMsgList, "uuid"))
 				this.scrollToBottom();
 			},
-			tongbuMsg() { //当前页面聊天记录&页码请求
+			tongbuMsg(isRefresh) { //当前页面聊天记录&页码请求
 				let _this = this;
+				let params = {
+					chatId: _this.toid,
+					pageNumber: this.pageParams.pageNumber,
+				}
+				if (!isRefresh) {
+					uni.removeStorageSync(_this.user.id + "#" + _this.toid + '_CHAT_MESSAGE');
+					uni.removeStorageSync(_this.user.id + "#" + _this.toid +
+						'_CHAT_MESSAGE_LASTCONTENT');
+					uni.removeStorageSync(_this.user.id + "#" + _this.toid + '_CHAT_MESSAGE_UNREAD');
+					params.messageId = "";
+					
+				} else {
+					if (this.curChatMsgList.length) {
+						params.messageId = this.curChatMsgList[0].bean.messageId;
+					}
+				}
 				uni.showLoading()
 				syncMsgData({
 					chatId: _this.toid,
@@ -790,45 +818,36 @@
 				}).then(res => {
 					uni.hideLoading()
 					let res_data = eval(res.data);
-					if (res_data.code == 201) {
-						//没缓存数据，把加载取消
-						setTimeout(() => {
-							_this.moreShow = false
-							uni.hideLoading();
-						}, 400);
-					} else if (res_data.code == 200) {
+					if (res_data.code == 200) {
 						if (res_data.body && res_data.body.list.length != 0) {
 							let cList = [];
 							for (let i = 0; i < res_data.body.list.length; i++) { //从[0]中取出
-								cList.push(res_data.body.list[i][0])
+								let msg = res_data.body.list[i][0]
+								msg.uuid = msg.bean.uuid;
+								cList.push(msg);
 							} //遍历
-							_this.syncMessageArr = cList
-							let user = uni.getStorageSync("USER");
-							//1：先清楚和刷新当前显示列表
-							_this.setCurChatMsgList([]);
-							_this.setCurChatMsgList(_this.syncMessageArr);
-							//2：再清除和刷新大消息列表当前聊天对象数据
-							if (_this.chatMessageMap.has(user.id + "#" + this.toid)) {
-								_this.updateChatMessageMap({
-									key: user.id + "#" + _this.toid,
-									value: _this.curChatMsgList
-								})
+							if (!isRefresh) {
+								//1：先清楚和刷新当前显示列表
+								_this.setCurChatMsgList(cList);
+								// 缓存30条数据到本地
+								if (cList.length > 30) {
+									cList = cList.splice(cList.length - 30, cList.length)
+								}
+								//2：再清除和刷新大消息列表当前聊天对象数据
+								uni.setStorageSync(_this.user.id + "#" + _this.toid + '_CHAT_MESSAGE', JSON
+									.stringify(
+										cList));
+								_this.scrollToBottom()
+							} else {
+								//上拉刷新
+								this.hasMore = res_data.body.pageCount != res_data.body.pageNumber
+								this.addCurChatMsg(cList)
 							}
-							//3:设置最后一个信息
-							// if (_this.curChatMsgList.length != 0) {
-							// 	_this.curChatMsgList[_this.curChatMsgList.length - 1]
-							// 		.bean.simple_content;
-							// }
-							//4：刷新本地存储的数据
-							uni.setStorageSync(user.id + "#" + _this.toid + '_CHAT_MESSAGE', JSON.stringify(_this
-								.curChatMsgList));
 						}
-						_this.pageParams = res_data.body
-						setTimeout(() => {
-							uni.hideLoading();
-						}, 400);
 					}
 				}).catch(error => {
+					console.log("error:", error)
+
 					uni.showToast({
 						icon: 'none',
 						position: 'bottom',
@@ -1106,6 +1125,8 @@
 							});
 						}
 					}).catch(error => {
+						console.log("error:", error)
+
 						uni.showToast({
 							icon: 'none',
 							position: 'bottom',
@@ -1197,6 +1218,8 @@
 						}
 					}
 				}).catch(error => {
+					console.log("error:", error)
+
 					uni.showToast({
 						icon: 'none',
 						position: 'bottom',
@@ -1253,7 +1276,8 @@
 						toGroupid: this.toid,
 						fromUid: this.user.id,
 						uuid: uuid(),
-						chatType:'1'
+						chatType: '1',
+						psr:"txt"
 					}
 					let aite = "";
 					for (var [key, value] of this.aite_map) {
@@ -1295,7 +1319,7 @@
 				if (!this.checkStopSpeak()) return;
 				let _this = this;
 				this.uploadVideoAction({
-					toGroupid:this.toid
+					toGroupid: this.toid
 				}).then(res => {
 					setTimeout(function() {
 						_this.scrollToBottom();
@@ -1313,7 +1337,7 @@
 				if (!this.checkStopSpeak()) return;
 				let _this = this;
 				this.uploadImageAction({
-					toGroupid:this.toid
+					toGroupid: this.toid
 				}).then(res => {
 					setTimeout(function() {
 						_this.scrollToBottom();
@@ -1476,7 +1500,7 @@
 									fromUid: _this.user.id,
 									sub_txt: timeStr,
 									uuid: uuid(),
-									chatType:'1'
+									chatType: '1'
 								})
 								//#ifdef APP-PLUS
 								v.psr = "voice";
@@ -1512,7 +1536,7 @@
 		min-height: 72upx;
 	}
 
-	
+
 	/* 遮罩 */
 	.shade {
 		position: fixed;
@@ -1564,5 +1588,4 @@
 	.cu-chat .cu-info {
 		display: table;
 	}
-
 </style>

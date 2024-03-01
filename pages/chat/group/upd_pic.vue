@@ -32,7 +32,6 @@
 	export default {
 		data() {
 			return {
-				txt: this.curChatEntity.name
 			}
 		},
 		onLoad(e) {
@@ -68,7 +67,7 @@
 				}).then(res => {
 					let res_data = eval(res.data);
 					if (res_data.code == 200) {
-						_this.setCurChatEntity(res_data.body)
+						_this.setCurChatEntityImg(res_data.body.headImg)
 						uni.showToast({
 							icon: "success",
 							title: "操作成功",

@@ -120,9 +120,9 @@
 							<view class="text-cut" style="position: relative;top: 4px;">
 								<text style="margin-right: 6px;"
 									v-if="item.typeid=='2'&&item.online==0&&item.id!='-1'">{{ i18n.lastlogin }}{{item.lastLoginDate}}
-									 </text>
-								<text style="margin-right: 6px;color:red"
-									v-if="item.aiteCount>0">- [{{ i18n.youhave }}{{item.aiteCount}}{{i18n.listmsg}}]</text>
+								</text>
+								<text style="margin-right: 6px;color:red" v-if="item.aiteCount>0">-
+									[{{ i18n.youhave }}{{item.aiteCount}}{{i18n.listmsg}}]</text>
 								{{item.content}}
 							</view>
 						</view>
@@ -149,8 +149,12 @@
 </template>
 
 <script>
-	import { mapState,mapMutations,mapActions } from 'vuex'
-	
+	import {
+		mapState,
+		mapMutations,
+		mapActions
+	} from 'vuex'
+
 	export default {
 		data() {
 			return {
@@ -180,18 +184,18 @@
 			i18n() {
 				return this.$t('index')
 			},
-			...mapState('chat',{
-				chatCfg:state =>state.chatCfg,
-				arListShow:state => state.arListShow
+			...mapState('chat', {
+				chatCfg: state => state.chatCfg,
+				arListShow: state => state.arListShow
 			}),
-			...mapState('app',{
-				imgUrl:state =>state.imgUrl
+			...mapState('app', {
+				imgUrl: state => state.imgUrl
 			}),
-			...mapState('socket',{
-				delayTime:state =>state.delayTime
+			...mapState('socket', {
+				delayTime: state => state.delayTime
 			}),
-			delayTime(){
-				if(this.$store.state.socket.delayTime < 0){
+			delayTime() {
+				if (this.$store.state.socket.delayTime < 0) {
 					return "--"
 				}
 				return `${this.$store.state.socket.delayTime}ms`
@@ -201,7 +205,7 @@
 
 		},
 		methods: {
-			...mapMutations('chat',[
+			...mapMutations('chat', [
 				'setArList'
 			]),
 			getHeadPic(headpic) {
@@ -211,7 +215,7 @@
 					return this.imgUrl + headpic;
 				}
 			},
-			...mapActions('chat',[
+			...mapActions('chat', [
 				'listPageAction',
 				'scanCode',
 				'cancelZhidingItem',
@@ -220,7 +224,7 @@
 				'searchMsgListAction',
 				'getChatCfgAction'
 			]),
-			...mapActions('user',[
+			...mapActions('user', [
 				'isSuperUserAction'
 			]),
 			refresherrefresh() {
@@ -269,9 +273,9 @@
 					this.listPageAction({
 						pageSize: pSize, //数量
 						pageNum: pNumber //页数
-					}).then(res=>{
+					}).then(res => {
 						this.closeRefresh();
-					}).catch(error=>{
+					}).catch(error => {
 						this.closeRefresh();
 					});
 				}
@@ -327,8 +331,8 @@
 			},
 			showMenuFn() {
 				let _this = this;
-				this.isSuperUserAction().then(res=>{
-					if(res !=-1){
+				this.isSuperUserAction().then(res => {
+					if (res != -1) {
 						_this.super_user = res;
 					}
 				})
@@ -342,21 +346,22 @@
 				}
 			},
 			goChat(item) {
-					if (item.id == "-1") {
-						uni.navigateTo({
-							url: "/pages/chat/guang_fang_chat"
-						})
-					} else {
-						if (item.typeid == "2") {
-							uni.navigateTo({
-								url: "/pages/chat/user/index?toid=" + item.id +"&name=" +item.title
-							})
-						} else {
-							uni.navigateTo({
-								url: "/pages/chat/group/index?toid=" + item.id
-							})
-						}
+				if (item.typeid == "2" || item.id == '-1') {
+					uni.navigateTo({
+						url: "/pages/chat/user/index?toid=" + item.id + "&name=" + item.title
+					})
+				} else {
+					uni.navigateTo({
+						url: "/pages/chat/group/index?toid=" + item.id
+					})
 				}
+				// 	if (item.id == "-1") {
+				// 		uni.navigateTo({
+				// 			url: "/pages/chat/guang_fang_chat"
+				// 		})
+				// 	} else {
+
+				// }
 			},
 			showModal(e) {
 				this.modalName = e.currentTarget.dataset.target

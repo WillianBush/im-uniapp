@@ -23,7 +23,7 @@
 				</view>
 			</block>
 		</cu-custom>
-		<scroll-view @scroll="scrollFn" :scroll-top="scrollTop" refresher-enabled="hasMore"
+		<scroll-view @scroll="scrollFn" :scroll-top="scrollTop" :refresher-enabled="hasMore"
 			@scrolltoupper="scrollToUpper" :refresher-triggered="isRefreshTrigger" @refresherpulling="refresh"
 			:scroll-y="true" ref="chatVew" @tap="clickChat()" class="cu-chat"
 			:style="'height: calc(100vh - '+CustomBar+'px - '+(120+InputBottom)+'upx)'">
@@ -131,9 +131,9 @@
 							</view>
 
 							<view v-if="item.bean.psr!='video'" @longtap="onLongPress($event,item.bean)"
-								:class="[item.bean.psr=='uparse'?'':'content bg-green shadow']"
-								:style="{backgroundColor:item.bean.psr=='uparse'? 'none':'#fff'}" style="color:#222;">
-								<u-parse v-if="item.bean.psr=='uparse'" :content="parseImage(item.bean.txt)"
+								:class="[item.bean.psr=='picture'?'':'content bg-green shadow']"
+								:style="{backgroundColor:item.bean.psr=='picture'? 'none':'#fff'}" style="color:#222;">
+								<u-parse v-if="item.bean.psr=='picture'" :content="parseImage(item.bean.txt)"
 									@preview="preview" @navigate="navigate"></u-parse>
 								<view @tap="clickVoice(item.bean.txt,index)" v-else-if="item.bean.psr=='voice'">
 									<text v-show="selVoiceIndex != index"
@@ -162,10 +162,10 @@
 							:style="'background-image:url('+getHeadPic(item.bean.fromHeadpic)+');'"></view>
 						<view class="main">
 							<view @longtap="onLongPress($event,item.bean)"
-								:class="[item.bean.psr=='uparse'?'':'content shadow']" style="color:#222;">
+								:class="[item.bean.psr=='picture'?'':'content shadow']" style="color:#222;">
 								<u-parse v-if="item.bean.psr=='video'" :content="transMessage(item.bean.txt)"
 									@preview="preview" @navigate="navigate"></u-parse>
-								<u-parse v-else-if="item.bean.psr=='uparse'" :content="parseImage(item.bean.txt)"
+								<u-parse v-else-if="item.bean.psr=='picture'" :content="parseImage(item.bean.txt)"
 									@preview="preview" @navigate="navigate"></u-parse>
 								<view @tap="clickVoice(item.bean.txt,index)" v-else-if="item.bean.psr=='voice'">
 									<text v-show="selVoiceIndex != index"
@@ -205,16 +205,16 @@
 									style="color: #ddd;"></text>
 							</view>
 							<view v-if="item.bean.psr!='video'" @longpress="onLongPress($event,item.bean)"
-								:class="[item.bean.psr=='uparse'?'':'content bg-green shadow']"
-								:style="{backgroundColor:item.bean.psr=='uparse'? 'none':'#fff'}" style="color:#222;">
+								:class="[item.bean.psr=='picture'?'':'content bg-green shadow']"
+								:style="{backgroundColor:item.bean.psr=='picture'? 'none':'#fff'}" style="color:#222;">
 
 								<!--因为视频在底层窗口的显示等级是最上层，所以无法嵌套在scroll里面滑动，这里用image 代替-->
 								<image @tap="clickVideo(imgUrl+item.bean.oldTxt)"
-									v-if="item.bean.psr=='uparse' && item.bean.txt.indexOf(videoCheck) != -1"
+									v-if="item.bean.psr=='video'"
 									style="width:418upx;height:335upx;border-radius: 5px"
 									src="../../../static/images/video.png"></image>
 
-								<u-parse v-else-if="item.bean.psr=='uparse' && item.bean.txt.indexOf(videoCheck)  == -1"
+								<u-parse v-else-if="item.bean.psr=='picture'"
 									:content="parseImage(item.bean.txt)" @preview="preview"
 									@navigate="navigate"></u-parse>
 								<view @tap="clickVoice(item.bean.txt,index)" v-else-if="item.bean.psr=='voice'">
@@ -244,13 +244,13 @@
 							:style="'background-image:url('+getHeadPic(item.bean.fromHeadpic)+');'"></view>
 						<view class="main">
 							<view @longpress="onLongPress($event,item.bean)"
-								:class="[item.bean.psr=='uparse'?'':'content shadow']" style="color:#222;">
+								:class="[item.bean.psr=='picture'?'':'content shadow']" style="color:#222;">
 								<!--因为视频在底层窗口的显示等级是最上层，所以无法嵌套在scroll里面滑动，这里用image 代替-->
 								<image @tap="clickVideo(imgUrl+item.bean.oldTxt)"
-									v-if="item.bean.psr=='video' && item.bean.txt.indexOf(videoCheck) != -1"
+									v-if="item.bean.psr=='video'"
 									style="width:418upx;height:335upx;border-radius: 5px"
 									src="../../../static/images/video.png"></image>
-								<u-parse v-else-if="item.bean.psr=='uparse'" :content="parseImage(item.bean.txt)"
+								<u-parse v-else-if="item.bean.psr=='picture'" :content="parseImage(item.bean.txt)"
 									@preview="preview" @navigate="navigate"></u-parse>
 								<view @tap="clickVoice(item.bean.txt,index)" v-else-if="item.bean.psr=='voice'">
 									<text v-show="selVoiceIndex != index"
@@ -711,21 +711,10 @@
 
 			},
 			justRefresh() {
+				this.pageParams.pageNumber = 1;
+				this.hasMore = true;
 				this.scrollToBottom();
-			},
-			refresherrefresh() {
-				let _this = this;
-				if (_this._refresherTriggered) {
-					return;
-				}
-				_this._refresherTriggered = true;
-				//界面下拉触发，triggered可能不是true，要设为true
-				if (!_this.refresherTriggered) {
-					_this.refresherTriggered = true;
-				}
-				//pageNum + 1
-				this.pageParams.pageNumber++;
-				// this.loadStoreData(this.pageParams.pageCount, this.pageParams.pageNumber);
+				this.tongbuMsg()
 			},
 			lineFeed() {
 				this.txt = this.txt + '\n'
@@ -740,11 +729,11 @@
 					pageNumber: this.pageParams.pageNumber,
 				}
 				if (!isRefresh) {
-					_this.setCurChatMsgList([]);
 					uni.removeStorageSync(_this.user.id + "#" + _this.toid + '_CHAT_MESSAGE');
 					uni.removeStorageSync(_this.user.id + "#" + _this.toid +
 						'_CHAT_MESSAGE_LASTCONTENT');
 					uni.removeStorageSync(_this.user.id + "#" + _this.toid + '_CHAT_MESSAGE_UNREAD');
+					params.messageId = ""
 				} else {
 					if (this.curChatMsgList.length) {
 						params.messageId = this.curChatMsgList[0].bean.messageId;
@@ -766,7 +755,6 @@
 								msg.uuid = msg.bean.uuid;
 								cList.push(msg);
 							} //遍历
-							let user = uni.getStorageSync("USER");
 							if (!isRefresh) {
 								//1：先清楚和刷新当前显示列表
 								_this.setCurChatMsgList(cList);
@@ -775,7 +763,7 @@
 									cList = cList.splice(cList.length - 30, cList.length)
 								}
 								//2：再清除和刷新大消息列表当前聊天对象数据
-								uni.setStorageSync(user.id + "#" + _this.toid + '_CHAT_MESSAGE', JSON.stringify(
+								uni.setStorageSync(_this.user.id + "#" + _this.toid + '_CHAT_MESSAGE', JSON.stringify(
 									cList));
 								_this.scrollToBottom()
 							} else {
@@ -947,10 +935,10 @@
 							return true;
 						});
 						this.setCurChatMsgList(list);
-						this.updateChatMessageMap({
-							key: user.id + "#" + _this.toid,
-							value: list
-						});
+						// this.updateChatMessageMap({
+						// 	key: user.id + "#" + _this.toid,
+						// 	value: list
+						// });
 						let str = uni.getStorageSync(user.id + "#" + _this.toid + '_CHAT_MESSAGE');
 						if (str && str != "") {
 							let jsonObj = JSON.parse(str);

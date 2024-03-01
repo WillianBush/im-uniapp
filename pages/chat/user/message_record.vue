@@ -325,13 +325,21 @@
 			closeRefresh() {
 				this.refresherTriggered = false; //触发onRestore，并关闭刷新图标
 			},
-			tongbuMsg() { //当前页面聊天记录&页码请求
+			tongbuMsg(isRefresh) { //当前页面聊天记录&页码请求
 				let _this = this;
 				uni.showLoading()
-				syncMsgData({
+				let params = {
 					chatId: _this.toid,
 					pageNumber: this.pageParams.pageNumber,
-				}).then(res => {
+				}
+				if (!isRefresh) {
+					params.messageId = ""
+				} else {
+					if (this.chatLogs.length) {
+						params.messageId = this.chatLogs[0].bean.messageId;
+					}
+				}
+				syncMsgData(params).then(res => {
 					let res_data = eval(res.data);
 					if (res_data.code == 201) {
 						//没缓存数据，把加载取消
