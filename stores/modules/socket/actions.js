@@ -163,7 +163,7 @@ export default {
 			Log.d(TAG, "WebSocket重新连接1！");
 			commit("setIsOpenSocket", false);
 			commit("setContinueCloseCount", state.continueCloseCount + 1);
-			if(state.continueCloseCount == 10){
+			if (state.continueCloseCount == 10) {
 				uni.showToast({
 					icon: 'none',
 					position: 'bottom',
@@ -180,7 +180,7 @@ export default {
 			commit("setIsOpenSocket", true);
 			commit("setContinueCloseCount", state.continueCloseCount + 1);
 			heartCheck.reset();
-			if(state.continueCloseCount == 10){
+			if (state.continueCloseCount == 10) {
 				uni.showToast({
 					icon: 'none',
 					position: 'bottom',
@@ -409,8 +409,8 @@ export default {
 			// 	}
 			// );
 			if (user.id == messageBean[0].bean.fromUid) { // 自己发出的消息
-			console.log("==========收到自己发的消息", messageBean)
-			
+				console.log("==========收到自己发的消息", messageBean)
+
 				commit(
 					"chat/updateCurChatMsg",
 					messageBean[0], {
@@ -442,12 +442,20 @@ export default {
 				}
 			} else {
 				// 如果是自己发的消息就改变消息发送成功的状态
+				let isCurSend = false
 				jsonObj.forEach((item) => {
 					if (item.bean.uuid == messageBean[0].uuid) {
 						item.uuid = messageBean[0].uuid;
+						isCurSend = true;
 					}
 				});
-				console.log("=======jsonObj:",jsonObj)
+				if (!isCurSend) {
+					jsonObj = jsonObj.concat(messageBean);
+					if (jsonObj.length > 30) {
+						jsonObj = jsonObj.splice(jsonObj.length - 30, jsonObj.length);
+					}
+				}
+				console.log("=======jsonObj:", jsonObj)
 			}
 			messageList = jsonObj
 		} else {
