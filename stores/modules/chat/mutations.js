@@ -44,11 +44,16 @@ export default {
 		}
 	},
 	updateCurChatMsg(state, payload) {
+		let isCurSend = false; // 判断是否是当前设备发送
 		state.curChatMsgList.forEach(item => {
 			if (item.bean.uuid == payload.uuid) {
 				item.uuid = payload.uuid;
+				isCurSend = true;
 			}
 		})
+		if(!isCurSend){// 不是当前设备发送的，直接同步消息
+			state.curChatMsgList.push(payload)
+		}
 	},
 	setCurChatAiteToMyList(state, payload) {
 		state.curChatAiteToMyList = payload

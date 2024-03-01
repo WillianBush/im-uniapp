@@ -307,7 +307,7 @@ export default {
 		let data = payload;
 		let user = rootState.user.user;
 		let messageBean = data.body;
-		console.log("==========收到消息",messageBean)
+		console.log("==========收到消息", messageBean)
 		messageBean[0].uuid = messageBean[0].bean.uuid
 		uni.$emit("scrollTopFn");
 		// 获取是否设置免打扰
@@ -387,7 +387,7 @@ export default {
 				}
 			}
 		}
-		
+
 		if (
 			rootState.chat.curChatEntity &&
 			rootState.chat.curChatEntity.id == chatId
@@ -412,8 +412,8 @@ export default {
 					}
 				);
 			} else { // 别人发来的消息
-			console.log("==========收到别人发来的消息",messageBean)
-			
+				console.log("==========收到别人发来的消息", messageBean)
+
 				commit(
 					"chat/addCurChatMsg",
 					messageBean, {
@@ -422,29 +422,38 @@ export default {
 				);
 			}
 		}
-		
+
 		let str = uni.getStorageSync(
 			user.id + "#" + chatId + "_CHAT_MESSAGE"
 		);
 		let messageList = []
 		if (str && str != "") {
 			var jsonObj = JSON.parse(str);
-		
+
 			if (user.id != messageBean[0].bean.fromUid) {
 				jsonObj = jsonObj.concat(messageBean);
 				if (jsonObj.length > 30) {
 					jsonObj = jsonObj.splice(jsonObj.length - 30, jsonObj.length);
 				}
-			}else{
+			} else {
 				// 如果是自己发的消息就改变消息发送成功的状态
-				jsonObj.forEach(item =>{
-					if(item.bean.uuid == messageBean[0].uuid){
-						item = messageBean[0]
+				let isCurSend = false
+				jsonObj.forEach(item => {
+					if (item.bean.uuid == messageBean[0].uuid) {
+						item.uuid = messageBean[0].uuid
+						isCurSend = true;
 					}
 				})
+				// 不是当前设备发送的就添加到记录
+				if (!isCurSend) {
+					jsonObj = jsonObj.concat(messageBean);
+					if (jsonObj.length > 30) {
+						jsonObj = jsonObj.splice(jsonObj.length - 30, jsonObj.length);
+					}
+				}
 			}
 			messageList = jsonObj
-			console.log("==========最后消息",messageList)
+			console.log("==========最后消息", messageList)
 		} else {
 			messageList = messageBean;
 		}
