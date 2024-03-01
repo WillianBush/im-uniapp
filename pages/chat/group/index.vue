@@ -131,9 +131,9 @@
 
 							<view v-if="item.bean.psr!='video'" @contextmenu="clickRight($event, item.bean)"
 								@longpress="onLongPress($event,item.bean)"
-								:class="[item.bean.psr=='uparse'?'':'content bg-green shadow']"
-								:style="{backgroundColor:item.bean.psr=='uparse'? 'none':'#fff'}" style="color:#222;">
-								<u-parse v-if="item.bean.psr=='uparse'" :content="parseImage(item.bean.txt)"
+								:class="[item.bean.psr=='picture'?'':'content bg-green shadow']"
+								:style="{backgroundColor:item.bean.psr=='picture'? 'none':'#fff'}" style="color:#222;">
+								<u-parse v-if="item.bean.psr=='picture'" :content="parseImage(item.bean.txt)"
 									@preview="preview" @navigate="navigate"></u-parse>
 								<view @tap="clickVoice(item.bean.txt,index)" v-else-if="item.bean.psr=='voice'">
 									<text v-show="selVoiceIndex != index"
@@ -174,10 +174,10 @@
 
 							<view @contextmenu="clickRight($event, item.bean)"
 								@longpress="onLongPress($event,item.bean)"
-								:class="[item.bean.psr=='uparse'?'':'content shadow']" style="color:#222;">
+								:class="[item.bean.psr=='picture'?'':'content shadow']" style="color:#222;">
 								<u-parse v-if="item.bean.psr=='video'" :content="transMessage(item.bean.txt)"
 									@preview="preview" @navigate="navigate"></u-parse>
-								<u-parse v-else-if="item.bean.psr=='uparse'" :content="parseImage(item.bean.txt)"
+								<u-parse v-else-if="item.bean.psr=='picture'" :content="parseImage(item.bean.txt)"
 									@preview="preview" @navigate="navigate"></u-parse>
 								<view @tap="clickVoice(item.bean.txt,index)" v-else-if="item.bean.psr=='voice'">
 									<text v-show="selVoiceIndex != index"
@@ -1331,6 +1331,7 @@
 						txt: this.txt.replace(/\n/g, "<br/>"),
 						fromUid: this.user.id,
 						uuid: uuid(),
+						psr:"txt"
 					}
 					v.simpleContent = v.txt;
 					let cmd = ""

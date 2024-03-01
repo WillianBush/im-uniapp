@@ -523,14 +523,14 @@ export default {
 									toUid: payload.toUid ? payload.toUid : payload
 										.toGroupid,
 									fromUid: rootState.user.user.id,
-									chatType:payload.toUid ?'2':'1'
+									chatType: payload.toUid ? '2' : '1'
 								}
-								v.psr = "uparse";
+								v.psr = "picture";
 								v.simpleContent = "[图片]";
 								dispatch("socket/sendChatMessage", v, {
 									root: true
 								});
-								console.log("========uploadImageAction",v)
+								console.log("========uploadImageAction", v)
 								dispatch("sendBaseDaoAction", v);
 								setTimeout(() => {
 									resolve(true)
@@ -559,17 +559,19 @@ export default {
 			let res_data = eval(res.data);
 			if (res_data.code == 200) {
 				let json = eval(res.data);
+				let v = {
+					txt: json.msg,
+					toUid: payload.toid,
+					fromUid: rootState.user.user.id,
+					sub_txt: timeStr,
+					psr: "voice",
+					simpleContent: "[语音]"
+				}
 				// 显示上传信息
 				if (json.code == 200) {
-					dispatch("socket/sendVoiceMessage", {
-						txt: json.msg,
-						toUid: payload.toid,
-						fromUid: rootState.user.user.id,
-						sub_txt: timeStr,
-					}, {
+					dispatch("socket/sendVoiceMessage", v, {
 						root: true
 					});
-					v.simpleContent = '[文件]';
 					dispatch("sendBaseDaoAction", v);
 
 				}
@@ -613,7 +615,7 @@ export default {
 			bean: v,
 		};
 		console.log("======v", v)
-		
+
 		let list = [msgbean];
 		let str = uni.getStorageSync(
 			user.id + "#" + msgbean.chatId + "_CHAT_MESSAGE"
