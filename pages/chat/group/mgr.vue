@@ -1,6 +1,6 @@
 <!--群聊天页面，点击右上角设置-->
 <template>
-	<view v-if="curChatEntity&&curChatEntity.owner_UUID&&curChatEntity.owner_UUID!=''" style="padding-bottom:60upx;">
+	<view style="padding-bottom:60upx;">
 		<cu-custom bgColor="bg-blue" :isBack="true" :nameToLeft="true">
 			<block slot="backText"></block>
 			<block slot="content">群组信息</block>
@@ -40,33 +40,33 @@
     margin: auto auto;
     margin-top: 10px!important;" class="cu-list menu">
 
-			<view v-if="(user.id==curChatEntity.owner_UUID
+			<view v-if="(isOwner
 			||curChatEntity.memberMgr_ids.indexOf(user.id)>=0)&&shimingCfg.shiming==1" @tap="lookNotShimingMemberList()"
 				class="cu-item arrow">
 				<view class="content">
 					<text class="text-grey" style="color:#333">查看未实名群成员</text>
 				</view>
 			</view>
-			<view v-if="user.id==curChatEntity.owner_UUID
+			<view v-if="isOwner
 			||curChatEntity.memberMgr_ids.indexOf(user.id)>=0" @tap="goAddMember()" class="cu-item arrow">
 				<view class="content">
 					<text class="text-grey" style="color:#333">邀请群成员</text>
 				</view>
 			</view>
-			<view v-if="user.id==curChatEntity.owner_UUID||curChatEntity.memberMgr_ids.indexOf(user.id)>=0"
+			<view v-if="isOwner||curChatEntity.memberMgr_ids.indexOf(user.id)>=0"
 				@tap="goRemoveMember()" class="cu-item arrow">
 				<view class="content">
 					<text class="text-grey" style="color:#333">移除群成员</text>
 				</view>
 			</view>
 
-			<view v-if="user.id==curChatEntity.owner_UUID" @tap="goMgrset" class="cu-item arrow">
+			<view v-if="isOwner" @tap="goMgrset" class="cu-item arrow">
 				<view class="content">
 					<text class="text-grey" style="color:#333">群设置</text>
 				</view>
 			</view>
 
-			<view v-if="user.id==curChatEntity.owner_UUID||curChatEntity.memberMgr_ids.indexOf(user.id)>=0"
+			<view v-if="isOwner||curChatEntity.memberMgr_ids.indexOf(user.id)>=0"
 				@tap="goSssList" class="cu-item arrow">
 				<view class="content">
 					<text class="text-grey" style="color:#333">成员禁言管理</text>
@@ -74,7 +74,7 @@
 			</view>
 
 
-			<view v-if="user.id==curChatEntity.owner_UUID
+			<view v-if="isOwner
 			||curChatEntity.memberMgr_ids.indexOf(user.id)>=0" @tap="editGroupName()" class="cu-item arrow margin-top">
 				<view class="content">
 					<text class="text-grey" style="color:#333">群组名称</text>
@@ -91,7 +91,7 @@
 				</view>
 			</view>
 
-			<view v-if="user.id==curChatEntity.owner_UUID
+			<view v-if="isOwner
 			||curChatEntity.memberMgr_ids.indexOf(user.id)>=0" class="cu-item  margin-top">
 				<view class="content">
 					<text class="text-grey" style="color:#333">群组ID</text>
@@ -100,7 +100,7 @@
 				</view>
 			</view>
 
-			<view v-if="user.id==curChatEntity.owner_UUID
+			<view v-if="isOwner
 		||curChatEntity.memberMgr_ids.indexOf(user.id)>=0" @tap="edit_pic()" class="cu-item arrow">
 				<view class="content">
 					<text class="text-grey" style="color:#333">群组头像</text>
@@ -118,7 +118,7 @@
 				</view>
 			</view>
 
-			<view v-if="user.id==curChatEntity.owner_UUID
+			<view v-if="isOwner
 		||curChatEntity.memberMgr_ids.indexOf(user.id)>=0" @tap="editGroupNotice()" class="cu-item arrow ">
 				<view class="content">
 					<text class="text-grey" style="color:#333">群公告</text>
@@ -132,10 +132,6 @@
 			<view style="position: relative;top:-10upx;color:#bbb;font-size: 26upx;background: #fff;
 			padding:20upx;line-height: 40upx;word-wrap:break-word;
 word-break:normal; " class="text-grey text-sm">{{curChatEntity.descri}}</view>
-
-
-
-
 			<view @tap="goMsgRecord()" class="cu-item arrow margin-top">
 				<view class="content">
 					<text class="text-grey" style="color:#333">查看聊天记录</text>
@@ -157,13 +153,13 @@ word-break:normal; " class="text-grey text-sm">{{curChatEntity.descri}}</view>
 				</view>
 			</view>
 
-			<view v-if="user.id!=curChatEntity.owner_UUID" class="cu-item margin-top arrow" @tap="tousu()">
+			<view v-if="!isOwner" class="cu-item margin-top arrow" @tap="tousu()">
 				<view class="content">
 					<text class="text-grey" style="color:#333">投诉此群</text>
 				</view>
 			</view>
 
-			<view v-if="user.id!=curChatEntity.owner_UUID" class="cu-item margin-top" style="margin-bottom: 80upx;"
+			<view v-if="!isOwner" class="cu-item margin-top" style="margin-bottom: 80upx;"
 				@tap="outGroup()">
 				<view class="content" style="text-align: center;">
 					<text class="text-grey" style="color:#FF2442;">退出群组</text>
@@ -213,21 +209,26 @@ word-break:normal; " class="text-grey text-sm">{{curChatEntity.descri}}</view>
 			...mapState('app', [
 				'imgUrl'
 			]),
+			isOwner(){
+				console.log(this.curChatEntity)
+				return this.curChatEntity.owner_UUID == this.user.id
+			}
 		},
 		onLoad(e) {
 			let _this = this;
 			this.id = e.id;
-			this.switchC = this.curChatEntity.stopSpeak == 1
-
-			let darao = uni.getStorageSync(this.id + "_darao");
-			if (darao && darao != "") {
-				this.switchA = darao;
-			}
-			let zhiding = uni.getStorageSync(this.id + "_zhiding");
-			if (zhiding && zhiding != "") {
-				this.switchB = zhiding;
-			}
-			this.getShimingCfgAction()
+			console.log("curChatEntity",this.curChatEntity)
+			// this.switchC = this.curChatEntity.stopSpeak == 1
+			
+			// let darao = uni.getStorageSync(this.id + "_darao");
+			// if (darao && darao != "") {
+			// 	this.switchA = darao;
+			// }
+			// let zhiding = uni.getStorageSync(this.id + "_zhiding");
+			// if (zhiding && zhiding != "") {
+			// 	this.switchB = zhiding;
+			// }
+			// this.getShimingCfgAction()
 		},
 		methods: {
 			...mapActions('user', [
