@@ -101,7 +101,10 @@
 							<view class="main">
 								<view class="content bg-green shadow" style="background-color: #98E165;
 				color:#222;">
-									<u-parse v-if="item.psr=='picture'" :content="parseImage(item.txt)"
+									<image @tap="clickVideo(imgUrl+item.bean.oldTxt)" v-if="item.bean.psr=='video'"
+										style="width:418upx;height:335upx;border-radius: 5px"
+										src="../../../static/images/video.png"></image>
+									<u-parse v-else-if="item.psr=='picture'" :content="parseImage(item.txt)"
 										@preview="preview" @navigate="navigate"></u-parse>
 									<view @tap="clickVoice(item.txt,index)" v-else-if="item.psr=='voice'">
 										<text v-show="selVoiceIndex != index"
@@ -115,9 +118,8 @@
 										<text v-show="selVoiceIndex == index"
 											style="float:left;font-size: 26upx;position: relative;top: 6upx;">{{item.sub_txt}}"</text>
 									</view>
-									<video direction="0" v-else-if="item.psr=='video'" :src="imgUrl+item.txt"></video>
+									<!-- <video direction="0" v-else-if="item.psr=='video'" :src="imgUrl+item.txt"></video> -->
 									<rich-text v-else :nodes="parseEmotion(item.txt)"></rich-text>
-
 								</view>
 							</view>
 							<view class="cu-avatar radius"
@@ -131,7 +133,10 @@
 							<view class="main">
 								<view class="content shadow" style="
 				color:#222;">
-									<u-parse v-if="item.psr=='picture'" :content="parseImage(item.txt)"
+									<image @tap="clickVideo(imgUrl+item.bean.oldTxt)" v-if="item.bean.psr=='video'"
+										style="width:418upx;height:335upx;border-radius: 5px"
+										src="../../../static/images/video.png"></image>
+									<u-parse v-else-if="item.psr=='picture'" :content="parseImage(item.txt)"
 										@preview="preview" @navigate="navigate"></u-parse>
 									<view @tap="clickVoice(item.txt,index)" v-else-if="item.psr=='voice'">
 										<text v-show="selVoiceIndex != index"
@@ -145,7 +150,7 @@
 										<text v-show="selVoiceIndex == index"
 											style="float:right;font-size: 26upx;position: relative;top: 6upx;">{{item.sub_txt}}"</text>
 									</view>
-									<video direction="0" v-else-if="item.psr=='video'" :src="imgUrl+item.txt"></video>
+									<!-- <video direction="0" v-else-if="item.psr=='video'" :src="imgUrl+item.txt"></video> -->
 									<rich-text v-else :nodes="parseEmotion(item.txt)"></rich-text>
 								</view>
 							</view>
@@ -305,11 +310,11 @@
 				console.log('自定义下拉刷新refresherrefresh');
 
 				let _this = this;
-				
+
 				//界面下拉触发，triggered可能不是true，要设为true
 				if (!_this.refresherTriggered) {
 					_this.refresherTriggered = true;
-				}else{
+				} else {
 					return;
 				}
 				//pageNum + 1
@@ -417,6 +422,11 @@
 				this.showPop = false;
 				this.showItem = 0;
 				this.InputBottom = 0;
+			},
+			clickVideo(_vpath) {
+				uni.navigateTo({
+					url: "/pages/custom/myVideo?item=" + _vpath
+				})
 			},
 			scrollToBottom: function() {
 				setTimeout(() => {

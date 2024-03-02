@@ -5,7 +5,7 @@
             <block slot="content">视频播放</block>
         </cu-custom>
         <view class="center" style="width:100%;height:1200upx;">
-            <video :src="videoUrl" style="border-radius: 12upx;">></video>
+            <video :src="videoUrl" style="border-radius: 12upx;" :autoplay="true"></video>
         </view>
     </view>
 </template>

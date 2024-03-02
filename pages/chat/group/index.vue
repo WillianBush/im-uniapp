@@ -19,7 +19,7 @@
 		<uni-notice-bar showIcon="" scrollable="true" single="true" v-if="entity.descri"
 			:text="entity.descri"></uni-notice-bar>
 		<scroll-view @scroll="scrollFn" :scroll-into-view="viewId" :scroll-top="scrollTop" :refresher-enabled="hasMore"
-			@scrolltoupper="scrollToUpper" :refresher-triggered="isRefreshTrigger" :scroll-y="true" ref="chatVew"
+			@refresherrefresh="scrollToUpper" :refresher-triggered="isRefreshTrigger" :scroll-y="true" ref="chatVew"
 			@tap="clickChat()" class="cu-chat"
 			:style="'height: calc(100vh - '+CustomBar+'px - '+(120+InputBottom)+'upx)'">
 			<block v-for="(item,index) in curChatMsgList">
@@ -119,10 +119,13 @@
 								<text class="iconfont cu-load load-cuIcon loading text-xxxl"
 									style="color: #ddd;"></text>
 							</view>
-							<view v-if="item.bean.psr!='video'" @longtap="onLongPress($event,item.bean)"
+							<view  @longtap="onLongPress($event,item.bean)"
 								:class="[item.bean.psr=='picture'?'':'content bg-green shadow']"
 								:style="{backgroundColor:item.bean.psr=='picture'? 'none':'#fff'}" style="color:#222;">
-								<u-parse v-if="item.bean.psr=='picture'" :content="parseImage(item.bean.txt)"
+								<image @tap="clickVideo(imgUrl+item.bean.oldTxt)" v-if="item.bean.psr=='video'"
+									style="width:418upx;height:335upx;border-radius: 5px"
+									src="../../../static/images/video.png"></image>
+								<u-parse v-else-if="item.bean.psr=='picture'" :content="parseImage(item.bean.txt)"
 									@preview="preview" @navigate="navigate"></u-parse>
 								<view @tap="clickVoice(item.bean.txt,index)" v-else-if="item.bean.psr=='voice'">
 									<text v-show="selVoiceIndex != index"
@@ -140,9 +143,9 @@
 									:nodes="transMessage(item.bean.txt)"></rich-text>
 							</view>
 						</view>
-						<view v-if="item.bean.psr!='video'" class="cu-avatar radius"
+						<view class="cu-avatar radius"
 							:style="'background-image:url('+getHeadPic(item.bean.fromHeadpic)+');'"></view>
-						<view v-if="item.bean.psr!='video'" class="date">{{item.bean.date}}</view>
+						<view class="date">{{item.bean.date}}</view>
 					</view>
 					<!--接收着-->
 					<view v-else class="cu-item" :id="item.bean.uuid">
@@ -160,8 +163,9 @@
 							</view>
 							<view @longtap="onLongPress($event,item.bean)"
 								:class="[item.bean.psr=='picture'?'':'content shadow']" style="color:#222;">
-								<u-parse v-if="item.bean.psr=='video'" :content="item.bean.txt" @preview="preview"
-									@navigate="navigate"></u-parse>
+								<image @tap="clickVideo(imgUrl+item.bean.oldTxt)" v-if="item.bean.psr=='video'"
+									style="width:418upx;height:335upx;border-radius: 5px"
+									src="../../../static/images/video.png"></image>
 								<u-parse v-else-if="item.bean.psr=='picture'" :content="parseImage(item.bean.txt)"
 									@preview="preview" @navigate="navigate"></u-parse>
 								<view @tap="clickVoice(item.bean.txt,index)" v-else-if="item.bean.psr=='voice'">
@@ -191,17 +195,15 @@
 								<text class="cuIcon-warnfill text-red text-xxl"></text>
 							</view>
 
-							<view v-if="item.bean.psr!='video'" @longpress="onLongPress($event,item.bean)"
+							<view  @longpress="onLongPress($event,item.bean)"
 								:class="[item.bean.psr=='picture'?'':'content bg-green shadow']"
 								:style="{backgroundColor:item.bean.psr=='picture'? 'none':'#fff'}" style="color:#222;">
 								<!--因为视频在底层窗口的显示等级是最上层，所以无法嵌套在scroll里面滑动，这里用image 代替-->
-								<image @tap="clickVideo(imgUrl+item.bean.oldTxt)"
-									v-if="item.bean.psr=='picture'"
+								<image @tap="clickVideo(imgUrl+item.bean.oldTxt)" v-if="item.bean.psr=='video'"
 									style="width:418upx;height:335upx;border-radius: 5px"
 									src="../../../static/images/video.png"></image>
-								<u-parse v-else-if="item.bean.psr=='picture'"
-									:content="parseImage(item.bean.txt)" @preview="preview"
-									@navigate="navigate"></u-parse>
+								<u-parse v-else-if="item.bean.psr=='picture'" :content="parseImage(item.bean.txt)"
+									@preview="preview" @navigate="navigate"></u-parse>
 								<view @tap="clickVoice(item.bean.txt,index)" v-else-if="item.bean.psr=='voice'">
 									<text v-show="selVoiceIndex != index"
 										style="float:left;width:100upx;font-size: 52upx;position: relative;top: 4upx;"
@@ -218,9 +220,9 @@
 									:nodes="transMessage(item.bean.txt)"></rich-text>
 							</view>
 						</view>
-						<view v-if="item.bean.psr!='video'" class="cu-avatar radius"
+						<view  class="cu-avatar radius"
 							:style="'background-image:url('+getHeadPic(item.bean.fromHeadpic)+');'"></view>
-						<view v-if="item.bean.psr!='video'" class="date">{{item.bean.date}}</view>
+						<view  class="date">{{item.bean.date}}</view>
 					</view>
 					<!--接收者-->
 					<view v-else class="cu-item" :id="item.bean.uuid">
@@ -241,8 +243,7 @@
 							<view @longpress="onLongPress($event,item.bean)"
 								:class="[item.bean.psr=='picture'?'':'content shadow']" style="color:#222;">
 								<!--因为视频在底层窗口的显示等级是最上层，所以无法嵌套在scroll里面滑动，这里用image 代替-->
-								<image @tap="clickVideo(imgUrl+item.bean.oldTxt)"
-									v-if="item.bean.psr=='video'"
+								<image @tap="clickVideo(imgUrl+item.bean.oldTxt)" v-if="item.bean.psr=='video'"
 									style="width:418upx;height:335upx;border-radius: 5px"
 									src="../../../static/images/video.png"></image>
 								<u-parse v-else-if="item.bean.psr=='picture'" :content="parseImage(item.bean.txt)"
@@ -312,14 +313,13 @@
 			<button @touchstart="voiceBegin" @touchend="voiceEnd" @touchcancel="voiceCancel"
 				v-show="c_type==2&&stopSpeak==0" style="color: #aaa;margin-left: 20upx;width:100%"
 				class="cu-btn block line-orange lg">按住 说话</button>
-			<view style="margin-right: 20upx;" class="action" @tap="showItemIndex(1)">
+			<view style="margin-right: 20upx;margin-top:6upx;" class="action" @tap="showItemIndex(1)">
 				<text class="cuIcon-emojifill text-grey"></text>
 			</view>
 			<text v-show="showjia" @tap="showItemIndex(2)"
-				style="font-size:52upx;color:#777;margin-top:6upx;margin-left:6upx;margin-right:6upx"
-				class="iconfont icon-jia"></text>
-			<button style="    min-width: 50px;padding:0px!important" v-show="!showjia" @tap.stop="send()"
-				class="cu-btn bg-green shadow">发送</button>
+				style="font-size:52upx;color:#777;margin-left:6upx;margin-right:6upx" class="iconfont icon-jia"></text>
+			<button :disabled="stopSpeak==1" style=" min-width: 50px;padding:0px!important" v-show="!showjia"
+				@tap.stop="send()" class="cu-btn bg-green shadow">发送</button>
 		</view>
 		<view v-show="showItem==1" class="cu-bar foot "
 			style="box-shadow: none;-webkit-box-shadow: none;display: block;background: #fff;height:330upx;margin-bottom:80upx;">
@@ -424,7 +424,8 @@
 		getRoomCfg,
 		isStopSpeak4User,
 		saveOrUpdate,
-		getChatCfg
+		getChatCfg,
+		uStopSpeak
 	} from '../../../common/api';
 	//#ifdef H5
 	import h5Copy from '@/common/junyi-h5-copy.js'
@@ -527,6 +528,7 @@
 			uni.$off("aiteFn");
 			uni.$on("scrollTopFn", () => {
 				let svH = _this.winH - _this.CustomBar - 50;
+				console.log("========_this.scrollDetail.scrollHeight",_this.scrollDetail.scrollHeight)
 				if ((_this.scrollDetail.scrollHeight - _this.scrollDetail.scrollTop - svH) < 300) {
 					//#ifdef APP-PLUS
 					setTimeout(() => {
@@ -585,7 +587,10 @@
 			...mapState('app', [
 				'imgUrl',
 				'reqUrl'
-			])
+			]),
+			isOwner() {
+				return this.user.id == this.curChatEntity.owner_UUID
+			},
 		},
 		onLoad(option) {
 			this.setCurChatMsgList([])
@@ -601,6 +606,7 @@
 			if (str && str != "") {
 				var jsonObj = JSON.parse(str);
 				this.setCurChatMsgList(jsonObj)
+				this.scrollToBottom();
 			} else {
 				this.tongbuMsg()
 			}
@@ -681,7 +687,7 @@
 				return parseMedia(message, this.imgUrl)
 			},
 			justRefresh() {
-				this.pageParams.pageNumber =1;
+				this.pageParams.pageNumber = 1;
 				this.hasMore = true;
 				this.tongbuMsg();
 				this.scrollToBottom();
@@ -739,6 +745,8 @@
 								if (res_data.code == 200) {
 									if (res_data.msg == "1") {
 										_this.stopSpeak = 1;
+									} else {
+										_this.stopSpeak = 0;
 									}
 								}
 							})
@@ -776,9 +784,10 @@
 			},
 			scrollFn(e) {
 				this.scrollDetail = e.detail;
+				console.log("========_this.scrollDetail.scrollHeight",this.scrollDetail.scrollHeight)
+				
 			},
 			scrollToUpper() {
-				console.log("==========scrollToUpper")
 				if (!this.isRefreshTrigger && this.hasMore) {
 					this.isRefreshTrigger = true;
 					this.pageParams.pageNumber++;
@@ -805,7 +814,7 @@
 						'_CHAT_MESSAGE_LASTCONTENT');
 					uni.removeStorageSync(_this.user.id + "#" + _this.toid + '_CHAT_MESSAGE_UNREAD');
 					params.messageId = "";
-					
+
 				} else {
 					if (this.curChatMsgList.length) {
 						params.messageId = this.curChatMsgList[0].bean.messageId;
@@ -841,6 +850,7 @@
 							} else {
 								//上拉刷新
 								this.hasMore = res_data.body.pageCount != res_data.body.pageNumber
+								_this.isRefreshTrigger = false;
 								this.addCurChatMsg(cList)
 							}
 						}
@@ -1158,6 +1168,7 @@
 				this.InputBottom = 0;
 			},
 			showItemIndex(i) {
+				if (this.stopSpeak == 1 && !this.isOwner) return;
 				if (this.showItem == i) {
 					i = 0;
 				}
@@ -1278,7 +1289,7 @@
 						fromUid: this.user.id,
 						uuid: uuid(),
 						chatType: '1',
-						psr:"txt"
+						psr: "txt"
 					}
 					let aite = "";
 					for (var [key, value] of this.aite_map) {
@@ -1448,6 +1459,7 @@
 				this.player.play();
 			},
 			scrollToBottom: function() {
+				console.log("=========scrollToBottom")
 				let _this = this;
 				// 等待dom渲染完成后再执行滚动到页面底部，不然dom没渲染这个是无效的。
 				this.$nextTick(function() {

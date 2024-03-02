@@ -97,6 +97,7 @@
 							<view class="main">
 								<view class="content bg-green shadow" style="background-color: #98E165;
 				color:#222;">
+				
 									<u-parse v-if="item.psr=='picture'" :content="parseImage(item.txt)"
 										@preview="preview" @navigate="navigate"></u-parse>
 									<view @tap="clickVoice(item.txt,index)" v-else-if="item.psr=='voice'">
@@ -382,7 +383,11 @@
 			clickCard(bean) {
 				this.goUserDetail(bean.muuid);
 			},
-
+			clickVideo(_vpath) {
+				uni.navigateTo({
+					url: "/pages/custom/myVideo?item=" + _vpath
+				})
+			},
 			scrollToBottom: function() {
 				setTimeout(() => {
 					uni.pageScrollTo({

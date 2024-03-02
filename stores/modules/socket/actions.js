@@ -293,6 +293,7 @@ export default {
 			case MessageType.GROUP_MEMBER_REMOVE:
 				dispatch('groupMemberRemove', data);
 				break;
+				//撤销
 			case MessageType.CHAT_MSG_UNDO:
 				dispatch('chatMsgUndo', data);
 				break;
@@ -556,8 +557,8 @@ export default {
 						//如果是最后一个，则把最后last_content设置为撤消
 						let last_content = "";
 						for (let j = arrs.length - 1; j >= 0; j--) {
-							if (arrs[j].bean && arrs[j].bean.simple_content != "") {
-								last_content = arrs[j].bean.simple_content;
+							if (arrs[j].bean && arrs[j].bean.simpleContent != "") {
+								last_content = arrs[j].bean.simpleContent;
 								break;
 							}
 						}
@@ -592,21 +593,11 @@ export default {
 				}
 			}
 
-			if (arrs.length > 100) {
-				arrs.splice(0, arrs.length - 100);
-			}
-
+			
 			uni.setStorageSync(
 				user.id + "#" + data.body.chatId + "_CHAT_MESSAGE",
 				JSON.stringify(arrs)
 			);
-
-			commit("app/updateChatMessageMap", {
-				key: user.id + "#" + data.body.chatId,
-				value: arrs,
-			}, {
-				root: true
-			});
 
 			if (
 				rootState.chat.curChatEntity &&
