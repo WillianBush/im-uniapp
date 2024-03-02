@@ -112,6 +112,10 @@ export const parseMedia = (str,imgUrl) =>{
 	let img = str.indexOf('http')==-1? (imgUrl + str) :str;
 	return ("<img  style='max-width: 150px;max-height:150px;' class='face' src='"+img+"'>");
 }
+
+export const parseVideo = (str,imgUrl) =>{
+	return str.indexOf('http')==-1? (imgUrl + str) :str;
+}
 export const getHeadPic = (headpic, url) => {
 		if (headpic && headpic.indexOf('static/header') != -1) {
 			return headpic;

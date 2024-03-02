@@ -280,8 +280,8 @@ export default {
 				commit("setArList", list);
 			}
 		}).catch(error => {
-			console.log("=====error",error)
-			
+			console.log("=====error", error)
+
 			uni.showToast({
 				icon: 'none',
 				position: 'bottom',
@@ -300,8 +300,8 @@ export default {
 				commit("setArListShow", res_data.body);
 			}
 		}).catch(error => {
-			console.log("=====error",error)
-			
+			console.log("=====error", error)
+
 			uni.showToast({
 				icon: 'none',
 				position: 'bottom',
@@ -318,8 +318,8 @@ export default {
 				commit("setChatCfg", res_data.body);
 			}
 		}).catch(error => {
-			console.log("=====error",error)
-			
+			console.log("=====error", error)
+
 			uni.showToast({
 				icon: 'none',
 				position: 'bottom',
@@ -390,8 +390,8 @@ export default {
 				});
 			}
 		}).catch(error => {
-			console.log("=====error",error)
-			
+			console.log("=====error", error)
+
 			uni.showToast({
 				icon: 'none',
 				position: 'bottom',
@@ -475,15 +475,24 @@ export default {
 					if (json.code == 200) {
 						let v = {
 							txt: json.msg,
-							toUid: payload.toUid ? payload.toUid : payload.toGroupid,
 							fromUid: rootState.user.user.id,
+							chatType: '2',
+							uuid: uuid(),
+							psr: "video",
+							simpleContent: "[视频]"
 						}
-						v.psr = "video";
-						v.simpleContent = "[视频]";
-						dispatch("socket/sendChatMessage",v, {
+						let cmd = "socket/sendChatMessage"
+						if (payload.toGroupid) {
+							v.toGroupid = payload.toGroupid
+							v.chatType = '1'
+							cmd = "socket/sendGroupChatMessage"
+						} else {
+							v.toUid = payload.toUid
+						}
+						dispatch(cmd, v, {
 							root: true
 						});
-						
+
 						dispatch("sendBaseDaoAction", v);
 						resolve(true)
 					} else {
@@ -739,8 +748,8 @@ export default {
 				});
 			}
 		}).catch(error => {
-			console.log("=====error",error)
-			
+			console.log("=====error", error)
+
 			uni.showToast({
 				icon: 'none',
 				position: 'bottom',
@@ -801,8 +810,8 @@ export default {
 				});
 			}
 		}).catch(error => {
-			console.log("=====error",error)
-			
+			console.log("=====error", error)
+
 			uni.showToast({
 				icon: 'none',
 				position: 'bottom',
@@ -834,8 +843,8 @@ export default {
 				});
 			}
 		}).catch(error => {
-			console.log("=====error",error)
-			
+			console.log("=====error", error)
+
 			uni.showToast({
 				icon: 'none',
 				position: 'bottom',
@@ -868,8 +877,8 @@ export default {
 				});
 			}
 		}).catch(error => {
-			console.log("=====error",error)
-			
+			console.log("=====error", error)
+
 			uni.showToast({
 				icon: 'none',
 				position: 'bottom',
@@ -892,8 +901,8 @@ export default {
 				});
 			}
 		}).catch(error => {
-			console.log("=====error",error)
-			
+			console.log("=====error", error)
+
 			uni.showToast({
 				icon: 'none',
 				position: 'bottom',
@@ -920,8 +929,8 @@ export default {
 				});
 			}
 		}).catch(error => {
-			console.log("=====error",error)
-			
+			console.log("=====error", error)
+
 			uni.showToast({
 				icon: 'none',
 				position: 'bottom',

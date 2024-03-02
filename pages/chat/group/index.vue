@@ -131,12 +131,12 @@
 
 							<view @contextmenu="clickRight($event, item.bean)"
 								@longpress="onLongPress($event,item.bean)"
-								:class="[item.bean.psr=='picture'?'':'content bg-green shadow']" style="color:#222;">
+								:class="[item.bean.psr=='picture'||item.bean.psr=='video'?'':'content bg-green shadow']" style="color:#222;">
 								<!-- <image @tap="clickVideo(imgUrl+item.bean.oldTxt)" v-if="item.bean.psr=='video'"
 									style="width:418upx;height:335upx;border-radius: 5px"
 									src="../../../static/images/video.png"></image> -->
-									<video direction="0" v-if="item.bean.psr == 'video'"
-										:src="imgUrl + item.bean.txt"></video>
+									<video direction="0" v-if="item.bean.psr == 'video'" play-btn-position="center"
+										:src="parseVideo(item.bean.txt)"></video>
 								<u-parse v-else-if="item.bean.psr=='picture'" :content="parseImage(item.bean.txt)"
 									@preview="preview" @navigate="navigate"></u-parse>
 								<view @tap="clickVoice(item.bean.txt,index)" v-else-if="item.bean.psr=='voice'">
@@ -178,12 +178,12 @@
 
 							<view @contextmenu="clickRight($event, item.bean)"
 								@longpress="onLongPress($event,item.bean)"
-								:class="[item.bean.psr=='picture'?'':'content bg-green shadow']" style="color:#222;">
+								:class="[item.bean.psr=='picture'||item.bean.psr=='video'?'':'content bg-green shadow']" style="color:#222;">
 								<!-- <image @tap="clickVideo(imgUrl+item.bean.oldTxt)" v-if="item.bean.psr=='video'"
 									style="width:418upx;height:335upx;border-radius: 5px"
 									src="../../../static/images/video.png"></image> -->
-									<video direction="0" v-if="item.bean.psr == 'video'"
-										:src="imgUrl + item.bean.txt"></video>
+									<video direction="0" v-if="item.bean.psr == 'video'" play-btn-position="center"
+										:src="parseVideo(item.bean.txt)"></video>
 								<u-parse v-else-if="item.bean.psr=='picture'" :content="parseImage(item.bean.txt)"
 									@preview="preview" @navigate="navigate"></u-parse>
 								<view @tap="clickVoice(item.bean.txt,index)" v-else-if="item.bean.psr=='voice'">
@@ -314,13 +314,6 @@
 				</view>
 			</view>
 		</view>
-		<video direction="0" @fullscreenchange="videoChangeFC" id="video_play" loop="false" autoplay="true"
-			page-gesture="true" controls="false" v-show="showVideo" style="position: absolute;z-index: 99999999999999999999;top: 50%;
-					left: 50%;
-					width: 100%;
-					transform: translate(-50%,-50%);
-					text-align: center;" :src="imgUrl+videoSrc"></video>
-
 	</view>
 </template>
 
@@ -349,7 +342,8 @@
 		getHeadPic,
 		showToast,
 		parseEmotion,
-		parseMedia
+		parseMedia,
+		parseVideo
 	} from '../../../common/utils';
 	import uParse from '@/components/u-parse/u-parse.vue'
 	const innerAudioContext = uni.createInnerAudioContext();
@@ -527,6 +521,9 @@
 			},
 			parseImage(message) {
 				return parseMedia(message, this.imgUrl)
+			},
+			parseVideo(message){
+				return parseVideo(message,this.imgUrl)
 			},
 			loadName() {
 				let s = uni.getStorageSync(this.toid + "_NOTE");

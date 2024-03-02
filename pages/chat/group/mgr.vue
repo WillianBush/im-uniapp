@@ -175,10 +175,8 @@
 								<view class="main">
 									<view class="content bg-green shadow"
 										style="background-color: #98e165; color: #222">
-										<image @tap="clickVideo(imgUrl + item.bean.oldTxt)"
-											v-if="item.bean.psr == 'video'"
-											style="width: 418upx; height: 335upx; border-radius: 5px"
-											src="../../../static/images/video.png"></image>
+										<video direction="0" v-if="item.bean.psr == 'video'" play-btn-position="center"
+											:src="parseVideo(item.bean.txt)"></video>
 										<u-parse v-else-if="item.bean.psr == 'picture'"
 											:content="parseImage(item.bean.txt)" @preview="preview"
 											@navigate="navigate"></u-parse>
@@ -238,10 +236,8 @@
 								</view>
 								<view class="main">
 									<view class="content shadow" style="color: #222">
-										<!-- <image @tap="clickVideo(imgUrl + item.bean.oldTxt)"
-											v-if="item.bean.psr == 'video'"
-											style="width: 418upx; height: 335upx; border-radius: 5px"
-											src="../../../static/images/video.png"></image> -->
+										<video direction="0" v-if="item.bean.psr == 'video'" play-btn-position="center"
+											:src="parseVideo(item.bean.txt)"></video>
 										<u-parse v-if="item.bean.psr == 'picture'" :content="parseImage(item.bean.txt)"
 											@preview="preview" @navigate="navigate"></u-parse>
 										<view @tap="clickVoice(item.bean.txt, index)"
@@ -487,7 +483,8 @@
 	import {
 		getHeadPic,
 		parseEmotion,
-		parseMedia
+		parseMedia,
+		parseVideo
 	} from "../../../common/utils";
 	import {
 		syncMsgData
@@ -558,6 +555,9 @@
 			},
 			parseImage(message) {
 				return parseMedia(message, this.imgUrl);
+			},
+			parseVideo(message){
+				return parseVideo(message,this.imgUrl)
 			},
 			loadmore() {
 				//页码更换
