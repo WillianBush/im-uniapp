@@ -129,11 +129,15 @@
 								<text class="cuIcon-warnfill text-red text-xxl"></text>
 							</view>
 
-							<view v-if="item.bean.psr!='video'" @contextmenu="clickRight($event, item.bean)"
+							<view @contextmenu="clickRight($event, item.bean)"
 								@longpress="onLongPress($event,item.bean)"
-								:class="[item.bean.psr=='picture'?'':'content bg-green shadow']"
-								 style="color:#222;">
-								<u-parse v-if="item.bean.psr=='picture'" :content="parseImage(item.bean.txt)"
+								:class="[item.bean.psr=='picture'?'':'content bg-green shadow']" style="color:#222;">
+								<!-- <image @tap="clickVideo(imgUrl+item.bean.oldTxt)" v-if="item.bean.psr=='video'"
+									style="width:418upx;height:335upx;border-radius: 5px"
+									src="../../../static/images/video.png"></image> -->
+									<video direction="0" v-if="item.bean.psr == 'video'"
+										:src="imgUrl + item.bean.txt"></video>
+								<u-parse v-else-if="item.bean.psr=='picture'" :content="parseImage(item.bean.txt)"
 									@preview="preview" @navigate="navigate"></u-parse>
 								<view @tap="clickVoice(item.bean.txt,index)" v-else-if="item.bean.psr=='voice'">
 									<text v-show="selVoiceIndex != index"
@@ -151,9 +155,9 @@
 									:nodes="transMessage(item.bean.txt)"></rich-text>
 							</view>
 						</view>
-						<view v-if="item.bean.psr!='video'" class="cu-avatar radius"
+						<view class="cu-avatar radius"
 							:style="'background-image:url('+getHeadPic(item.bean.fromHeadpic)+');'"></view>
-						<view v-if="item.bean.psr!='video'" class="date">{{item.bean.date}}</view>
+						<view class="date">{{item.bean.date}}</view>
 					</view>
 
 					<!--接收着-->
@@ -175,8 +179,11 @@
 							<view @contextmenu="clickRight($event, item.bean)"
 								@longpress="onLongPress($event,item.bean)"
 								:class="[item.bean.psr=='picture'?'':'content bg-green shadow']" style="color:#222;">
-								<u-parse v-if="item.bean.psr=='video'" :content="transMessage(item.bean.txt)"
-									@preview="preview" @navigate="navigate"></u-parse>
+								<!-- <image @tap="clickVideo(imgUrl+item.bean.oldTxt)" v-if="item.bean.psr=='video'"
+									style="width:418upx;height:335upx;border-radius: 5px"
+									src="../../../static/images/video.png"></image> -->
+									<video direction="0" v-if="item.bean.psr == 'video'"
+										:src="imgUrl + item.bean.txt"></video>
 								<u-parse v-else-if="item.bean.psr=='picture'" :content="parseImage(item.bean.txt)"
 									@preview="preview" @navigate="navigate"></u-parse>
 								<view @tap="clickVoice(item.bean.txt,index)" v-else-if="item.bean.psr=='voice'">
@@ -610,8 +617,8 @@
 							_this.setUnReadMsgSum(_this.unReadMsgSum - parseInt(unRead))
 						}
 					}).catch(error => {
-						console.log("=====error",error)
-						
+						console.log("=====error", error)
+
 						uni.showToast({
 							icon: 'none',
 							position: 'bottom',
@@ -625,8 +632,8 @@
 						_this.entity = res;
 						_this.friendPic = _this.entity.headpic;
 					}).catch(error => {
-						console.log("=====error",error)
-						
+						console.log("=====error", error)
+
 						uni.showToast({
 							icon: 'none',
 							position: 'bottom',
@@ -818,12 +825,12 @@
 						toid: _this.toid
 					}).then(res => {
 						let res_data = eval(res.data);
-						if (res_data.code == 200 &&res_data.body.ip) {
+						if (res_data.code == 200 && res_data.body.ip) {
 							_this.toIP = res_data.body.ip + "(" + res_data.body.ipAddr + ")";
 						}
 					}).catch(error => {
-						console.log("=====error",error)
-						
+						console.log("=====error", error)
+
 						uni.showToast({
 							icon: 'none',
 							position: 'bottom',
@@ -1176,7 +1183,7 @@
 							});
 						}
 					}).catch(error => {
-						console.log("=====error",error)
+						console.log("=====error", error)
 						uni.showToast({
 							icon: 'none',
 							position: 'bottom',
@@ -1273,8 +1280,8 @@
 						}
 					}
 				}).catch(error => {
-					console.log("=====error",error)
-					
+					console.log("=====error", error)
+
 					uni.showToast({
 						icon: 'none',
 						position: 'bottom',

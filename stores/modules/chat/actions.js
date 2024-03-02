@@ -473,15 +473,17 @@ export default {
 					let json = eval("(" + res1.data + ")");
 					// 显示上传信息
 					if (json.code == 200) {
-						dispatch("socket/sendChatMessage", {
+						let v = {
 							txt: json.msg,
 							toUid: payload.toUid ? payload.toUid : payload.toGroupid,
 							fromUid: rootState.user.user.id,
-						}, {
-							root: true
-						});
+						}
 						v.psr = "video";
 						v.simpleContent = "[视频]";
+						dispatch("socket/sendChatMessage",v, {
+							root: true
+						});
+						
 						dispatch("sendBaseDaoAction", v);
 						resolve(true)
 					} else {
