@@ -132,7 +132,7 @@
 							<view v-if="item.bean.psr!='video'" @contextmenu="clickRight($event, item.bean)"
 								@longpress="onLongPress($event,item.bean)"
 								:class="[item.bean.psr=='picture'?'':'content bg-green shadow']"
-								:style="{backgroundColor:item.bean.psr=='picture'? 'none':'#fff'}" style="color:#222;">
+								 style="color:#222;">
 								<u-parse v-if="item.bean.psr=='picture'" :content="parseImage(item.bean.txt)"
 									@preview="preview" @navigate="navigate"></u-parse>
 								<view @tap="clickVoice(item.bean.txt,index)" v-else-if="item.bean.psr=='voice'">
@@ -174,7 +174,7 @@
 
 							<view @contextmenu="clickRight($event, item.bean)"
 								@longpress="onLongPress($event,item.bean)"
-								:class="[item.bean.psr=='picture'?'':'content shadow']" style="color:#222;">
+								:class="[item.bean.psr=='picture'?'':'content bg-green shadow']" style="color:#222;">
 								<u-parse v-if="item.bean.psr=='video'" :content="transMessage(item.bean.txt)"
 									@preview="preview" @navigate="navigate"></u-parse>
 								<u-parse v-else-if="item.bean.psr=='picture'" :content="parseImage(item.bean.txt)"

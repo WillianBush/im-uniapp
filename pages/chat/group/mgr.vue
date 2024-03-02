@@ -181,7 +181,7 @@
 		</view>
 		<view style="background: #fff;width: 80%;margin: 10px 0 0 12%" v-if="!logShow">
 
-			<view v-show="PageCur=='main'" v-if="curChatEntity&&curChatEntity.owner_UUID&&curChatEntity.owner_UUID!=''">
+			<view v-show="PageCur=='main'" >
 				<view style="height: 45px;line-height: 45px;text-align: center;background: #eee;color:#000">群组信息</view>
 				<view style="background: #fff;width: 96%;
 		margin: auto auto;

@@ -79,45 +79,51 @@
 				'reqUrl'
 			]),
 		},
-		onLoad() {
-			let _this = this;
-
-			getMemberList({
-				roomid: _this.curChatEntity.id,
-				memberType: 0
-			}).then(res => {
-				let res_data = eval(res.data);
-				if (res_data.code == 200) {
-					_this.list = res_data.body;
-					let temp = _this.list.filter((item1) => {
-						if (_this.curChatEntity.owner_UUID == item1.id ||
-							_this.curChatEntity.memberMgr_ids.indexOf(item1.id) >= 0) {
-							return false;
-						}
-						let s = uni.getStorageSync(item1.id + "_NOTE");
-						if (s && s != "") {
-							item1.nickName = s;
-						}
-						return true;
-					})
-					_this.list1 = temp;
-				}
-			}).catch(error => {
-				console.log("=====error",error)
-				
-				uni.showToast({
-					icon: 'none',
-					position: 'bottom',
-					title: error.msg ? error.msg : "服务器异常!"
-				});
-			})
+		mounted() {
+			this.initData()
 		},
+		onLoad(e){},
 		methods: {
-			getHeadPic(img){
-				return getHeadPic(img,this.imgUrl)
+			getHeadPic(img) {
+				return getHeadPic(img, this.imgUrl)
 			},
 			goback() {
 				this.$emit('goBack');
+			},
+			initData() {
+				let _this = this;
+				console.log("===========load")
+
+				getMemberList({
+					roomid: _this.curChatEntity.id,
+					memberType: 0
+				}).then(res => {
+					let res_data = eval(res.data);
+					if (res_data.code == 200) {
+						_this.list = res_data.body;
+						let temp = _this.list.filter((item1) => {
+							if (_this.curChatEntity.owner_UUID == item1.id ||
+								_this.curChatEntity.memberMgr_ids.indexOf(item1.id) < 0) {
+								return false;
+							}
+							let s = uni.getStorageSync(item1.id + "_NOTE");
+							if (s && s != "") {
+								item1.nickName = s;
+							}
+							return true;
+						})
+						_this.list1 = temp;
+						console.log("===========list1", _this.list1)
+					}
+				}).catch(error => {
+					console.log("=====error", error)
+
+					uni.showToast({
+						icon: 'none',
+						position: 'bottom',
+						title: error.msg ? error.msg : "服务器异常!"
+					});
+				})
 			},
 			addSss(_id) {
 				let _this = this;
@@ -207,8 +213,8 @@
 						}
 					}
 				}).catch(error => {
-					console.log("=====error",error)
-					
+					console.log("=====error", error)
+
 					uni.showToast({
 						icon: 'none',
 						position: 'bottom',

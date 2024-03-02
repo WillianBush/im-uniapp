@@ -40,7 +40,7 @@
 				</view>
 			</view>
 		</view>
-		<AddSssMemberList ref="addSssMemberList" v-show="PageCur=='addSss_member_list'" :keyid="randomKeyId"
+		<AddSssMemberList ref="addSssMemberList" v-if="PageCur=='addSss_member_list'" :keyid="randomKeyId"
 			@goBack="showGroup"></AddSssMemberList>
 	</view>
 </template>
@@ -112,7 +112,7 @@
 						_this.list = res_data.body;
 						let temp = _this.list.filter((item1) => {
 							if (_this.curChatEntity.owner_UUID == item1.id ||
-								_this.curChatEntity.memberMgr_ids.indexOf(item1.id) >= 0) {
+								_this.curChatEntity.memberMgr_ids.indexOf(item1.id) < 0) {
 								return false;
 							}
 							let s = uni.getStorageSync(item1.id + "_NOTE");
@@ -128,7 +128,6 @@
 			addSss() {
 				this.PageCur = 'addSss_member_list';
 				this.randomKeyId = parseInt(Math.random() * 100000000);
-				this.$refs.addSssMemberList.loadData(); //调用上面子类UserDetail里面的方法
 			},
 			search_list() {
 				let _this = this;

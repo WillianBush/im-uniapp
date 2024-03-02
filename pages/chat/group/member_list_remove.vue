@@ -116,8 +116,7 @@
 					if (res_data.code == 200) {
 						_this.list = res_data.body;
 						let temp = _this.list.filter((item1) => {
-							if (_this.curChatEntity.owner_UUID == item1.id ||
-								_this.curChatEntity.memberMgr_ids.indexOf(item1.id) >= 0) {
+							if (_this.curChatEntity.owner_UUID == item1.id || _this.curChatEntity.memberMgr_ids.indexOf(item1.id) < 0) {
 								return false;
 							}
 							let s = uni.getStorageSync(item1.id + "_NOTE");
@@ -127,6 +126,7 @@
 							return true;
 						})
 						_this.list1 = temp;
+						console.log("=========list:",_this.list1)
 					}
 				}).catch(error => {
 					console.log("=====error",error)

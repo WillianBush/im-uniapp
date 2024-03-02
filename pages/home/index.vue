@@ -121,7 +121,7 @@
 			<text @click="closeModal" class="cuIcon-close"
 				style="font-size: 36px; cursor: pointer; position:absolute; top:15px; right: 15px"></text>
 			<UserMgr v-if="mgrType=='user'" :mgrId="mgrId" :friendPic="friendPic" :toid="toId"></UserMgr>
-			<GroupMgr v-if="mgrType=='group'" :mgrId="mgrId" :toid="toId"></GroupMgr>
+			<GroupMgr  v-if="mgrType=='group'" :mgrId="mgrId" :toid="toId"></GroupMgr>
 			<Aite v-if="mgrType=='at'" :roomid="roomid" @closeModal="closeModal"></Aite>
 			<CreateGroup v-if="mgrType=='createGroup'"></CreateGroup>
 		</view>
