@@ -27,11 +27,11 @@
 						<view @tap="goUserDetail(item.id)" class="cu-avatar round"
 							:style="'height:100upx;width:100upx;background-image:url('+imgUrl+item.headpic+');'">
 						</view>
-						<view @tap="goUserDetail(item.id)"
-							style="margin:auto auto;color: #999;font-size:24upx;text-align: center;margin-top:8upx;overflow: hidden;height:68upx;width:100upx;word-wrap: break-word; word-break: normal">
+						<view @tap="goUserDetail(item.id)" class="over-text"
+							style="margin:auto auto;color: #999;font-size:24upx;text-align: center;margin-top:8upx;width:100upx;">
 							{{item.nickName}}
 						</view>
-						<button @tap="removeMember(item.id)" style="margin-top:0upx"
+						<button @tap="removeMember(item.id)" style="margin-top:10upx"
 							class="cu-btn round bg-red shadow">移除</button>
 					</view>
 					<view v-if="list.length<=1" style="text-align: center;color:#aaa">
@@ -81,7 +81,7 @@
 				'user',
 			]),
 		},
-		onLoad() {
+		mounted() {
 			let _this = this;
 			let user = uni.getStorageSync("USER");
 
@@ -213,4 +213,17 @@
 </script>
 
 <style>
+	.over-text {
+		overflow: hidden;
+		word-break: break-all;
+		/* break-all(允许在单词内换行。) */
+		text-overflow: ellipsis;
+		/* 超出部分省略号 */
+		display: -webkit-box;
+		/** 对象作为伸缩盒子模型显示 **/
+		-webkit-box-orient: vertical;
+		/** 设置或检索伸缩盒对象的子元素的排列方式 **/
+		-webkit-line-clamp: 1;
+		/** 显示的行数 **/
+	}
 </style>

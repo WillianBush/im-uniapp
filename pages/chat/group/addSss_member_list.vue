@@ -27,8 +27,8 @@
 						<view @tap="goUserDetail(item.id)" class="cu-avatar round"
 							:style="'height:100upx;width:100upx;background-image:url('+imgUrl+item.headpic+');'">
 						</view>
-						<view @tap="goUserDetail(item.id)"
-							style="margin:auto auto;color: #999;font-size:24upx;text-align: center;margin-top:8upx;overflow: hidden;height:68upx;width:100upx;word-wrap: break-word; word-break: normal">
+						<view @tap="goUserDetail(item.id)" class="over-text"
+							style="margin:auto auto;color: #999;font-size:24upx;text-align: center;margin-top:8upx;width:100upx;">
 							{{item.nickName}}
 						</view>
 						<button @tap="addSss(item.id)" style="margin-top:0upx"
@@ -71,7 +71,7 @@
 			},
 			...mapState('chat', [
 				'curChatEntity',
-			]),	
+			]),
 			...mapState('user', [
 				'user',
 			]),
@@ -80,11 +80,9 @@
 				'reqUrl'
 			]),
 		},
-		onLoad() {
+		mounted() {
 			let _this = this;
 			let user = uni.getStorageSync("USER");
-
-
 			getMemberList({
 				roomid: _this.curChatEntity.id,
 				memberType: 0
@@ -107,12 +105,12 @@
 					_this.list1 = temp;
 				}
 			}).catch(error => {
-								uni.showToast({
-									icon: 'none',
-									position: 'bottom',
-									title: error.msg ? error.msg : "服务器异常!"
-								});
-							})
+				uni.showToast({
+					icon: 'none',
+					position: 'bottom',
+					title: error.msg ? error.msg : "服务器异常!"
+				});
+			})
 		},
 		methods: {
 			addSss(_id) {
@@ -199,23 +197,36 @@
 
 						if (flag) {
 							uni.navigateTo({
-								url: "/pages/chat/user_detail?id=" + _id + "&room_id=" + _this.curChatEntity.id
+								url: "/pages/chat/user_detail?id=" + _id + "&room_id=" + _this
+									.curChatEntity.id
 							})
 						}
 
 					}
 				}).catch(error => {
-								uni.showToast({
-									icon: 'none',
-									position: 'bottom',
-									title: error.msg ? error.msg : "服务器异常!"
-								});
-							})
+					uni.showToast({
+						icon: 'none',
+						position: 'bottom',
+						title: error.msg ? error.msg : "服务器异常!"
+					});
+				})
 			}
 		}
 	}
 </script>
 
 <style>
-
+	.over-text {
+		overflow: hidden;
+		word-break: break-all;
+		/* break-all(允许在单词内换行。) */
+		text-overflow: ellipsis;
+		/* 超出部分省略号 */
+		display: -webkit-box;
+		/** 对象作为伸缩盒子模型显示 **/
+		-webkit-box-orient: vertical;
+		/** 设置或检索伸缩盒对象的子元素的排列方式 **/
+		-webkit-line-clamp: 1;
+		/** 显示的行数 **/
+	}
 </style>
