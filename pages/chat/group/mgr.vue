@@ -194,7 +194,7 @@
                           font-size: 26upx;
                           position: relative;
                           top: 4upx;
-                        ">{{ item.bean.sub_txt }}"</text>
+                        ">{{ item.bean.subTxt }}"</text>
 											<text v-show="selVoiceIndex == index" style="
                           float: left;
                           width: 100upx;
@@ -209,7 +209,7 @@
                           font-size: 26upx;
                           position: relative;
                           top: 6upx;
-                        ">{{ item.bean.sub_txt }}"</text>
+                        ">{{ item.bean.subTxt }}"</text>
 										</view>
 										<!-- <video
                       direction="0"
@@ -631,6 +631,29 @@
 							icon: "none",
 						});
 					});
+			},
+			clickVoice(_vpath, _index) {
+				let _this = this;
+				if (this.selVoiceIndex == _index) {
+					this.selVoiceIndex = -1;
+					if (this.player) {
+						this.player.stop();
+					}
+					return;
+				}
+				var src = _vpath.indexOf("http")!=-1 ? _vpath:_this.imgUrl + _vpath;
+				this.selVoiceIndex = _index;
+				//this.voicePath = _vpath;
+				this.player = uni.createInnerAudioContext();
+				this.player.src = src; //音频地址
+				this.player.onEnded(() => {
+					_this.selVoiceIndex = -1;
+				});
+				this.player.onStop(() => {
+					_this.selVoiceIndex = -1;
+				});
+				
+				this.player.play();
 			},
 			getLogs() {
 				//获取聊天记录方法

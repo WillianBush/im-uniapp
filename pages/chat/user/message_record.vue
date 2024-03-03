@@ -105,12 +105,12 @@
 										style="float:left;width:100upx;font-size: 52upx;position: relative;top: 4upx;"
 										class="iconfont icon-yuyin1 text-xxl "></text>
 									<text v-show="selVoiceIndex != index"
-										style="float:left;font-size: 26upx;position: relative;top: 4upx;">{{item.bean.sub_txt}}"</text>
+										style="float:left;font-size: 26upx;position: relative;top: 4upx;">{{item.bean.subTxt}}"</text>
 									<text v-show="selVoiceIndex == index"
 										style="float:left;width:100upx;font-size: 52upx;position: relative;text-align: left;top:0;line-height: 38upx;"
 										class="iconfont cu-load load-cuIcon loading text-xxl "></text>
 									<text v-show="selVoiceIndex == index"
-										style="float:left;font-size: 26upx;position: relative;top: 6upx;">{{item.bean.sub_txt}}"</text>
+										style="float:left;font-size: 26upx;position: relative;top: 6upx;">{{item.bean.subTxt}}"</text>
 								</view>
 								<video direction="0" v-else-if="item.bean.psr=='video'"
 									:src="imgUrl+item.bean.txt"></video>
@@ -320,19 +320,21 @@
 					this.selVoiceIndex = -1;
 					if (this.player) {
 						this.player.stop();
-						console.log("停止了");
 					}
 					return;
 				}
-
+				var src = _this.imgUrl + _vpath;
+				console.log(src);
 				this.selVoiceIndex = _index;
-				this.player = plus.audio.createPlayer(_vpath);
-				this.player.play(function() {
+				this.player = uni.createInnerAudioContext();
+				this.player.src = src; //音频地址
+				this.player.onEnded(() => {
 					_this.selVoiceIndex = -1;
-					console.log("播放完了");
-				}, function(e) {
-					console.log("播放失败")
 				});
+				this.player.onStop(() => {
+					_this.selVoiceIndex = -1;
+				});
+				this.player.play();
 			},
 			/* 获取窗口尺寸 */
 			getWindowSize() {

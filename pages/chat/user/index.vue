@@ -135,12 +135,12 @@
 											style="text-align: right; float:right;width:100upx;font-size: 52upx;position: relative;top: 4upx;"
 											class="iconfont icon-yuyin1 text-xxl "></text>
 										<text v-show="selVoiceIndex != index"
-											style="float:right;font-size: 26upx;position: relative;top: 4upx;">{{item.bean.sub_txt}}"</text>
+											style="float:right;font-size: 26upx;position: relative;top: 4upx;">{{item.bean.subTxt}}"</text>
 										<text v-show="selVoiceIndex == index"
 											style="text-align: right;float:right;width:100upx;font-size: 52upx;position: relative;top:0;line-height: 38upx;"
 											class="iconfont cu-load load-cuIcon loading text-xxl "></text>
 										<text v-show="selVoiceIndex == index"
-											style="float:right;font-size: 26upx;position: relative;top: 6upx;">{{item.bean.sub_txt}}"</text>
+											style="float:right;font-size: 26upx;position: relative;top: 6upx;">{{item.bean.subTxt}}"</text>
 									</view>
 									<rich-text style="max-width:440upx" v-else
 										:nodes="transMessage(item.bean.txt)"></rich-text>
