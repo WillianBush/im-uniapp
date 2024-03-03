@@ -20,6 +20,7 @@ import {
 import {
 	SocketType
 } from "../../../const/SocketType";
+import { MessageType } from "../../../const/MessageType";
 
 let TAG = "USER-ACTIONS"
 

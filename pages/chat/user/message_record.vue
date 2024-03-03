@@ -445,12 +445,17 @@
 					}
 					return;
 				}
+				var src = _vpath.indexOf("http") != -1 ? _vpath : this.imgUrl + _vpath;
 				this.selVoiceIndex = _index;
-				//this.voicePath = _vpath;
-				this.player = plus.audio.createPlayer(_vpath);
-				this.player.play(function() {
+				this.player = uni.createInnerAudioContext();
+				this.player.src = src; //音频地址
+				this.player.onEnded(() => {
 					_this.selVoiceIndex = -1;
-				}, function(e) {});
+				});
+				this.player.onStop(() => {
+					_this.selVoiceIndex = -1;
+				});
+				this.player.play();
 			},
 			/* 获取窗口尺寸 */
 			getWindowSize() {

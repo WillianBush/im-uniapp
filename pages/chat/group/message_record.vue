@@ -398,6 +398,8 @@
 			},
 			clickVoice(_vpath, _index) {
 				let _this = this;
+				var src = _vpath.indexOf("http")!=-1?_vpath:this.imgUrl + _vpath;
+	
 				if (this.selVoiceIndex == _index) {
 					this.selVoiceIndex = -1;
 					if (this.player) {
@@ -407,13 +409,15 @@
 					return;
 				}
 				this.selVoiceIndex = _index;
-				this.player = plus.audio.createPlayer(_vpath);
-				this.player.play(function() {
+				this.player = uni.createInnerAudioContext();
+				this.player.src = src; //音频地址
+				this.player.onEnded(() => {
 					_this.selVoiceIndex = -1;
-					console.log("播放完了");
-				}, function(e) {
-					console.log("播放失败")
 				});
+				this.player.onStop(() => {
+					_this.selVoiceIndex = -1;
+				});
+				this.player.play();
 			},
 			/* 获取窗口尺寸 */
 			getWindowSize() {

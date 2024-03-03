@@ -9,7 +9,7 @@ const configJapan= {
 }
 
 const configLive1= {
-	appName : "好物通",
+	appName : "너의유야",
 	requestUrl: ["https://media.441635.pw/config_sys/domains-prod.txt",
 		"https://media.441635.pw/config_sys/domains-prod.txt",
 		"https://media.441635.pw/config_sys/domains-prod.txt"],

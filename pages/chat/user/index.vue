@@ -24,7 +24,7 @@
 			</block>
 		</cu-custom>
 		<scroll-view @scroll="scrollFn" :scroll-top="scrollTop" :refresher-enabled="hasMore"
-			@scrolltoupper="scrollToUpper" :refresher-triggered="isRefreshTrigger" @refresherpulling="refresh"
+			@refresherrefresh="scrollToUpper" :refresher-triggered="isRefreshTrigger" @refresherpulling="refresh"
 			:scroll-y="true" ref="chatVew" @tap="clickChat()" class="cu-chat"
 			:style="'height: calc(100vh - '+CustomBar+'px - '+(120+InputBottom)+'upx)'">
 			<block v-for="(item,index) in curChatMsgList">
@@ -144,12 +144,12 @@
 										style="text-align: right; float:right;width:100upx;font-size: 52upx;position: relative;top: 4upx;"
 										class="iconfont icon-yuyin1 text-xxl "></text>
 									<text v-show="selVoiceIndex != index"
-										style="float:right;font-size: 26upx;position: relative;top: 4upx;">{{item.bean.sub_txt}}"</text>
+										style="float:right;font-size: 26upx;position: relative;top: 4upx;">{{item.bean.subTxt}}"</text>
 									<text v-show="selVoiceIndex == index"
 										style="text-align: right;float:right;width:100upx;font-size: 52upx;position: relative;top:0;line-height: 38upx;"
 										class="iconfont cu-load load-cuIcon loading text-xxl "></text>
 									<text v-show="selVoiceIndex == index"
-										style="float:right;font-size: 26upx;position: relative;top: 6upx;">{{item.bean.sub_txt}}"</text>
+										style="float:right;font-size: 26upx;position: relative;top: 6upx;">{{item.bean.subTxt}}"</text>
 								</view>
 								<rich-text style="max-width:440upx" v-else
 									:nodes="transMessage(item.bean.txt)"></rich-text>
@@ -177,12 +177,12 @@
 										style="text-align: right; float:right;width:100upx;font-size: 52upx;position: relative;top: 4upx;"
 										class="iconfont icon-yuyin1 text-xxl "></text>
 									<text v-show="selVoiceIndex != index"
-										style="float:right;font-size: 26upx;position: relative;top: 4upx;">{{item.bean.sub_txt}}"</text>
+										style="float:right;font-size: 26upx;position: relative;top: 4upx;">{{item.bean.subTxt}}"</text>
 									<text v-show="selVoiceIndex == index"
 										style="text-align: right;float:right;width:100upx;font-size: 52upx;position: relative;top:0;line-height: 38upx;"
 										class="iconfont cu-load load-cuIcon loading text-xxl "></text>
 									<text v-show="selVoiceIndex == index"
-										style="float:right;font-size: 26upx;position: relative;top: 6upx;">{{item.bean.sub_txt}}"</text>
+										style="float:right;font-size: 26upx;position: relative;top: 6upx;">{{item.bean.subTxt}}"</text>
 								</view>
 								<rich-text style="max-width:440upx" v-else
 									:nodes="transMessage(item.bean.txt)"></rich-text>
@@ -196,11 +196,9 @@
 					<view v-if="item.bean.fromUid==user.id" class="cu-item self">
 						<view class="main">
 
-							<block v-if="WAIT_SEND_MSG.indexOf(item.bean.uuid)<0">
-								<block v-if="chatCfg.showUserMsgReadStatus==1">
-									<view v-if="item.bean.read==1&&chatCfg.showUserMsgReadStatus==1"
-										style="margin-right:30upx;color: #999;font-size: 24upx;">已读</view>
-								</block>
+							<block v-if="chatCfg.showUserMsgReadStatus==1">
+								<view v-if="item.bean.read==1&&chatCfg.showUserMsgReadStatus==1"
+									style="margin-right:30upx;color: #999;font-size: 24upx;">已读</view>
 							</block>
 							<view v-else class="action text-grey">
 								<text class="cuIcon-warnfill text-red text-xxl"></text>
@@ -224,190 +222,182 @@
 										style="text-align: right; float:right;width:100upx;font-size: 52upx;position: relative;top: 4upx;"
 										class="iconfont icon-yuyin1 text-xxl "></text>
 									<text v-show="selVoiceIndex != index"
-										style="float:right;font-size: 26upx;position: relative;top: 4upx;">{{item.bean.sub_txt}}"</text>
+										style="float:right;font-size: 26upx;position: relative;top: 4upx;">{{item.bean.subTxt}}"</text>
 									<text v-show="selVoiceIndex == index"
 										style="text-align: right;float:right;width:100upx;font-size: 52upx;position: relative;top:0;line-height: 38upx;"
 										class="iconfont cu-load load-cuIcon loading text-xxl "></text>
 									<text v-show="selVoiceIndex == index"
-										style="float:right;font-size: 26upx;position: relative;top: 6upx;">{{item.bean.sub_txt}}"</text>
+										style="float:right;font-size: 26upx;position: relative;top: 6upx;">{{item.bean.subTxt}}"</text>
 								</view>
 								<rich-text style="max-width:440upx" v-else
 									:nodes="transMessage(item.bean.txt)"></rich-text>
-							</view>
 						</view>
-						<view  class="cu-avatar radius"
-							:style="'background-image:url('+getHeadPic(item.bean.fromHeadpic)+');'"></view>
-						<view  class="date">{{item.bean.date}}</view>
 					</view>
+					<view class="cu-avatar radius"
+						:style="'background-image:url('+getHeadPic(item.bean.fromHeadpic)+');'"></view>
+					<view class="date">{{item.bean.date}}</view>
+	</view>
 
-					<!--别人发来的-->
-					<view v-else class="cu-item">
-						<view @tap.stop="goUserDetail(item.bean.fromUid)" class="cu-avatar radius"
-							:style="'background-image:url('+getHeadPic(item.bean.fromHeadpic)+');'"></view>
-						<view class="main">
-							<view @longpress="onLongPress($event,item.bean)"
-								:class="[item.bean.psr=='picture'?'':'content shadow']" style="color:#222;">
-								<!--因为视频在底层窗口的显示等级是最上层，所以无法嵌套在scroll里面滑动，这里用image 代替-->
-								<image @tap="clickVideo(imgUrl+item.bean.oldTxt)" v-if="item.bean.psr=='video'"
-									style="width:418upx;height:335upx;border-radius: 5px"
-									src="../../../static/images/video.png"></image>
-								<u-parse v-else-if="item.bean.psr=='picture'" :content="parseImage(item.bean.txt)"
-									@preview="preview" @navigate="navigate"></u-parse>
-								<view @tap="clickVoice(item.bean.txt,index)" v-else-if="item.bean.psr=='voice'">
-									<text v-show="selVoiceIndex != index"
-										style="text-align: right; float:right;width:100upx;font-size: 52upx;position: relative;top: 4upx;"
-										class="iconfont icon-yuyin1 text-xxl "></text>
-									<text v-show="selVoiceIndex != index"
-										style="float:right;font-size: 26upx;position: relative;top: 4upx;">{{item.bean.sub_txt}}"</text>
-									<text v-show="selVoiceIndex == index"
-										style="text-align: right;float:right;width:100upx;font-size: 52upx;position: relative;top:0;line-height: 38upx;"
-										class="iconfont cu-load load-cuIcon loading text-xxl "></text>
-									<text v-show="selVoiceIndex == index"
-										style="float:right;font-size: 26upx;position: relative;top: 6upx;">{{item.bean.sub_txt}}"</text>
-								</view>
-								<rich-text style="max-width:440upx" v-else
-									:nodes="transMessage(item.bean.txt)"></rich-text>
-							</view>
-						</view>
-						<view class="date "> {{item.bean.date}}</view>
-					</view>
-					<!--#endif-->
-				</block>
-			</block>
-			<view class="cu-item self" v-show="chatMyLoadding">
-				<view class="main">
-					<view style="background-color: #F1F1F1;" class="cu-load load-cuIcon loading"></view>
+	<!--别人发来的-->
+	<view v-else class="cu-item">
+		<view @tap.stop="goUserDetail(item.bean.fromUid)" class="cu-avatar radius"
+			:style="'background-image:url('+getHeadPic(item.bean.fromHeadpic)+');'"></view>
+		<view class="main">
+			<view @longpress="onLongPress($event,item.bean)" :class="[item.bean.psr=='picture'?'':'content shadow']"
+				style="color:#222;">
+				<!--因为视频在底层窗口的显示等级是最上层，所以无法嵌套在scroll里面滑动，这里用image 代替-->
+				<image @tap="clickVideo(imgUrl+item.bean.oldTxt)" v-if="item.bean.psr=='video'"
+					style="width:418upx;height:335upx;border-radius: 5px" src="../../../static/images/video.png">
+				</image>
+				<u-parse v-else-if="item.bean.psr=='picture'" :content="parseImage(item.bean.txt)" @preview="preview"
+					@navigate="navigate"></u-parse>
+				<view @tap="clickVoice(item.bean.txt,index)" v-else-if="item.bean.psr=='voice'">
+					<text v-show="selVoiceIndex != index"
+						style="text-align: right; float:right;width:100upx;font-size: 52upx;position: relative;top: 4upx;"
+						class="iconfont icon-yuyin1 text-xxl "></text>
+					<text v-show="selVoiceIndex != index"
+						style="float:right;font-size: 26upx;position: relative;top: 4upx;">{{item.bean.subTxt}}"</text>
+					<text v-show="selVoiceIndex == index"
+						style="text-align: right;float:right;width:100upx;font-size: 52upx;position: relative;top:0;line-height: 38upx;"
+						class="iconfont cu-load load-cuIcon loading text-xxl "></text>
+					<text v-show="selVoiceIndex == index"
+						style="float:right;font-size: 26upx;position: relative;top: 6upx;">{{item.bean.subTxt}}"</text>
 				</view>
-				<view class="cu-avatar radius" :style="'background-image:url('+getHeadPic(user.headpic)+');'"></view>
+				<rich-text style="max-width:440upx" v-else :nodes="transMessage(item.bean.txt)"></rich-text>
+			</view>
+		</view>
+		<view class="date "> {{item.bean.date}}</view>
+	</view>
+	<!--#endif-->
+	</block>
+	</block>
+	<view class="cu-item self" v-show="chatMyLoadding">
+		<view class="main">
+			<view style="background-color: #F1F1F1;" class="cu-load load-cuIcon loading"></view>
+		</view>
+		<view class="cu-avatar radius" :style="'background-image:url('+getHeadPic(user.headpic)+');'"></view>
+	</view>
+	</scroll-view>
+	<view style="position:absolute;bottom:50px;width:100%;text-align:center">
+		<image @click="deduplication()" style="width:80rpx;height:80rpx;" src="/static/tabbar/bottom.png"></image>
+	</view>
+	<view class="cu-bar foot input" :style="[{bottom:InputBottom+'upx'}]">
+		<!-- #ifndef H5 -->
+		<view @tap="selType(2)" v-show="c_type==1" class="action">
+			<text class="cuIcon-sound text-grey"></text>
+		</view>
+		<view @tap="selType(1)" v-show="c_type==2" class="action">
+			<text class="cuIcon-keyboard text-grey"></text>
+		</view>
+		<!-- #endif -->
+
+		<textarea style="height:72upx;line-height:72upx; line-height: 73upx;" :auto-height="true"
+			:show-confirm-bar="true" confirm-type="send" @confirm="send" :confirm-hold="true"
+			@keydown.shift.enter="altOrShiftEnter" @keydown.alt.enter="altOrShiftEnter" @keyup.ctrl.enter="lineFeed()"
+			@focus="InputFocus" @blur="InputBlur" v-show="c_type==1" v-model="txt" @input="inputTxt()"
+			class="solid-bottom" :adjust-position="true" :focus="input_is_focus" maxlength="-1"
+			cursor-spacing="10"></textarea>
+
+		<button @touchstart="voiceBegin" @touchend="voiceEnd" @touchcancel="voiceCancel" v-show="c_type==2"
+			style="color: #aaa;margin-left: 20upx;width:100%" class="cu-btn block line-orange lg">按住 说话</button>
+
+
+		<view style="margin-right: 20upx;margin-top:6upx;" class="action" @tap="showItemIndex(1)">
+			<text class="cuIcon-emojifill text-grey"></text>
+		</view>
+
+		<text v-show="showjia" @tap="showItemIndex(2)"
+			style="font-size:52upx;color:#777;margin-left:6upx;margin-right:6upx" class="iconfont icon-jia"></text>
+		<button style="min-width: 50px;padding:0px!important" v-show="!showjia" @tap.stop="send()"
+			class="cu-btn bg-green shadow">发送</button>
+
+	</view>
+
+
+	<view v-show="showItem==1" class="cu-bar foot "
+		style="box-shadow: none;-webkit-box-shadow: none;display: block;background: #fff;height:330upx;margin-bottom:80upx;">
+		<scroll-view scroll-y class="indexes" style="height:330upx;padding-bottom:20upx;padding-top: 10upx;"
+			:scroll-with-animation="true" :enable-back-to-top="true">
+			<view v-if="emotion <1">
+				<view v-for="(ele,i) in 14" :key="i" style="display: flex;">
+					<view v-for="(ele1,item) in 8" :key="item" @tap="sendEmotion(0,i*8 +item)"
+						style="flex:1;text-align: center;">
+						<image v-if="(i*8 +item)<=104" lazy-load
+							:src="'../../../static/emotion/face0'+emotion+'/'+(i*8 +item)+ (emotion == 0?'.gif':'.png')"
+							style="width:50upx;height:50upx;margin-top: 10upx;;"></image>
+					</view>
+				</view>
+			</view>
+			<view v-else-if="emotion == 1">
+				<view v-for="(ele,i) in 5" :key="i" style="display: flex;">
+					<view v-for="(ele1,item) in 3" :key="item" @tap="sendEmotion(1,i*3 +item)"
+						style="flex:1;text-align: center;">
+						<image lazy-load v-if="(i*3) +item <=9"
+							:src="'../../../static/emotion/face0'+emotion+'/'+(i*3 +item)+ '.gif'"
+							style="width:200upx;height:200upx;margin-top: 10upx;"></image>
+					</view>
+				</view>
+			</view>
+			<view v-else>
+				<view v-for="(ele,i) in 5" :key="i" style="display: flex;">
+					<view v-for="(ele1,item) in 6" :key="item" @tap="sendEmotion(emotion,i*5 +item)"
+						style="flex:1;text-align: center;">
+						<image v-show="(i*5 +item)<=15" lazy-load
+							:src="'../../../static/emotion/face0'+emotion+'/'+(i*5 +item)+'.gif'"
+							style="width:50upx;height:50upx;margin-top: 10upx;;"></image>
+					</view>
+				</view>
 			</view>
 		</scroll-view>
-		<view style="position:absolute;bottom:50px;width:100%;text-align:center">
-			<image @click="deduplication()" style="width:80rpx;height:80rpx;" src="/static/tabbar/bottom.png"></image>
-		</view>
-		<view class="cu-bar foot input" :style="[{bottom:InputBottom+'upx'}]">
-			<!-- #ifndef H5 -->
-			<view @tap="selType(2)" v-show="c_type==1" class="action">
-				<text class="cuIcon-sound text-grey"></text>
-			</view>
-			<view @tap="selType(1)" v-show="c_type==2" class="action">
-				<text class="cuIcon-keyboard text-grey"></text>
-			</view>
-			<!-- #endif -->
-
-			<textarea style="height:72upx;line-height:72upx; line-height: 73upx;" :auto-height="true"
-				:show-confirm-bar="true" confirm-type="send" @confirm="send" :confirm-hold="true"
-				@keydown.shift.enter="altOrShiftEnter" @keydown.alt.enter="altOrShiftEnter"
-				@keyup.ctrl.enter="lineFeed()" @focus="InputFocus" @blur="InputBlur" v-show="c_type==1" v-model="txt"
-				@input="inputTxt()" class="solid-bottom" :adjust-position="true" :focus="input_is_focus" maxlength="-1"
-				cursor-spacing="10"></textarea>
-
-			<button @touchstart="voiceBegin" @touchend="voiceEnd" @touchcancel="voiceCancel" v-show="c_type==2"
-				style="color: #aaa;margin-left: 20upx;width:100%" class="cu-btn block line-orange lg">按住 说话</button>
-
-
-			<view style="margin-right: 20upx;margin-top:6upx;" class="action" @tap="showItemIndex(1)">
-				<text class="cuIcon-emojifill text-grey"></text>
-			</view>
-
-			<text v-show="showjia" @tap="showItemIndex(2)"
-				style="font-size:52upx;color:#777;margin-left:6upx;margin-right:6upx" class="iconfont icon-jia"></text>
-			<button style="min-width: 50px;padding:0px!important" v-show="!showjia" @tap.stop="send()"
-				class="cu-btn bg-green shadow">发送</button>
-
-		</view>
-
-
-		<view v-show="showItem==1" class="cu-bar foot "
-			style="box-shadow: none;-webkit-box-shadow: none;display: block;background: #fff;height:330upx;margin-bottom:80upx;">
-			<scroll-view scroll-y class="indexes" style="height:330upx;padding-bottom:20upx;padding-top: 10upx;"
-				:scroll-with-animation="true" :enable-back-to-top="true">
-				<view v-if="emotion <1">
-					<view v-for="(ele,i) in 14" :key="i" style="display: flex;">
-						<view v-for="(ele1,item) in 8" :key="item" @tap="sendEmotion(0,i*8 +item)"
-							style="flex:1;text-align: center;">
-							<image v-if="(i*8 +item)<=104" lazy-load
-								:src="'../../../static/emotion/face0'+emotion+'/'+(i*8 +item)+ (emotion == 0?'.gif':'.png')"
-								style="width:50upx;height:50upx;margin-top: 10upx;;"></image>
-						</view>
-					</view>
-				</view>
-				<view v-else-if="emotion == 1">
-					<view v-for="(ele,i) in 5" :key="i" style="display: flex;">
-						<view v-for="(ele1,item) in 3" :key="item" @tap="sendEmotion(1,i*3 +item)"
-							style="flex:1;text-align: center;">
-							<image lazy-load v-if="(i*3) +item <=9"
-								:src="'../../../static/emotion/face0'+emotion+'/'+(i*3 +item)+ '.gif'"
-								style="width:200upx;height:200upx;margin-top: 10upx;"></image>
-						</view>
-					</view>
-				</view>
-				<view v-else>
-					<view v-for="(ele,i) in 5" :key="i" style="display: flex;">
-						<view v-for="(ele1,item) in 6" :key="item" @tap="sendEmotion(emotion,i*5 +item)"
-							style="flex:1;text-align: center;">
-							<image v-show="(i*5 +item)<=15" lazy-load
-								:src="'../../../static/emotion/face0'+emotion+'/'+(i*5 +item)+'.gif'"
-								style="width:50upx;height:50upx;margin-top: 10upx;;"></image>
-						</view>
-					</view>
-				</view>
-			</scroll-view>
-			<view
-				style="width:100%;height:80upx;background: #f6f6f6;border-top:1px solid #eee;bottom:0;position: fixed;display: flex;">
-				<view v-for="(item,index) in 7" :key="item" @tap="showEmotion(index)"
-					:style="emotion==index?'background: #fff;':''" style="flex:1;height:100%;text-align: center;">
-					<image lazy-load :src="'../../../static/emotion/face0'+index+'/face-lbl.gif'"
-						style="width:50upx;height:50upx;margin-top: 10upx;;"></image>
-				</view>
+		<view
+			style="width:100%;height:80upx;background: #f6f6f6;border-top:1px solid #eee;bottom:0;position: fixed;display: flex;">
+			<view v-for="(item,index) in 7" :key="item" @tap="showEmotion(index)"
+				:style="emotion==index?'background: #fff;':''" style="flex:1;height:100%;text-align: center;">
+				<image lazy-load :src="'../../../static/emotion/face0'+index+'/face-lbl.gif'"
+					style="width:50upx;height:50upx;margin-top: 10upx;;"></image>
 			</view>
 		</view>
+	</view>
 
 
-		<view v-show="showItem==2" class="cu-bar foot "
-			style="box-shadow: none;-webkit-box-shadow: none;display: block;background: #fff;height:410upx;">
-			<scroll-view scroll-y class="indexes" style="height:410upx;padding-bottom:20upx;padding-top: 10upx;"
-				:scroll-with-animation="true" :enable-back-to-top="true">
-				<view>
-					<view style="display: flex;">
-						<view @tap="ChooseImage()" style="flex:1;text-align: center;margin-top: 20upx;"><text
-								style="font-size: 60upx;color:#3F92F8"
-								class="iconfont icon-zhaopian-cuxiantiao-fill"></text>
-							<view style="font-size: 24upx;color: #8799a3;">照片</view>
-						</view>
-						<view @tap="ChooseVideo()" style="flex:1;text-align: center;margin-top: 20upx;"><text
-								style="font-size: 60upx;color:#F39F90" class="iconfont icon-paishe"></text>
-							<view style="font-size: 24upx;color: #8799a3;">拍摄</view>
-						</view>
-
-						<view @tap="sendCard()" style="flex:1;text-align: center;margin-top: 20upx;"><text
-								style="font-size: 60upx;color:#FA9B4E" class="iconfont icon-mingpian2"></text>
-							<view style="font-size: 24upx;color: #8799a3;">名片</view>
-						</view>
+	<view v-show="showItem==2" class="cu-bar foot "
+		style="box-shadow: none;-webkit-box-shadow: none;display: block;background: #fff;height:410upx;">
+		<scroll-view scroll-y class="indexes" style="height:410upx;padding-bottom:20upx;padding-top: 10upx;"
+			:scroll-with-animation="true" :enable-back-to-top="true">
+			<view>
+				<view style="display: flex;">
+					<view @tap="ChooseImage()" style="flex:1;text-align: center;margin-top: 20upx;"><text
+							style="font-size: 60upx;color:#3F92F8"
+							class="iconfont icon-zhaopian-cuxiantiao-fill"></text>
+						<view style="font-size: 24upx;color: #8799a3;">照片</view>
+					</view>
+					<view @tap="ChooseVideo()" style="flex:1;text-align: center;margin-top: 20upx;"><text
+							style="font-size: 60upx;color:#F39F90" class="iconfont icon-paishe"></text>
+						<view style="font-size: 24upx;color: #8799a3;">拍摄</view>
 					</view>
 
+					<view @tap="sendCard()" style="flex:1;text-align: center;margin-top: 20upx;"><text
+							style="font-size: 60upx;color:#FA9B4E" class="iconfont icon-mingpian2"></text>
+						<view style="font-size: 24upx;color: #8799a3;">名片</view>
+					</view>
 				</view>
-			</scroll-view>
-		</view>
+
+			</view>
+		</scroll-view>
+	</view>
 
 
-		<view @longpress="hidePop" class="shade" v-show="showShade" @tap="hidePop">
-			<view style="text-align: center;" class="pop" :style="popStyle" :class="{'show':showPop}">
-				<view v-for="(item,index) in popButton" :key="index" @tap="pickerMenu" :data-name="item"
-					:data-index="index">
-					<text style="font-size:34upx;margin-right:16upx;" class="iconfont"
-						:class="getPopButton(item)"></text>
-					{{item}}
-				</view>
+	<view @longpress="hidePop" class="shade" v-show="showShade" @tap="hidePop">
+		<view style="text-align: center;" class="pop" :style="popStyle" :class="{'show':showPop}">
+			<view v-for="(item,index) in popButton" :key="index" @tap="pickerMenu" :data-name="item"
+				:data-index="index">
+				<text style="font-size:34upx;margin-right:16upx;" class="iconfont" :class="getPopButton(item)"></text>
+				{{item}}
 			</view>
 		</view>
-		<video direction="0" @fullscreenchange="videoChangeFC" id="video_play"
-			:loop="false" 
-			:show-center-play-btn="true"
-			:autoplay="true"
-			:page-gesture="true" 
-			:controls="true" 
-			v-show="showVideo" 
-			style="position: absolute;z-index: 99999999999999999999;top: 50%;
+	</view>
+	<video direction="0" @fullscreenchange="videoChangeFC" id="video_play" :loop="false" :show-center-play-btn="true"
+		:autoplay="true" :page-gesture="true" :controls="true" v-show="showVideo" style="position: absolute;z-index: 99999999999999999999;top: 50%;
 					left: 50%;
 					width: 100%;
 					transform: translate(-50%,-50%);
@@ -425,6 +415,8 @@
 	} from 'vuex'
 	//#ifdef H5
 	import h5Copy from '@/common/junyi-h5-copy.js'
+	const recorderManager = uni.getRecorderManager();
+
 	//#endif
 	import {
 		getTalkUserInfo,
@@ -471,7 +463,7 @@
 				emotion: 0,
 				showItem: 0,
 				scrollTop: 0,
-				RECORDER: '',
+				RECORDER: uni.getRecorderManager(),
 				AUDIO: uni.createInnerAudioContext(),
 				recordTimer: null,
 				recordLength: 0,
@@ -540,6 +532,11 @@
 		},
 		onLoad(option) {
 			this.initData(option);
+			let self = this;
+			this.RECORDER.onStop(function(res) {
+				console.log('recorder stop' + JSON.stringify(res));
+				self.uploadVoice(res)
+			});
 		},
 		mounted() {
 			if (!this.toid) return;
@@ -593,6 +590,31 @@
 				this.setCurChatEntity(null);
 				this.setCurChatMsgList([]);
 				this.setChatMyLoadding(false);
+			},
+			uploadVoice(res){
+				this.voicePath = res.tempFilePath;
+				let user = uni.getStorageSync("USER");
+				clearInterval(this.recordTimer);
+				if (this.recordLength < 1) {
+					uni.showToast({
+						icon: "none",
+						title: "录音时间太短",
+						duration: 1000
+					});
+					return;
+				}
+				uni.hideToast();
+				let msg = "";
+				let min = parseInt(this.recordLength / 60);
+				let sec = this.recordLength % 60;
+				min = min < 10 ? '0' + min : min;
+				sec = sec < 10 ? '0' + sec : sec;
+				msg = min + ':' + sec;
+				console.log("======录音结束",this.voicePath)
+				this.Audio2dataURL(this.voicePath, msg)
+				setTimeout(() => {
+					this.scrollTop = 9999999 + Math.random();
+				}, 100)
 			},
 			refresh() {
 				console.log("==========refresh")
@@ -1172,17 +1194,9 @@
 					});
 				})
 			},
-			checkAuthorize() {
-				this.startRecord();
-			},
+
 			// 录音开始
 			voiceBegin(e) {
-				this.RECORDER.start({
-					format: "mp3"
-				}); //录音开始,
-			},
-			//录音开始UI效果
-			recordBegin(e) {
 				uni.showToast({
 					title: '正在录音',
 					image: '../../../static/luyin.png',
@@ -1192,56 +1206,19 @@
 				this.recordTimer = setInterval(() => {
 					this.recordLength++;
 				}, 1000)
+				this.RECORDER.start()
 			},
+
 			// 结束录音
 			voiceEnd(e) {
-				this.RECORDER.stop(); //录音结束
+				let _this = this;
+				this.RECORDER.stop();
 			},
 			// 录音被打断
 			voiceCancel() {
 				this.RECORDER.stop(); //录音结束
 			},
-			//录音结束(回调文件)
-			recordEnd(e) {
-				let _this = this;
-				let user = uni.getStorageSync("USER");
-				clearInterval(this.recordTimer);
-				if (this.recordLength < 1) {
-					uni.showToast({
-						icon: "none",
-						title: "录音时间太短",
-						duration: 1000
-					});
-					return;
-				}
-				uni.hideToast();
-				let msg = "";
-				let min = parseInt(this.recordLength / 60);
-				let sec = this.recordLength % 60;
-				min = min < 10 ? '0' + min : min;
-				sec = sec < 10 ? '0' + sec : sec;
-				msg = min + ':' + sec;
-				_this.voicePath = e.tempFilePath;
-				_this.Audio2dataURL(_this.voicePath, msg)
-				setTimeout(() => {
-					_this.scrollTop = 9999999 + Math.random();
-				}, 100)
-			},
-			startRecord() {
-				uni.showToast({
-					title: '正在录音',
-					image: '../../../static/luyin.png',
-					duration: 60000
-				});
-				this.RECORDER.start({
-					format: 'mp3'
-				});
-
-			},
-			endRecord() {
-				uni.hideToast();
-				this.RECORDER.stop();
-			},
+		
 			videoChangeFC(e) {
 				if (!e.detail.fullScreen) {
 					this.showVideo = false;
@@ -1265,7 +1242,8 @@
 					}
 					return;
 				}
-				var src = this.imgUrl + _vpath;
+				
+				var src = _vpath.indexOf("http")!=-1?_vpath:this.imgUrl + _vpath;
 				this.selVoiceIndex = _index;
 				this.player = uni.createInnerAudioContext();
 				this.player.src = src; //音频地址
@@ -1300,9 +1278,10 @@
 			 * @param {Object} path
 			 */
 			Audio2dataURL(path, timeStr) {
+				console.log("=====Audio2dataURL", path)
 				let _this = this;
-				let user = uni.getStorageSync("USER");
 				let token = uni.getStorageSync("token");
+				uni.showLoading()
 				var uper = uni.uploadFile({
 					url: _this.reqUrl + '/user/file/uploadVoice',
 					header: {
@@ -1311,6 +1290,8 @@
 					filePath: path,
 					name: 'file',
 					fail(error) {
+						console.log("===========upload", error)
+						uni.hideLoading()
 						uni.showToast({
 							icon: 'none',
 							position: 'bottom',
@@ -1318,29 +1299,27 @@
 						});
 					},
 					success(res1) {
+						uni.hideLoading()
+						
 						let json = eval("(" + res1.data + ")");
+						console.log("===========upload", res1)
 						// 显示上传信息
 						if (json.code == 200) {
-							// 显示上传信息
-							console.log(json.msg);
-							if (json.code == 200) {
-								_this.sendVoiceMessage({
-									txt: json.msg,
-									toUid: _this.toid,
-									fromUid: _this.user.id,
-									sub_txt: timeStr,
-									uuid: uuid(),
-									chatType: '2'
-								})
-								//#ifdef APP-PLUS
-								v.psr = "voice";
-								v.simple_content = "[语音]";
-								_this.sendBaseDaoAction(v);
-								//#endif
-								setTimeout(function() {
-									_this.scrollToBottom();
-								}, 100)
+							let v = {
+								txt: json.msg,
+								toUid: _this.toid,
+								fromUid: _this.user.id,
+								subTxt: timeStr,
+								uuid: uuid(),
+								chatType: '2'
 							}
+							v.psr = "voice";
+							v.simpleContent = "[语音]";
+							_this.sendVoiceMessage(v)
+							_this.sendBaseDaoAction(v);
+							setTimeout(function() {
+								_this.scrollToBottom();
+							}, 100)
 						}
 					}
 				});

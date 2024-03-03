@@ -132,12 +132,12 @@
 										style="float:left;width:100upx;font-size: 52upx;position: relative;top: 4upx;"
 										class="iconfont icon-yuyin1 text-xxl "></text>
 									<text v-show="selVoiceIndex != index"
-										style="float:left;font-size: 26upx;position: relative;top: 4upx;">{{item.bean.sub_txt}}"</text>
+										style="float:left;font-size: 26upx;position: relative;top: 4upx;">{{item.bean.subTxt}}"</text>
 									<text v-show="selVoiceIndex == index"
 										style="float:left;width:100upx;font-size: 52upx;position: relative;text-align: left;top:0;line-height: 38upx;"
 										class="iconfont cu-load load-cuIcon loading text-xxl "></text>
 									<text v-show="selVoiceIndex == index"
-										style="float:left;font-size: 26upx;position: relative;top: 6upx;">{{item.bean.sub_txt}}"</text>
+										style="float:left;font-size: 26upx;position: relative;top: 6upx;">{{item.bean.subTxt}}"</text>
 								</view>
 								<rich-text style="max-width:440upx" v-else
 									:nodes="transMessage(item.bean.txt)"></rich-text>
@@ -173,12 +173,12 @@
 										style="text-align: right; float:right;width:100upx;font-size: 52upx;position: relative;top: 4upx;"
 										class="iconfont icon-yuyin1 text-xxl "></text>
 									<text v-show="selVoiceIndex != index"
-										style="float:right;font-size: 26upx;position: relative;top: 4upx;">{{item.bean.sub_txt}}"</text>
+										style="float:right;font-size: 26upx;position: relative;top: 4upx;">{{item.bean.subTxt}}"</text>
 									<text v-show="selVoiceIndex == index"
 										style="text-align: right;float:right;width:100upx;font-size: 52upx;position: relative;top:0;line-height: 38upx;"
 										class="iconfont cu-load load-cuIcon loading text-xxl "></text>
 									<text v-show="selVoiceIndex == index"
-										style="float:right;font-size: 26upx;position: relative;top: 6upx;">{{item.bean.sub_txt}}"</text>
+										style="float:right;font-size: 26upx;position: relative;top: 6upx;">{{item.bean.subTxt}}"</text>
 								</view>
 								<rich-text style="max-width:440upx" v-else
 									:nodes="transMessage(item.bean.txt)"></rich-text>
@@ -209,12 +209,12 @@
 										style="float:left;width:100upx;font-size: 52upx;position: relative;top: 4upx;"
 										class="iconfont icon-yuyin1 text-xxl "></text>
 									<text v-show="selVoiceIndex != index"
-										style="float:left;font-size: 26upx;position: relative;top: 4upx;">{{item.bean.sub_txt}}"</text>
+										style="float:left;font-size: 26upx;position: relative;top: 4upx;">{{item.bean.subTxt}}"</text>
 									<text v-show="selVoiceIndex == index"
 										style="float:left;width:100upx;font-size: 52upx;position: relative;text-align: left;top:0;line-height: 38upx;"
 										class="iconfont cu-load load-cuIcon loading text-xxl "></text>
 									<text v-show="selVoiceIndex == index"
-										style="float:left;font-size: 26upx;position: relative;top: 6upx;">{{item.bean.sub_txt}}"</text>
+										style="float:left;font-size: 26upx;position: relative;top: 6upx;">{{item.bean.subTxt}}"</text>
 								</view>
 								<rich-text style="max-width:440upx" v-else
 									:nodes="transMessage(item.bean.txt)"></rich-text>
@@ -253,12 +253,12 @@
 										style="text-align: right; float:right;width:100upx;font-size: 52upx;position: relative;top: 4upx;"
 										class="iconfont icon-yuyin1 text-xxl "></text>
 									<text v-show="selVoiceIndex != index"
-										style="float:right;font-size: 26upx;position: relative;top: 4upx;">{{item.bean.sub_txt}}"</text>
+										style="float:right;font-size: 26upx;position: relative;top: 4upx;">{{item.bean.subTxt}}"</text>
 									<text v-show="selVoiceIndex == index"
 										style="text-align: right;float:right;width:100upx;font-size: 52upx;position: relative;top:0;line-height: 38upx;"
 										class="iconfont cu-load load-cuIcon loading text-xxl "></text>
 									<text v-show="selVoiceIndex == index"
-										style="float:right;font-size: 26upx;position: relative;top: 6upx;">{{item.bean.sub_txt}}"</text>
+										style="float:right;font-size: 26upx;position: relative;top: 6upx;">{{item.bean.subTxt}}"</text>
 								</view>
 								<rich-text style="max-width:440upx" v-else
 									:nodes="transMessage(item.bean.txt)"></rich-text>
@@ -641,6 +641,11 @@
 				}
 			})
 			this.scrollToBottom();
+			let self = this;
+			this.RECORDER.onStop(function(res) {
+				console.log('recorder stop' + JSON.stringify(res));
+				self.uploadVoice(res)
+			});
 		},
 		mounted() {
 			// if (this.curChatMsgList.length == 0) {
@@ -691,6 +696,31 @@
 				this.hasMore = true;
 				this.tongbuMsg();
 				this.scrollToBottom();
+			},
+			uploadVoice(res){
+				let _this = this;
+				this.voicePath = res.tempFilePath
+				let user = uni.getStorageSync("USER");
+				clearInterval(this.recordTimer);
+				if (this.recordLength < 1) {
+					uni.showToast({
+						icon: "none",
+						title: "录音时间太短",
+						duration: 1000
+					});
+					return;
+				}
+				uni.hideToast();
+				let msg = "";
+				let min = parseInt(this.recordLength / 60);
+				let sec = this.recordLength % 60;
+				min = min < 10 ? '0' + min : min;
+				sec = sec < 10 ? '0' + sec : sec;
+				msg = min + ':' + sec;
+				_this.Audio2dataURL(_this.voicePath, msg)
+				setTimeout(() => {
+					_this.scrollTop = 99999999 + Math.random();
+				}, 100)
 			},
 			saveOrUpdateMesage() {
 				saveOrUpdate({
@@ -1362,17 +1392,10 @@
 					});
 				})
 			},
-			checkAuthorize() {
-				this.startRecord();
-			},
+		
 			// 录音开始
 			voiceBegin(e) {
-				this.RECORDER.start({
-					format: "mp3"
-				}); //录音开始,
-			},
-			//录音开始UI效果
-			recordBegin(e) {
+				this.RECORDER.start(); //录音开始,
 				uni.showToast({
 					title: '正在录音',
 					image: '../../../static/luyin.png',
@@ -1383,6 +1406,7 @@
 					this.recordLength++;
 				}, 1000)
 			},
+	
 			// 结束录音
 			voiceEnd(e) {
 				this.RECORDER.stop(); //录音结束
@@ -1390,40 +1414,6 @@
 			// 录音被打断
 			voiceCancel() {
 				this.RECORDER.stop(); //录音结束
-			},
-			//录音结束(回调文件)
-			recordEnd(e) {
-				let _this = this;
-				let user = uni.getStorageSync("USER");
-				clearInterval(this.recordTimer);
-				uni.hideToast();
-				let msg = "";
-				let min = parseInt(this.recordLength / 60);
-				let sec = this.recordLength % 60;
-				min = min < 10 ? '0' + min : min;
-				sec = sec < 10 ? '0' + sec : sec;
-				msg = min + ':' + sec;
-				_this.voicePath = e.tempFilePath;
-				_this.Audio2dataURL(_this.voicePath, msg)
-				setTimeout(() => {
-					_this.scrollTop = 99999999 + Math.random();
-				}, 100)
-			},
-			startRecord() {
-				uni.showToast({
-					title: '正在录音',
-					image: '../../../static/luyin.png',
-					duration: 60000
-				});
-				this.RECORDER.start({
-					format: 'mp3'
-				});
-			},
-			endRecord() {
-				let _this = this;
-
-				uni.hideToast();
-				this.RECORDER.stop();
 			},
 			videoChangeFC(e) {
 				if (!e.detail.fullScreen) {
@@ -1445,8 +1435,7 @@
 					}
 					return;
 				}
-				var src = _this.imgUrl + _vpath;
-				console.log(src);
+				var src = _vpath.indexOf("http")!=-1?_vpath:this.imgUrl + _vpath;
 				this.selVoiceIndex = _index;
 				this.player = uni.createInnerAudioContext();
 				this.player.src = src; //音频地址
@@ -1481,9 +1470,8 @@
 			 */
 			Audio2dataURL(path, timeStr) {
 				let _this = this;
-				let user = uni.getStorageSync("USER");
 				let token = uni.getStorageSync("token");
-
+				uni.showLoading()
 				var uper = uni.uploadFile({
 					// 需要上传的地址
 					url: _this.reqUrl + '/user/file/uploadVoice',
@@ -1493,37 +1481,35 @@
 					// filePath  需要上传的文件
 					filePath: path,
 					name: 'file',
+					fail(error) {
+						console.log("===========upload", error)
+						uni.hideLoading()
+						uni.showToast({
+							icon: 'none',
+							position: 'bottom',
+							title: error.msg ? error.msg : "上传失败!"
+						});
+					},
 					success(res1) {
+						uni.hideLoading()
 						let json = eval("(" + res1.data + ")");
 						// 显示上传信息
 						if (json.code == 200) {
-							// 显示上传信息
-							console.log(json.msg);
-							if (json.code == 200) {
-								let v = {
-									txt: json.msg,
-									toGroupid: _this.toid,
-									fromUid: _this.user.id,
-									sub_txt: timeStr,
-									uuid: uuid(),
-								}
-								_this.sendGroupVoiceMessage({
-									txt: json.msg,
-									toGroupid: _this.toid,
-									fromUid: _this.user.id,
-									sub_txt: timeStr,
-									uuid: uuid(),
-									chatType: '1'
-								})
-								//#ifdef APP-PLUS
-								v.psr = "voice";
-								v.simple_content = "[语音]";
-								_this.sendBaseDaoAction(v);
-								//#endif
-								setTimeout(function() {
-									_this.scrollToBottom();
-								}, 100)
+							let v = {
+								txt: json.msg,
+								toGroupid: _this.toid,
+								fromUid: _this.user.id,
+								subTxt: timeStr,
+								uuid: uuid(),
+								chatType: '1'
 							}
+							v.psr = "voice";
+							v.simpleContent = "[语音]";
+							_this.sendGroupVoiceMessage(v)
+							_this.sendBaseDaoAction(v);
+							setTimeout(function() {
+								_this.scrollToBottom();
+							}, 100)
 						}
 					}
 				});

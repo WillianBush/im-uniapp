@@ -71,21 +71,27 @@ export const dateFormat = (fmt, date) => {
 	return fmt;
 }
 
+const picTypes = [""]
 // [f0#0] xxx
 export const parseEmotion = (str) => {
 	const regex = /\[f\d#\d+\]/g;
-	let matchArr = [...str.matchAll(regex)];
-	let temp = str;
-	matchArr.forEach(item => {
-		let imgs = productEmotion(item[0]);
-		temp = temp.replace(item[0], imgs);
-	})
-	return temp;
+	let matchArr = str.match(regex)
+	if(matchArr){
+		let tempArr = [...matchArr];
+		let temp = str;
+		tempArr.forEach(item => {
+			let imgs = productEmotion(item);
+			temp = temp.replace(item, imgs);
+		})
+		return temp;
+	}else{
+		return str;
+	}
 }
 
-export const parseMedia = (str,imgUrl) =>{
-	let img = str.indexOf('http')==-1? (imgUrl + str) :str;
-	return ("<img  style='max-width: 150px;max-height:150px;' class='face' src='"+img+"'>");
+export const parseMedia = (str, imgUrl) => {
+	let img = str.indexOf('http') == -1 ? (imgUrl + str) : str;
+	return ("<img  style='max-width: 150px;max-height:150px;' class='face' src='" + img + "'>");
 }
 
 const productEmotion = (str) => {
@@ -112,9 +118,9 @@ export const showToast = (message, duration = 1500) => {
 }
 
 export const getHeadPic = (headpic, url) => {
-		if (headpic && headpic.indexOf('static/header') != -1) {
-			return headpic;
-		} else {
-			return url + headpic;
-		}
+	if (headpic && headpic.indexOf('static/header') != -1) {
+		return headpic;
+	} else {
+		return url + headpic;
 	}
+}
