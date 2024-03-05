@@ -101,7 +101,7 @@
 							<view class="main">
 								<view class="content bg-green shadow" style="background-color: #98E165;
 				color:#222;">
-									<image @tap="clickVideo(imgUrl+item.bean.oldTxt)" v-if="item.bean.psr=='video'"
+									<image @tap="clickVideo(imgUrl+item.oldTxt)" v-if="item.psr=='video'"
 										style="width:418upx;height:335upx;border-radius: 5px"
 										src="../../../static/images/video.png"></image>
 									<u-parse v-else-if="item.psr=='picture'" :content="parseImage(item.txt)"
@@ -111,12 +111,12 @@
 											style="float:left;width:100upx;font-size: 52upx;position: relative;top: 4upx;"
 											class="iconfont icon-yuyin1 text-xxl "></text>
 										<text v-show="selVoiceIndex != index"
-											style="float:left;font-size: 26upx;position: relative;top: 4upx;">{{item.sub_txt}}"</text>
+											style="float:left;font-size: 26upx;position: relative;top: 4upx;">{{item.subTxt}}"</text>
 										<text v-show="selVoiceIndex == index"
 											style="float:left;width:100upx;font-size: 52upx;position: relative;text-align: left;top:0;line-height: 38upx;"
 											class="iconfont cu-load load-cuIcon loading text-xxl "></text>
 										<text v-show="selVoiceIndex == index"
-											style="float:left;font-size: 26upx;position: relative;top: 6upx;">{{item.sub_txt}}"</text>
+											style="float:left;font-size: 26upx;position: relative;top: 6upx;">{{item.subTxt}}"</text>
 									</view>
 									<!-- <video direction="0" v-else-if="item.psr=='video'" :src="imgUrl+item.txt"></video> -->
 									<rich-text v-else :nodes="parseEmotion(item.txt)"></rich-text>
@@ -133,7 +133,7 @@
 							<view class="main">
 								<view class="content shadow" style="
 				color:#222;">
-									<image @tap="clickVideo(imgUrl+item.bean.oldTxt)" v-if="item.bean.psr=='video'"
+									<image @tap="clickVideo(imgUrl+item.oldTxt)" v-if="item.psr=='video'"
 										style="width:418upx;height:335upx;border-radius: 5px"
 										src="../../../static/images/video.png"></image>
 									<u-parse v-else-if="item.psr=='picture'" :content="parseImage(item.txt)"
@@ -143,12 +143,12 @@
 											style="text-align: right; float:right;width:100upx;font-size: 52upx;position: relative;top: 4upx;"
 											class="iconfont icon-yuyin1 text-xxl "></text>
 										<text v-show="selVoiceIndex != index"
-											style="float:right;font-size: 26upx;position: relative;top: 4upx;">{{item.sub_txt}}"</text>
+											style="float:right;font-size: 26upx;position: relative;top: 4upx;">{{item.subTxt}}"</text>
 										<text v-show="selVoiceIndex == index"
 											style="text-align: right;float:right;width:100upx;font-size: 52upx;position: relative;top:0;line-height: 38upx;"
 											class="iconfont cu-load load-cuIcon loading text-xxl "></text>
 										<text v-show="selVoiceIndex == index"
-											style="float:right;font-size: 26upx;position: relative;top: 6upx;">{{item.sub_txt}}"</text>
+											style="float:right;font-size: 26upx;position: relative;top: 6upx;">{{item.subTxt}}"</text>
 									</view>
 									<!-- <video direction="0" v-else-if="item.psr=='video'" :src="imgUrl+item.txt"></video> -->
 									<rich-text v-else :nodes="parseEmotion(item.txt)"></rich-text>
