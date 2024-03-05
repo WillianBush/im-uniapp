@@ -106,6 +106,7 @@
 			},
 			jump() { //跳转到对应的页面
 				let user = uni.getStorageSync("USER");
+				console.log("####user:",user)
 				if (user) {
 					//进入首页
 					uni.navigateTo({

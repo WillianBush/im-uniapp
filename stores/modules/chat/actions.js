@@ -103,6 +103,7 @@ export default {
 
 						reject(res_data_1);
 					} else {
+						console.log("======res",res_data_1)
 						uni.showToast({
 							icon: "none",
 							title: "获取列表失败",
@@ -111,6 +112,7 @@ export default {
 					}
 				})
 				.catch((error) => {
+					console.log("=====error:",error)
 					uni.showToast({
 						icon: "none",
 						title: "获取列表失败",

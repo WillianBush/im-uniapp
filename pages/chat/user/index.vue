@@ -463,7 +463,9 @@
 				emotion: 0,
 				showItem: 0,
 				scrollTop: 0,
+				// #ifdef APP
 				RECORDER: uni.getRecorderManager(),
+				// #endif
 				AUDIO: uni.createInnerAudioContext(),
 				recordTimer: null,
 				recordLength: 0,
@@ -533,10 +535,12 @@
 		onLoad(option) {
 			this.initData(option);
 			let self = this;
+			// #ifdef APP
 			this.RECORDER.onStop(function(res) {
 				console.log('recorder stop' + JSON.stringify(res));
 				self.uploadVoice(res)
 			});
+			// #endif
 		},
 		mounted() {
 			if (!this.toid) return;
@@ -1187,6 +1191,7 @@
 						_this.scrollToBottom();
 					}, 100)
 				}).catch(error => {
+					console.log("=======error:",error)
 					uni.showToast({
 						icon: 'none',
 						position: 'bottom',

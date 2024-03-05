@@ -24,7 +24,7 @@
 					style="margin-top:20upx;background-color: #fff;padding:30upx">
 					<view v-if="item.bean.psr == 'txt'"><rich-text :nodes="transMessage(item.bean.txt)"></rich-text></view>
 					<image @tap="clickVideo(imgUrl+item.bean.oldTxt)" v-else-if="item.bean.psr=='video'"
-					style="width:418upx;height:335upx;border-radius: 5px" src="../../../static/images/video.png">
+					style="width:418upx;height:335upx;border-radius: 5px" src="../../static/images/video.png">
 				</image>
 				<u-parse v-else-if="item.bean.psr=='picture'" :content="parseImage(item.bean.txt)" @preview="preview"
 					@navigate="navigate"></u-parse>
@@ -68,7 +68,7 @@
 		parseEmotion,
 		getHeadPic,
 		parseMedia
-	} from '../../../common/utils';
+	} from '../../common/utils';
 	export default {
 		data() {
 			return {
@@ -177,6 +177,13 @@
 						this.showPop = true;
 					}, 10);
 				});
+			},
+			clickVideo(_vpath) {
+				// this.videoSrc = _vpath;
+				// this.showVideo = true;
+				uni.navigateTo({
+					url: "/pages/custom/myVideo?item=" + _vpath
+				})
 			},
 			/* 隐藏弹窗 */
 			hidePop() {
