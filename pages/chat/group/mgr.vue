@@ -272,8 +272,7 @@
                           top: 6upx;
                         ">{{ item.bean.sub_txt }}"</text>
 										</view>
-										<video direction="0" v-else-if="item.bean.psr == 'video'"
-											:src="imgUrl + item.bean.txt"></video>
+										
 										<rich-text v-else :nodes="transMessage(item.bean.txt)"></rich-text>
 									</view>
 								</view>

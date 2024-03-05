@@ -5,7 +5,7 @@
 				<text class="cuIcon-back" @click="goback" style="float:left; margin:0 5px; cursor: pointer;"></text>
 				群设置
 			</view>
-			</block></cu-custom>
+			</block>
 			<view style="clear: both;   width: 96%;
 		margin: auto auto;
 		margin-top: 10px!important;" class="cu-list menu">
@@ -71,8 +71,8 @@
 				</view>
 			</view>
 		</view>
-		<AddRoomMgr v-show="PageCur=='add_room_mgr'" :keyid="randomKeyId" @goBack="showGroup"></AddRoomMgr>
-		<RoomMgr v-show="PageCur=='room_mgr'" :keyid="randomKeyId" @goBack="showGroup"></RoomMgr>
+		<AddRoomMgr v-if="PageCur=='add_room_mgr'" :keyid="randomKeyId" @goBack="showGroup"></AddRoomMgr>
+		<RoomMgr v-if="PageCur=='room_mgr'" :keyid="randomKeyId" @goBack="showGroup"></RoomMgr>
 	</view>
 </template>
 

@@ -1,16 +1,14 @@
 <template>
 	<view>
-		<view style="height: 45px;line-height: 45px;background: #eee;padding-left: 5px; color:#000">
-			<text class="cuIcon-back" @click="goback" style="float:left; margin:0 5px; cursor: pointer;"></text>
-			设置群管理
-		</view>
-		<block slot="right">
+		<view style="display: flex;justify-content: space-between;align-items: center;">
+			<view style="height: 45px;line-height: 45px;background: #eee;padding-left: 5px; color:#000">
+				<text class="cuIcon-back" @click="goback" style="float:left; margin:0 5px; cursor: pointer;"></text>
+				设置群管理
+			</view>
 			<text @tap="tijiao()"
 				style="font-size: 22px;color: #fff;margin-right: 14px;font-size: 30upx;background: #58BB46;padding:10upx 40upx;border-radius: 6upx;"
 				class="lg text-gray ">邀请</text>
-		</block>
-		</cu-custom>
-
+		</view>
 
 		<view class="cu-bar bg-white search">
 			<view class="search-form round">
@@ -32,7 +30,7 @@
 							:style="{'backgroundImage': 'url('+getHeadPic(items.headpic) +')' }"
 							style="width: 80upx;height: 80upx;background-size: 100% 100%;"></view>
 						<view class="content">
-							<view class="text-grey" style="float:left;">{{items.nickName}}</view>
+							<view class="text-grey" style="float:left;margin-left: 20upx;">{{items.nickName}}</view>
 							<checkbox :checked="ids.includes(String(items.id))" class='round blue ' :value="items.id">
 							</checkbox>
 						</view>
@@ -77,7 +75,7 @@
 				fid: ""
 			};
 		},
-		onLoad() {
+		mounted() {
 			let _this = this;
 			getMemberList({
 				roomid: _this.curChatEntity.id

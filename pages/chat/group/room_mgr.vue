@@ -64,7 +64,7 @@
 				'imgUrl'
 			]),
 		},
-		onLoad() {
+		mounted() {
 			let _this = this;
 			let user = uni.getStorageSync("USER");
 			getRoomMgrList({
