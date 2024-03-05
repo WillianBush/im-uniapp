@@ -16,11 +16,12 @@
 			<block v-for="(item,index) in list" :key="index">
 				<view @longpress="onLongPress($event,item)"
 					style="margin-top:20upx;background-color: #fff;padding:30upx">
-					<view v-if="item.bean.psr=='txt'"><rich-text :nodes="transMessage(item.bean.txt)"></rich-text></view>
-					<video direction="0" v-if="item.bean.psr == 'video'" play-btn-position="center"
+					<view v-if="item.bean.psr=='txt'"><rich-text :nodes="transMessage(item.bean.txt)"></rich-text>
+					</view>
+					<video direction="0" v-else-if="item.bean.psr == 'video'" play-btn-position="center"
 						:src="parseVideo(item.bean.txt)"></video>
-						<u-parse v-else-if="item.bean.psr=='picture'" :content="parseImage(item.bean.txt)"
-							@preview="preview" @navigate="navigate"></u-parse>
+					<u-parse v-else-if="item.bean.psr=='picture'" :content="parseImage(item.bean.txt)"
+						@preview="preview" @navigate="navigate"></u-parse>
 					<view style="font-size: 24upx;color:#999;margin-top:14upx;">{{item.bean.fromName}}
 						{{item.bean.date}}
 					</view>
@@ -128,8 +129,8 @@
 			parseImage(message) {
 				return parseMedia(message, this.imgUrl)
 			},
-			parseVideo(message){
-				return parseVideo(message,this.imgUrl)
+			parseVideo(message) {
+				return parseVideo(message, this.imgUrl)
 			},
 			preview(src, e) {},
 			navigate(href, e) {
@@ -271,8 +272,8 @@
 						}
 					}
 				}).catch(error => {
-					console.log("=====error",error)
-					
+					console.log("=====error", error)
+
 					uni.showToast({
 						icon: 'none',
 						position: 'bottom',
