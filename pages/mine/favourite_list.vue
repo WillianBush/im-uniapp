@@ -16,7 +16,11 @@
 			<block v-for="(item,index) in list" :key="index">
 				<view @longpress="onLongPress($event,item)"
 					style="margin-top:20upx;background-color: #fff;padding:30upx">
-					<view><rich-text :nodes="item.bean.txt"></rich-text></view>
+					<view v-if="item.bean.psr=='txt'"><rich-text :nodes="transMessage(item.bean.txt)"></rich-text></view>
+					<video direction="0" v-if="item.bean.psr == 'video'" play-btn-position="center"
+						:src="parseVideo(item.bean.txt)"></video>
+						<u-parse v-else-if="item.bean.psr=='picture'" :content="parseImage(item.bean.txt)"
+							@preview="preview" @navigate="navigate"></u-parse>
 					<view style="font-size: 24upx;color:#999;margin-top:14upx;">{{item.bean.fromName}}
 						{{item.bean.date}}
 					</view>
@@ -53,6 +57,13 @@
 		mapActions,
 		mapMutations
 	} from 'vuex'
+	import {
+		getHeadPic,
+		dateFormat,
+		parseEmotion,
+		parseMedia,
+		parseVideo
+	} from '../../common/utils';
 	export default {
 		data() {
 			return {
@@ -96,6 +107,10 @@
 			...mapState('chat', [
 				'temp'
 			]),
+			...mapState('app', [
+				'imgUrl',
+				'reqUrl'
+			]),
 		},
 		onLoad() {
 			this.getWindowSize();
@@ -106,6 +121,21 @@
 			]),
 			clickChat() {
 				this.showPop = false;
+			},
+			transMessage(message) {
+				return parseEmotion(message);
+			},
+			parseImage(message) {
+				return parseMedia(message, this.imgUrl)
+			},
+			parseVideo(message){
+				return parseVideo(message,this.imgUrl)
+			},
+			preview(src, e) {},
+			navigate(href, e) {
+				uni.navigateTo({
+					url: "/pages/faxian/site/site?url=" + encodeURIComponent(href)
+				})
 			},
 			/* 获取窗口尺寸 */
 			getWindowSize() {
