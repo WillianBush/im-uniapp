@@ -22,7 +22,12 @@
 			<block v-for="(item,index) in list" :key="index">
 				<view @longpress="onLongPress($event,item)"
 					style="margin-top:20upx;background-color: #fff;padding:30upx">
-					<view><rich-text :nodes="item.bean.txt"></rich-text></view>
+					<view v-if="item.bean.psr == 'txt'"><rich-text :nodes="transMessage(item.bean.txt)"></rich-text></view>
+					<image @tap="clickVideo(imgUrl+item.bean.oldTxt)" v-else-if="item.bean.psr=='video'"
+					style="width:418upx;height:335upx;border-radius: 5px" src="../../../static/images/video.png">
+				</image>
+				<u-parse v-else-if="item.bean.psr=='picture'" :content="parseImage(item.bean.txt)" @preview="preview"
+					@navigate="navigate"></u-parse>
 					<view style="font-size: 24upx;color:#999;margin-top:14upx;">{{item.bean.fromName}}
 						{{item.bean.date}}
 					</view>
@@ -59,6 +64,11 @@
 		mapActions,
 		mapMutations
 	} from 'vuex'
+	import {
+		parseEmotion,
+		getHeadPic,
+		parseMedia
+	} from '../../../common/utils';
 	export default {
 		data() {
 			return {
@@ -119,6 +129,12 @@
 			]),
 			clickChat() {
 				this.showPop = false;
+			},
+			transMessage(message) {
+				return parseEmotion(message);
+			},
+			parseImage(src) {
+				return parseMedia(src, this.imgUrl)
 			},
 			/* 获取窗口尺寸 */
 			getWindowSize() {
