@@ -197,7 +197,7 @@
 				'setArList'
 			]),
 			...mapMutations('app', [
-				'setOpenRefresh'
+				'setIsOpenRefresh'
 			]),
 			getHeadPic(img) {
 				return getHeadPic(img ,this.imgUrl)
@@ -216,7 +216,7 @@
 				'isSuperUserAction'
 			]),
 			isOpenRefresh(e) {
-				this.setOpenRefresh(e.detail.value);
+				this.setIsOpenRefresh(e.detail.value);
 			},
 			closeModal() {
 				this.visiable = false;
