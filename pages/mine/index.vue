@@ -158,7 +158,6 @@
 				'shimingCfg',
 				'isEmployee',
 				'greetingList',
-				'getGreetingMsgAction'
 			]
 			),
 			userHeadPic() {
@@ -191,7 +190,8 @@
 				'isEmployeeAction'
 			]),
 			...mapActions('user',[
-				'clearDataAction'
+				'clearDataAction',
+				'getGreetingMsgAction'
 			]),
 			...mapMutations('app',[
 				'setIsOpenRefresh'

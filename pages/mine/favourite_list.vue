@@ -23,8 +23,8 @@
 				<view @longpress="onLongPress($event,item)"
 					style="margin-top:20upx;background-color: #fff;padding:30upx">
 					<view v-if="item.bean.psr == 'txt'"><rich-text :nodes="transMessage(item.bean.txt)"></rich-text></view>
-					<image @tap="clickVideo(imgUrl+item.bean.oldTxt)" v-else-if="item.bean.psr=='video'"
-					style="width:418upx;height:335upx;border-radius: 5px" src="../../static/images/video.png">
+					<video direction="0" v-else-if="item.bean.psr=='video'" :src="parseVideo(item.bean.txt)"></video>
+					
 				</image>
 				<u-parse v-else-if="item.bean.psr=='picture'" :content="parseImage(item.bean.txt)" @preview="preview"
 					@navigate="navigate"></u-parse>
@@ -136,6 +136,9 @@
 			parseImage(src) {
 				return parseMedia(src, this.imgUrl)
 			},
+			parseVideo(url){
+				return url.indexOf("http")!=-1?url:this.imgUrl +url;
+			},
 			/* 获取窗口尺寸 */
 			getWindowSize() {
 				uni.getSystemInfo({
@@ -181,8 +184,9 @@
 			clickVideo(_vpath) {
 				// this.videoSrc = _vpath;
 				// this.showVideo = true;
+				let videoUrl = _vpath.indexOf("http")!=-1? _vpath: this.imgUrl +_vpath;
 				uni.navigateTo({
-					url: "/pages/custom/myVideo?item=" + _vpath
+					url: "/pages/custom/myVideo?item=" + videoUrl
 				})
 			},
 			/* 隐藏弹窗 */

@@ -112,7 +112,7 @@
 										<text v-show="selVoiceIndex == index"
 											style="float:left;font-size: 26upx;position: relative;top: 6upx;">{{item.sub_txt}}"</text>
 									</view>
-									<video direction="0" v-else-if="item.psr=='video'" :src="imgUrl+item.txt"></video>
+									<video direction="0" v-else-if="item.psr=='video'" :src="parseVideo(item.txt)"></video>
 									<rich-text v-else :nodes="parseEmotion(item.txt)"></rich-text>
 								</view>
 							</view>
@@ -141,7 +141,7 @@
 										<text v-show="selVoiceIndex == index"
 											style="float:right;font-size: 26upx;position: relative;top: 6upx;">{{item.sub_txt}}"</text>
 									</view>
-									<video direction="0" v-else-if="item.psr=='video'" :src="imgUrl+item.txt"></video>
+									<video direction="0" v-else-if="item.psr=='video'" :src="parseVideo(item.txt)"></video>
 									<rich-text v-else :nodes="parseEmotion(item.txt)"></rich-text>
 								</view>
 							</view>
@@ -176,7 +176,8 @@
 	import {
 		getHeadPic,
 		parseEmotion,
-		parseMedia
+		parseMedia,
+		
 	} from '../../../common/utils';
 	export default {
 		components: {
@@ -294,6 +295,9 @@
 			},
 			parseImage(message) {
 				return parseMedia(message, this.imgUrl);
+			},
+			parseVideo(url){
+				return url.indexOf("http")!=-1?url:this.imgUrl +url;
 			},
 			refresherrefresh() {
 				console.log('自定义下拉刷新被触发');
