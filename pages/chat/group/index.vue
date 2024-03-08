@@ -131,12 +131,13 @@
 
 							<view @contextmenu="clickRight($event, item.bean)"
 								@longpress="onLongPress($event,item.bean)"
-								:class="[item.bean.psr=='picture'||item.bean.psr=='video'?'':'content bg-green shadow']" style="color:#222;">
+								:class="[item.bean.psr=='picture'||item.bean.psr=='video'?'':'content bg-green shadow']"
+								style="color:#222;">
 								<!-- <image @tap="clickVideo(imgUrl+item.bean.oldTxt)" v-if="item.bean.psr=='video'"
 									style="width:418upx;height:335upx;border-radius: 5px"
 									src="../../../static/images/video.png"></image> -->
-									<video direction="0" v-if="item.bean.psr == 'video'" play-btn-position="center"
-										:src="parseVideo(item.bean.txt)"></video>
+								<video direction="0" v-if="item.bean.psr == 'video'" play-btn-position="center"
+									:src="parseVideo(item.bean.txt)"></video>
 								<u-parse v-else-if="item.bean.psr=='picture'" :content="parseImage(item.bean.txt)"
 									@preview="preview" @navigate="navigate"></u-parse>
 								<view @tap="clickVoice(item.bean.txt,index)" v-else-if="item.bean.psr=='voice'">
@@ -178,12 +179,13 @@
 
 							<view @contextmenu="clickRight($event, item.bean)"
 								@longpress="onLongPress($event,item.bean)"
-								:class="[item.bean.psr=='picture'||item.bean.psr=='video'?'':'content bg-green shadow']" style="color:#222;">
+								:class="[item.bean.psr=='picture'||item.bean.psr=='video'?'':'content bg-green shadow']"
+								style="color:#222;">
 								<!-- <image @tap="clickVideo(imgUrl+item.bean.oldTxt)" v-if="item.bean.psr=='video'"
 									style="width:418upx;height:335upx;border-radius: 5px"
 									src="../../../static/images/video.png"></image> -->
-									<video direction="0" v-if="item.bean.psr == 'video'" play-btn-position="center"
-										:src="parseVideo(item.bean.txt)"></video>
+								<video direction="0" v-if="item.bean.psr == 'video'" play-btn-position="center"
+									:src="parseVideo(item.bean.txt)"></video>
 								<u-parse v-else-if="item.bean.psr=='picture'" :content="parseImage(item.bean.txt)"
 									@preview="preview" @navigate="navigate"></u-parse>
 								<view @tap="clickVoice(item.bean.txt,index)" v-else-if="item.bean.psr=='voice'">
@@ -235,7 +237,8 @@
 			<text @tap.stop="clearAiteToMy" class="cuIcon-close text-red " style="margin-left: 16upx;"></text>
 		</view>
 
-		<view class="cu-bar foot input" :style="[{bottom:InputBottom+'upx'}]"
+		<view class="cu-bar foot input"
+			:style="[{bottom:InputBottom+'upx'}]"
 			style="flex-direction: row;height:180px; width: calc(70% - 50px);left: calc(30% + 50px);background-color: #fff;">
 			<input @keydown.enter="send" style="background: #eee!important;" disabled="true" placeholder="禁言"
 				placeholder-style="text-align:center;background: #eee;" v-show="isGroupChat && stopSpeak==1"
@@ -386,6 +389,7 @@
 				input_is_focus: false,
 				player: null,
 				toIP: "",
+				elem: null,
 				selVoiceIndex: -1,
 				domHeight: 0,
 				c_type: 1,
@@ -451,6 +455,9 @@
 		onHide() {
 			uni.$off("scrollTopFn");
 		},
+		onShow(){
+			
+		},
 		computed: {
 			...mapState('user', [
 				'user',
@@ -477,9 +484,12 @@
 			}
 		},
 		mounted() {
-			document.oncontextmenu = function(e) {
-				return false;
-			}
+			// document.oncontextmenu = function(e) {
+			// 	return false;
+			// }
+			
+		},
+		beforeDestroy() {
 		},
 		methods: {
 			...mapMutations('chat', [
@@ -513,6 +523,15 @@
 				'sendBaseDaoAction'
 
 			]),
+			handleDrop(e) {
+				// let files = e.dataTransfer.files;
+				e.stopPropagation();
+				console.log("=====files", e)
+				
+			},
+			handleDragOver(e) {
+			
+			},
 			getHeadPic(img) {
 				return getHeadPic(img, this.imgUrl)
 			},
@@ -522,8 +541,8 @@
 			parseImage(message) {
 				return parseMedia(message, this.imgUrl)
 			},
-			parseVideo(message){
-				return parseVideo(message,this.imgUrl)
+			parseVideo(message) {
+				return parseVideo(message, this.imgUrl)
 			},
 			loadName() {
 				let s = uni.getStorageSync(this.toid + "_NOTE");
@@ -1455,7 +1474,7 @@
 					}
 					return;
 				}
-				var src = _vpath.indexOf("http")!=-1 ? _vpath:_this.imgUrl + _vpath;
+				var src = _vpath.indexOf("http") != -1 ? _vpath : _this.imgUrl + _vpath;
 				this.selVoiceIndex = _index;
 				//this.voicePath = _vpath;
 				this.player = uni.createInnerAudioContext();

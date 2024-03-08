@@ -71,6 +71,9 @@ export default{
 	setGreetingpic5(state,payload){
 		state.greetingpic5 = payload;
 	},
+	setRefreshTimer(state,payload){
+		state.refreshTimer = payload;
+	},
 	clearData(state){
 		state = {
 			...state,

@@ -20,5 +20,6 @@ export const state = {
 	greetingpic3: "",
 	greetingpic4: "",
 	greetingpic5: "",
-	greetingList: []
+	greetingList: [],
+	refreshTimer:null
 }

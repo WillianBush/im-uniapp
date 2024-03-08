@@ -93,6 +93,11 @@ export default {
 							dispatch("user/isEmployeeAction", null, {
 								root: true,
 							});
+							let refresh = uni.getStorageSync("refresh")
+							if(refresh){
+								dispatch("openRefreshAction",true);
+							}
+							
 						}
 					}, 500);
 					//获取domain成功后，执行
@@ -178,6 +183,23 @@ export default {
 			}, {
 				root: true
 			})
+		}
+	},
+	openRefreshAction({state,dispatch,commit},payload){
+		commit("setIsOpenRefresh",payload)
+		uni.setStorageSync("refresh",payload)
+		
+		if(payload){
+			if(!state.refreshTimer){
+				commit("setRefreshTimer",setInterval(()=>{
+					dispatch("chat/refreshChatList",null, {
+					root: true
+				})
+				},3*1000))
+			}
+		}else{
+			state.refreshTimer&&clearInterval(state.refreshTimer)
+			commit("setRefreshTimer",null)
 		}
 	},
 	checkAppVersion({

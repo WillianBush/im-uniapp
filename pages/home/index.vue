@@ -197,7 +197,7 @@
 				'setArList'
 			]),
 			...mapMutations('app', [
-				'setIsOpenRefresh'
+				'openRefreshAction'
 			]),
 			getHeadPic(img) {
 				return getHeadPic(img ,this.imgUrl)
@@ -216,7 +216,16 @@
 				'isSuperUserAction'
 			]),
 			isOpenRefresh(e) {
-				this.setIsOpenRefresh(e.detail.value);
+				this.openRefreshAction(e.detail.value);
+			},
+			handleDrop(e) {
+				// let files = e.dataTransfer.files;
+				e.stopPropagation();
+				console.log("=====files", e)
+				
+			},
+			handleDragOver(e) {
+			
 			},
 			closeModal() {
 				this.visiable = false;
