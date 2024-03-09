@@ -228,6 +228,8 @@ export default {
 				});
 			}
 		}).catch(error => {
+			console.log("####error:",error)
+			
 			uni.showToast({
 				icon: 'none',
 				position: 'bottom',
@@ -241,6 +243,8 @@ export default {
 		getFooterHotItem().then(res => {
 			commit("setHotItem", res.data.body);
 		}).catch(error => {
+			console.log("####error:",error)
+			
 			uni.showToast({
 				icon: 'none',
 				position: 'bottom',
@@ -254,6 +258,8 @@ export default {
 		getListWithMid().then(res => {
 			commit("setFaxianSiteList", res.data.body)
 		}).catch(error => {
+			console.log("####error:",error)
+			
 			uni.showToast({
 				icon: 'none',
 				position: 'bottom',

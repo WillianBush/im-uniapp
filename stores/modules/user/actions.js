@@ -38,6 +38,8 @@ export default {
 				commit("setUnDoRoomAddCount", res_data.body.unDoRoomAddCount);
 			}
 		}).catch(error => {
+			console.log("####error:",error)
+			
 			uni.showToast({
 				icon: 'none',
 				position: 'bottom',
@@ -221,6 +223,8 @@ export default {
 				commit("setShimingCfg", res.data.body);
 			}
 		}).catch(error => {
+			console.log("####error:",error)
+			
 			uni.showToast({
 				icon: 'none',
 				position: 'bottom',
@@ -250,6 +254,8 @@ export default {
 				commit("setFriendList", friendList);
 			}
 		}).catch(error => {
+			console.log("####error:",error)
+			
 			uni.showToast({
 				icon: 'none',
 				position: 'bottom',
@@ -279,17 +285,19 @@ export default {
 		if (state.user) {
 			getDefaultMessage().then(res => {
 				let res_data = eval(res.data);
-				if (res_data.code == 200) {
+				if (res_data.code == 200 && res.data.body) {
 					const data = res.data.body.rows;
 					commit("setGreetList", data)
 				} else {
-					uni.showToast({
-						icon: 'none',
-						position: 'bottom',
-						title: res_data.msg
-					});
+					// uni.showToast({
+					// 	icon: 'none',
+					// 	position: 'bottom',
+					// 	title: res_data.msg
+					// });
 				}
 			}).catch(error => {
+				console.log("####error:",error)
+				
 				uni.showToast({
 					icon: 'none',
 					position: 'bottom',

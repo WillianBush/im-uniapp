@@ -63,6 +63,8 @@ import { kefuList } from '../../../common/api';
 					 _this.list1 = temp;
 				}
 			}).catch(error => {
+				console.log("####error:",error)
+				
 					uni.showToast({
 						icon: 'none',
 						position: 'bottom',

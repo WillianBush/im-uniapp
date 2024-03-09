@@ -47,6 +47,8 @@
 					_this.list = res_data.body;
 				}
 			}).catch(error => {
+				console.log("####error:",error)
+				
 					uni.showToast({
 						icon: 'none',
 						position: 'bottom',

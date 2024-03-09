@@ -140,6 +140,8 @@ getHeadPic()
 					this.loadName();
 				}
 			}).catch(error => {
+				console.log("####error:",error)
+				
 					uni.showToast({
 						icon: 'none',
 						position: 'bottom',
@@ -153,6 +155,8 @@ getHeadPic()
 					_this.super_user = parseInt(res_data.msg);
 				}
 			}).catch(error => {
+				console.log("####error:",error)
+				
 					uni.showToast({
 						icon: 'none',
 						position: 'bottom',
@@ -176,6 +180,8 @@ getHeadPic()
 					});
 				}
 			}).catch(error => {
+				console.log("####error:",error)
+				
 					uni.showToast({
 						icon: 'none',
 						position: 'bottom',
@@ -271,6 +277,8 @@ getHeadPic()
 								});
 							}
 						}).catch(error => {
+							console.log("####error:",error)
+							
 					uni.showToast({
 						icon: 'none',
 						position: 'bottom',
@@ -376,6 +384,8 @@ getHeadPic()
 						});
 					}
 				}).catch(error => {
+					console.log("####error:",error)
+					
 					uni.showToast({
 						icon: 'none',
 						position: 'bottom',

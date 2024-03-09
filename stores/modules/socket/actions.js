@@ -488,29 +488,27 @@ export default {
 		//更新联系记录最后一条显示内容和未读统计信息
 		let unreadCount = 0;
 		let c = 0; //未读数量
-		if (!darao) { // 这里没有开启免打扰功能才设置未读信息(是否合理？)
-			if (
-				(!rootState.chat.curChatEntity ||
-					chatId != rootState.chat.curChatEntity.id) &&
-				messageBean[0].bean.fromUid != user.id
-			) { // 当前聊天没有在聊天页面，或者，不是正在聊天的对象，也不是自己发的消息。则计算未读
-				//处理用户信息未读统计
-				let str = uni.getStorageSync(
-					user.id + "#" + chatId + "_CHAT_MESSAGE_UNREAD"
+		if (
+			(!rootState.chat.curChatEntity ||
+				chatId != rootState.chat.curChatEntity.id) &&
+			messageBean[0].bean.fromUid != user.id
+		) { // 当前聊天没有在聊天页面，或者，不是正在聊天的对象，也不是自己发的消息。则计算未读
+			//处理用户信息未读统计
+			let str = uni.getStorageSync(
+				user.id + "#" + chatId + "_CHAT_MESSAGE_UNREAD"
+			);
+			if (str && str != "") {
+				c = parseInt(str) + 1;
+				uni.setStorageSync(
+					user.id + "#" + chatId + "_CHAT_MESSAGE_UNREAD",
+					c + ""
 				);
-				if (str && str != "") {
-					c = parseInt(str) + 1;
-					uni.setStorageSync(
-						user.id + "#" + chatId + "_CHAT_MESSAGE_UNREAD",
-						c + ""
-					);
-				} else {
-					c = 1;
-					uni.setStorageSync(
-						user.id + "#" + chatId + "_CHAT_MESSAGE_UNREAD",
-						"1"
-					);
-				}
+			} else {
+				c = 1;
+				uni.setStorageSync(
+					user.id + "#" + chatId + "_CHAT_MESSAGE_UNREAD",
+					"1"
+				);
 			}
 		}
 
@@ -530,7 +528,7 @@ export default {
 			}
 			unreadCount = unreadCount + item.unread;
 		});
-		commit("chat/setUnReadMsgSum", unreadCount, {
+		commit("user/setUnReadMsgSum", unreadCount, {
 			root: true
 		});
 	},

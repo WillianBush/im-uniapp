@@ -699,7 +699,7 @@
 						this.chatCfg = res_data.body;
 					}
 				}).catch(error => {
-					console.log("====", error)
+				console.log("####error:",error)
 					uni.showToast({
 						icon: 'none',
 						position: 'bottom',
@@ -713,8 +713,8 @@
 				}).then(res => {
 					this.entity = res;
 				}).catch(error => {
-					console.log("====", error)
-
+					console.log("####error:",error)
+					
 					uni.showToast({
 						icon: 'none',
 						position: 'bottom',
@@ -731,7 +731,7 @@
 							"");
 					}
 				}).catch(error => {
-					console.log("====", error)
+				console.log("####error:",error)
 
 					uni.showToast({
 						icon: 'none',
@@ -810,7 +810,7 @@
 					uni.hideLoading()
 				}).catch(error => {
 					uni.hideLoading();
-					console.log("====", error)
+				console.log("####error:",error)
 					uni.showToast({
 						icon: 'none',
 						position: 'bottom',

@@ -745,7 +745,7 @@
 						});
 					}
 				}).catch(error => {
-					console.log("error:", error)
+				console.log("####error:",error)
 
 					uni.showToast({
 						icon: 'none',
@@ -804,7 +804,7 @@
 					}
 				}).catch(error => {
 					this.setChatMyLoadding(false)
-					console.log("error:", error)
+				console.log("####error:",error)
 					uni.showToast({
 						icon: 'none',
 						position: 'bottom',
@@ -886,7 +886,7 @@
 						}
 					}
 				}).catch(error => {
-					console.log("error:", error)
+				console.log("####error:",error)
 
 					uni.showToast({
 						icon: 'none',
@@ -1166,7 +1166,7 @@
 							});
 						}
 					}).catch(error => {
-						console.log("error:", error)
+				console.log("####error:",error)
 
 						uni.showToast({
 							icon: 'none',
@@ -1260,7 +1260,7 @@
 						}
 					}
 				}).catch(error => {
-					console.log("error:", error)
+				console.log("####error:",error)
 
 					uni.showToast({
 						icon: 'none',

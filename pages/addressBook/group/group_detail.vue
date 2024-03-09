@@ -78,6 +78,8 @@
 					_this.room = res_data.body;
 				}
 			}).catch(error => {
+				console.log("####error:",error)
+				
 					uni.showToast({
 						icon: 'none',
 						position: 'bottom',
@@ -95,6 +97,8 @@
 					}
 				}
 			}).catch(error => {
+				console.log("####error:",error)
+				
 					uni.showToast({
 						icon: 'none',
 						position: 'bottom',
