@@ -30,6 +30,10 @@ Vue.component('vip-custom', vipCustom)
 import number_jpan from './components/numberJpan/numberJpan.vue'
 Vue.component('number-jpan', number_jpan)
 
+import uniPopup from './components/user/updatepage/uni-popup/uni-popup'
+
+Vue.component('uni-popup', uniPopup)
+
 // Vue.prototype.$store = store;
 
 /*这里是为了从domian拿到数据后，再进行app启动，防止接口访问时，domian未获取到*/

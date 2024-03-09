@@ -9,7 +9,7 @@
  */
 export default function combineURLs(baseURL, relativeURL) {
 
-  console.log('combineURLs--'+baseURL+"==="+relativeURL)
+  // console.log('combineURLs--'+baseURL+"==="+relativeURL)
   if(baseURL.indexOf(/\/+$/) !== -1){
     return relativeURL
         ? baseURL.replace(/\/+$/, '') + '/' + relativeURL.replace(/^\/+/, '')

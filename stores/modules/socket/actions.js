@@ -99,6 +99,9 @@ export default {
 			wsOpenDo = false;
 			commit("setIsOpenSocket", true);
 			commit("setContinueCloseCount", 0);
+			commit("setCheckMsgTimer", setInterval(() => {
+				dispatch('checkMessageSendStatus')
+			}, state.checkTime))
 			Log.d(TAG, "=====ws通道打开，可以发送数据");
 			let user = uni.getStorageSync("USER");
 			if (user) {
@@ -114,21 +117,21 @@ export default {
 						user_id: user.id + "#" + Vue.prototype.$clientType,
 					}
 				});
-				let WAIT_SEND_MSG = uni.getStorageSync("WAIT_SEND_MSG");
-				Log.d(TAG, "WAIT_SEND_MSG:", WAIT_SEND_MSG);
+				// let WAIT_SEND_MSG = uni.getStorageSync("WAIT_SEND_MSG");
+				// Log.d(TAG, "WAIT_SEND_MSG:", WAIT_SEND_MSG);
 
-				if (WAIT_SEND_MSG && WAIT_SEND_MSG != "") {
-					let WAIT_SEND_MSG_LIST = JSON.parse(WAIT_SEND_MSG);
-					WAIT_SEND_MSG_LIST.forEach((item) => {
-						Log.d(TAG, "消息重新发送ing.....", item);
-						dispatch("WEBSOCKET_SEND", item);
-					});
-				}
+				// if (WAIT_SEND_MSG && WAIT_SEND_MSG != "") {
+				// 	let WAIT_SEND_MSG_LIST = JSON.parse(WAIT_SEND_MSG);
+				// 	WAIT_SEND_MSG_LIST.forEach((item) => {
+				// 		Log.d(TAG, "消息重新发送ing.....", item);
+				// 		dispatch("WEBSOCKET_SEND", item);
+				// 	});
+				// }
 
-				uni.removeStorageSync("WAIT_SEND_MSG");
-				commit("chat/setWAIT_SEND_MSG", "", {
-					root: true
-				});
+				// uni.removeStorageSync("WAIT_SEND_MSG");
+				// commit("chat/setWAIT_SEND_MSG", "", {
+				// 	root: true
+				// });
 
 				//#ifndef H5
 				// 保存clientid到服务器，最好延迟一下获取信息否则有时会获取不到
@@ -199,6 +202,60 @@ export default {
 	}) {
 		state.socketTask.close()
 	},
+	// 检查消息队列中，消息发送状态
+	checkMessageSendStatus({
+		state,
+		commit,
+		rootState,
+		dispatch
+	}) {
+		let date = new Date();
+		let curTime = date.getTime()
+		Log.d(TAG, "检查消息队列:", curTime);
+		let len = state.sendQueue.length;
+		if (len) {
+			
+			for (let i = 0; i < len; i++) {
+
+				let message = state.sendQueue[i];
+				if (message.bean.sendFail) break;
+				let timeoutTime = curTime - message.bean.dateTime
+				if (timeoutTime >= 10 * 1000) {
+					
+					// 发送失败
+					if (rootState.chat.curChatEntity &&
+						rootState.chat.curChatEntity.id == message.chatId) { //如果在当前窗口,直接修改当前对话列表
+						message.bean.sendFail = true;
+						commit(
+							"chat/updateCurChatMsgSendStatus",
+							message, {
+								root: true
+							}
+						);
+					}
+					// 修改本地缓存
+					let user = rootState.user.user;
+					let str = uni.getStorageSync(
+						user.id + "#" + message.chatId + "_CHAT_MESSAGE"
+					);
+					if (str && str.length) {
+						var jsonObj = JSON.parse(str);
+						jsonObj.forEach((item) => {
+							if (item.bean.uuid == message.bean.uuid) {
+								item.bean.sendFail = true;
+							}
+						});
+						console.log("======修改后的jsonobj:",jsonObj);
+						uni.setStorageSync(
+							user.id + "#" + message.chatId + "_CHAT_MESSAGE",
+							JSON.stringify(jsonObj)
+						);
+					}
+				}
+			}
+		}
+
+	},
 	parseRevMessage({
 		state,
 		commit,
@@ -206,7 +263,7 @@ export default {
 	}, res_ws) {
 		heartCheck.reset();
 		heartCheck.start();
-		Log.d(TAG, "收到消息:", res_ws.data);
+		// Log.d(TAG, "收到消息:", res_ws.data);
 		let data = JSON.parse(res_ws.data);
 		if (data.result) {
 			data.body = data.result;
@@ -215,9 +272,9 @@ export default {
 			case MessageType.PING:
 				let curTime = new Date().getTime();
 				let time = curTime - state.startPingTime;
-				Log.d(TAG, "当前时间：", curTime);
-				Log.d(TAG, "发送时间：", state.startPingTime);
-				Log.d(TAG, "消息延迟：", time);
+				// Log.d(TAG, "当前时间：", curTime);
+				// Log.d(TAG, "发送时间：", state.startPingTime);
+				// Log.d(TAG, "消息延迟：", time);
 				commit("setDelayTime", time);
 				break;
 			case MessageType.LOGIN:
@@ -420,7 +477,6 @@ export default {
 				);
 			} else { // 别人发来的消息
 				console.log("==========收到别人发来的消息", messageBean)
-
 				commit(
 					"chat/addCurChatMsg",
 					messageBean, {
@@ -450,6 +506,13 @@ export default {
 						isCurSend = true;
 					}
 				});
+				// 从消息队列中删除
+				commit(
+					"socket/removeSendQuene",
+					messageBean[0].bean.uuid, {
+						root: true
+					}
+				);
 				if (!isCurSend) {
 					jsonObj = jsonObj.concat(messageBean);
 					if (jsonObj.length > 30) {
@@ -591,7 +654,7 @@ export default {
 				}
 			}
 
-			
+
 			uni.setStorageSync(
 				user.id + "#" + data.body.chatId + "_CHAT_MESSAGE",
 				JSON.stringify(arrs)
@@ -1070,17 +1133,17 @@ export default {
 			});
 			return
 		};
-		Log.d(TAG, "发送消息：", p);
+		// Log.d(TAG, "发送消息：", p);
 		if (!p.CMD) return
 		let cmd = p.CMD;
 		state.socketTask.send({
 			data: JSON.stringify(p),
 			async success() {
-				Log.d(TAG, "发送成功:" + p.CMD);
+				// Log.d(TAG, "发送成功:" + p.CMD);
 			},
 			async fail() {
 				state.is_open_socket = false;
-				Log.d(TAG, "发送失败：", p.CMD);
+				// Log.d(TAG, "发送失败：", p.CMD);
 				uni.showToast({
 					icon: 'none',
 					position: 'bottom',

@@ -112,20 +112,19 @@
 					<!--自己发出的-->
 					<view v-if="item.bean.fromUid==user.id" class="cu-item self">
 						<view class="main">
-							<block v-if="WAIT_SEND_MSG.indexOf(item.bean.uuid)<0">
-								<block v-if="chatCfg.showUserMsgReadStatus==1">
-									<view v-if="item.bean.read==1&&chatCfg.showUserMsgReadStatus==1"
-										style="margin-right:30upx;color: #999;font-size: 24upx;">已读</view>
-								</block>
-							</block>
 
+							<block v-if="chatCfg.showUserMsgReadStatus==1">
+								<view v-if="item.bean.read==1&&chatCfg.showUserMsgReadStatus==1"
+									style="margin-right:30upx;color: #999;font-size: 24upx;">已读</view>
+							</block>
 							<!-- 消息发送失败...-->
-							<view v-else class="action text-grey">
-								<text class="cuIcon-warnfill text-red text-sl"></text>
+							<view class="action text-grey" v-if="item.bean.sendFail">
+								<image style="width: 40upx;height: 40upx;" @tap="reSendMsg(item)"
+									src="../../../static/fail.png"></image>
 							</view>
 
 							<!-- 消息发送中...-->
-							<view v-if="item.bean.read == 0 && !item.uuid">
+							<view v-if="item.bean.read == 0 && !item.uuid &&!item.bean.sendFail">
 								<text class="iconfont cu-load load-cuIcon loading text-xxxl"
 									style="color: #ddd;"></text>
 							</view>
@@ -402,6 +401,13 @@
 					width: 100%;
 					transform: translate(-50%,-50%);
 					text-align: center;" :src="videoSrc"></video>
+	<view>
+		<!-- 提示窗示例 -->
+		<uni-popup ref="tipDialog" type="dialog">
+			<uni-popup-dialog type="center" cancelText="取消" confirmText="重新发送" title="提示" content="是否重新发送本条消息!"
+				@confirm="queryReSendMsg" @close="cancelSend"></uni-popup-dialog>
+		</uni-popup>
+	</view>
 	</view>
 </template>
 
@@ -497,7 +503,9 @@
 				toIP: "",
 				toName: "",
 				isRefreshTrigger: false,
-				hasMore: true
+				hasMore: true,
+				reSendMsgObj:null,
+				isBlack:false,//是否被拉黑
 			};
 		},
 		onBackPress() {
@@ -544,14 +552,7 @@
 		},
 		mounted() {
 			if (!this.toid) return;
-			let user = uni.getStorageSync("USER");
-			let str = uni.getStorageSync(user.id + "#" + this.toid + '_CHAT_MESSAGE');
-			if (str && str != "") {
-				let messages = JSON.parse(str)
-				this.setCurChatMsgList(messages);
-			} else {
-				this.tongbuMsg()
-			}
+			this.tongbuMsg()
 		},
 		methods: {
 			...mapMutations('chat', [
@@ -562,8 +563,10 @@
 				'setTempBean',
 				'setTempContent',
 				'setArList',
-				'addCurChatMsg'
+				'addCurChatMsg',
+				'updateCurChatMsgSendStatus'
 			]),
+			...mapMutations('socket',['addSendQuene']),
 			...mapActions('socket', [
 				"sendChatMessage",
 				"sendShowInputing",
@@ -581,6 +584,29 @@
 				'collectAction',
 				"sendBaseDaoAction"
 			]),
+			queryReSendMsg(){
+				console.log("======发送",this.reSendMsgObj);
+				let v = {
+					txt: this.reSendMsgObj.bean.txt,
+					fromUid: this.reSendMsgObj.bean.fromUid,
+					chatType: '2',
+					uuid: this.reSendMsgObj.bean.uuid,
+					psr: this.reSendMsgObj.bean.psr,
+					simpleContent: this.reSendMsgObj.bean.simpleContent
+				}
+				if(v.psr == 'voice'){
+					this.sendVoiceMessage(v)
+				}else{
+					this.sendChatMessage(v)
+				}
+				this.reSendMsgObj.bean.sendFail = false
+				this.updateCurChatMsgSendStatus(this.reSendMsgObj);
+				this.addSendQuene(this.reSendMsgObj)
+				
+			},
+			cancelSend(){
+				this.reSendMsgObj = null
+			},
 			transMessage(message) {
 				return parseEmotion(message);
 			},
@@ -595,7 +621,7 @@
 				this.setCurChatMsgList([]);
 				this.setChatMyLoadding(false);
 			},
-			uploadVoice(res){
+			uploadVoice(res) {
 				this.voicePath = res.tempFilePath;
 				let user = uni.getStorageSync("USER");
 				clearInterval(this.recordTimer);
@@ -614,7 +640,7 @@
 				min = min < 10 ? '0' + min : min;
 				sec = sec < 10 ? '0' + sec : sec;
 				msg = min + ':' + sec;
-				console.log("======录音结束",this.voicePath)
+				console.log("======录音结束", this.voicePath)
 				this.Audio2dataURL(this.voicePath, msg)
 				setTimeout(() => {
 					this.scrollTop = 9999999 + Math.random();
@@ -699,7 +725,7 @@
 						this.chatCfg = res_data.body;
 					}
 				}).catch(error => {
-				console.log("####error:",error)
+					console.log("####error:", error)
 					uni.showToast({
 						icon: 'none',
 						position: 'bottom',
@@ -713,8 +739,8 @@
 				}).then(res => {
 					this.entity = res;
 				}).catch(error => {
-					console.log("####error:",error)
-					
+					console.log("####error:", error)
+
 					uni.showToast({
 						icon: 'none',
 						position: 'bottom',
@@ -729,9 +755,18 @@
 					if (res_data.code == 200 && res_data.body && res_data.body.ip) {
 						this.toIP = res_data.body.ip + (res_data.body.ipAddr ? "(" + res_data.body.ipAddr + ")" :
 							"");
+					}else{
+						if(res_data.code == 500){
+							this.isBlack =true
+						}
+						uni.showToast({
+							icon: 'none',
+							position: 'bottom',
+							title: res_data.msg
+						});
 					}
 				}).catch(error => {
-				console.log("####error:",error)
+					console.log("####error:", error)
 
 					uni.showToast({
 						icon: 'none',
@@ -760,9 +795,9 @@
 					pageNumber: this.pageParams.pageNumber,
 				}
 				if (!isRefresh) {
-					uni.removeStorageSync(_this.user.id + "#" + _this.toid + '_CHAT_MESSAGE');
-					uni.removeStorageSync(_this.user.id + "#" + _this.toid +
-						'_CHAT_MESSAGE_LASTCONTENT');
+					// uni.removeStorageSync(_this.user.id + "#" + _this.toid + '_CHAT_MESSAGE');
+					// uni.removeStorageSync(_this.user.id + "#" + _this.toid +
+					// 	'_CHAT_MESSAGE_LASTCONTENT');
 					uni.removeStorageSync(_this.user.id + "#" + _this.toid + '_CHAT_MESSAGE_UNREAD');
 					params.messageId = ""
 				} else {
@@ -789,16 +824,40 @@
 								cList.push(msg);
 							} //遍历
 							if (!isRefresh) {
+								let user = uni.getStorageSync("USER");
+								let str = uni.getStorageSync(user.id + "#" + _this.toid + '_CHAT_MESSAGE');
+								let resList = []
+								let sendFail = []
+								// console.log("str ===",user.id)
+								// console.log("str ===",_this.toid)
+								// console.log("str ===",str)
+								if (str && str != "") {
+									let messages = JSON.parse(str)
+									// console.log("messages ===",messages)
+									sendFail = messages.filter(item =>item.bean.sendFail);
+									resList = messages.filter(item=>!item.bean.sendFail);
+									// 有新消息，本地没有同步到使用服务器消息
+									if (resList[resList.length - 1].bean.messageId != cList[cList.length - 1]
+										.bean.messageId) {
+										resList = cList;
+									}
+								} else {
+									resList = cList;
+								}
+								console.log("========sendFail",sendFail)
+								if(sendFail.length){ // 存在发送失败的
+									resList = resList.concat(sendFail);
+								}
 								//1：先清楚和刷新当前显示列表
-								_this.setCurChatMsgList(cList);
+								_this.setCurChatMsgList(resList);
 								// 缓存30条数据到本地
-								if (cList.length > 30) {
-									cList = cList.splice(cList.length - 30, cList.length)
+								if (resList.length > 30) {
+									resList = resList.splice(resList.length - 30, resList.length)
 								}
 								//2：再清除和刷新大消息列表当前聊天对象数据
 								uni.setStorageSync(_this.user.id + "#" + _this.toid + '_CHAT_MESSAGE', JSON
 									.stringify(
-										cList));
+										resList));
 								_this.scrollToBottom()
 							} else {
 								//上拉刷新
@@ -810,7 +869,7 @@
 					uni.hideLoading()
 				}).catch(error => {
 					uni.hideLoading();
-				console.log("####error:",error)
+					console.log("####error:", error)
 					uni.showToast({
 						icon: 'none',
 						position: 'bottom',
@@ -1115,6 +1174,10 @@
 				}, 300)
 
 			},
+			reSendMsg(message) {
+				this.reSendMsgObj = message;
+				this.$refs.tipDialog.open()
+			},
 			send() {
 				let _this = this;
 				setTimeout(() => {
@@ -1191,7 +1254,7 @@
 						_this.scrollToBottom();
 					}, 100)
 				}).catch(error => {
-					console.log("=======error:",error)
+					console.log("=======error:", error)
 					uni.showToast({
 						icon: 'none',
 						position: 'bottom',
@@ -1223,7 +1286,7 @@
 			voiceCancel() {
 				this.RECORDER.stop(); //录音结束
 			},
-		
+
 			videoChangeFC(e) {
 				if (!e.detail.fullScreen) {
 					this.showVideo = false;
@@ -1247,8 +1310,8 @@
 					}
 					return;
 				}
-				
-				var src = _vpath.indexOf("http")!=-1?_vpath:this.imgUrl + _vpath;
+
+				var src = _vpath.indexOf("http") != -1 ? _vpath : this.imgUrl + _vpath;
 				this.selVoiceIndex = _index;
 				this.player = uni.createInnerAudioContext();
 				this.player.src = src; //音频地址
@@ -1305,7 +1368,7 @@
 					},
 					success(res1) {
 						uni.hideLoading()
-						
+
 						let json = eval("(" + res1.data + ")");
 						console.log("===========upload", res1)
 						// 显示上传信息
@@ -1448,7 +1511,7 @@
 	/* 遮罩 */
 	.shade {
 		position: fixed;
-		z-index: 100;
+		z-index: 10;
 		top: 0;
 		//right: 0;
 		//bottom: 0;
@@ -1457,7 +1520,7 @@
 
 		.pop {
 			position: fixed;
-			z-index: 101;
+			z-index: 11;
 			width: 180upx;
 			box-sizing: border-box;
 			font-size: 28upx;

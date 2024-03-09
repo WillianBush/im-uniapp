@@ -57,6 +57,16 @@ export default {
 		console.log("========curChatMsgList:",state.curChatMsgList)
 
 	},
+	updateCurChatMsgSendStatus(state, payload) {
+		 state.curChatMsgList.forEach(item => {
+			if (item.bean.uuid == payload.bean.uuid) {
+				let tempObj = Object.assign({},payload)
+				item =tempObj;				
+			}
+		})
+		console.log("========curChatMsgList:",state.curChatMsgList)
+		
+	},
 	setCurChatAiteToMyList(state, payload) {
 		state.curChatAiteToMyList = payload
 	},

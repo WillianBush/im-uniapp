@@ -661,6 +661,8 @@ export default {
 			user.id + "#" + msgbean.chatId + "_CHAT_MESSAGE_LASTCONTENT",
 			msgbean.bean.simpleContent
 		);
+		// 将消息加入发送队列
+		commit("socket/addSendQuene",msgbean,{root:true})
 		// 转发不重新设置当前消息
 		if(!v.transType){
 			commit("addCurChatMsg", [msgbean]);

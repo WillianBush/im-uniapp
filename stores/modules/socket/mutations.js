@@ -19,11 +19,30 @@ export default {
 		}
 	},
 	setPingTime(state,payload){
-		Log.d(TAG,"setPingTime",payload)
+		// Log.d(TAG,"setPingTime",payload)
 		state.startPingTime = payload
 	},
 	setDelayTime(state,payload){
 		state.delayTime = payload
+	},
+	addSendQuene(state,payload){
+		let temp = state.sendQueue.filter(item => payload.bean.uuid == item.bean.uuid)
+		if(!temp.length){// 不存在才加入队列
+			state.sendQueue.push(payload)
+		}
+	},
+	removeSendQuene(state,payload){
+		let temp =state.sendQueue.filter(item=>item.bean.uuid !== uuid || !item.bean.sendFail)
+		state.sendQueue = temp;
+	},
+	setCheckMsgTimer(state,payload){
+		if(!state.checkMsgTimer){
+			state.checkMsgTimer = payload
+		}
+	},
+	stopCheckMsgTimer(state,payload){
+		state.checkMsgTimer &&clearInterval(state.checkMsgTimer)
+		state.checkMsgTimer = null;
 	},
 	setLock(state,payload){
 		state.lock = payload

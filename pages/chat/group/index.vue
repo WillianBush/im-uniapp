@@ -1321,6 +1321,7 @@
 						chatType: '1',
 						psr: "txt"
 					}
+					v.simpleContent = v.txt;
 					let aite = "";
 					for (var [key, value] of this.aite_map) {
 						if (this.txt.indexOf(key) >= 0) {
