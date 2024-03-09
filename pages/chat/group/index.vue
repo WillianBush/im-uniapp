@@ -243,7 +243,7 @@
 			<input @keydown.enter="send" style="background: #eee!important;" disabled="true" placeholder="禁言"
 				placeholder-style="text-align:center;background: #eee;" v-show="isGroupChat && stopSpeak==1"
 				class="solid-bottom" :adjust-position="true" :focus="false" maxlength="300" cursor-spacing="10"></input>
-			<input id="testInputg" placeholder="请输入信息" style="height:160px !important;line-height:30px;width: 100%;"
+			<input id="testInputg" v-on:paste="handlePaste" placeholder="请输入信息" style="height:160px !important;line-height:30px;width: 100%;"
 				confirm-type="send" @confirm="send" @keydown.shift.enter="altOrShiftEnter"
 				@keydown.alt.enter="altOrShiftEnter" @focus="InputFocus" @blur="InputBlur"
 				v-show="c_type==1&&stopSpeak==0" v-model="txt" @input="inputTxt" class="solid-bottom"
@@ -661,9 +661,16 @@
 			clickRight(event, item) {
 				this.onLongPress(event, item)
 			},
+			handlePaste(e){
+				e.stopPropagation();
+				var clipboardData = e.clipboardData
+				console.log("========handlePaste",e)
+			},
 			paseteImg() {
 				var _this = this;
+				
 				var imgReader = function(item) {
+					console.log("========paseteimg")
 					var blob = item.getAsFile(),
 						reader = new FileReader();
 					var img = new Image();
@@ -718,34 +725,41 @@
 					};
 					reader.readAsDataURL(blob);
 				};
-				const targetEle = document.getElementById('testInputg');
-				if (!targetEle) return;
-				targetEle.addEventListener('paste', function(e) {
-					var clipboardData = e.clipboardData,
-						i = 0,
-						items, item, types;
-
-					if (clipboardData) {
-						items = clipboardData.items;
-
-						if (!items || items.length == 0) {
-							return;
-						}
-						item = items[0];
-						types = clipboardData.types || [];
-
-						for (; i < types.length; i++) {
-							if (types[i] === 'Files') {
-								item = items[i];
-								break;
+				this.$nextTick(()=>{
+					const targetEle = document.getElementById('testInputg');
+					
+					if (!targetEle) return;
+					ele.addEventListener('paste', function(e) {
+						console.log("========paste",e)
+						
+						var clipboardData = e.clipboardData,
+							i = 0,
+							items, item, types;
+					
+						if (clipboardData) {
+							items = clipboardData.items;
+					
+							if (!items || items.length == 0) {
+								return;
+							}
+							item = items[0];
+							types = clipboardData.types || [];
+					
+							for (; i < types.length; i++) {
+								if (types[i] === 'Files') {
+									item = items[i];
+									break;
+								}
+							}
+							if (item && item.kind === 'file' && item.type.match(/^image\//i)) {
+								imgReader(item);
 							}
 						}
-						if (item && item.kind === 'file' && item.type.match(/^image\//i)) {
-							imgReader(item);
-						}
-					}
-				});
+					});
+				})
+				
 			},
+			
 			onShowMethod() {
 				let _this = this;
 				uni.$on("scrollTopFn", () => {
@@ -861,7 +875,7 @@
 					}
 				})
 				this.scrollToBottom();
-				this.paseteImg();
+				// this.paseteImg();
 			},
 			scrollFn(e) {
 				console.log("========scrollFn")
