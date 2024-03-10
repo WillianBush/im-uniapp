@@ -106,6 +106,8 @@
 			},
 			goback() {
 				this.$emit('goBack');
+				uni.navigateBack()
+				
 			},
 			loadMemberList() {
 				let _this = this;

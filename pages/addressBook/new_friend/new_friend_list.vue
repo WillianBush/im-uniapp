@@ -180,6 +180,8 @@
 			},
 			goback() {
 				this.$emit('goBack');
+				uni.navigateBack()
+				
 			},
 			verify(_id, _t) {
 				let _this = this;

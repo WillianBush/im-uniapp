@@ -764,8 +764,8 @@ export default {
 		return new Promise((resolve, reject) => {
 			getRoomCfg().then(res => {
 				let res_data = eval(res.data);
+				let flag = false;
 				if (res_data.code == 200) {
-					let flag = false;
 					//哪个角色可查看群成员详细 0全体 1仅群主 2群主和群管理员
 					if (res_data.body.lookGroupMemberDetailForRole == 0) {
 						flag = true;

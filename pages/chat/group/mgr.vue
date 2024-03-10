@@ -463,7 +463,7 @@
 			<MgrSet v-show="PageCur == 'setting'" :keyid="randomKeyId" @goBack="showGroup"></MgrSet>
 			<UpdName v-show="PageCur == 'upd_name'" :keyid="randomKeyId" @goBack="showGroup"></UpdName>
 			<UpdPic v-show="PageCur == 'upd_pic'" :keyid="randomKeyId" @goBack="showGroup"></UpdPic>
-			<MemberList ref="memberlist" v-show="PageCur == 'member_list'" :keyid="randomKeyId" @goBack="showGroup">
+			<MemberList ref="memberlist" v-if="PageCur == 'member_list'" :keyid="randomKeyId" @goBack="showGroup">
 			</MemberList>
 			<UserDetail ref="userdetail" v-show="PageCur == 'user_detail'" :keyid="randomKeyId" @goBack="showGroup">
 			</UserDetail>
@@ -699,7 +699,7 @@
 					if (res) {
 						this.PageCur = "user_detail";
 						this.randomKeyId = parseInt(Math.random() * 100000000);
-						this.$refs.userdetail.loadData(_id, _this.curChatEntity.id);
+						this.$refs['userdetail'].loadData(_id, _this.curChatEntity.id);
 					}
 				});
 			},
@@ -800,8 +800,6 @@
 			lookMemberList() {
 				this.PageCur = "member_list";
 				this.randomKeyId = parseInt(Math.random() * 100000000);
-
-				this.$refs.memberlist.loadData(); //调用上面子类MemberList里面的方法
 			},
 
 			goMsgRecord() {

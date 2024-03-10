@@ -37,16 +37,29 @@
 							class="cu-btn bg-gradual-green shadow-blur round">搜索</button>
 					</view>
 				</view>
-				<scroll-view @scrolltolower="loadMore" scroll-y="true" class="indexes"
-					:scroll-into-view="'indexes-'+ listCurID" :style="[{height:'calc(100vh - 100upx - 100upx)'}]"
-					:scroll-with-animation="true" :enable-back-to-top="true">
+				<scroll-view scroll-y="true" class="indexes" :scroll-into-view="'indexes-'+ listCurID"
+					:style="[{height:'calc(100vh - 100upx - 100upx)'}]" :scroll-with-animation="true"
+					:enable-back-to-top="true">
 					<block v-for="(item,index) in list" :key="index">
 						<view @longpress="onLongPress($event,item)"
 							style="margin-top:20upx;background-color: #fff;padding:30upx">
-							<view><rich-text :nodes="item.bean.txt"></rich-text></view>
-							<view style="font-size: 24upx;color:#999;margin-top:14upx;">{{item.bean.fromName}}
-								{{item.bean.date}}
+							<video direction="0" v-if="item.bean.psr == 'video'" play-btn-position="center"
+								:src="parseVideo(item.bean.txt)"></video>
+							<u-parse v-else-if="item.bean.psr=='picture'" :content="parseImage(item.bean.txt)"
+								@preview="preview" @navigate="navigate"></u-parse>
+							<view @tap="clickVoice(item.bean.txt,index)" v-else-if="item.bean.psr=='voice'">
+								<text v-show="selVoiceIndex != index"
+									style="float:left;width:100upx;font-size: 52upx;position: relative;top: 4upx;"
+									class="iconfont icon-yuyin1 text-xxl "></text>
+								<text v-show="selVoiceIndex != index"
+									style="float:left;font-size: 26upx;position: relative;top: 4upx;">{{item.bean.subTxt}}"</text>
+								<text v-show="selVoiceIndex == index"
+									style="float:left;width:100upx;font-size: 52upx;position: relative;text-align: left;top:0;line-height: 38upx;"
+									class="iconfont cu-load load-cuIcon loading text-xxl "></text>
+								<text v-show="selVoiceIndex == index"
+									style="float:left;font-size: 26upx;position: relative;top: 6upx;">{{item.bean.subTxt}}"</text>
 							</view>
+							<rich-text style="max-width:440upx" v-else :nodes="transMessage(item.bean.txt)"></rich-text>
 						</view>
 					</block>
 					<view style="height: 100upx;text-align: center;background: #fff;
@@ -163,7 +176,8 @@
 	import {
 		getDefaultMessage,
 		isEmployee,
-		loginOut
+		loginOut,
+		collectList
 	} from "../../common/api";
 	import {
 		mapState,
@@ -171,7 +185,11 @@
 		mapMutations
 	} from 'vuex'
 	import {
-		getHeadPic
+		getHeadPic,
+		dateFormat,
+		parseEmotion,
+		parseMedia,
+		parseVideo
 	} from '../../common/utils';
 	export default {
 		data() {
@@ -242,11 +260,20 @@
 			...mapMutations('chat', [
 				'setTempContent'
 			]),
-			getHeadPic(img){
-				return getHeadPic(img,this.imgUrl);
+			getHeadPic(img) {
+				return getHeadPic(img, this.imgUrl);
 			},
 			clickChat() {
 				this.showPop = false;
+			},
+			transMessage(message) {
+				return parseEmotion(message);
+			},
+			parseImage(message) {
+				return parseMedia(message, this.imgUrl)
+			},
+			parseVideo(message) {
+				return parseVideo(message, this.imgUrl)
 			},
 			/* 获取窗口尺寸 */
 			getWindowSize() {
@@ -345,10 +372,13 @@
 							item.bean = eval("(" + item.jsonstr + ")")
 						})
 						_this.list = res_data.body;
+						if (_this.list.length < 30) {
+							this.p = -1
+						}
 					}
 				}).catch(error => {
-					console.log("=====error",error)
-					
+					console.log("=====error", error)
+
 					uni.showToast({
 						icon: 'none',
 						position: 'bottom',
@@ -360,7 +390,7 @@
 				if (this.loadMoreing) return;
 				this.loadMoreing = true;
 				let _this = this;
-				let user = this.$store.state.user;
+				let user = this.user;
 
 				if (this.p == -1) {
 					//当为-1时就是没有更多的数据了
@@ -467,6 +497,34 @@
 				uni.navigateTo({
 					url: "/pages/mine/greeting_set/index?item=" + index
 				})
+			},
+			clickVideo(_vpath) {
+				uni.navigateTo({
+					url: "/pages/custom/myVideo?item=" + _vpath
+				})
+			},
+			clickVoice(_vpath, _index) {
+				let _this = this;
+				if (this.selVoiceIndex == _index) {
+					this.selVoiceIndex = -1;
+					if (this.player) {
+						this.player.stop();
+					}
+					return;
+				}
+				var src = _vpath.indexOf("http") != -1 ? _vpath : _this.imgUrl + _vpath;
+				this.selVoiceIndex = _index;
+				//this.voicePath = _vpath;
+				this.player = uni.createInnerAudioContext();
+				this.player.src = src; //音频地址
+				this.player.onEnded(() => {
+					_this.selVoiceIndex = -1;
+				});
+				this.player.onStop(() => {
+					_this.selVoiceIndex = -1;
+				});
+
+				this.player.play();
 			},
 			logout() {
 				let _this = this;

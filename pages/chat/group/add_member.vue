@@ -203,6 +203,8 @@
 			},
 			goback() {
 				this.$emit('goBack');
+				uni.navigateBack()
+				
 			},
 			tijiao() {
 				let _this = this;

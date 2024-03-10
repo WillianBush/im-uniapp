@@ -37,13 +37,13 @@
 						style="float:left;font-size:46upx;margin-top:6upx;margin-left:10upx"
 						class="iconfont icon-liaotian1"></text><text
 						style="float:left;margin-top:10upx;margin-left:20upx;font-size: 28upx;">发起群聊</text></view>
-				<view  @tap.stop="addFriend()"
+				<view @tap.stop="addFriend()"
 					style="border-top:1px solid #777;float:left;width:98%;padding-top:10upx;cursor: pointer;">
 					<text style="float:left;font-size:46upx;margin-top:6upx;margin-left:10upx"
 						class="iconfont icon-tianjiahaoyou1"></text><text
 						style="float:left;margin-top:10upx;margin-left:20upx;font-size: 28upx;">添加好友</text>
 				</view>
-				<view  @tap.stop="searchGroup()"
+				<view @tap.stop="searchGroup()"
 					style="border-top:1px solid #777;float:left;width:98%;padding-top:10upx;cursor: pointer;">
 					<text style="float:left;font-size:46upx;margin-top:6upx;margin-left:10upx"
 						class="iconfont icon-chazhao"></text><text
@@ -77,7 +77,7 @@
 								<view class="text-cut" style="position: relative;top: 4px;">
 									<text style="margin-right: 6px;"
 										v-if="item.typeid=='2'&&item.online==0&&item.id!='-1'">最近登陆于{{item.lastLoginDate}}
-							
+
 									</text>
 									<text style="margin-right: 6px;color:red"
 										v-if="item.aiteCount>0">-[你有{{item.aiteCount}}条消息]</text>
@@ -112,8 +112,8 @@
 		<view style="height: calc(100vh - 50upx);width: 70%; float: left; border-left: 1px solid #ddd">
 			<scroll-view :scroll-y="modalName==null" style="width: 100%" class="page"
 				:class="modalName!=null?'show':''">
-				<GroupChat :msgToGroupId="msgToGroupId" :toName="toName" :isGroupChat="isGroupChat" :isRandom="random" :msgToId="msgToId"
-					@openModal="openModal" @openAtModal="openAtModal"></GroupChat>
+				<GroupChat :msgToGroupId="msgToGroupId" :toName="toName" :isGroupChat="isGroupChat" :isRandom="random"
+					:msgToId="msgToId" @openModal="openModal" @openAtModal="openAtModal"></GroupChat>
 			</scroll-view>
 		</view>
 		<view v-if="visiable"
@@ -121,7 +121,7 @@
 			<text @click="closeModal" class="cuIcon-close"
 				style="font-size: 36px; cursor: pointer; position:absolute; top:15px; right: 15px"></text>
 			<UserMgr v-if="mgrType=='user'" :mgrId="mgrId" :friendPic="friendPic" :toid="toId"></UserMgr>
-			<GroupMgr  v-if="mgrType=='group'" :mgrId="mgrId" :toid="toId"></GroupMgr>
+			<GroupMgr v-if="mgrType=='group'" :mgrId="mgrId" :toid="toId"></GroupMgr>
 			<Aite v-if="mgrType=='at'" :roomid="roomid" @closeModal="closeModal"></Aite>
 			<CreateGroup v-if="mgrType=='createGroup'"></CreateGroup>
 		</view>
@@ -170,7 +170,7 @@
 				list: [],
 				super_user: 0,
 				roomid: '',
-				toName:''
+				toName: ''
 			};
 		},
 		computed: {
@@ -191,7 +191,10 @@
 			}
 		},
 		watch: {},
-
+		onLoad(e) {
+			console.log("home.load", e)
+			this.goChat(e)
+		},
 		methods: {
 			...mapMutations('chat', [
 				'setArList'
@@ -200,7 +203,7 @@
 				'openRefreshAction'
 			]),
 			getHeadPic(img) {
-				return getHeadPic(img ,this.imgUrl)
+				return getHeadPic(img, this.imgUrl)
 			},
 			...mapActions('chat', [
 				'listPageAction',
@@ -222,10 +225,10 @@
 				// let files = e.dataTransfer.files;
 				e.stopPropagation();
 				console.log("=====files", e)
-				
+
 			},
 			handleDragOver(e) {
-			
+
 			},
 			closeModal() {
 				this.visiable = false;
@@ -338,18 +341,20 @@
 				ths.setArListShow(list)
 			},
 			goChat(item) { //打开用户聊天详情
-				setTimeout(() => {}, 1000);
-				if (item.id == "-1" || item.typeid == "2") {
-					this.msgToId = item.id;
-					this.isGroupChat = false;
-					this.random = this.random + 1
-					this.toName = item.title
-					console.log("========",this.toName)
-				} else {
-					this.msgToGroupId = item.id;
-					this.isGroupChat = true;
-					this.random = this.random + 1
-				}
+				setTimeout(() => {
+					if (item.id == "-1" || item.typeid == "2") {
+						this.msgToId = item.id;
+						this.isGroupChat = false;
+						this.random = this.random + 1
+						this.toName = item.title
+						console.log("========", this.toName)
+					} else {
+						this.msgToGroupId = item.id;
+						this.isGroupChat = true;
+						this.random = this.random + 1
+					}
+				}, 1000);
+				
 			},
 			showModal(e) {
 				this.modalName = e.currentTarget.dataset.target
@@ -401,6 +406,7 @@
 
 			}
 		},
+
 		//因为这个home/index.vue是组件形式显示的。所有没有页面的生命周期只有mounted等
 		mounted() {
 			this.getChatCfgAction();

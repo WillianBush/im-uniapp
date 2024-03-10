@@ -3,9 +3,9 @@
 		<view class="ws-disconnect" v-show="isCloseNet()">网络已断开，请检查网络稳定性</view>
 		
 		<home :isBlank="isBlank" v-if="PageCur=='home'"></home>
-		<addressBook :isBlank="isBlank" v-if="PageCur=='addressBook'"></addressBook>
-		<faxian v-show="PageCur=='faxian'"></faxian>
-		<mine v-show="PageCur=='mine'"></mine>
+		<addressBook :isBlank="isBlank" v-else-if="PageCur=='addressBook'"></addressBook>
+		<faxian v-else-if="PageCur=='faxian'"></faxian>
+		<mine v-else-if="PageCur=='mine'"></mine>
 		<view ref="footerView" class="cu-bar tabbar bg-white shadow foot" style="position: fixed; z-index: 9;">
 			<view class="action">
 				<view class='cuIcon-cu-image'></view>

@@ -144,6 +144,8 @@
 			},
 			goback() {
 				this.$emit('goBack');
+				uni.navigateBack()
+				
 			},
 			goAddRoomMgr() {
 				this.PageCur = 'add_room_mgr';

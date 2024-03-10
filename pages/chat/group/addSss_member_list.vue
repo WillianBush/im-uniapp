@@ -89,6 +89,8 @@
 			},
 			goback() {
 				this.$emit('goBack');
+				uni.navigateBack()
+				
 			},
 			initData() {
 				let _this = this;

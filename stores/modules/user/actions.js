@@ -238,7 +238,7 @@ export default {
 		friendList().then(res => {
 			let res_data = eval(res.data);
 			if (res_data.code == 200) {
-				let friendList = res_body;
+				let friendList = res_data.body;
 				Log.d(TAG, "===friendList1", friendList)
 				friendList.forEach((item) => {
 					item.list.forEach((item1) => {

@@ -28,7 +28,7 @@
 				<checkbox-group @change="radioChange" style="width:100%">
 					<block v-for="(item,index) in friend_list" :key="index">
 						<view :class="'indexItem-' + item.h" :id="'indexes-' + item.h" :data-index="item.h">
-							<view class="padding">{{item.h}}</view>
+							<view class="padding" style="background-color: #ccc;">{{item.h}}</view>
 							<view class="cu-list menu-avatar no-padding">
 								<view class="cu-item" v-for="(items,index1) in item.list" :key="index1">
 									<view class="cu-avatar round lg"
@@ -117,8 +117,8 @@
 
 					}
 				}).catch(error => {
-					console.log("=====error",error)
-					
+					console.log("=====error", error)
+
 					uni.showToast({
 						icon: 'none',
 						position: 'bottom',
@@ -190,6 +190,12 @@
 
 		},
 		methods: {
+			...mapMutations('user', [
+				'setFriendList'
+			]),
+			...mapMutations('chat', [
+				'addArList'
+			]),
 			getHeadPic(img) {
 				return getHeadPic(img, this.imgUrl)
 			},
@@ -233,8 +239,8 @@
 						});
 					}
 				}).catch(error => {
-					console.log("=====error",error)
-					
+					console.log("=====error", error)
+
 					uni.showToast({
 						icon: 'none',
 						position: 'bottom',

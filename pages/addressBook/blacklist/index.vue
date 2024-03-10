@@ -92,7 +92,7 @@
 				return getHeadPic(headpic, this.imgUrl)
 			},
 			goback() {
-				this.$emit('goBack');
+				uni.navigateBack()
 			},
 			removeBlack(_id) {
 				let _this = this;

@@ -89,7 +89,7 @@
 				return getHeadPic(img, this.imgUrl)
 			},
 			goback() {
-				this.$emit('goBack');
+				uni.navigateBack()
 			},
 			goVerify(_uuid) {
 				uni.navigateTo({

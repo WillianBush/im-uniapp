@@ -81,6 +81,8 @@
 			goback() {
 
 				this.$emit('goBack');
+				uni.navigateBack()
+				
 			},
 			goVerify(_uuid) {
 				uni.navigateTo({

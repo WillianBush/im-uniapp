@@ -36,7 +36,7 @@
 		<scroll-view @scroll="scrollFn" :refresher-enabled="hasMore" @scrolltoupper="scrollToUpper"
 			:refresher-triggered="isRefreshTrigger" @refresherpulling="refresh" :scroll-into-view="viewId"
 			:scroll-top="scrollTop" :scroll-y="true" ref="chatVew" @tap="clickChat()" class="cu-chat"
-			style="background: #fff;" :style="'height: calc(100vh - 168px - '+(120+InputBottom)+'upx)'">
+			style="background: #fff;" :style="'height: calc(100vh - 198px - '+(120+InputBottom)+'upx)'">
 			<block v-for="(item,index) in curChatMsgList">
 				<block v-if="item.opt&&item.opt=='undo'">
 					<view class="cu-info round">{{item.name}} 撤回一条消息</view> -->
@@ -237,16 +237,15 @@
 			<text @tap.stop="clearAiteToMy" class="cuIcon-close text-red " style="margin-left: 16upx;"></text>
 		</view>
 
-		<view class="cu-bar foot input"
-			:style="[{bottom:InputBottom+'upx'}]"
+		<view class="cu-bar foot input" :style="[{bottom:InputBottom+'upx'}]"
 			style="flex-direction: row;height:180px; width: calc(70% - 50px);left: calc(30% + 50px);background-color: #fff;">
 			<input @keydown.enter="send" style="background: #eee!important;" disabled="true" placeholder="禁言"
 				placeholder-style="text-align:center;background: #eee;" v-show="isGroupChat && stopSpeak==1"
 				class="solid-bottom" :adjust-position="true" :focus="false" maxlength="300" cursor-spacing="10"></input>
-			<input id="testInputg" v-on:paste="handlePaste" placeholder="请输入信息" style="height:160px !important;line-height:30px;width: 100%;"
-				confirm-type="send" @confirm="send" @keydown.shift.enter="altOrShiftEnter"
-				@keydown.alt.enter="altOrShiftEnter" @focus="InputFocus" @blur="InputBlur"
-				v-show="c_type==1&&stopSpeak==0" v-model="txt" @input="inputTxt" class="solid-bottom"
+			<input id="testInputg" v-on:paste="handlePaste" placeholder="请输入信息"
+				style="height:160px !important;line-height:30px;width: 100%;" confirm-type="send" @confirm="send"
+				@keydown.shift.enter="altOrShiftEnter" @keydown.alt.enter="altOrShiftEnter" @focus="InputFocus"
+				@blur="InputBlur" v-show="c_type==1&&stopSpeak==0" v-model="txt" @input="inputTxt" class="solid-bottom"
 				:adjust-position="true" :focus="input_is_focus" maxlength="-1" cursor-spacing="10"></input>
 			<view @tap="ChooseImage()" style="cursor: pointer;position: absolute;top: 5px; left: 10px;"><text
 					style="font-size: 60upx;color:#3F92F8" class="iconfont icon-zhaopian-cuxiantiao-fill"></text></view>
@@ -442,6 +441,8 @@
 		},
 		watch: {
 			isRandom: function(newVal, oldVal) {
+				console.log("=====isRandom", newVal)
+
 				this.txt = "" //重新选择置空
 				setTimeout(() => {
 					this.determineGroup()
@@ -455,8 +456,8 @@
 		onHide() {
 			uni.$off("scrollTopFn");
 		},
-		onShow(){
-			
+		onShow() {
+
 		},
 		computed: {
 			...mapState('user', [
@@ -487,10 +488,9 @@
 			// document.oncontextmenu = function(e) {
 			// 	return false;
 			// }
-			
+
 		},
-		beforeDestroy() {
-		},
+		beforeDestroy() {},
 		methods: {
 			...mapMutations('chat', [
 				'setCurChatMsgList',
@@ -527,10 +527,10 @@
 				// let files = e.dataTransfer.files;
 				e.stopPropagation();
 				console.log("=====files", e)
-				
+
 			},
 			handleDragOver(e) {
-			
+
 			},
 			getHeadPic(img) {
 				return getHeadPic(img, this.imgUrl)
@@ -661,14 +661,14 @@
 			clickRight(event, item) {
 				this.onLongPress(event, item)
 			},
-			handlePaste(e){
+			handlePaste(e) {
 				e.stopPropagation();
 				var clipboardData = e.clipboardData
-				console.log("========handlePaste",e)
+				console.log("========handlePaste", e)
 			},
 			paseteImg() {
 				var _this = this;
-				
+
 				var imgReader = function(item) {
 					console.log("========paseteimg")
 					var blob = item.getAsFile(),
@@ -725,26 +725,26 @@
 					};
 					reader.readAsDataURL(blob);
 				};
-				this.$nextTick(()=>{
+				this.$nextTick(() => {
 					const targetEle = document.getElementById('testInputg');
-					
+
 					if (!targetEle) return;
 					ele.addEventListener('paste', function(e) {
-						console.log("========paste",e)
-						
+						console.log("========paste", e)
+
 						var clipboardData = e.clipboardData,
 							i = 0,
 							items, item, types;
-					
+
 						if (clipboardData) {
 							items = clipboardData.items;
-					
+
 							if (!items || items.length == 0) {
 								return;
 							}
 							item = items[0];
 							types = clipboardData.types || [];
-					
+
 							for (; i < types.length; i++) {
 								if (types[i] === 'Files') {
 									item = items[i];
@@ -757,9 +757,9 @@
 						}
 					});
 				})
-				
+
 			},
-			
+
 			onShowMethod() {
 				let _this = this;
 				uni.$on("scrollTopFn", () => {
@@ -855,8 +855,18 @@
 						toid: _this.toid
 					}).then(res => {
 						let res_data = eval(res.data);
-						if (res_data.code == 200 && res_data.body.ip) {
-							_this.toIP = res_data.body.ip + "(" + res_data.body.ipAddr + ")";
+						if (res_data.code == 200) {
+							if (res_data.body.ip)
+								_this.toIP = res_data.body.ip + "(" + res_data.body.ipAddr + ")";
+						} else {
+							if (res_data.code == 500) {
+
+							}
+							uni.showToast({
+								icon: 'none',
+								position: 'bottom',
+								title: res_data.msg
+							});
 						}
 					}).catch(error => {
 						console.log("=====error", error)

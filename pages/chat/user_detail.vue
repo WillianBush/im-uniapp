@@ -99,58 +99,61 @@
 			}
 		},
 		onLoad(e) {
-			let _this = this;
-			this.id = e.id;
-			if (e.room_id && e.room_id != undefined) {
-				this.room_id = e.room_id;
-				this.room_id = e.room_id;
-				isStopSpeak4User({
-					roomid: _this.room_id,
-					uid: _this.id
+			this.loadData(e.id,e.room_id)
+		},
+		methods: {
+			loadData(id,chatId){
+				let _this = this;
+				this.id = id;
+				if (chatId && chatId != undefined) {
+					this.room_id = chatId;
+					isStopSpeak4User({
+						roomid: _this.room_id,
+						uid: _this.id
+					}).then(res => {
+						let res_data = eval(res.data);
+						if (res_data.code == 200) {
+							if (res_data.msg == "0") {
+								_this.groupStopSpeak = false;
+							} else {
+								_this.groupStopSpeak = true;
+							}
+						} else {
+							uni.showToast({
+								title: res_data.msg,
+								duration: 2000
+							});
+						}
+					});
+				}
+				loadTalkUserById({
+					id: this.id
 				}).then(res => {
 					let res_data = eval(res.data);
 					if (res_data.code == 200) {
-						if (res_data.msg == "0") {
-							_this.groupStopSpeak = false;
-						} else {
-							_this.groupStopSpeak = true;
+						_this.userDetail = res_data.body;
+						let s = uni.getStorageSync(_this.userDetail.id + "_NOTE");
+						if (s && s != "") {
+							_this.userDetail.nickName_real = _this.userDetail.nickName;
+							_this.userDetail.nickName = s;
 						}
-					} else {
-						uni.showToast({
-							title: res_data.msg,
-							duration: 2000
-						});
 					}
-				});
-			}
-			loadTalkUserById({
-				id: this.id
-			}).then(res => {
-				let res_data = eval(res.data);
-				if (res_data.code == 200) {
-					_this.userDetail = res_data.body;
-					let s = uni.getStorageSync(_this.userDetail.id + "_NOTE");
-					if (s && s != "") {
-						_this.userDetail.nickName_real = _this.userDetail.nickName;
-						_this.userDetail.nickName = s;
+				})
+				
+				isMyFri({
+					uid: this.id
+				}).then(res => {
+					let res_data = eval(res.data);
+					if (res_data.code == 200) {
+						if (res_data.msg == "1") {
+							_this.isMyFri = true;
+						}
 					}
-				}
-			})
-
-			isMyFri({
-				uid: this.id
-			}).then(res => {
-				let res_data = eval(res.data);
-				if (res_data.code == 200) {
-					if (res_data.msg == "1") {
-						_this.isMyFri = true;
-					}
-				}
-			})
-		},
-		methods: {
+				})
+			},
 			goback() {
 				this.$emit('goBack');
+				uni.navigateBack()
 			},
 			copy(value) {
 				uni.setClipboardData({
@@ -199,7 +202,7 @@
 			},
 			goChat(_id) {
 				uni.navigateTo({
-					url: "/pages/home/index?id=" + _id + "&typeid=2"
+					url: "/pages/home/index?id=" + _id + "&typeid=2" +"&title="+this.userDetail.nickName
 				})
 			}
 		}

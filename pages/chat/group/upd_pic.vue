@@ -55,6 +55,8 @@
 			]),
 			goback() {
 				this.$emit('goBack');
+				uni.navigateBack()
+				
 			},
 			getHeadPic(img){
 				return getHeadPic(img,this.imgUrl)

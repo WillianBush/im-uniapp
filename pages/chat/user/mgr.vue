@@ -101,11 +101,6 @@
 						<div v-else>
 							<view v-if="item.bean.fromUid==user.id" class="cu-item self">
 								<view class="main">
-
-									<view v-if="item.bean.read==0"
-										style="margin-right:30upx;color: #999;font-size: 24upx;">未读</view>
-									<view v-if="item.bean.read==1"
-										style="margin-right:30upx;color: #999;font-size: 24upx;">已读</view>
 									<view class="content bg-green shadow" style="background-color: #98E165;
 			color:#222;">
 										<u-parse v-if="item.bean.psr=='uparse'" :content="transMessage(item.bean.txt)"
@@ -123,7 +118,7 @@
 												style="float:left;font-size: 26upx;position: relative;top: 6upx;">{{item.bean.sub_txt}}"</text>
 										</view>
 										<video direction="0" v-else-if="item.bean.psr=='video'"
-											:src="imgUrl+item.bean.txt"></video>
+											:src="parseVideo(item.bean.txt)"></video>
 										<rich-text v-else :nodes="transMessage(item.bean.txt)"></rich-text>
 
 									</view>
@@ -156,7 +151,7 @@
 												style="float:right;font-size: 26upx;position: relative;top: 6upx;">{{item.bean.sub_txt}}"</text>
 										</view>
 										<video direction="0" v-else-if="item.bean.psr=='video'"
-											:src="imgUrl+item.bean.txt"></video>
+											:src="parseVideo(item.bean.txt)"></video>
 										<rich-text v-else :nodes="transMessage(item.bean.txt)"></rich-text>
 									</view>
 								</view>
@@ -169,6 +164,7 @@
 							style="color:rgb(170, 170, 170);text-align:center;margin-top:30rpx;margin-bottom:20rpx">
 							点击加载更多...
 						</view>
+
 					</div>
 				</view>
 			</view>
@@ -277,7 +273,9 @@
 	} from '../../../const/MessageType';
 	import {
 		getHeadPic,
-		parseEmotion
+		parseEmotion,
+		parseVideo,
+		parseMedia
 	} from '../../../common/utils';
 	export default {
 		props: {
@@ -395,7 +393,8 @@
 				'curChatEntity'
 			]),
 			...mapState('user', [
-				'friendList'
+				'friendList',
+				'user'
 			]),
 			...mapState('app', [
 				'imgUrl',
@@ -418,15 +417,17 @@
 			...mapActions('socket', [
 				'WEBSOCKET_SEND'
 			]),
-			getHeadPic(img){
-				return getHeadPic(img,this.imgUrl)
+			getHeadPic(img) {
+				return getHeadPic(img, this.imgUrl)
 			},
-			transMessage(message){
+			transMessage(message) {
 				return parseEmotion(message)
 			},
-			loadmore() { //页码更换
-				this.pageNumber++;
-				this.tongbuMsg() //recall pagination datas.
+			parseImage(message) {
+				return parseMedia(message, this.imgUrl)
+			},
+			parseVideo(message) {
+				return parseVideo(message, this.imgUrl)
 			},
 			//以下备注方法
 			getNotes() {
@@ -456,6 +457,10 @@
 					duration: 2000
 				});
 			},
+			loadmore() { //页码更换
+				this.pageNumber++;
+				this.tongbuMsg() //recall pagination datas.
+			},
 			tongbuMsg() { //当前页面聊天记录&页码请求
 				let _this = this;
 
@@ -484,25 +489,6 @@
 							} //遍历
 							_this.syncMessageArr.unshift.apply(_this.syncMessageArr, cList)
 
-							let user = uni.getStorageSync("USER");
-							//1：先清楚和刷新当前显示列表
-							_this.setCurChatMsgList([])
-							_this.setCurChatMsgList(_this.syncMessageArr)
-							//2：再清除和刷新大消息列表当前聊天对象数据
-							if (this.chatMessageMap.has(user.id + "#" + this.toid)) {
-								this.updateChatMessageMap({
-									key: user.id + "#" + this.toid,
-									value: this.curChatMsgList
-								})
-							}
-							//3:设置最后一个信息
-							if (this.curChatMsgList.length != 0) {
-								this.curChatMsgList[this.curChatMsgList.length - 1]
-									.bean.simple_content;
-							}
-							//4：刷新本地存储的数据
-							uni.setStorageSync(user.id + "#" + this.toid + '_CHAT_MESSAGE', JSON.stringify(this
-								.curChatMsgList));
 						}
 						for (let i = 0; i < res_data.body.list.length; i++) { //从[0]中取出
 							res_data.body.list[i] = res_data.body.list[i][0]
@@ -513,8 +499,8 @@
 						this.totalCount = res_data.body.totalCount * res_data.body.pageCount;
 					}
 				}).catch(error => {
-					console.log("=====error",error)
-					
+					console.log("=====error", error)
+
 					uni.showToast({
 						title: error.msg ? error.msg : "同步失败",
 						duration: 2000
@@ -556,15 +542,22 @@
 					this.selVoiceIndex = -1;
 					if (this.player) {
 						this.player.stop();
-						console.log("停止了");
 					}
 					return;
 				}
+				var src = _vpath.indexOf("http") != -1 ? _vpath : _this.imgUrl + _vpath;
 				this.selVoiceIndex = _index;
-				this.player = plus.audio.createPlayer(_vpath);
-				this.player.play(function() {
+				//this.voicePath = _vpath;
+				this.player = uni.createInnerAudioContext();
+				this.player.src = src; //音频地址
+				this.player.onEnded(() => {
 					_this.selVoiceIndex = -1;
-				}, function(e) {});
+				});
+				this.player.onStop(() => {
+					_this.selVoiceIndex = -1;
+				});
+
+				this.player.play();
 			},
 			/* 获取窗口尺寸 */
 			getWindowSize() {
@@ -613,7 +606,7 @@
 						_this.super_user = parseInt(res_data.msg);
 					}
 				}).catch(error => {
-					console.log("=====error",error)
+					console.log("=====error", error)
 					uni.showToast({
 						icon: 'none',
 						position: 'bottom',
@@ -637,8 +630,8 @@
 						});
 					}
 				}).catch(error => {
-					console.log("=====error",error)
-					
+					console.log("=====error", error)
+
 					uni.showToast({
 						icon: 'none',
 						position: 'bottom',
@@ -711,8 +704,8 @@
 								});
 							}
 						}).catch(error => {
-							console.log("=====error",error)
-							
+							console.log("=====error", error)
+
 							uni.showToast({
 								icon: 'none',
 								position: 'bottom',
@@ -813,8 +806,8 @@
 						});
 					}
 				}).catch(error => {
-					console.log("=====error",error)
-					
+					console.log("=====error", error)
+
 					uni.showToast({
 						icon: 'none',
 						position: 'bottom',

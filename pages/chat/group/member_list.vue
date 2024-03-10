@@ -67,29 +67,29 @@
 				pageSize: 50, //50条
 				status: "more", // 加载状态
 				timer: null,
-				kw: ""
-				
+				kw: "",
+				curChatEntity:null,
+				user:null,
+				imgUrl:this.$store.state.app.imgUrl
 			}
 		},
 		computed: {
-			...mapState('chat', [
-				'curChatEntity',
-			]),
-			...mapState('user', [
-				'user',
-			]),
-			...mapState('app', [
-				'imgUrl',
-			]),
+		
 		},
-		onLoad() {
-			let _this = this;
-			let user = uni.getStorageSync("USER");
-			this.loadStoreData(this.pageSize, this.numPag);
+		mounted() {
+			this.$nextTick(()=>{
+				this.loadData()
+			})
 		},
 		methods: {
 			getHeadPic(img) {
 				return getHeadPic(img, this.imgUrl)
+			},
+			loadData(){
+				let user = uni.getStorageSync("USER");
+				this.curChatEntity = this.$store.state.chat.curChatEntity
+				this.user = this.$store.state.user.user
+				this.loadStoreData(this.pageSize, this.numPag);
 			},
 			search(a) {
 				if (typeof a !== 'undefined' && a != null && a !== '') {
@@ -166,7 +166,7 @@
 				}).then(res => {
 					let res_data = eval(res.data);
 					if (res_data.code == 200) {
-						let list = res_data.body.records;
+						let list = res_data.body.list;
 						list.forEach((item1) => {
 							let s = uni.getStorageSync(item1.id + "_NOTE");
 							if (s && s != "") {
@@ -181,6 +181,8 @@
 			},
 			goback() {
 				this.$emit('goBack');
+				uni.navigateBack()
+				
 			},
 			search_list() {
 				let _this = this;

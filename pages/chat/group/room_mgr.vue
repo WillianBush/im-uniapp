@@ -91,6 +91,8 @@
 			},
 			goback() {
 				this.$emit('goBack');
+				uni.navigateBack()
+				
 			},
 			goUserDetail(_id) {
 				let _this = this;

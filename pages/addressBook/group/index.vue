@@ -130,7 +130,7 @@
 				this.PageCur = 'main';
 			},
 			goback() {
-				this.$emit('goBack');
+				uni.navigateBack()
 			},
 			goRoomAddList() {
 				this.PageCur = 'list';
