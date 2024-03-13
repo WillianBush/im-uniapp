@@ -21,7 +21,7 @@
 		<scroll-view @scroll="scrollFn" :scroll-into-view="viewId" :scroll-top="scrollTop" :refresher-enabled="hasMore"
 			@refresherrefresh="scrollToUpper" :refresher-triggered="isRefreshTrigger" :scroll-y="true" ref="chatVew"
 			@tap="clickChat()" class="cu-chat"
-			:style="'height: calc(100vh - '+CustomBar+'px - '+(120+InputBottom)+'upx)'">
+			:style="'height: calc(100vh - '+CustomBar+'px - '+(180+InputBottom)+'upx)'">
 			<block v-for="(item,index) in curChatMsgList">
 				<block v-if="item.opt&&item.opt=='undo'">
 					<view style="display: none"></view>
@@ -111,15 +111,18 @@
 					<!--发送者-->
 					<view :id="item.bean.uuid" v-if="item.bean.fromUid==user.id" class="cu-item self">
 						<view class="main">
-							<view v-if="WAIT_SEND_MSG.indexOf(item.bean.uuid)>=0" class="action text-grey">
-								<text class="cuIcon-warnfill text-red text-xxl"></text>
+							<!-- 消息发送失败...-->
+							<view class="action text-grey" v-if="item.bean.sendFail">
+								<image style="width: 40upx;height: 40upx;" @tap="reSendMsg(item)"
+									src="../../../static/fail.png"></image>
 							</view>
+
 							<!-- 消息发送中...-->
-							<view v-if="item.bean.read == 0 && !item.uuid">
+							<view v-if="item.bean.read == 0 && !item.uuid &&!item.bean.sendFail">
 								<text class="iconfont cu-load load-cuIcon loading text-xxxl"
 									style="color: #ddd;"></text>
 							</view>
-							<view  @longtap="onLongPress($event,item.bean)"
+							<view @longtap="onLongPress($event,item.bean)"
 								:class="[item.bean.psr=='picture'?'':'content bg-green shadow']"
 								:style="{backgroundColor:item.bean.psr=='picture'? 'none':'#fff'}" style="color:#222;">
 								<image @tap="clickVideo(imgUrl+item.bean.oldTxt)" v-if="item.bean.psr=='video'"
@@ -191,11 +194,19 @@
 					<!--发送者-->
 					<view :id="item.bean.uuid" v-if="item.bean.fromUid==user.id" class="cu-item self">
 						<view class="main">
-							<view v-if="WAIT_SEND_MSG.indexOf(item.bean.uuid)>=0" class="action text-grey">
-								<text class="cuIcon-warnfill text-red text-xxl"></text>
+							<!-- 消息发送失败...-->
+							<view class="action text-grey" v-if="item.bean.sendFail">
+								<image style="width: 40upx;height: 40upx;" @tap="reSendMsg(item)"
+									src="../../../static/fail.png"></image>
 							</view>
 
-							<view  @longpress="onLongPress($event,item.bean)"
+							<!-- 消息发送中...-->
+							<view v-if="item.bean.read == 0 && !item.uuid &&!item.bean.sendFail">
+								<text class="iconfont cu-load load-cuIcon loading text-xxxl"
+									style="color: #ddd;"></text>
+							</view>
+
+							<view @longpress="onLongPress($event,item.bean)"
 								:class="[item.bean.psr=='picture'?'':'content bg-green shadow']"
 								:style="{backgroundColor:item.bean.psr=='picture'? 'none':'#fff'}" style="color:#222;">
 								<!--因为视频在底层窗口的显示等级是最上层，所以无法嵌套在scroll里面滑动，这里用image 代替-->
@@ -220,9 +231,9 @@
 									:nodes="transMessage(item.bean.txt)"></rich-text>
 							</view>
 						</view>
-						<view  class="cu-avatar radius"
+						<view class="cu-avatar radius"
 							:style="'background-image:url('+getHeadPic(item.bean.fromHeadpic)+');'"></view>
-						<view  class="date">{{item.bean.date}}</view>
+						<view class="date">{{item.bean.date}}</view>
 					</view>
 					<!--接收者-->
 					<view v-else class="cu-item" :id="item.bean.uuid">
@@ -413,6 +424,14 @@
 					width: 100%;
 					transform: translate(-50%,-50%);
 					text-align: center;" :src="imgUrl+videoSrc"></video>
+
+		<view>
+			<!-- 提示窗示例 -->
+			<uni-popup ref="tipDialog" type="dialog">
+				<uni-popup-dialog type="center" cancelText="取消" confirmText="重新发送" title="提示" content="是否重新发送本条消息!"
+					@confirm="queryReSendMsg" @close="cancelSend"></uni-popup-dialog>
+			</uni-popup>
+		</view>
 	</view>
 </template>
 <script>
@@ -513,7 +532,8 @@
 				viewId: "",
 				touchNum: 0, //h5 双击
 				hasMore: true,
-				isRefreshTrigger: false
+				isRefreshTrigger: false,
+				reSendMsgObj: null,
 			};
 		},
 		onBackPress() {
@@ -528,7 +548,7 @@
 			uni.$off("aiteFn");
 			uni.$on("scrollTopFn", () => {
 				let svH = _this.winH - _this.CustomBar - 50;
-				console.log("========_this.scrollDetail.scrollHeight",_this.scrollDetail.scrollHeight)
+				console.log("========_this.scrollDetail.scrollHeight", _this.scrollDetail.scrollHeight)
 				if ((_this.scrollDetail.scrollHeight - _this.scrollDetail.scrollTop - svH) < 300) {
 					//#ifdef APP-PLUS
 					setTimeout(() => {
@@ -697,7 +717,7 @@
 				this.tongbuMsg();
 				this.scrollToBottom();
 			},
-			uploadVoice(res){
+			uploadVoice(res) {
 				let _this = this;
 				this.voicePath = res.tempFilePath
 				let user = uni.getStorageSync("USER");
@@ -745,7 +765,7 @@
 						});
 					}
 				}).catch(error => {
-				console.log("####error:",error)
+					console.log("####error:", error)
 
 					uni.showToast({
 						icon: 'none',
@@ -804,7 +824,7 @@
 					}
 				}).catch(error => {
 					this.setChatMyLoadding(false)
-				console.log("####error:",error)
+					console.log("####error:", error)
 					uni.showToast({
 						icon: 'none',
 						position: 'bottom',
@@ -814,8 +834,8 @@
 			},
 			scrollFn(e) {
 				this.scrollDetail = e.detail;
-				console.log("========_this.scrollDetail.scrollHeight",this.scrollDetail.scrollHeight)
-				
+				console.log("========_this.scrollDetail.scrollHeight", this.scrollDetail.scrollHeight)
+
 			},
 			scrollToUpper() {
 				if (!this.isRefreshTrigger && this.hasMore) {
@@ -886,7 +906,7 @@
 						}
 					}
 				}).catch(error => {
-				console.log("####error:",error)
+					console.log("####error:", error)
 
 					uni.showToast({
 						icon: 'none',
@@ -1166,7 +1186,7 @@
 							});
 						}
 					}).catch(error => {
-				console.log("####error:",error)
+						console.log("####error:", error)
 
 						uni.showToast({
 							icon: 'none',
@@ -1260,7 +1280,7 @@
 						}
 					}
 				}).catch(error => {
-				console.log("####error:",error)
+					console.log("####error:", error)
 
 					uni.showToast({
 						icon: 'none',
@@ -1341,6 +1361,33 @@
 					}, 300)
 				}, 100);
 			},
+			reSendMsg(message) {
+				this.reSendMsgObj = message;
+				this.$refs.tipDialog.open()
+			},
+			queryReSendMsg() {
+				console.log("======发送", this.reSendMsgObj);
+				let v = {
+					txt: this.reSendMsgObj.bean.txt,
+					fromUid: this.reSendMsgObj.bean.fromUid,
+					chatType: '2',
+					uuid: this.reSendMsgObj.bean.uuid,
+					psr: this.reSendMsgObj.bean.psr,
+					simpleContent: this.reSendMsgObj.bean.simpleContent
+				}
+				if (v.psr == 'voice') {
+					this.sendVoiceMessage(v)
+				} else {
+					this.sendChatMessage(v)
+				}
+				this.reSendMsgObj.bean.sendFail = false
+				this.updateCurChatMsgSendStatus(this.reSendMsgObj);
+				this.addSendQuene(this.reSendMsgObj)
+
+			},
+			cancelSend() {
+				this.reSendMsgObj = null
+			},
 			sendEmotion(_a, _b) {
 				let _this = this;
 				if (this.stopSpeak == 1) return;
@@ -1393,7 +1440,7 @@
 					});
 				})
 			},
-		
+
 			// 录音开始
 			voiceBegin(e) {
 				this.RECORDER.start(); //录音开始,
@@ -1407,7 +1454,7 @@
 					this.recordLength++;
 				}, 1000)
 			},
-	
+
 			// 结束录音
 			voiceEnd(e) {
 				this.RECORDER.stop(); //录音结束
@@ -1436,7 +1483,7 @@
 					}
 					return;
 				}
-				var src = _vpath.indexOf("http")!=-1?_vpath:this.imgUrl + _vpath;
+				var src = _vpath.indexOf("http") != -1 ? _vpath : this.imgUrl + _vpath;
 				this.selVoiceIndex = _index;
 				this.player = uni.createInnerAudioContext();
 				this.player.src = src; //音频地址

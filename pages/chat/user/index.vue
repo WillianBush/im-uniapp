@@ -199,10 +199,14 @@
 								<view v-if="item.bean.read==1&&chatCfg.showUserMsgReadStatus==1"
 									style="margin-right:30upx;color: #999;font-size: 24upx;">已读</view>
 							</block>
-							<view v-else class="action text-grey">
-								<text class="cuIcon-warnfill text-red text-xxl"></text>
+							<!-- 消息发送失败...-->
+							<view class="action text-grey" v-if="item.bean.sendFail">
+								<image style="width: 40upx;height: 40upx;" @tap="reSendMsg(item)"
+									src="../../../static/fail.png"></image>
 							</view>
-							<view v-if="item.bean.read == 0 && !item.uuid">
+							
+							<!-- 消息发送中...-->
+							<view v-if="item.bean.read == 0 && !item.uuid &&!item.bean.sendFail">
 								<text class="iconfont cu-load load-cuIcon loading text-xxxl"
 									style="color: #ddd;"></text>
 							</view>
