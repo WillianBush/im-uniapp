@@ -15,7 +15,7 @@
     color:#333">群成员</text>
 				<text style="float:right;margin-top:6upx;" class="lg text-gray cuIcon-right"></text>
 				<text @tap="lookMemberList()"
-					style="font-size: 26upx;float:right;    color: #aaa;">查看{{curChatEntity.memberCount}}名群成员</text>
+					style="font-size: 26upx;float:right;    color: #aaa;">查看{{curChatEntity&&curChatEntity.memberCount}}名群成员</text>
 
 			</view>
 

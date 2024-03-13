@@ -214,14 +214,14 @@ export default {
 		Log.d(TAG, "检查消息队列:", curTime);
 		let len = state.sendQueue.length;
 		if (len) {
-			
+
 			for (let i = 0; i < len; i++) {
 
 				let message = state.sendQueue[i];
 				if (message.bean.sendFail) break;
 				let timeoutTime = curTime - message.bean.dateTime
 				if (timeoutTime >= 10 * 1000) {
-					
+
 					// 发送失败
 					if (rootState.chat.curChatEntity &&
 						rootState.chat.curChatEntity.id == message.chatId) { //如果在当前窗口,直接修改当前对话列表
@@ -245,7 +245,7 @@ export default {
 								item.bean.sendFail = true;
 							}
 						});
-						console.log("======修改后的jsonobj:",jsonObj);
+						console.log("======修改后的jsonobj:", jsonObj);
 						uni.setStorageSync(
 							user.id + "#" + message.chatId + "_CHAT_MESSAGE",
 							JSON.stringify(jsonObj)
@@ -353,6 +353,10 @@ export default {
 				//撤销
 			case MessageType.CHAT_MSG_UNDO:
 				dispatch('chatMsgUndo', data);
+				break;
+			case MessageType.CHAT_MSG_UNDO_MGR:// 管理员撤销消息
+				dispatch('chatMsgUndo', data);
+
 				break;
 			case MessageType.USER_CHAT_MESSAGE:
 			case MessageType.GROUP_CHAT_MESSAGE:
