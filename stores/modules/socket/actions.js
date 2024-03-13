@@ -290,6 +290,7 @@ export default {
 				dispatch('groupMemberRemove', data);
 				break;
 			case MessageType.CHAT_MSG_UNDO:
+			case MessageType.CHAT_MSG_UNDO_MGR:
 				dispatch('chatMsgUndo', data);
 				break;
 			case MessageType.USER_CHAT_MESSAGE:

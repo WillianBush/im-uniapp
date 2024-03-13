@@ -9,8 +9,9 @@
 			</block>
 		</cu-custom>
 
-		<view class="cu-form-group margin-top" style="
+		<view class="cu-form-group margin-top " style="
 		margin: auto auto;
+		background-color: #999;
 		margin-top: 15px;">
 			<input maxlength="-1" v-model="notes" placeholder="请输入备注" />
 		</view>

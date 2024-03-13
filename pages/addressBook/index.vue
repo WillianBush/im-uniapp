@@ -92,13 +92,13 @@
 			<img src="../../static/logo1.png" width="100px" height="100px"
 				style="margin-top: calc(50vh - 50px);margin-left: calc(50% - 50px);"></img>
 		</view>
-		<view style="height: calc(100vh - 50upx);width: 80%; float: left; border-left: 1px solid #ddd">
+		<!-- <view style="height: calc(100vh - 50upx);width: 80%; float: left; border-left: 1px solid #ddd">
 			<scroll-view :scroll-y="modalName==null" style="width: 100%" class="page"
 				:class="modalName!=null?'show':''">
 				<GroupChat :msgToGroupId="msgToGroupId" :isGroupChat="isGroupChat" :isRandom="random" :msgToId="msgToId"
 					@openModal="openModal" @openAtModal="openAtModal"></GroupChat>
 			</scroll-view>
-		</view>
+		</view> -->
 
 
 		<view v-if="visiable"

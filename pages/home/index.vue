@@ -120,10 +120,10 @@
 			style="width: 100%; height: 100%;color:#fff;background-color: #0006; position: fixed;left: 0;top:0; z-index: 10;">
 			<text @click="closeModal" class="cuIcon-close"
 				style="font-size: 36px; cursor: pointer; position:absolute; top:15px; right: 15px"></text>
-			<UserMgr v-if="mgrType=='user'" :mgrId="mgrId" :friendPic="friendPic" :toid="toId"></UserMgr>
+			<UserMgr v-if="mgrType=='user'" :mgrId="mgrId" @createSuc="openCroupChat" @closeModal="closeModal" :friendPic="friendPic" :toid="toId"></UserMgr>
 			<GroupMgr v-if="mgrType=='group'" :mgrId="mgrId" :toid="toId"></GroupMgr>
 			<Aite v-if="mgrType=='at'" :roomid="roomid" @closeModal="closeModal"></Aite>
-			<CreateGroup v-if="mgrType=='createGroup'"></CreateGroup>
+			<CreateGroup v-if="mgrType=='createGroup'" @createSuc="openCroupChat"></CreateGroup>
 		</view>
 	</view>
 </template>
@@ -152,7 +152,7 @@
 				mgrId: '',
 				friendPic: '',
 				toId: '',
-				mgrType: 'user',
+				mgrType: '',
 				refresherTriggered: false, //下拉刷新状态
 				_refresherTriggered: false, //防止异步操作
 				showMenu: false,
@@ -232,6 +232,10 @@
 			},
 			closeModal() {
 				this.visiable = false;
+			},
+			openCroupChat(id){
+				this.visiable = false;
+				this.goChat({id});
 			},
 			openModal(obj) {
 				this.mgrId = obj.id;
@@ -347,7 +351,6 @@
 						this.isGroupChat = false;
 						this.random = this.random + 1
 						this.toName = item.title
-						console.log("========", this.toName)
 					} else {
 						this.msgToGroupId = item.id;
 						this.isGroupChat = true;

@@ -23,7 +23,7 @@
 				</view>
 			</view>
 			<scroll-view scroll-y class="indexes" :scroll-into-view="'indexes-'+ listCurID"
-				:style="[{height:'calc(100vh - 100upx - '+CustomBar+'px)'}]" :scroll-with-animation="true"
+				:style="[{height:'calc(100vh - 200upx - '+CustomBar+'px)'}]" :scroll-with-animation="true"
 				:enable-back-to-top="true">
 				<checkbox-group @change="radioChange" style="width:100%">
 					<block v-for="(item,index) in friend_list" :key="index">
@@ -225,9 +225,10 @@
 							success: function(res) {
 								if (res.confirm) {
 									//去群里
-									uni.navigateTo({
-										url: "/pages/chat/group/index?toid=" + res_data.body.id
-									})
+									// uni.navigateTo({
+									// 	url: "/pages/index/index?toid=" + res_data.body.id
+									// })
+									_this.$emit("createSuc",res_data.body.id)
 								}
 							}
 						});

@@ -174,10 +174,11 @@
 			v-show="notesShow">
 			<image style="width:10px;height:16px;position:absolute;left:3%;top:5%;cursor:pointer"
 				@click="notesShow = false" src="@/static/images/back.png"></image>
-			<view class="cu-form-group margin-top" style="
+			<view class="cu-form-group margin-top " style="
 		margin: auto auto;
 		margin-top: 70px;">
-				<input maxlength="-1" v-model="notes" placeholder="请输入备注" />
+				<input style="background-color: #f5f5f5;margin: 0 20upx;
+	border-radius: 8upx;" maxlength="-1" v-model="notes" placeholder="请输入备注" />
 			</view>
 			<view style="margin-top:20upx;color:#999;font-size:26upx">原昵称：{{curChatEntity.nickName}}
 			</view>
@@ -247,6 +248,12 @@
 					</view>
 				</view>
 			</view>
+		</view>
+		<view v-if="createGroupVisible"
+			style="width: 100%; height: 80%;color:#fff;background-color: #0006; position: fixed;left: 0;top:0; z-index: 10;">
+			<text @click="closeModal" class="cuIcon-close"
+				style="font-size: 36px; cursor: pointer; position:absolute; top:15px; right: 15px"></text>
+			<CreateGroup  @createSuc="openCroupChat"></CreateGroup>
 		</view>
 	</div>
 </template>
@@ -371,17 +378,18 @@
 				},
 				super_user: 0,
 				user_note: "",
-				syncMessageArr: []
+				syncMessageArr: [],
+				createGroupVisible: false,
 			}
 		},
 		watch: {
 			visiable() {
+
 				this.logShow = false
 			},
 			mgrId: function(newVal, oldVal) {
 				this.id = newVal;
-				this.onShowMethod();
-				this.onLoadMethod();
+
 			},
 		},
 		computed: {
@@ -401,7 +409,11 @@
 				'reqUrl'
 			])
 		},
-		mounted() {},
+		mounted() {
+			this.id = this.mgrId
+			this.onShowMethod();
+			this.onLoadMethod();
+		},
 		methods: {
 			...mapMutations('chat', [
 				'deleteMessage',
@@ -417,6 +429,9 @@
 			...mapActions('socket', [
 				'WEBSOCKET_SEND'
 			]),
+			closeModal() {
+				this.createGroupVisible = false;
+			},
 			getHeadPic(img) {
 				return getHeadPic(img, this.imgUrl)
 			},
@@ -438,6 +453,10 @@
 				} else {
 					this.notes = this.curChatEntity.nickName;
 				}
+			},
+			openCroupChat(e){
+				this.$emit("createSuc",e)
+				this.$emit("closeModal");
 			},
 			notesSubmits() {
 				let _this = this;
@@ -722,9 +741,10 @@
 				})
 			},
 			createGroup() {
-				uni.navigateTo({
-					url: "/pages/chat/group/createGroup?fid=" + this.id
-				})
+				// uni.navigateTo({
+				// 	url: "/pages/chat/group/createGroup?fid=" + this.id
+				// })
+				this.createGroupVisible = true;
 			},
 			clearChatMsg() {
 				let _this = this;
