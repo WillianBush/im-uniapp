@@ -70,12 +70,21 @@ export default {
 				});
 			});
 	},
+	async initRootDomain({
+		state,
+		dispatch,
+		commit
+	}) {
+		let rootDomain = await config.requestRootDomain(commit);
+		console.log("获取到rootdomain:", rootDomain)
+		dispatch("initNetBind");
+	},
 	initNetBind({
 		state,
 		dispatch,
 		commit
 	}) {
-		let remoteIP = config.requestRemoteIp(commit); // 获取动态设置接口请求域名
+		let remoteIP = config.requestRemoteIp(commit,state); // 获取动态设置接口请求域名
 		remoteIP
 			.then((resolve, reject) => {
 				if (resolve) {
@@ -228,8 +237,8 @@ export default {
 				});
 			}
 		}).catch(error => {
-			console.log("####error:",error)
-			
+			console.log("####error:", error)
+
 			uni.showToast({
 				icon: 'none',
 				position: 'bottom',
@@ -243,8 +252,8 @@ export default {
 		getFooterHotItem().then(res => {
 			commit("setHotItem", res.data.body);
 		}).catch(error => {
-			console.log("####error:",error)
-			
+			console.log("####error:", error)
+
 			uni.showToast({
 				icon: 'none',
 				position: 'bottom',
@@ -258,8 +267,8 @@ export default {
 		getListWithMid().then(res => {
 			commit("setFaxianSiteList", res.data.body)
 		}).catch(error => {
-			console.log("####error:",error)
-			
+			console.log("####error:", error)
+
 			uni.showToast({
 				icon: 'none',
 				position: 'bottom',

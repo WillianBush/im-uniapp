@@ -14,6 +14,7 @@ export const state = {
 	reqUrl: [], //请求URL地址
 	imgUrl: [], //图片资源请求地址
 	socketUrl: [], //websocket URL地址
+	rootUrl: [], // 根域名
 	/*问候语图像*/
 	greetingpic1: "",
 	greetingpic2: "",
