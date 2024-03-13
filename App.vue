@@ -12,7 +12,7 @@
 		onShow: function(e) {
 			this.$store.commit("app/setAppShow", true);
 			//重要，初始化net 绑定
-			this.$store.dispatch("app/initNetBind");
+			this.$store.dispatch("app/initRootDomain");
 		},
 		onHide: function() {
 			this.$store.dispatch("app/appHideOrShow", false);

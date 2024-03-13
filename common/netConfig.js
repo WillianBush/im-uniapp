@@ -1,3 +1,4 @@
+import { AES_Decrypt } from "./aa";
 import {activeConfig} from "./appConfig";
 const config = {
   isMockApi: false,
@@ -13,13 +14,34 @@ const config = {
     url: [],//这个暂时没用，当初设计是接受参数用的
   },
   uuid: Math.random().toString(36).substring(3, 20),
-  requestRemoteIp: (commit) => {
+  requestRootDomain:(commit) =>{
+	  return new Promise((resolve, reject) => {
+	    uni.request({
+	      url: config.requestUrl,
+	      success: (response) => {
+			let data = AES_Decrypt(response.data);
+	        let res_data =JSON.parse(data).domains;
+	        //更新domain
+	        commit("app/setRootDomain",res_data,{root:true});
+	        resolve(res_data)
+	      },
+	      fail: (error) => {
+	        let data = AES_Decrypt(activeConfig.cache);
+	        let res_data =JSON.parse(data).domains;
+	        //更新domain
+	        commit("app/setRootDomain",res_data,{root:true});
+	        resolve(res_data)
+	      }
+	    })
+	  });
+  },
+  requestRemoteIp: (commit,state) => {
     if (config.RemoteIpInited)
       return Promise.resolve();
     return new Promise((resolve, reject) => {
-      var i = Math.floor((Math.random() * config.requestUrl.length));
+      var i = Math.floor((Math.random() * state.rootUrl.length));
       uni.request({
-        url: config.requestUrl[i],
+        url: state.rootUrl[i],
         success: (response) => {
           //todo 测试
           // config.baseUrl.pro = response.data.data.path;

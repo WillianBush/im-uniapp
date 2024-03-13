@@ -5,7 +5,6 @@
 </template>
 
 <script>
-	import store from "store" //使用vuex对状态进行管理
 	import {
 		activeConfig
 	} from "../../common/appConfig";

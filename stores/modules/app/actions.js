@@ -70,12 +70,18 @@ export default {
 				});
 			});
 	},
+	
+	async initRootDomain({state,dispatch,commit}){
+		let rootDomain = await config.requestRootDomain(commit);
+		console.log("获取到rootdomain:",rootDomain)
+		dispatch("initNetBind");
+	},
 	initNetBind({
 		state,
 		dispatch,
 		commit
 	}) {
-		let remoteIP = config.requestRemoteIp(commit); // 获取动态设置接口请求域名
+		let remoteIP = config.requestRemoteIp(commit,state); // 获取动态设置接口请求域名
 		remoteIP
 			.then((resolve, reject) => {
 				if (resolve) {
@@ -202,40 +208,7 @@ export default {
 			commit("setRefreshTimer",null)
 		}
 	},
-	checkAppVersion({
-		state,
-		commit
-	}) {
-		return new Promise((resolve, reject) => {
-			let timestamp = new Date().getTime();
-			//android:1,ios:2
-			let _appType;
-			let _appName = uni.getSystemInfoSync().appName;
-			getAppVersion({
-					timestamp,
-					appType: _appName === "android" ? 1 : 2,
-					appName: _appName,
-				})
-				.then((res) => {
-					let res_data = eval(res.data);
-					if (res_data.code == 200) {
-						let nativeV = state.SYS_VERSION;
-						let netV = res_data.body.version;
-						let vUpdate = compareVersion(netV, nativeV);
-						commit("setAppNeedUpdate", vUpdate);
-						resolve({
-							vUpdate,
-							...res_data,
-						});
-					} else {
-						reject(res_data);
-					}
-				})
-				.catch((error) => {
-					reject(error);
-				});
-		});
-	},
+	
 	getImageDomainAction({
 		commit
 	}) {

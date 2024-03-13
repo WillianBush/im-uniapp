@@ -25,6 +25,9 @@ export default{
 	setImgDomain(state,payload){
 		state.imgUrl = payload;
 	},
+	setRootDomain(state,payload){
+		state.rootUrl = payload;
+	},
 	setReqDomain(state,payload){
 		Log.d(TAG,"setReqDomain",payload)
 		state.reqUrl = payload;

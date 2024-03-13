@@ -6,7 +6,6 @@
 </template>
 
 <script>
-	import store from "store"//使用vuex对状态进行管理
 	import wInput from '../../components/user/watch-login/watch-input.vue' //input
 	import wButton from '../../components/user/watch-login/watch-button.vue' //button
 	

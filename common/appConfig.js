@@ -46,5 +46,13 @@ const fangyuan= {
 	setupPicture : "/static/splash.jpg"
 }
 
-const activeConfig = configLive1
+const activeConfig = {
+	appName : "너의유야",
+	loginIcon : "/static/logo12.png",
+	registerIcon : "/static/logo12.png",
+	language: "zh-CN",
+	setupPicture : "/static/splash.jpg",
+	requestUrl:"https://gitee.com/wonderful1212/system-config/raw/master/config.conf",
+	cache:"QfCYntTcGJB9iiw3auHmmQEsajQ9jf/Nteug+1xhbqll7Uw/qnVHu/H3iQIxRA8sL+bUiKNuhencOPeIzYcomSKzusIp2/f0bewKYedN1wQK5dazb5AiftaZ7k+mTDQPuqUoYuQXEQmfI3dlHUCegw=="
+}
 export  {configJapan,configLive1,config9113,fangyuan,activeConfig}
