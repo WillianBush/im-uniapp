@@ -176,7 +176,7 @@
 				setTimeout(function() {
 					_this.PageCur = e.currentTarget.dataset.cur;
 					if (_this.PageCur == "faxian") {
-						this.getListWithMidAction();
+						_this.getListWithMidAction();
 					}
 				}, 50)
 

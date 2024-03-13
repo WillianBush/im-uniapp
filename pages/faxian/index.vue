@@ -3,16 +3,6 @@
 		<div class="top-bar">
 			<p>发现</p>
 		</div>
-		<view style="background-color: #fff;">
-			<!-- #ifndef H5 -->
-			<view class="cu-bar bg-white margin-top " @tap="saoma()" style="border-bottom: 1px solid #eee;">
-				<view class="action">
-					<text style="color:#009FE8;font-size:48upx" class="iconfont icon-saoyisao"></text>
-					<text style="color:#222;margin-left:10px;">扫一扫</text>
-				</view>
-			</view>
-			<!--#endif-->
-		</view>
 		<el-dialog width="30%" :visible.sync="serviceShow">
 			<view style="background: #fff;width: 96%;
     margin: auto auto;
@@ -293,12 +283,14 @@
 				noticeDetail({
 					id: e.id
 				}).then(res => {
+					this.loading = false
 					let res_data = eval(res.data);
 					if (res_data.code == 200) {
 						_this.bean = res_data.body;
 					}
 				}).catch(error => {
 					console.log("=====error",error)
+					this.loading = false
 					
 					uni.showToast({
 						icon: 'none',
@@ -317,9 +309,10 @@
 					if (res_data.code == 200) {
 						_this.list = res_data.body;
 					}
+					this.loading = false
 				}).catch(error => {
 					console.log("=====error",error)
-					
+					this.loading = false
 					uni.showToast({
 						icon: 'none',
 						position: 'bottom',
