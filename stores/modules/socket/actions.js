@@ -6,6 +6,7 @@ import Vue from 'vue'
 import {
 	uniqueArr
 } from "../../../common/utils";
+import { messageDecrypt, messageEncrypt } from "../../../common/aa";
 let TAG = "SOCKET-ACTION";
 let wsOpenDo = true;
 let heartCheck;
@@ -202,8 +203,11 @@ export default {
 	}, res_ws) {
 		heartCheck.reset();
 		heartCheck.start();
+		
 		Log.d(TAG, "收到消息:", res_ws.data);
-		let data = JSON.parse(res_ws.data);
+		let decryptMessage = messageDecrypt(res_ws.data)
+		Log.d(TAG, "收到解密消息:",decryptMessage );
+		let data = JSON.parse(decryptMessage);
 		if (data.result) {
 			data.body = data.result;
 		}
@@ -1078,8 +1082,9 @@ export default {
 		Log.d(TAG, "发送消息：", p);
 		if (!p.CMD) return
 		let cmd = p.CMD;
+		let entryMessage = messageEncrypt(JSON.stringify(p))
 		state.socketTask.send({
-			data: JSON.stringify(p),
+			data: entryMessage,
 			async success() {
 				Log.d(TAG, "发送成功:" + p.CMD);
 			},
