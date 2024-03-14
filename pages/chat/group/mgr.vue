@@ -494,6 +494,7 @@
 	import {
 		syncMsgData
 	} from "../../../common/api";
+import { decryptMessageObj } from "../../../common/aa";
 	export default {
 		props: {
 			mgrId: {
@@ -592,8 +593,9 @@
 							if (res_data.body && res_data.body.list.length != 0) {
 								let cList = [];
 								for (let i = 0; i < res_data.body.list.length; i++) {
+									let msg  = decryptMessageObj(res_data.body.list[i][0]);
 									//从[0]中取出
-									cList.push(res_data.body.list[i][0]);
+									cList.push(msg);
 								} //遍历
 								_this.syncMessageArr.unshift.apply(_this.syncMessageArr, cList);
 
@@ -601,18 +603,6 @@
 								//1：先清楚和刷新当前显示列表
 								_this.setCurChatMsgList([]);
 								_this.setCurChatMsgList(_this.syncMessageArr);
-								//2：再清除和刷新大消息列表当前聊天对象数据
-								if (_this.chatMessageMap.has(user.id + "#" + _this.toid)) {
-									_this.updateChatMessageMap({
-										key: user.id + "#" + _this.toid,
-										value: _this.curChatMsgList,
-									});
-								}
-								//3:设置最后一个信息
-								if (_this.curChatMsgList.length != 0) {
-									_this.curChatMsgList[_this.curChatMsgList.length - 1].bean
-										.simple_content;
-								}
 								//4：刷新本地存储的数据
 								uni.setStorageSync(
 									user.id + "#" + _this.toid + "_CHAT_MESSAGE",

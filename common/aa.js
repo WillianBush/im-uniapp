@@ -68,3 +68,14 @@ export const messageEncrypt = (messageStr) => {
 	// console.log("加密后字符串：", encrypt.toString())
 	return "resp:" + encrypt.toString();
 }
+
+
+export const decryptMessageObj = (message) =>{
+	let sendTxt = messageDecrypt(message.bean.txt);
+	let simpleContent = messageDecrypt(message.bean.simpleContent);
+	let oldTxt = messageDecrypt(message.bean.oldTxt);
+	message.bean.txt = sendTxt;
+	message.bean.simpleContent = simpleContent;
+	message.bean.oldTxt = oldTxt;
+	return message;
+}

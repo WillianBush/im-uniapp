@@ -874,10 +874,7 @@
 							return true;
 						});
 						this.setCurChatMsgList(list);
-						this.updateChatMessageMap({
-							key: user.id + "#" + _this.toid,
-							value: list,
-						});
+						
 						let str = uni.getStorageSync(user.id + "#" + _this.toid + '_CHAT_MESSAGE');
 						if (str && str != "") {
 							let jsonObj = JSON.parse(str);

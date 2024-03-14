@@ -228,7 +228,7 @@
 					<switch @change="SwitchB" :class="switchB?'checked':''" :checked="switchB?true:false"></switch>
 				</view>
 				<view class="cu-item cu-form-group">
-					<view class="title">加入黑名单</view>
+					<view class="title">{{switchC ?'取消黑名单':'加入黑名单'}}</view>
 					<switch @change="SwitchC" :class="switchC?'checked':''" :checked="switchC?true:false"></switch>
 				</view>
 
@@ -253,7 +253,7 @@
 			style="width: 100%; height: 80%;color:#fff;background-color: #0006; position: fixed;left: 0;top:0; z-index: 10;">
 			<text @click="closeModal" class="cuIcon-close"
 				style="font-size: 36px; cursor: pointer; position:absolute; top:15px; right: 15px"></text>
-			<CreateGroup  @createSuc="openCroupChat"></CreateGroup>
+			<CreateGroup @createSuc="openCroupChat"></CreateGroup>
 		</view>
 	</div>
 </template>
@@ -284,6 +284,9 @@
 		parseVideo,
 		parseMedia
 	} from '../../../common/utils';
+	import {
+		decryptMessageObj
+	} from '../../../common/aa';
 	export default {
 		props: {
 			visiable: {
@@ -454,8 +457,8 @@
 					this.notes = this.curChatEntity.nickName;
 				}
 			},
-			openCroupChat(e){
-				this.$emit("createSuc",e)
+			openCroupChat(e) {
+				this.$emit("createSuc", e)
 				this.$emit("closeModal");
 			},
 			notesSubmits() {
@@ -504,15 +507,12 @@
 
 							let cList = [];
 							for (let i = 0; i < res_data.body.list.length; i++) { //从[0]中取出
-								cList.push(res_data.body.list[i][0])
+								let msg = decryptMessageObj(res_data.body.list[i][0])
+								cList.push(msg)
 							} //遍历
-							_this.syncMessageArr.unshift.apply(_this.syncMessageArr, cList)
-
+							_this.chatLogs.unshift.apply(_this.chatLogs, cList)
 						}
-						for (let i = 0; i < res_data.body.list.length; i++) { //从[0]中取出
-							res_data.body.list[i] = res_data.body.list[i][0]
-						} //遍历拿出数组bean
-						_this.chatLogs.unshift.apply(_this.chatLogs, res_data.body.list)
+
 						uni.hideLoading();
 						this.pageNumber = res_data.body.pageNumber;
 						this.totalCount = res_data.body.totalCount * res_data.body.pageCount;

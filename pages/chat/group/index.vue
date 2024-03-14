@@ -350,6 +350,7 @@
 	import uParse from '@/components/u-parse/u-parse.vue'
 	const innerAudioContext = uni.createInnerAudioContext();
 	import h5Copy from '@/common/junyi-h5-copy.js'
+import { decryptMessageObj } from '../../../common/aa';
 
 	export default {
 		name: 'GroupChat',
@@ -900,8 +901,8 @@
 				if (!isRefresh) {
 					_this.setCurChatMsgList([]);
 					uni.removeStorageSync(_this.user.id + "#" + _this.toid + '_CHAT_MESSAGE');
-					uni.removeStorageSync(_this.user.id + "#" + _this.toid +
-						'_CHAT_MESSAGE_LASTCONTENT');
+					// uni.removeStorageSync(_this.user.id + "#" + _this.toid +
+					// 	'_CHAT_MESSAGE_LASTCONTENT');
 					uni.removeStorageSync(_this.user.id + "#" + _this.toid + '_CHAT_MESSAGE_UNREAD');
 				} else {
 					if (this.curChatMsgList.length) {
@@ -920,7 +921,8 @@
 						if (res_data.body && res_data.body.list.length != 0) {
 							let cList = [];
 							for (let i = 0; i < res_data.body.list.length; i++) { //从[0]中取出
-								let msg = res_data.body.list[i][0]
+								let msg = res_data.body.list[i][0];
+								msg = decryptMessageObj(msg);
 								msg.uuid = msg.bean.uuid;
 								cList.push(msg);
 							} //遍历

@@ -28,6 +28,7 @@ import {
 import {
 	MessageType
 } from "../../../const/MessageType";
+import { messageDecrypt } from "../../../common/aa";
 
 export default {
 	refreshChatList({
@@ -60,10 +61,10 @@ export default {
 							if (s && s != "") {
 								item.title = s;
 							}
-							let last_txt = uni.getStorageSync(
-								user.id + "#" + item.id + "_CHAT_MESSAGE_LASTCONTENT"
-							);
-							item.content = last_txt
+							// let last_txt = uni.getStorageSync(
+							// 	user.id + "#" + item.id + "_CHAT_MESSAGE_LASTCONTENT"
+							// );
+							item.content =  messageDecrypt(item.content)
 
 							let unRead = uni.getStorageSync(
 								user.id + "#" + item.id + "_CHAT_MESSAGE_UNREAD"
