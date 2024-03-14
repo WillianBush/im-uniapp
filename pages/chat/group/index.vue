@@ -466,6 +466,7 @@
 		getHeadPic,
 		parseMedia
 	} from '../../../common/utils';
+import { decryptMessageObj } from '../../../common/aa';
 	const innerAudioContext = uni.createInnerAudioContext();
 	export default {
 		components: {
@@ -859,9 +860,9 @@
 					pageNumber: this.pageParams.pageNumber,
 				}
 				if (!isRefresh) {
-					uni.removeStorageSync(_this.user.id + "#" + _this.toid + '_CHAT_MESSAGE');
-					uni.removeStorageSync(_this.user.id + "#" + _this.toid +
-						'_CHAT_MESSAGE_LASTCONTENT');
+					// uni.removeStorageSync(_this.user.id + "#" + _this.toid + '_CHAT_MESSAGE');
+					// uni.removeStorageSync(_this.user.id + "#" + _this.toid +
+					// 	'_CHAT_MESSAGE_LASTCONTENT');
 					uni.removeStorageSync(_this.user.id + "#" + _this.toid + '_CHAT_MESSAGE_UNREAD');
 					params.messageId = "";
 
@@ -882,6 +883,7 @@
 							let cList = [];
 							for (let i = 0; i < res_data.body.list.length; i++) { //从[0]中取出
 								let msg = res_data.body.list[i][0]
+								msg = decryptMessageObj(msg);
 								msg.uuid = msg.bean.uuid;
 								cList.push(msg);
 							} //遍历

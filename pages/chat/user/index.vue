@@ -447,6 +447,7 @@
 	import {
 		MessageType
 	} from '../../../const/MessageType';
+import { decryptMessageObj } from '../../../common/aa';
 	export default {
 		components: {
 			uParse
@@ -824,7 +825,9 @@
 							let cList = [];
 							for (let i = 0; i < res_data.body.list.length; i++) { //从[0]中取出
 								let msg = res_data.body.list[i][0]
+								msg = decryptMessageObj(msg);
 								msg.uuid = msg.bean.uuid;
+								
 								cList.push(msg);
 							} //遍历
 							if (!isRefresh) {

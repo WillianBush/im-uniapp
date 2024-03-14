@@ -179,6 +179,7 @@
 		parseMedia,
 		
 	} from '../../../common/utils';
+import { decryptMessageObj } from '../../../common/aa';
 	export default {
 		components: {
 			uParse
@@ -361,7 +362,8 @@
 						if (res_data.body && res_data.body.list.length != 0) {
 							_this.pageParams = res_data.body;
 							for (let i = 0; i < res_data.body.list.length; i++) { //从[0]中取出
-								res_data.body.list[i] = res_data.body.list[i][0].bean
+								let msg = decryptMessageObj(res_data.body.list[i][0])
+								res_data.body.list[i] = msg.bean
 							} //遍历拿出数组bean
 							// _this.chatLogs = _this.chatLogs.concat(res_data.body.list);
 							_this.chatLogs.unshift.apply(_this.chatLogs, res_data.body.list)

@@ -32,7 +32,7 @@ export default {
 		}
 	},
 	removeSendQuene(state,payload){
-		let temp =state.sendQueue.filter(item=>item.bean.uuid !== uuid || !item.bean.sendFail)
+		let temp =state.sendQueue.filter(item=>item.bean.uuid !== payload || !item.bean.sendFail)
 		state.sendQueue = temp;
 	},
 	setCheckMsgTimer(state,payload){
