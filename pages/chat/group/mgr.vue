@@ -403,7 +403,7 @@
 						</view>
 					</view>
 					<view v-if="
-              user.id == curChatEntity.img.owner_UUID ||
+              user.id == curChatEntity.owner_UUID ||
               curChatEntity.memberMgr_ids.indexOf(user.id) >= 0
             " @tap="editGroupNotice()" class="cu-item arrow">
 						<view class="content">
@@ -445,10 +445,16 @@
 						</view>
 					</view>
 
-					<view v-if="user.id != curChatEntity.img.owner_UUID" class="cu-item margin-top"
+					<view v-if="user.id != curChatEntity.owner_UUID" class="cu-item margin-top"
 						style="margin-bottom: 80upx" @tap="outGroup()">
 						<view class="content" style="text-align: center">
 							<text class="text-grey" style="color: #ff2442">退出群组</text>
+						</view>
+					</view>
+					<view v-else class="cu-item margin-top"
+						style="margin-bottom: 80upx" @tap="dissolveGroup()">
+						<view class="content" style="text-align: center">
+							<text class="text-grey" style="color: #ff2442">解散群组</text>
 						</view>
 					</view>
 				</view>
