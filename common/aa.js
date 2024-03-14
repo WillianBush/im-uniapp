@@ -35,9 +35,9 @@ export const AES_Decrypt = (encryptedStr) => {
 const keyStr = "socket_crypt_key"
 const ivStr = "encryptionIntVec"
 export const messageDecrypt = (messageStr) => {
-	if (messageStr.indexOf("AES:") == -1) return messageStr;
-	let message = messageStr.replace("AES:", '')
-	console.log("加密字符串：", message)
+	if (messageStr.indexOf("resp:") == -1) return messageStr;
+	let message = messageStr.replace("resp:", '')
+	// console.log("加密字符串：", message)
 	const key = CryptoJS.enc.Utf8.parse(keyStr)
 	const iv = CryptoJS.enc.Utf8.parse(ivStr)
 
@@ -50,13 +50,13 @@ export const messageDecrypt = (messageStr) => {
 	});
 
 	let plaintext = decrypted.toString(CryptoJS.enc.Utf8);
-	console.log("解密字符串：", plaintext)
+	// console.log("解密字符串：", plaintext)
 	return plaintext;
 }
 
 
 export const messageEncrypt = (messageStr) => {
-	console.log("加密前字符串：", messageStr)
+	// console.log("加密前字符串：", messageStr)
 	const key = CryptoJS.enc.Utf8.parse(keyStr)
 	const iv = CryptoJS.enc.Utf8.parse(ivStr)
 	const keySize = 128;
@@ -65,6 +65,6 @@ export const messageEncrypt = (messageStr) => {
 		padding: CryptoJS.pad.Pkcs7,
 		mode: CryptoJS.mode.CBC,
 	});
-	console.log("加密后字符串：", encrypt.toString())
-	return "AES:" + encrypt.toString();
+	// console.log("加密后字符串：", encrypt.toString())
+	return "resp:" + encrypt.toString();
 }
