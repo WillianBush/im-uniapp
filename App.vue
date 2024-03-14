@@ -1,5 +1,6 @@
 <script>
 	import Vue from 'vue'
+import { messageEncrypt } from './common/aa';
 	import Log from './common/Log';
 	const TAG = "APP"
 	export default {

@@ -10,7 +10,7 @@ let TAG = "SOCKET-ACTION";
 let wsOpenDo = true;
 let heartCheck;
 let wsUrl = "wss://180.178.43.202:9998/ws";
-
+const encryKey = "socket_crypt_key";
 export default {
 	WEBSOCKET_INIT({
 		commit,

@@ -52,36 +52,40 @@ export default {
 		rootGetters
 	}) {
 		return new Promise((resolve, reject) => {
-			isEmployee().then(res => {
-				let res_data = eval(res.data);
-				if (res.statusCode == 200) {
-					let employee = res_data.msg === 'Yes';
-					let isOpenUpdate = rootGetters['app/isOpenUpdate']
-					// 特权用户，开启定时刷新
-					if (employee && isOpenUpdate) {
-						if (state.employeeRefreshInterval) {
-							commit("cleartEmployeeRefreshInterval")
+			try{
+				isEmployee().then(res => {
+					let res_data = eval(res.data);
+					if (res.statusCode == 200) {
+						let employee = res_data.msg === 'Yes';
+						let isOpenUpdate = rootGetters['app/isOpenUpdate']
+						// 特权用户，开启定时刷新
+						if (employee && isOpenUpdate) {
+							if (state.employeeRefreshInterval) {
+								commit("cleartEmployeeRefreshInterval")
+							}
+							commit("setEmployeeRefreshInterval", setInterval(function() {
+								Log.d(TAG, "===", "特权用户刷新");
+								dispatch("chat/listPageAction", null, {
+									root: true,
+								});
+							}, 10 * 1000));
 						}
-						commit("setEmployeeRefreshInterval", setInterval(function() {
-							Log.d(TAG, "===", "特权用户刷新");
-							dispatch("chat/listPageAction", null, {
-								root: true,
-							});
-						}, 10 * 1000));
+						commit("setIsEmployee", employee);
+						resolve(employee)
+					} else {
+						uni.showToast({
+							icon: 'none',
+							position: 'bottom',
+							title: res_data.msg
+						});
+						reject(res)
 					}
-					commit("setIsEmployee", employee);
-					resolve(employee)
-				} else {
-					uni.showToast({
-						icon: 'none',
-						position: 'bottom',
-						title: res_data.msg
-					});
-					reject(res)
-				}
-			}).catch(error => {
-				reject(error)
-			})
+				}).catch(error => {
+					reject(error)
+				})
+			}catch(e){
+				//TODO handle the exception
+			}
 		})
 	},
 	loginAction({

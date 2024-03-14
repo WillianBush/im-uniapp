@@ -312,20 +312,24 @@ export default {
 	getChatCfgAction({
 		commit
 	}) {
-		getChatCfg().then((res) => {
-			let res_data = eval(res.data);
-			if (res_data.code == 200) {
-				commit("setChatCfg", res_data.body);
-			}
-		}).catch(error => {
-			console.log("=====error", error)
-
-			uni.showToast({
-				icon: 'none',
-				position: 'bottom',
-				title: error.msg ? error.msg : "服务器异常!"
+		try{
+			getChatCfg().then((res) => {
+				let res_data = eval(res.data);
+				if (res_data.code == 200) {
+					commit("setChatCfg", res_data.body);
+				}
+			}).catch(error => {
+				console.log("=====error", error)
+			
+				uni.showToast({
+					icon: 'none',
+					position: 'bottom',
+					title: error.msg ? error.msg : "服务器异常!"
+				});
 			});
-		});
+		}catch(e){
+			//TODO handle the exception
+		}
 	},
 	loadTalkUserAction({
 		commit,

@@ -38,7 +38,7 @@ export const getShimingCfg = () => http.post("/sysConfig/json/getShimingCfg")
 
 export const getFooterHotItem = () => http.post("/sysConfig/json/getFooterHotItem")
 
-export const getChatCfg = () => http.post("/sysConfig/json/getChatCfg")
+export const getChatCfg = () =>http&& http.post("/sysConfig/json/getChatCfg")
 
 export const getRoomCfg = () => http.post("/sysConfig/json/getRoomCfg")
 
@@ -46,7 +46,7 @@ export const getBankInfo = () => http.post("/sysConfig/json/getBankInfo")
 
 
 export const isEmployee = () =>
-	http.post("/user/employeeDefaultMessage/json/isEmployee");
+	http&&http.post("/user/employeeDefaultMessage/json/isEmployee");
 
 export const listPage = (params = {
 		pageSize: 50,
