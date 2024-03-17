@@ -4,21 +4,22 @@
 	const TAG = "APP"
 	export default {
 		onLaunch: function() {
-			Log.d(TAG, "onLaunch")
-			console.log("index:",Object.assign({},this.$store.state.chat))
+			// Log.d(TAG, "onLaunch")
+			// console.log("index:",Object.assign({},this.$store.state.chat))
 			
-			this.$store.commit("app/setAppUuid")
-			this.$store.dispatch("app/setAppConfig")
+			// this.$store.commit("app/setAppUuid")
+			// this.$store.dispatch("app/setAppConfig")
 		},
 		onLoad(e) {},
 		onShow: function(e) {
+			Vue.prototype.$isResolve();
 			
-			this.$store.commit("app/setAppShow",true);
+			// this.$store.commit("app/setAppShow",true);
 			//重要，初始化net 绑定
-			this.$store.dispatch("app/initRootDomain");
+			// this.$store.dispatch("app/initRootDomain");
 		},
 		onHide: function() {
-			this.$store.dispatch("app/appHideOrShow",false);
+			// this.$store.dispatch("app/appHideOrShow",false);
 		},
 		methods: {
 		}

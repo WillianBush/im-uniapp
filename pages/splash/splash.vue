@@ -57,15 +57,15 @@
 			};
 		},
 		onLoad(e) {
-			this.setupPicture = activeConfig.setupPicture
+			// this.setupPicture = activeConfig.setupPicture
 			if (!uni.getStorageSync('system_info')) {
 				this.langShow = true
 			}
 			// 防截屏
 			// #ifdef APP-PLUS
-			uni.setUserCaptureScreen({
-				enable: false
-			})
+			// uni.setUserCaptureScreen({
+			// 	enable: false
+			// })
 			// #endif
 			
 		},
@@ -105,21 +105,24 @@
 				}
 			},
 			jump() { //跳转到对应的页面
-				let user = uni.getStorageSync("USER");
-				console.log("####user:",user)
-				if (user) {
-					//进入首页
-					uni.navigateTo({
-						url: "/pages/index/index"
-					})
-					if (this.timer) {
-						this.autoJump = false;
-					}
-				} else {
-					uni.navigateTo({
-						url: "/pages/login/login"
-					})
-				}
+				// let user = uni.getStorageSync("USER");
+				// console.log("####user:",user)
+				uni.navigateTo({
+					url: "/pages/test"
+				})
+				// if (user) {
+				// 	//进入首页
+				// 	uni.navigateTo({
+				// 		url: "/pages/index/index"
+				// 	})
+				// 	if (this.timer) {
+				// 		this.autoJump = false;
+				// 	}
+				// } else {
+				// 	uni.navigateTo({
+				// 		url: "/pages/login/login"
+				// 	})
+				// }
 			},
 			loadImage() {},
 			checkVersion() {
@@ -145,22 +148,22 @@
 			},
 			init() {
 				let _this = this
-				setTimeout(function() {
-					_this.$store.dispatch("app/appHideOrShow", true);
-				}, 2000)
+				// setTimeout(function() {
+				// 	_this.$store.dispatch("app/appHideOrShow", true);
+				// }, 2000)
 			}
 		},
 		onShow: async function() {
-			Log.d(TAG, 'Splash Show--')
+			// Log.d(TAG, 'Splash Show--')
 			await this.$onLaunched;
-			Log.d(TAG, "======onShow:获取域名成功！")
+			// Log.d(TAG, "======onShow:获取域名成功！")
 			let _this = this;
 			//#ifdef H5
-			_this.init();
+			// _this.init();
 			//#endif
 			// #ifdef APP-PLUS
 			//检查是否需要更新
-			_this.checkVersion();
+			// _this.checkVersion();
 			//#endif
 		}
 	}
