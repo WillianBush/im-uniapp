@@ -51,7 +51,7 @@ const activeConfig = {
 	loginIcon : "/static/logo12.png",
 	registerIcon : "/static/logo12.png",
 	language: "zh-CN",
-	setupPicture : "/static/splash.jpg",
+	setupPicture : "/static/splash.png",
 	requestUrl:"https://gitee.com/fkdjsfkhjf/am-config/raw/master/config.conf",
 	cache:"QfCYntTcGJB9iiw3auHmmQEsajQ9jf/Nteug+1xhbqll7Uw/qnVHu/H3iQIxRA8sXr/wbfZkS3i54T9frQnueq/taFUzzH93VMbT+EUDcuHc1wt1RtIPdAoE2MxKCJi3Z00qGDYXhqoc4Ae6nnLDQw=="
 }
