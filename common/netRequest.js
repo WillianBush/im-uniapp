@@ -99,6 +99,7 @@ export function _initC(reqUrl) {
 			"Content-Type": "application/x-www-form-urlencoded",
 			...config.header
 		}
+		config.sslVerify = false
 		return config
 	})
 

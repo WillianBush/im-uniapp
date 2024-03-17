@@ -61,7 +61,7 @@ export default {
 			fail(e) {
 				Log.e(TAG, "=====ws链接失败", e);
 				uni.showToast({
-					title: "ws链接失败" + JSON.stringify(e),
+					title: "错误002",
 					duration: 20000
 				});
 				heartCheck && heartCheck.reset();
@@ -178,7 +178,7 @@ export default {
 				uni.showToast({
 					icon: 'none',
 					position: 'bottom',
-					title: "通讯服务器已断开!"
+					title: "错误003",
 				});
 			}
 			heartCheck.reset();
@@ -199,7 +199,7 @@ export default {
 				uni.showToast({
 					icon: 'none',
 					position: 'bottom',
-					title: "通讯服务器异常!"
+					title: "错误004",
 				});
 			}
 			dispatch("WEBSOCKET_INIT");
