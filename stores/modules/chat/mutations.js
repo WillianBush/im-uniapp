@@ -1,3 +1,4 @@
+import Vue from "vue"
 export default {
 	setArList(state, payload) {
 		if (state.arListShow.length == state.arList.length) {
@@ -44,27 +45,36 @@ export default {
 		}
 	},
 	updateCurChatMsg(state, payload) {
-		let isCurSend = false; // 判断是否是当前设备发送
-		state.curChatMsgList.forEach(item => {
+		// let isCurSend = false; // 判断是否是当前设备发送
+		let tempIndex = -1;
+		let tempBean = null;
+		state.curChatMsgList.forEach((item,index) => {
 			if (item.bean.uuid == payload.uuid) {
 				item.uuid = payload.uuid;
-				isCurSend = true;
+				// isCurSend = true;
+				tempBean = item;
+				tempIndex = index;
 			}
 		})
-		if(!isCurSend){// 不是当前设备发送的，直接同步消息
+		if(tempIndex == -1){// 不是当前设备发送的，直接同步消息
 			state.curChatMsgList.push(payload)
+		}else{
+			state.curChatMsgList.splice(tempIndex,1,tempBean)
+			
 		}
 		console.log("========curChatMsgList:",state.curChatMsgList)
 
 	},
 	updateCurChatMsgSendStatus(state, payload) {
-		 state.curChatMsgList.forEach(item => {
+		let tempIndex = 0
+		 state.curChatMsgList.forEach((item,index) => {
 			if (item.bean.uuid == payload.bean.uuid) {
-				let tempObj = Object.assign({},payload)
-				item =tempObj;				
+				tempIndex = index
 			}
 		})
-		console.log("========curChatMsgList:",state.curChatMsgList)
+		console.log("=====tempIndex",tempIndex)
+		state.curChatMsgList.splice(tempIndex,1,payload)
+		console.log("========updateCurChatMsgSendStatus:",state.curChatMsgList)
 		
 	},
 	setCurChatAiteToMyList(state, payload) {

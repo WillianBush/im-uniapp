@@ -692,7 +692,8 @@ import { decryptMessageObj } from '../../../common/aa';
 			]),
 			...mapActions('socket', [
 				'WEBSOCKET_SEND',
-				'sendGroupChatMessage'
+				'sendGroupChatMessage',
+				'sendGroupVoiceMessage'
 
 			]),
 			...mapActions('chat', [
@@ -1378,9 +1379,9 @@ import { decryptMessageObj } from '../../../common/aa';
 					simpleContent: this.reSendMsgObj.bean.simpleContent
 				}
 				if (v.psr == 'voice') {
-					this.sendVoiceMessage(v)
+					this.sendGroupVoiceMessage(v)
 				} else {
-					this.sendChatMessage(v)
+					this.sendGroupChatMessage(v)
 				}
 				this.reSendMsgObj.bean.sendFail = false
 				this.updateCurChatMsgSendStatus(this.reSendMsgObj);

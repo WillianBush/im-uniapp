@@ -30,9 +30,14 @@ export default {
 		if(!temp.length){// 不存在才加入队列
 			state.sendQueue.push(payload)
 		}
+		console.log("=======addSendQuene",payload)
+		
 	},
 	removeSendQuene(state,payload){
+		console.log("=======removeSendQuene",payload)
 		let temp =state.sendQueue.filter(item=>item.bean.uuid !== payload || !item.bean.sendFail)
+		console.log("=======removeSendQuene",temp)
+		
 		state.sendQueue = temp;
 	},
 	setCheckMsgTimer(state,payload){

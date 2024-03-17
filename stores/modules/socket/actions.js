@@ -57,6 +57,10 @@ export default {
 			},
 			fail(e) {
 				Log.e(TAG, "=====ws链接失败", e);
+				uni.showToast({
+					title: "ws链接失败" +e,
+					duration: 20000
+				});
 				heartCheck && heartCheck.reset();
 			},
 		}))
@@ -182,6 +186,10 @@ export default {
 			Log.d(TAG, "======onError:", res);
 			Log.d(TAG, "WebSocket重新连接2！");
 			commit("setIsOpenSocket", true);
+			uni.showToast({
+				title: "链接错误"+res,
+				duration: 2000
+			});
 			commit("setContinueCloseCount", state.continueCloseCount + 1);
 			heartCheck.reset();
 			if (state.continueCloseCount == 10) {
