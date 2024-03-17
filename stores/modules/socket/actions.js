@@ -47,7 +47,7 @@ export default {
 		console.log("====wsUrl", rootState.app.socketUrl)
 		let ws = rootState.app.socketUrl[i]
 		// #ifdef APP-PLUS
-		ws = ws.replace("wss","ws");
+		// ws = ws.replace("wss","ws");
 		// #endif
 		// let websocket_id = uni.getStorageSync("websocket_id");
 		Log.d(TAG, "WEBSOCKET_INIT", rootState.user);
