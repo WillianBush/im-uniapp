@@ -139,7 +139,7 @@
         "router" : {
             "base" : "/"
         },
-        "title" : "好物通",
+        "title" : "너의유야",
         "optimization" : {
             "treeShaking" : {
                 "enable" : true
@@ -159,6 +159,7 @@
                 }
             },
             "port" : 8080
-        }
+        },
+        "template" : "index.html"
     }
 }
