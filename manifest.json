@@ -160,6 +160,6 @@
             },
             "port" : 8080
         },
-        "template" : "index.html"
+        "template" : ""
     }
 }
