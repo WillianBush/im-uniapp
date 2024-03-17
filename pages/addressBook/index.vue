@@ -1,6 +1,6 @@
 <template>
 	<view>
-		<view style="width:20%; float: left">
+		<view style="width:30%; float: left">
 			<view v-show="PageCur=='tongxunlu'">
 				<view style="height: 45px;line-height: 45px;text-align: center;background: #eee;">
 					通讯录({{memberLength}})人</view>
@@ -312,10 +312,10 @@
 				});
 			},
 			goUserDetail(item) {
-				setTimeout(() => {}, 1000);
-				this.isGroupChat = false;
-				this.msgToId = item.member_uuid;
-				this.random = this.random + 1
+				let _this = this;
+				setTimeout(() => {
+					_this.$emit('gotoChat',item);
+				}, 1000);
 			},
 			goChat(item) {
 				if (item.id == "-1" || item.typeid == "2") {

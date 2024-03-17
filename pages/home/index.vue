@@ -142,7 +142,7 @@
 		components: {
 			GroupChat
 		},
-		props: ['isBlank'],
+		props: ['isBlank','member'],
 		data() {
 			return {
 				isGroupChat: false,
@@ -190,7 +190,16 @@
 				return `${this.delayTime}ms`
 			}
 		},
-		watch: {},
+		watch: {
+			member:{
+				handler(newVal,oldVal){
+					console.log("member:",newVal)
+					console.log("member:",oldVal)
+				},
+				immediate:true,
+				deep:true
+			}
+		},
 		onLoad(e) {
 			console.log("home.load", e)
 			this.goChat(e)

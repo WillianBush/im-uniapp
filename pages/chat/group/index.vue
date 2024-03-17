@@ -857,8 +857,9 @@ import { decryptMessageObj } from '../../../common/aa';
 					}).then(res => {
 						let res_data = eval(res.data);
 						if (res_data.code == 200) {
-							if (res_data.body.ip)
+							if (res_data.body&&res_data.body.ip){
 								_this.toIP = res_data.body.ip + "(" + res_data.body.ipAddr + ")";
+							}
 						} else {
 							if (res_data.code == 500) {
 

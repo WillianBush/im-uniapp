@@ -2,8 +2,8 @@
 	<view style="height: 100vh; margin-left:66px">
 		<view class="ws-disconnect" v-show="isCloseNet()">网络已断开，请检查网络稳定性</view>
 		
-		<home :isBlank="isBlank" v-if="PageCur=='home'"></home>
-		<addressBook :isBlank="isBlank" v-else-if="PageCur=='addressBook'"></addressBook>
+		<home :isBlank="isBlank" v-if="PageCur=='home'" :memberId="member"></home>
+		<addressBook :isBlank="isBlank" v-else-if="PageCur=='addressBook'" @gotoChat="gotoChat"></addressBook>
 		<faxian v-else-if="PageCur=='faxian'"></faxian>
 		<mine v-else-if="PageCur=='mine'"></mine>
 		<view ref="footerView" class="cu-bar tabbar bg-white shadow foot" style="position: fixed; z-index: 9;">
@@ -87,6 +87,7 @@
 				isBlank: false,
 				time_t: new Date().getTime(),
 				randomid: 0,
+				member:null
 			}
 		},
 		computed: {
@@ -189,6 +190,11 @@
 					return true;
 				}
 				return false;
+			},
+			gotoChat(member){
+				this.member = member;
+				this.PageCur = 'home';
+				console.log("======gotoChat:",member)
 			}
 		},
 		mounted() {
