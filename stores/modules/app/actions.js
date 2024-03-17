@@ -128,6 +128,7 @@ export default {
 				}
 			})
 			.catch((error) => {
+				console.log(error)
 				uni.showToast({
 					title: "域名获取失败",
 					duration: 2000,
