@@ -173,7 +173,7 @@
         <view
           style="margin-top: 2upx"
           :style="'color:' + (PageCur == 'faxian' ? '#3F92F8' : '#888')"
-          >VIP</view
+          >发现</view
         >
       </view>
       <view class="action" @click="NavChange" data-cur="mine">

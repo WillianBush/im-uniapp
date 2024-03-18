@@ -107,9 +107,9 @@ export default {
 			wsOpenDo = false;
 			commit("setIsOpenSocket", true);
 			commit("setContinueCloseCount", 0);
-			commit("setCheckMsgTimer", setInterval(() => {
-				dispatch('checkMessageSendStatus')
-			}, state.checkTime))
+			// commit("setCheckMsgTimer", setInterval(() => {
+			// 	dispatch('checkMessageSendStatus')
+			// }, state.checkTime))
 			Log.d(TAG, "=====ws通道打开，可以发送数据");
 			let user = uni.getStorageSync("USER");
 			if (user) {
