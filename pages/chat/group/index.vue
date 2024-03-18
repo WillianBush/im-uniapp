@@ -521,7 +521,8 @@ import { decryptMessageObj } from '../../../common/aa';
 				'uploadVideoAction',
 				'uploadImageAction',
 				'uploadVoiceAction',
-				'sendBaseDaoAction'
+				'sendBaseDaoAction',
+				"refreshChatList"
 
 			]),
 			handleDrop(e) {
@@ -1410,6 +1411,7 @@ import { decryptMessageObj } from '../../../common/aa';
 					}
 					this.setChatMyLoadding(true);
 					this.sendBaseDaoAction(v)
+					this.refreshChatList();
 					this.txt = "";
 					this.showjia = true;
 					setTimeout(function() {

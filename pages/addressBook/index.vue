@@ -101,7 +101,7 @@
 		</view> -->
 
 
-		<view v-if="visiable"
+		<!-- <view v-if="visiable"
 			style="width: 100%; height: 100%;color:#fff;background-color: #0006; position: fixed;left: 0;top:0; z-index: 10;">
 			<text @click="closeModal" class="cuIcon-close"
 				style="font-size: 36px; cursor: pointer; position:absolute; top:15px; right: 15px"></text>
@@ -109,7 +109,7 @@
 			<GroupMgr v-if="mgrType=='group'" :mgrId="mgrId" :toid="toId"></GroupMgr>
 			<Aite v-if="mgrType=='at'" :roomid="roomid" @closeModal="closeModal"></Aite>
 			<CreateGroup v-if="mgrType=='createGroup'"></CreateGroup>
-		</view>
+		</view> -->
 	</view>
 </template>
 
@@ -121,6 +121,9 @@
 	import {
 		getHeadPic
 	} from '../../common/utils'
+	import {
+		createRoom,
+	} from '../../common/api';
 	import {
 		mapState,
 		mapActions,
@@ -216,7 +219,8 @@
 				'setFriendList'
 			]),
 			...mapMutations('chat', [
-				'setMemberLength'
+				'setMemberLength',
+				'addArList'
 			]),
 			getHeadPic(img) {
 				return getHeadPic(img, this.imgUrl)
@@ -294,8 +298,11 @@
 				this.PageCur = 'tongxunlu';
 			},
 			goGroupChat(_id) {
-				this.isGroupChat = true;
-				this.mgrId = _id;
+				
+				this.$emit('gotoChat',{
+					id:_id,
+					typeid:"1",
+				});
 			},
 			goBlacklist() {
 				this.PageCur = 'heimingdan';
@@ -312,10 +319,11 @@
 				});
 			},
 			goUserDetail(item) {
-				let _this = this;
-				setTimeout(() => {
-					_this.$emit('gotoChat',item);
-				}, 1000);
+				this.$emit('gotoChat',{
+					id:item.member_uuid,
+					title:item.name,
+					typeid:"2"
+				});
 			},
 			goChat(item) {
 				if (item.id == "-1" || item.typeid == "2") {

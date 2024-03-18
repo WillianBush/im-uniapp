@@ -2,7 +2,7 @@
 	<view>
 		<view v-show="PageCur=='main'">
 			<view style="height: 45px;line-height: 45px;background: #eee;padding-left: 5px">
-				<text class="cuIcon-back" @click="goback" style="float:left; margin:0 5px; cursor: pointer;"></text>
+				<text class="cuIcon-back" @click="goback()" style="float:left; margin:0 5px; cursor: pointer;"></text>
 				群聊
 				<text @tap="goSearch()"
 					style="float:right;font-size: 30upx; cursor: pointer;color: #000; margin-right: 5px"
@@ -25,7 +25,7 @@
 			<view style="height:80upx;line-height: 80upx;text-align: center;color:#888">
 				{{groupList.length}}个群聊
 			</view>
-			<scroll-view scroll-y class="indexes" :style="'height:calc(100vh - '+CustomBar+'px - 100upx - 80upx)'"
+			<scroll-view scroll-y class="indexes" :style="'height:calc(100vh - '+'px - 100upx - 80upx)'"
 				:scroll-with-animation="true" :enable-back-to-top="true">
 				<block>
 					<view class="cu-list menu-avatar no-padding">
@@ -130,7 +130,7 @@
 				this.PageCur = 'main';
 			},
 			goback() {
-				uni.navigateBack()
+				this.$emit("goBack")
 			},
 			goRoomAddList() {
 				this.PageCur = 'list';

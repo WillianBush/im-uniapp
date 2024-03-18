@@ -193,8 +193,11 @@
 		watch: {
 			member:{
 				handler(newVal,oldVal){
-					console.log("member:",newVal)
+					console.log("===member:",newVal)
 					console.log("member:",oldVal)
+					if(newVal){
+						this.goChat(newVal)
+					}
 				},
 				immediate:true,
 				deep:true

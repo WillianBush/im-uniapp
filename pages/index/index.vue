@@ -2,7 +2,7 @@
 	<view style="height: 100vh; margin-left:66px">
 		<view class="ws-disconnect" v-show="isCloseNet()">网络已断开，请检查网络稳定性</view>
 		
-		<home :isBlank="isBlank" v-if="PageCur=='home'" :memberId="member"></home>
+		<home :isBlank="isBlank" v-if="PageCur=='home'" :member="member"></home>
 		<addressBook :isBlank="isBlank" v-else-if="PageCur=='addressBook'" @gotoChat="gotoChat"></addressBook>
 		<faxian v-else-if="PageCur=='faxian'"></faxian>
 		<mine v-else-if="PageCur=='mine'"></mine>
