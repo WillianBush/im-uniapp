@@ -410,6 +410,29 @@ export default {
 		return new Promise((resolve, reject) => {
 			uni.chooseVideo({
 				sourceType: ["album"],
+				mediaType:['video'],
+				success: (res) => {
+					commit("setChatMyLoadding", true);
+					setTimeout(() => {
+						uni.pageScrollTo({
+							scrollTop: 9999999999,
+							duration: 0,
+						});
+					}, 100);
+					resolve(res);
+				},
+				fail: (error) => {
+					reject(error);
+				},
+			});
+		});
+	},
+	chooseAudioAction({
+		commit
+	}) {
+		return new Promise((resolve, reject) => {
+			uni.chooseFile({
+				extension:['mp3','MP3','wma','wav','aac','WMA','WAV','ogg','OGG','APE'],
 				success: (res) => {
 					commit("setChatMyLoadding", true);
 					setTimeout(() => {

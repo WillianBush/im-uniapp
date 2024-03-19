@@ -3,7 +3,7 @@
 		<view class="cu-form-group margin-top" style="
 		margin: auto auto;
 		margin-top: 15px;">
-			<el-input maxlength="-1" v-model="txt" placeholder="请输入昵称" />
+			<el-input maxlength="-1" v-model="name" placeholder="请输入昵称" />
 		</view>
 		<div style="margin-top:30px;text-align: center">
 			<el-button type="primary" style="width:130px" @tap="tijiao()">提交</el-button>
@@ -23,13 +23,16 @@
 	export default {
 		data() {
 			return {
-				txt: this.user.nickName
+				name: ""
 			}
 		},
 		computed: {
 			...mapState('user', [
 				'user',
 			]),
+		},
+		mounted() {
+				this.name = this.user.nickName
 		},
 		methods: {
 			...mapMutations('user', ['updateUsername']),
@@ -39,7 +42,7 @@
 				let user = this.user;
 
 				updateNickName({
-					nickName: this.txt,
+					nickName: this.name,
 					u: user.id
 				}).then(res => {
 					let res_data = eval(res.data);
