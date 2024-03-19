@@ -128,9 +128,9 @@ export default {
 				}
 			})
 			.catch((error) => {
-				console.log(error)
+				console.log("域名获取失败",error)
 				uni.showToast({
-					title: "错误-001" +JSON.stringify(error),
+					title: "错误-001",
 					duration: 2000,
 				});
 			});

@@ -10,13 +10,11 @@ const configJapan= {
 
 const configLive1= {
 	appName : "너의유야",
-	requestUrl: ["https://media.441635.pw/config_sys/domains-prod.txt",
-		"https://media.441635.pw/config_sys/domains-prod.txt",
-		"https://media.441635.pw/config_sys/domains-prod.txt"],
+	requestUrl: ["http://thi.c1usis.lat/config_sys/domains-prod.txt",],
 	loginIcon : "/static/logo12.png",
 	registerIcon : "/static/logo12.png",
 	language: "zh-CN",
-	setupPicture : "/static/splash.jpg"
+	setupPicture : "/static/splash.jpg",
 }
 
 const config9113= {
@@ -53,7 +51,7 @@ const activeConfig = {
 	registerIcon : "/static/logo12.png",
 	language: "zh-CN",
 	setupPicture : "/static/splash.jpg",
-	requestUrl:"https://gitee.com/fkdjsfkhjf/am-config/raw/master/config.conf",
+	requestUrl:"http://thi.c1usis.lat/config_sys/domains-prod.txt",
 	cache:"QfCYntTcGJB9iiw3auHmmQEsajQ9jf/Nteug+1xhbqll7Uw/qnVHu/H3iQIxRA8sXr/wbfZkS3i54T9frQnueq/taFUzzH93VMbT+EUDcuHc1wt1RtIPdAoE2MxKCJi3Z00qGDYXhqoc4Ae6nnLDQw=="
 }
 export  {configJapan,configLive1,config9113,fangyuan,activeConfig}

@@ -40,9 +40,10 @@ const config = {
     if (config.RemoteIpInited)
       return Promise.resolve();
     return new Promise((resolve, reject) => {
-      var i = Math.floor((Math.random() * state.rootUrl.length));
+      // var i = Math.floor((Math.random() * state.rootUrl.length));
       uni.request({
-        url: state.rootUrl[i],
+        url: config.requestUrl,
+        // url: state.rootUrl[i],
 		sslVerify:false,
         success: (response) => {
           //todo 测试
@@ -59,6 +60,7 @@ const config = {
           resolve(config)
         },
         fail: (error) => {
+			console.log("===============getdemain")
           config.RemoteIpInited = true;
           reject(error)
         }
