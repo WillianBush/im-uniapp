@@ -46,6 +46,9 @@ export default {
 		console.log("====reqUrl", rootState.app.reqUrl)
 		console.log("====wsUrl", rootState.app.socketUrl)
 		let ws = rootState.app.socketUrl[i]
+		// #ifdef APP-PLUS
+		// ws = ws.replace("wss","ws");
+		// #endif
 		// let websocket_id = uni.getStorageSync("websocket_id");
 		Log.d(TAG, "WEBSOCKET_INIT", rootState.user);
 		commit("setSocketTask", uni.connectSocket({
@@ -58,7 +61,7 @@ export default {
 			fail(e) {
 				Log.e(TAG, "=====ws链接失败", e);
 				uni.showToast({
-					title: "ws链接失败" +e,
+					title: "错误002",
 					duration: 20000
 				});
 				heartCheck && heartCheck.reset();
@@ -104,9 +107,9 @@ export default {
 			wsOpenDo = false;
 			commit("setIsOpenSocket", true);
 			commit("setContinueCloseCount", 0);
-			commit("setCheckMsgTimer", setInterval(() => {
-				dispatch('checkMessageSendStatus')
-			}, state.checkTime))
+			// commit("setCheckMsgTimer", setInterval(() => {
+			// 	dispatch('checkMessageSendStatus')
+			// }, state.checkTime))
 			Log.d(TAG, "=====ws通道打开，可以发送数据");
 			let user = uni.getStorageSync("USER");
 			if (user) {
@@ -175,7 +178,7 @@ export default {
 				uni.showToast({
 					icon: 'none',
 					position: 'bottom',
-					title: "通讯服务器已断开!"
+					title: "错误003",
 				});
 			}
 			heartCheck.reset();
@@ -186,17 +189,17 @@ export default {
 			Log.d(TAG, "======onError:", res);
 			Log.d(TAG, "WebSocket重新连接2！");
 			commit("setIsOpenSocket", true);
-			uni.showToast({
-				title: "链接错误"+res,
-				duration: 2000
-			});
+			// uni.showToast({
+			// 	title: "链接错误"+res,
+			// 	duration: 2000
+			// });
 			commit("setContinueCloseCount", state.continueCloseCount + 1);
 			heartCheck.reset();
 			if (state.continueCloseCount == 10) {
 				uni.showToast({
 					icon: 'none',
 					position: 'bottom',
-					title: "通讯服务器异常!"
+					title: "错误004",
 				});
 			}
 			dispatch("WEBSOCKET_INIT");

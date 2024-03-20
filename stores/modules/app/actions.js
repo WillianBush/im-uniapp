@@ -128,8 +128,9 @@ export default {
 				}
 			})
 			.catch((error) => {
+				console.log(error)
 				uni.showToast({
-					title: "域名获取失败",
+					title: "错误-001" +JSON.stringify(error),
 					duration: 2000,
 				});
 			});
@@ -152,6 +153,7 @@ export default {
 		}
 		uni.request({
 			method: 'GET',
+			sslVerify:false,
 			url: state.reqUrl[i] + "/user/health/check", //仅为示例，并非真实接口地址。
 			success: (res) => {
 				let res_data = eval(res.data);

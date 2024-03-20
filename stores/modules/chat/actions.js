@@ -663,7 +663,7 @@ export default {
 			msgbean.bean.simpleContent
 		);
 		// 将消息加入发送队列
-		commit("socket/addSendQuene",msgbean,{root:true})
+		// commit("socket/addSendQuene",msgbean,{root:true})
 		// 转发不重新设置当前消息
 		if(!v.transType){
 			commit("addCurChatMsg", [msgbean]);

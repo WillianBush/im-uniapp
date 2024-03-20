@@ -24,6 +24,7 @@ export default (config) => {
     const _config = {
       url: fullPath,
       header: config.header,
+	  sslVerify:false,
       complete: (response) => {
         config.fullPath = fullPath
         response.config = config

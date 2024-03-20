@@ -1,7 +1,7 @@
 <template>
 	<view>
 		<vip-custom bgColor="bg-blue" :isBack="true">
-			<block slot="content">VIP</block></vip-custom>
+			<block slot="content">发现</block></vip-custom>
 		<view class="gameview">
 			<web-view  :src="url"></web-view>
 		</view>

@@ -79,9 +79,7 @@
                 "speech" : {
                     "ifly" : {}
                 },
-                "push" : {
-                    "unipush" : {}
-                },
+                "push" : {},
                 "ad" : {}
             },
             "icons" : {

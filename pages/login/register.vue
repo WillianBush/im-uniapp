@@ -162,7 +162,7 @@
 					uni.showToast({
 						icon: "none",
 						position: "bottom",
-						title: "昵称最长不超过35个字",
+						title: "账号最长不超过35个字",
 					});
 					return false;
 				}

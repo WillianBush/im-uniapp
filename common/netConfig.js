@@ -18,6 +18,7 @@ const config = {
 	  return new Promise((resolve, reject) => {
 	    uni.request({
 	      url: config.requestUrl,
+		  sslVerify:false,
 	      success: (response) => {
 			let data = AES_Decrypt(response.data);
 	        let res_data =JSON.parse(data).domains;
@@ -42,6 +43,7 @@ const config = {
       var i = Math.floor((Math.random() * state.rootUrl.length));
       uni.request({
         url: state.rootUrl[i],
+		sslVerify:false,
         success: (response) => {
           //todo 测试
           // config.baseUrl.pro = response.data.data.path;
