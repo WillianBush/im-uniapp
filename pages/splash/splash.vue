@@ -139,7 +139,7 @@
 						})
 					}
 				}).catch(error => {
-					// uni.showToast({
+					uni.showToast({
 						icon: 'none',
 						position: 'bottom',
 						title: error.msg ? error.msg : "服务器异常!"
