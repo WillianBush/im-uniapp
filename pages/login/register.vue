@@ -18,7 +18,7 @@
 			<view class="main">
 				<wInput v-if="cnf.useRegisterCode == 1" v-model="regCode" type="text" placeholder="注册码"></wInput>
 				<wInput v-if="cnf.useInviteCode == 1" v-model="inviteCode" type="text" placeholder="邀请码"></wInput>
-				<wInput v-model="nickname" type="text" placeholder="昵称"></wInput>
+				<wInput v-model="nickname" type="text" placeholder="账号"></wInput>
 				<wInput v-model="passData" type="password" maxlength="25" placeholder="登录密码" isShowPass></wInput>
 			</view>
 
@@ -146,7 +146,7 @@
 					uni.showToast({
 						icon: "none",
 						position: "bottom",
-						title: "请填写昵称",
+						title: "请填写账号",
 					});
 					return false;
 				}
@@ -162,7 +162,7 @@
 					uni.showToast({
 						icon: "none",
 						position: "bottom",
-						title: "昵称最长不超过35个字",
+						title: "账号最长不超过35个字",
 					});
 					return false;
 				}
@@ -177,7 +177,7 @@
 				_this.isRotate = true;
 				_this.registerAction({
 					inviteCode: _this.inviteCode,
-					nickname: _this.nickname,
+					username: _this.nickname,
 					password: _this.passData,
 				}).then(res => {
 					_this.isRotate = false;
