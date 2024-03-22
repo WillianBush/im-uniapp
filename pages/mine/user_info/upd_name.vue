@@ -36,7 +36,7 @@
 		},
 		methods: {
 			...mapMutations('user', ['updateUsername']),
-
+			...mapActions('user',['updateUserInfo'])
 			tijiao() {
 				let _this = this;
 				let user = this.user;
@@ -53,6 +53,7 @@
 							title: "修改成功"
 						});
 						_this.updateUsername(res_data.msg)
+						_this.updateUserInfo()
 					} else {
 						uni.showToast({
 							icon: 'none',
@@ -63,11 +64,6 @@
 				}).catch(error => {
 					console.log("=====error",error)
 					
-					uni.showToast({
-						icon: 'none',
-						position: 'bottom',
-						title: error.msg ? error.msg : "服务器异常!"
-					});
 				})
 			}
 		}

@@ -512,11 +512,6 @@
 					.catch((error) => {
 						console.log("=====error",error)
 						
-						uni.showToast({
-							icon: "none",
-							position: "bottom",
-							title: error.msg ? error.msg : "服务器异常!",
-						});
 					});
 			},
 			closePickureDialog() {
@@ -649,11 +644,6 @@
 					.catch((error) => {
 						console.log("=====error",error)
 						
-						uni.showToast({
-							icon: "none",
-							position: "bottom",
-							title: error.msg ? error.msg : "服务器异常!",
-						});
 					});
 
 				this.scrollToBottom();
@@ -667,11 +657,6 @@
 					.catch((error) => {
 						console.log("=====error",error)
 						
-						uni.showToast({
-							icon: "none",
-							position: "bottom",
-							title: error.msg ? error.msg : "服务器异常!",
-						});
 					});
 				this.paseteImg();
 			},
@@ -719,11 +704,7 @@
 						console.log("=====error",error)
 						
 						uni.hideLoading();
-						uni.showToast({
-							icon: "none",
-							position: "bottom",
-							title: error.msg ? error.msg : "服务器异常!",
-						});
+						
 					});
 			},
 			getPopButton(item) {

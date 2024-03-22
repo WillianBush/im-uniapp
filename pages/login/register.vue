@@ -185,10 +185,7 @@
 					console.log("=====error",error)
 					
 					_this.isRotate = false;
-					uni.showToast({
-						icon: "none",
-						title: error.msg ? error.msg : "服务器异常",
-					});
+					
 				});
 			}
 		}

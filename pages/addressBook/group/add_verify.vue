@@ -87,12 +87,6 @@
 					}
 				}).catch(error => {
 					console.log("=====error",error)
-					
-					uni.showToast({
-						icon: 'none',
-						position: 'bottom',
-						title: error.msg ? error.msg : "服务器异常!"
-					});
 				});
 			},
 			goSearchFriend() {
@@ -127,11 +121,6 @@
 				}).catch(error => {
 					console.log("=====error",error)
 					
-					uni.showToast({
-						icon: 'none',
-						position: 'bottom',
-						title: error.msg ? error.msg : "服务器异常!"
-					});
 				});
 			},
 			//获取文字信息

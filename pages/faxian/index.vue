@@ -135,11 +135,6 @@
 							}).catch(error => {
 								console.log("=====error",error)
 								
-								uni.showToast({
-									icon: 'none',
-									position: 'bottom',
-									title: error.msg ? error.msg : "服务器异常!"
-								});
 							})
 						} else if (res.result.indexOf("#member#") == 0) {
 							let member_id = res.result.split("#")[2];
@@ -174,11 +169,6 @@
 							}).catch(error => {
 								console.log("=====error",error)
 								
-								uni.showToast({
-									icon: 'none',
-									position: 'bottom',
-									title: error.msg ? error.msg : "服务器异常!"
-								});
 							})
 						} else if (res.result.indexOf("http") == 0) {
 							uni.navigateTo({

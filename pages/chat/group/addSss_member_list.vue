@@ -120,11 +120,6 @@
 				}).catch(error => {
 					console.log("=====error", error)
 
-					uni.showToast({
-						icon: 'none',
-						position: 'bottom',
-						title: error.msg ? error.msg : "服务器异常!"
-					});
 				})
 			},
 			addSss(_id) {
@@ -217,11 +212,6 @@
 				}).catch(error => {
 					console.log("=====error", error)
 
-					uni.showToast({
-						icon: 'none',
-						position: 'bottom',
-						title: error.msg ? error.msg : "服务器异常!"
-					});
 				})
 			}
 		}

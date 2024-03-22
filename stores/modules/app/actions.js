@@ -226,11 +226,6 @@ export default {
 		}).catch(error => {
 			console.log("=====error",error)
 			
-			uni.showToast({
-				icon: 'none',
-				position: 'bottom',
-				title: error.msg ? error.msg : "服务器异常!"
-			});
 		});
 	},
 	getFooterHotItemAction({
@@ -242,11 +237,6 @@ export default {
 			}).catch(error => {
 				console.log("=====error",error)
 				
-				uni.showToast({
-					icon: 'none',
-					position: 'bottom',
-					title: error.msg ? error.msg : "服务器异常!"
-				});
 			});
 		}catch(e){
 			//TODO handle the exception
@@ -260,11 +250,6 @@ export default {
 		}).catch(error => {
 			console.log("=====error",error)
 			
-			uni.showToast({
-				icon: 'none',
-				position: 'bottom',
-				title: error.msg ? error.msg : "服务器异常!"
-			});
 		})
 	},
 	clearDataAction({

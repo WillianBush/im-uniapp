@@ -168,11 +168,6 @@
 				}).catch(error => {
 					console.log("=====error",error)
 					
-					uni.showToast({
-						icon: 'none',
-						position: 'bottom',
-						title: error.msg ? error.msg : "服务器异常!"
-					});
 				});
 			},
 			showGroup() {
@@ -221,11 +216,6 @@
 							}).catch(error => {
 								console.log("=====error",error)
 								
-								uni.showToast({
-									icon: 'none',
-									position: 'bottom',
-									title: error.msg ? error.msg : "服务器异常!"
-								});
 							});
 						} else if (res.cancel) {
 							console.log('用户点击取消');

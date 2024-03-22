@@ -134,11 +134,8 @@
 
 						}
 					}).catch(error => {
-						uni.showToast({
-							icon: 'none',
-							position: 'bottom',
-							title: error.msg ? error.msg : "服务器异常!"
-						});
+						console.log("=====error",error)
+						
 					})
 				}
 			},

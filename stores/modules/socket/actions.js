@@ -179,11 +179,11 @@ export default {
 			commit("setIsOpenSocket", true);
 			commit("setContinueCloseCount", state.continueCloseCount + 1);
 			heartCheck.reset();
-			uni.showToast({
-				icon: 'none',
-				position: 'bottom',
-				title: "通讯服务器异常!"
-			});
+			// uni.showToast({
+			// 	icon: 'none',
+			// 	position: 'bottom',
+			// 	title: "通讯服务器异常!"
+			// });
 			dispatch("WEBSOCKET_INIT");
 		});
 

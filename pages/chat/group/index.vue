@@ -486,10 +486,9 @@ import { decryptMessageObj } from '../../../common/aa';
 			}
 		},
 		mounted() {
-			// document.oncontextmenu = function(e) {
-			// 	return false;
-			// }
-
+			document.oncontextmenu = function(e) {
+				return false;
+			}
 		},
 		beforeDestroy() {},
 		methods: {
@@ -637,11 +636,6 @@ import { decryptMessageObj } from '../../../common/aa';
 					}).catch(error => {
 						console.log("=====error", error)
 
-						uni.showToast({
-							icon: 'none',
-							position: 'bottom',
-							title: error.msg ? error.msg : "服务器异常!"
-						});
 					})
 				} else {
 					_this.loadTalkUserAction({
@@ -652,11 +646,6 @@ import { decryptMessageObj } from '../../../common/aa';
 					}).catch(error => {
 						console.log("=====error", error)
 
-						uni.showToast({
-							icon: 'none',
-							position: 'bottom',
-							title: error.msg ? error.msg : "服务器异常!"
-						});
 					});
 				}
 			},
@@ -874,11 +863,6 @@ import { decryptMessageObj } from '../../../common/aa';
 					}).catch(error => {
 						console.log("=====error", error)
 
-						uni.showToast({
-							icon: 'none',
-							position: 'bottom',
-							title: error.msg ? error.msg : "服务器异常!"
-						});
 					})
 				}
 				getChatCfg().then(res => {
@@ -1228,11 +1212,7 @@ import { decryptMessageObj } from '../../../common/aa';
 						}
 					}).catch(error => {
 						console.log("=====error", error)
-						uni.showToast({
-							icon: 'none',
-							position: 'bottom',
-							title: error.msg ? error.msg : "服务器异常!"
-						});
+						
 					})
 				}
 				this.hidePop();
@@ -1326,11 +1306,6 @@ import { decryptMessageObj } from '../../../common/aa';
 				}).catch(error => {
 					console.log("=====error", error)
 
-					uni.showToast({
-						icon: 'none',
-						position: 'bottom',
-						title: error.msg ? error.msg : "服务器异常!"
-					});
 				})
 			},
 			goMgr(_id) {

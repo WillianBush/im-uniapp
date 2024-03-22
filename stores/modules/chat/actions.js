@@ -283,11 +283,6 @@ export default {
 		}).catch(error => {
 			console.log("=====error", error)
 
-			uni.showToast({
-				icon: 'none',
-				position: 'bottom',
-				title: error.msg ? error.msg : "服务器异常!"
-			});
 		});
 	},
 	searchMsgListAction({
@@ -303,11 +298,6 @@ export default {
 		}).catch(error => {
 			console.log("=====error", error)
 
-			uni.showToast({
-				icon: 'none',
-				position: 'bottom',
-				title: error.msg ? error.msg : "服务器异常!"
-			});
 		});
 	},
 	getChatCfgAction({
@@ -322,11 +312,6 @@ export default {
 			}).catch(error => {
 				console.log("=====error", error)
 			
-				uni.showToast({
-					icon: 'none',
-					position: 'bottom',
-					title: error.msg ? error.msg : "服务器异常!"
-				});
 			});
 		}catch(e){
 			//TODO handle the exception
@@ -396,12 +381,6 @@ export default {
 			}
 		}).catch(error => {
 			console.log("=====error", error)
-
-			uni.showToast({
-				icon: 'none',
-				position: 'bottom',
-				title: error.msg ? error.msg : "服务器异常!"
-			});
 		});
 	},
 	chooseVideoAction({
@@ -778,11 +757,6 @@ export default {
 		}).catch(error => {
 			console.log("=====error", error)
 
-			uni.showToast({
-				icon: 'none',
-				position: 'bottom',
-				title: error.msg ? error.msg : "服务器异常!"
-			});
 		})
 	},
 	getRoomConfigAction({
@@ -840,11 +814,6 @@ export default {
 		}).catch(error => {
 			console.log("=====error", error)
 
-			uni.showToast({
-				icon: 'none',
-				position: 'bottom',
-				title: error.msg ? error.msg : "服务器异常!"
-			});
 		})
 	},
 	dissolveGroupAction({
@@ -872,12 +841,6 @@ export default {
 			}
 		}).catch(error => {
 			console.log("=====error", error)
-
-			uni.showToast({
-				icon: 'none',
-				position: 'bottom',
-				title: error.msg ? error.msg : "服务器异常!"
-			});
 		})
 	},
 	logoutGroupAction({
@@ -906,12 +869,6 @@ export default {
 			}
 		}).catch(error => {
 			console.log("=====error", error)
-
-			uni.showToast({
-				icon: 'none',
-				position: 'bottom',
-				title: error.msg ? error.msg : "服务器异常!"
-			});
 		})
 	},
 	uStopSpeakAction({
@@ -930,12 +887,6 @@ export default {
 			}
 		}).catch(error => {
 			console.log("=====error", error)
-
-			uni.showToast({
-				icon: 'none',
-				position: 'bottom',
-				title: error.msg ? error.msg : "服务器异常!"
-			});
 		})
 	},
 	uCnfSetAction({
@@ -958,12 +909,6 @@ export default {
 			}
 		}).catch(error => {
 			console.log("=====error", error)
-
-			uni.showToast({
-				icon: 'none',
-				position: 'bottom',
-				title: error.msg ? error.msg : "服务器异常!"
-			});
 		})
 	}
 };

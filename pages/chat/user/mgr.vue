@@ -626,11 +626,7 @@
 					}
 				}).catch(error => {
 					console.log("=====error", error)
-					uni.showToast({
-						icon: 'none',
-						position: 'bottom',
-						title: error.msg ? error.msg : "服务器异常!"
-					});
+					
 				})
 				isBlack({
 					uid: this.id
@@ -651,11 +647,6 @@
 				}).catch(error => {
 					console.log("=====error", error)
 
-					uni.showToast({
-						icon: 'none',
-						position: 'bottom',
-						title: error.msg ? error.msg : "服务器异常!"
-					});
 				})
 
 				let darao = uni.getStorageSync(this.id + "_darao");
@@ -725,11 +716,6 @@
 						}).catch(error => {
 							console.log("=====error", error)
 
-							uni.showToast({
-								icon: 'none',
-								position: 'bottom',
-								title: error.msg ? error.msg : "服务器异常!"
-							});
 						})
 					},
 					fail: function(res) {}
@@ -828,11 +814,6 @@
 				}).catch(error => {
 					console.log("=====error", error)
 
-					uni.showToast({
-						icon: 'none',
-						position: 'bottom',
-						title: error.msg ? error.msg : "服务器异常!"
-					});
 				})
 			},
 			SwitchB(e) {
