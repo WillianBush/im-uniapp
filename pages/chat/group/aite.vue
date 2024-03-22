@@ -28,8 +28,7 @@
 			<block v-for="(item,index) in member_list" :key="index">
 				<view class="cu-list menu-avatar no-padding" style="    margin-top: 0upx;">
 					<view @tap="selMember(item)" class="cu-item">
-						<view class="cu-avatar round lg"
-							:style="{'backgroundImage': 'url('+imgUrl+ item.headpic +')' }"
+						<view class="cu-avatar round lg" :style="{'backgroundImage': 'url('+imgUrl+ item.headpic +')' }"
 							style="width: 80upx;height: 80upx;background-size: 100% 100%;"></view>
 						<view class="content">
 							<view class="text-grey" style="float:left;">{{item.nickName}}</view>
@@ -95,14 +94,9 @@
 
 					}
 				}).catch(error => {
-					console.log("####error:",error)
-					
-								uni.showToast({
-									icon: 'none',
-									position: 'bottom',
-									title: error.msg ? error.msg : "服务器异常!"
-								});
-							})
+					console.log("####error:", error)
+
+				})
 			}
 		},
 		computed: {

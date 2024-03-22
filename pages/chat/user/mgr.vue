@@ -142,11 +142,6 @@ getHeadPic()
 			}).catch(error => {
 				console.log("####error:",error)
 				
-					uni.showToast({
-						icon: 'none',
-						position: 'bottom',
-						title: error.msg ? error.msg : "服务器异常!"
-					});
 				})
 			//是否超级用户
 			isSuperUser().then(res => {
@@ -157,11 +152,6 @@ getHeadPic()
 			}).catch(error => {
 				console.log("####error:",error)
 				
-					uni.showToast({
-						icon: 'none',
-						position: 'bottom',
-						title: error.msg ? error.msg : "服务器异常!"
-					});
 				})
 			isBlack({
 				uid: this.id
@@ -182,11 +172,6 @@ getHeadPic()
 			}).catch(error => {
 				console.log("####error:",error)
 				
-					uni.showToast({
-						icon: 'none',
-						position: 'bottom',
-						title: error.msg ? error.msg : "服务器异常!"
-					});
 				})
 
 			let darao = uni.getStorageSync(this.id + "_darao");
@@ -278,12 +263,7 @@ getHeadPic()
 							}
 						}).catch(error => {
 							console.log("####error:",error)
-							
-					uni.showToast({
-						icon: 'none',
-						position: 'bottom',
-						title: error.msg ? error.msg : "服务器异常!"
-					});
+					
 				})
 					},
 					fail: function(res) {}
@@ -386,11 +366,6 @@ getHeadPic()
 				}).catch(error => {
 					console.log("####error:",error)
 					
-					uni.showToast({
-						icon: 'none',
-						position: 'bottom',
-						title: error.msg ? error.msg : "服务器异常!"
-					});
 				})
 			},
 			SwitchB(e) {

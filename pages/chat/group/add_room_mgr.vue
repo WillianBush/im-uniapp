@@ -131,7 +131,7 @@
 
 		},
 		methods: {
-			...mapMutations('chat',[
+			...mapMutations('chat', [
 				'setCurChatEntity'
 			]),
 			tijiao() {
@@ -163,14 +163,9 @@
 						});
 					}
 				}).catch(error => {
-					console.log("####error:",error)
-					
-								uni.showToast({
-									icon: 'none',
-									position: 'bottom',
-									title: error.msg ? error.msg : "服务器异常!"
-								});
-							})
+					console.log("####error:", error)
+
+				})
 			},
 			radioChange(e) {
 				this.ids = e.target.value;
@@ -238,6 +233,7 @@
 	uni-checkbox {
 		float: right;
 	}
+
 	.indexes {
 		position: relative;
 	}

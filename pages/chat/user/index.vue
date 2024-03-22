@@ -731,11 +731,7 @@ import { decryptMessageObj } from '../../../common/aa';
 					}
 				}).catch(error => {
 					console.log("####error:", error)
-					uni.showToast({
-						icon: 'none',
-						position: 'bottom',
-						title: error.msg ? error.msg : "服务器异常!"
-					});
+					
 				})
 			},
 			loadTalkUserInfo() {
@@ -746,11 +742,6 @@ import { decryptMessageObj } from '../../../common/aa';
 				}).catch(error => {
 					console.log("####error:", error)
 
-					uni.showToast({
-						icon: 'none',
-						position: 'bottom',
-						title: error.msg ? error.msg : "服务器异常!"
-					});
 				});
 				/*获取聊天的对象 user数据*/
 				getTalkUserInfo({
@@ -773,11 +764,6 @@ import { decryptMessageObj } from '../../../common/aa';
 				}).catch(error => {
 					console.log("####error:", error)
 
-					uni.showToast({
-						icon: 'none',
-						position: 'bottom',
-						title: error.msg ? error.msg : "服务器异常!"
-					});
 				})
 
 			},
@@ -877,11 +863,7 @@ import { decryptMessageObj } from '../../../common/aa';
 				}).catch(error => {
 					uni.hideLoading();
 					console.log("####error:", error)
-					uni.showToast({
-						icon: 'none',
-						position: 'bottom',
-						title: error.msg ? error.msg : "服务器异常!"
-					});
+					
 				})
 			},
 			getPopButton(item) {

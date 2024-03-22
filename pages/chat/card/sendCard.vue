@@ -78,7 +78,9 @@
 	import {
 		MessageType
 	} from '../../../const/MessageType';
-import { uuid } from '../../../common/utils';
+	import {
+		uuid
+	} from '../../../common/utils';
 	export default {
 		data() {
 			return {
@@ -207,8 +209,8 @@ import { uuid } from '../../../common/utils';
 							muuid: this.selFriendBean.member_uuid,
 							toGroupid: this.temp.bean.id,
 							fromUid: this.user.id,
-							psr:"card",
-							uuid:uuid()
+							psr: "card",
+							uuid: uuid()
 						},
 						CMD: MessageType.CHAT_SEND_CARD
 					});
@@ -219,8 +221,8 @@ import { uuid } from '../../../common/utils';
 							muuid: this.selFriendBean.member_uuid,
 							toUid: this.temp.bean.id,
 							fromUid: this.user.id,
-							psr:"card",
-							uuid:uuid()
+							psr: "card",
+							uuid: uuid()
 						},
 						CMD: MessageType.CHAT_SEND_CARD
 					})
@@ -277,12 +279,8 @@ import { uuid } from '../../../common/utils';
 						});
 					}
 				}).catch(error => {
-								uni.showToast({
-									icon: 'none',
-									position: 'bottom',
-									title: error.msg ? error.msg : "服务器异常!"
-								});
-							});
+					console.log("========###error", error)
+				});
 			},
 			radioChange(e) {
 				this.ids = e.target.value;

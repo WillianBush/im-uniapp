@@ -190,7 +190,7 @@
 				'setArList',
 				'setArListShow'
 			]),
-			...mapMutations('user',[
+			...mapMutations('user', [
 				'setFriendList'
 			]),
 			tijiao() {
@@ -237,14 +237,9 @@
 						});
 					}
 				}).catch(error => {
-					console.log("####error:",error)
-					
-								uni.showToast({
-									icon: 'none',
-									position: 'bottom',
-									title: error.msg ? error.msg : "服务器异常!"
-								});
-							})
+					console.log("####error:", error)
+
+				})
 			},
 			radioChange(e) {
 				this.ids = e.target.value;
@@ -312,9 +307,11 @@
 	uni-checkbox {
 		float: right;
 	}
+
 	.indexes {
 		position: relative;
 	}
+
 	.indexBar {
 		position: fixed;
 		right: 0px;
@@ -323,6 +320,7 @@
 		display: flex;
 		align-items: center;
 	}
+
 	.indexBar .indexBar-box {
 		width: 40upx;
 		height: auto;
@@ -332,6 +330,7 @@
 		box-shadow: 0 0 20upx rgba(0, 0, 0, 0.1);
 		border-radius: 10upx;
 	}
+
 	.indexBar-item {
 		flex: 1;
 		width: 40upx;
@@ -342,12 +341,14 @@
 		font-size: 24upx;
 		color: #888;
 	}
+
 	movable-view.indexBar-item {
 		width: 40upx;
 		height: 40upx;
 		z-index: 9;
 		position: relative;
 	}
+
 	movable-view.indexBar-item::before {
 		content: "";
 		display: block;
@@ -358,6 +359,7 @@
 		width: 4upx;
 		background-color: #f37b1d;
 	}
+
 	.indexToast {
 		position: fixed;
 		top: 0;
@@ -373,6 +375,7 @@
 		text-align: center;
 		font-size: 48upx;
 	}
+
 	.text-grey {
 		color: #333
 	}

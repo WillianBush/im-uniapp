@@ -7,7 +7,7 @@
 			</view>
 			<!-- 主体表单 -->
 			<view class="main">
-				<wInput v-model="phoneData" type="text" maxlength="25" placeholder="用户名/电话"></wInput>
+				<wInput v-model="phoneData" type="text" maxlength="25" placeholder="账号"></wInput>
 				<wInput v-model="passData" type="password" maxlength="25" placeholder="密码"></wInput>
 			</view>
 			<wButton class="wbutton" text="登 录" :rotate="isRotate" @click="startLogin"></wButton>
@@ -74,7 +74,7 @@
 					uni.showToast({
 						icon: "none",
 						position: "bottom",
-						title: "用户名不能为空",
+						title: "账号不能为空",
 					});
 					return;
 				}
@@ -86,14 +86,7 @@
 					});
 					return;
 				}
-				if (this.phoneData.length >= 35) {
-					uni.showToast({
-						icon: "none",
-						position: "bottom",
-						title: "用户名不能超过35个字",
-					});
-					return;
-				}
+				
 				if (this.passData.length < 5) {
 					uni.showToast({
 						icon: "none",
@@ -124,10 +117,6 @@
 					_this.isRotate = false;
 					console.log("####error:",error)
 					
-					uni.showToast({
-						icon: "none",
-						title: error.msg?error.msg:"服务器异常",
-					});
 				});
 			},
 		},

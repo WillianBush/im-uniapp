@@ -466,7 +466,9 @@
 		getHeadPic,
 		parseMedia
 	} from '../../../common/utils';
-import { decryptMessageObj } from '../../../common/aa';
+	import {
+		decryptMessageObj
+	} from '../../../common/aa';
 	const innerAudioContext = uni.createInnerAudioContext();
 	export default {
 		components: {
@@ -769,11 +771,6 @@ import { decryptMessageObj } from '../../../common/aa';
 				}).catch(error => {
 					console.log("####error:", error)
 
-					uni.showToast({
-						icon: 'none',
-						position: 'bottom',
-						title: error.msg ? error.msg : "服务器异常!"
-					});
 				})
 			},
 			loadRoomFunc() {
@@ -827,11 +824,7 @@ import { decryptMessageObj } from '../../../common/aa';
 				}).catch(error => {
 					this.setChatMyLoadding(false)
 					console.log("####error:", error)
-					uni.showToast({
-						icon: 'none',
-						position: 'bottom',
-						title: error.msg ? error.msg : "服务器异常!"
-					});
+
 				})
 			},
 			scrollFn(e) {
@@ -911,11 +904,6 @@ import { decryptMessageObj } from '../../../common/aa';
 				}).catch(error => {
 					console.log("####error:", error)
 
-					uni.showToast({
-						icon: 'none',
-						position: 'bottom',
-						title: error.msg ? error.msg : "服务器异常!"
-					});
 				})
 			},
 			clickAite(item) {
@@ -1190,12 +1178,6 @@ import { decryptMessageObj } from '../../../common/aa';
 						}
 					}).catch(error => {
 						console.log("####error:", error)
-
-						uni.showToast({
-							icon: 'none',
-							position: 'bottom',
-							title: error.msg ? error.msg : "服务器异常!"
-						});
 					})
 				}
 				this.hidePop();
@@ -1284,12 +1266,6 @@ import { decryptMessageObj } from '../../../common/aa';
 					}
 				}).catch(error => {
 					console.log("####error:", error)
-
-					uni.showToast({
-						icon: 'none',
-						position: 'bottom',
-						title: error.msg ? error.msg : "服务器异常!"
-					});
 				})
 			},
 			goMgr(_id) {

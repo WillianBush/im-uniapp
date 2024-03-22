@@ -40,11 +40,6 @@ export default {
 		}).catch(error => {
 			console.log("####error:",error)
 			
-			uni.showToast({
-				icon: 'none',
-				position: 'bottom',
-				title: error.msg ? error.msg : "服务器异常!"
-			});
 		})
 	},
 	isEmployeeAction({
@@ -225,11 +220,6 @@ export default {
 		}).catch(error => {
 			console.log("####error:",error)
 			
-			uni.showToast({
-				icon: 'none',
-				position: 'bottom',
-				title: error.msg ? error.msg : "服务器异常!"
-			});
 		})
 	},
 	getFriendListAction({
@@ -256,11 +246,6 @@ export default {
 		}).catch(error => {
 			console.log("####error:",error)
 			
-			uni.showToast({
-				icon: 'none',
-				position: 'bottom',
-				title: error.msg ? error.msg : "服务器异常!"
-			});
 		})
 	},
 	isSuperUserAction() {
@@ -297,12 +282,6 @@ export default {
 				}
 			}).catch(error => {
 				console.log("####error:",error)
-				
-				uni.showToast({
-					icon: 'none',
-					position: 'bottom',
-					title: error.msg ? error.msg : "服务器异常!"
-				});
 			})
 		}
 	}
