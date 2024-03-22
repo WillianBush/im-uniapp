@@ -518,25 +518,27 @@ export default {
 				}
 			} else {
 				// 如果是自己发的消息就改变消息发送成功的状态
-				let isCurSend = false
-				jsonObj.forEach((item) => {
+				let tempIndex = -1
+				jsonObj.forEach((item,index) => {
 					if (item.bean.uuid == messageBean[0].uuid) {
-						item.uuid = messageBean[0].uuid;
-						isCurSend = true;
+						tempIndex = index;
 					}
 				});
+				
 				// 从消息队列中删除
-				commit(
-					"socket/removeSendQuene",
-					messageBean[0].bean.uuid, {
-						root: true
-					}
-				);
-				if (!isCurSend) {
+				// commit(
+				// 	"socket/removeSendQuene",
+				// 	messageBean[0].bean.uuid, {
+				// 		root: true
+				// 	}
+				// );
+				if (tempIndex == -1) {
 					jsonObj = jsonObj.concat(messageBean);
 					if (jsonObj.length > 30) {
 						jsonObj = jsonObj.splice(jsonObj.length - 30, jsonObj.length);
 					}
+				}else{
+					jsonObj.splice(tempIndex,1,messageBean[0])
 				}
 				console.log("=======jsonObj:", jsonObj)
 			}
@@ -618,20 +620,25 @@ export default {
 		commit,
 		rootState
 	}, payload) {
-		let data = payload;
+		let data = payload.body[0];
 		let user = uni.getStorageSync("USER");
 		let str = uni.getStorageSync(
-			user.id + "#" + data.body.chatId + "_CHAT_MESSAGE"
+			user.id + "#" + data.bean.chatId + "_CHAT_MESSAGE"
 		);
+		console.log("=======撤销str:",str)
+		console.log("=======撤销data:",data)
+		
 		if (str && str != "") {
 			var arrs = JSON.parse(str);
 			let narrs = [];
 			for (let i = arrs.length - 1; i >= 0; i--) {
-				if (arrs[i].bean && arrs[i].bean.uuid == data.body.bean.txt) {
+				if (arrs[i].bean && arrs[i].bean.uuid == data.bean.txt) {
+					console.log("=======撤销",arrs)
 					arrs[i] = {
 						opt: "undo",
-						opt_uid: data.body.bean.fromUid,
-						name: data.body.bean.fromName,
+						opt_uid: data.bean.fromUid,
+						name: data.bean.fromName,
+						bean:data.bean
 					};
 					if (i == arrs.length - 1) {
 						//如果是最后一个，则把最后last_content设置为撤消
@@ -645,21 +652,21 @@ export default {
 						uni.setStorageSync(
 							user.id +
 							"#" +
-							data.body.chatId +
+							data.bean.chatId +
 							"_CHAT_MESSAGE_LASTCONTENT",
 							last_content
 						);
 						try {
 							rootState.chat.arList.forEach((item) => {
-								if (item.id == data.body.chatId) {
+								if (item.id == data.bean.chatId) {
 									item.content = last_content;
 									throw Error();
 								}
 							});
 						} catch (e) {}
 						if (
-							data.body.bean &&
-							data.body.bean.fromUid != user.id
+							data.bean &&
+							data.bean.fromUid != user.id
 						) {} else {
 							setTimeout(() => {
 								uni.pageScrollTo({
@@ -673,16 +680,18 @@ export default {
 				}
 			}
 
+				console.log("=======撤销",arrs)
 
 			uni.setStorageSync(
-				user.id + "#" + data.body.chatId + "_CHAT_MESSAGE",
+				user.id + "#" + data.bean.chatId + "_CHAT_MESSAGE",
 				JSON.stringify(arrs)
 			);
 
 			if (
 				rootState.chat.curChatEntity &&
-				rootState.chat.curChatEntity.id == data.body.chatId
+				rootState.chat.curChatEntity.id == data.bean.chatId
 			) {
+				console.log("=======撤销",arrs)
 				commit("chat/setCurChatMsgList", arrs, {
 					root: true
 				});

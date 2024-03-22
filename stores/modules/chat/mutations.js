@@ -50,9 +50,7 @@ export default {
 		let tempBean = null;
 		state.curChatMsgList.forEach((item,index) => {
 			if (item.bean.uuid == payload.uuid) {
-				item.uuid = payload.uuid;
-				// isCurSend = true;
-				tempBean = item;
+				tempBean = payload;
 				tempIndex = index;
 			}
 		})

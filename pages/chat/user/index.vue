@@ -29,7 +29,8 @@
 			:style="'height: calc(100vh - '+CustomBar+'px - '+(120+InputBottom)+'upx)'">
 			<block v-for="(item,index) in curChatMsgList">
 				<block v-if="item.opt&&item.opt=='undo'">
-					<view style="display: none"></view>
+					<view v-if="item.opt_uid==user.id" class="cu-info round">您撤回一条消息</view>
+					<view v-else class="cu-info round">{{item.name}} 撤回一条消息</view>
 				</block>
 				<block v-else-if="item.type=='SYS_TXT'">
 					<view class="cu-info round">
@@ -204,7 +205,7 @@
 								<image style="width: 40upx;height: 40upx;" @tap="reSendMsg(item)"
 									src="../../../static/fail.png"></image>
 							</view>
-							
+
 							<!-- 消息发送中...-->
 							<view v-if="item.bean.read == 0 && !item.uuid &&!item.bean.sendFail">
 								<text class="iconfont cu-load load-cuIcon loading text-xxxl"
@@ -447,7 +448,9 @@
 	import {
 		MessageType
 	} from '../../../const/MessageType';
-import { decryptMessageObj } from '../../../common/aa';
+	import {
+		decryptMessageObj
+	} from '../../../common/aa';
 	export default {
 		components: {
 			uParse
@@ -509,8 +512,8 @@ import { decryptMessageObj } from '../../../common/aa';
 				toName: "",
 				isRefreshTrigger: false,
 				hasMore: true,
-				reSendMsgObj:null,
-				isBlack:false,//是否被拉黑
+				reSendMsgObj: null,
+				isBlack: false, //是否被拉黑
 			};
 		},
 		onBackPress() {
@@ -556,6 +559,10 @@ import { decryptMessageObj } from '../../../common/aa';
 			// #endif
 		},
 		mounted() {
+			document.oncontextmenu = function(e) {
+				return false;
+			}
+
 			if (!this.toid) return;
 			this.tongbuMsg()
 		},
@@ -571,7 +578,7 @@ import { decryptMessageObj } from '../../../common/aa';
 				'addCurChatMsg',
 				'updateCurChatMsgSendStatus'
 			]),
-			...mapMutations('socket',['addSendQuene']),
+			...mapMutations('socket', ['addSendQuene']),
 			...mapActions('socket', [
 				"sendChatMessage",
 				"sendShowInputing",
@@ -589,8 +596,8 @@ import { decryptMessageObj } from '../../../common/aa';
 				'collectAction',
 				"sendBaseDaoAction"
 			]),
-			queryReSendMsg(){
-				console.log("======发送",this.reSendMsgObj);
+			queryReSendMsg() {
+				console.log("======发送", this.reSendMsgObj);
 				let v = {
 					txt: this.reSendMsgObj.bean.txt,
 					fromUid: this.reSendMsgObj.bean.fromUid,
@@ -599,17 +606,17 @@ import { decryptMessageObj } from '../../../common/aa';
 					psr: this.reSendMsgObj.bean.psr,
 					simpleContent: this.reSendMsgObj.bean.simpleContent
 				}
-				if(v.psr == 'voice'){
+				if (v.psr == 'voice') {
 					this.sendVoiceMessage(v)
-				}else{
+				} else {
 					this.sendChatMessage(v)
 				}
 				this.reSendMsgObj.bean.sendFail = false
 				this.updateCurChatMsgSendStatus(this.reSendMsgObj);
 				this.addSendQuene(this.reSendMsgObj)
-				
+
 			},
-			cancelSend(){
+			cancelSend() {
 				this.reSendMsgObj = null
 			},
 			transMessage(message) {
@@ -731,7 +738,7 @@ import { decryptMessageObj } from '../../../common/aa';
 					}
 				}).catch(error => {
 					console.log("####error:", error)
-					
+
 				})
 			},
 			loadTalkUserInfo() {
@@ -751,16 +758,16 @@ import { decryptMessageObj } from '../../../common/aa';
 					if (res_data.code == 200 && res_data.body && res_data.body.ip) {
 						this.toIP = res_data.body.ip + (res_data.body.ipAddr ? "(" + res_data.body.ipAddr + ")" :
 							"");
-					}else{
-						if(res_data.code == 500){
-							this.isBlack =true
+					} else {
+						if (res_data.code == 500) {
+							this.isBlack = true
 							uni.showToast({
 								icon: 'none',
 								position: 'bottom',
 								title: res_data.msg
 							});
 						}
-						
+
 					}
 				}).catch(error => {
 					console.log("####error:", error)
@@ -814,7 +821,7 @@ import { decryptMessageObj } from '../../../common/aa';
 								let msg = res_data.body.list[i][0]
 								msg = decryptMessageObj(msg);
 								msg.uuid = msg.bean.uuid;
-								
+
 								cList.push(msg);
 							} //遍历
 							if (!isRefresh) {
@@ -828,8 +835,8 @@ import { decryptMessageObj } from '../../../common/aa';
 								if (str && str != "") {
 									let messages = JSON.parse(str)
 									// console.log("messages ===",messages)
-									sendFail = messages.filter(item =>item.bean.sendFail);
-									resList = messages.filter(item=>!item.bean.sendFail);
+									sendFail = messages.filter(item => !!item.bean.sendFail);
+									resList = messages.filter(item => !item.bean.sendFail);
 									// 有新消息，本地没有同步到使用服务器消息
 									if (resList[resList.length - 1].bean.messageId != cList[cList.length - 1]
 										.bean.messageId) {
@@ -838,8 +845,8 @@ import { decryptMessageObj } from '../../../common/aa';
 								} else {
 									resList = cList;
 								}
-								console.log("========sendFail",sendFail)
-								if(sendFail.length){ // 存在发送失败的
+								console.log("========sendFail", sendFail)
+								if (sendFail.length) { // 存在发送失败的
 									resList = resList.concat(sendFail);
 								}
 								//1：先清楚和刷新当前显示列表
@@ -864,7 +871,7 @@ import { decryptMessageObj } from '../../../common/aa';
 				}).catch(error => {
 					uni.hideLoading();
 					console.log("####error:", error)
-					
+
 				})
 			},
 			getPopButton(item) {
@@ -1057,10 +1064,12 @@ import { decryptMessageObj } from '../../../common/aa';
 						}
 					}
 				} else if (name == '撤消') {
+					
 					this.sendChatMessageUndo({
 						txt: _this.temp_bean.uuid,
 						toUid: _this.temp_bean.toUid,
-						fromUid: _this.temp_bean.fromUid
+						fromUid: _this.temp_bean.fromUid,
+						messageId:_this.temp_bean.messageId
 					})
 				} else if (name == '收藏') {
 					if (_this.temp_content.indexOf("voice") >= 0) {

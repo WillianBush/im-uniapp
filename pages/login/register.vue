@@ -197,7 +197,10 @@
 				}).catch(error => {
 					_this.isRotate = false;
 					console.log("####error:",error)
-					
+					uni.showToast({
+						icon: "none",
+						title: error.msg,
+					});
 				});
 			},
 		},

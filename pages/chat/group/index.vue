@@ -24,7 +24,8 @@
 			:style="'height: calc(100vh - '+CustomBar+'px - '+(180+InputBottom)+'upx)'">
 			<block v-for="(item,index) in curChatMsgList">
 				<block v-if="item.opt&&item.opt=='undo'">
-					<view style="display: none"></view>
+					<view v-if="item.opt_uid==user.id" class="cu-info round">您撤回一条消息</view>
+					<view v-else class="cu-info round">{{item.name}} 撤回一条消息</view>
 				</block>
 				<block v-else-if="item.type=='SYS_TXT'">
 					<view class="cu-info round">
@@ -676,6 +677,10 @@
 			// } else {
 			// 	this.deduplication()
 			// }
+			document.oncontextmenu = function(e) {
+				return false;
+			}
+
 		},
 		methods: {
 			...mapMutations('chat', [
@@ -1143,7 +1148,8 @@
 						body: {
 							txt: this.temp_bean.uuid,
 							toGroupid: this.temp_bean.toGroupid,
-							fromUid: this.user.id
+							fromUid: this.user.id,
+							messageId:_this.temp_bean.messageId
 						},
 						CMD: MessageType.CHAT_MSG_UNDO_MGR
 					})
@@ -1152,7 +1158,9 @@
 						body: {
 							txt: this.temp_bean.uuid,
 							toGroupid: this.temp_bean.toGroupid,
-							fromUid: this.temp_bean.fromUid
+							fromUid: this.temp_bean.fromUid,
+							messageId:_this.temp_bean.messageId
+							
 						},
 						CMD: MessageType.CHAT_MSG_UNDO
 					})
