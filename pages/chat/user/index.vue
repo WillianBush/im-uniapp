@@ -754,12 +754,13 @@ import { decryptMessageObj } from '../../../common/aa';
 					}else{
 						if(res_data.code == 500){
 							this.isBlack =true
+							uni.showToast({
+								icon: 'none',
+								position: 'bottom',
+								title: res_data.msg
+							});
 						}
-						uni.showToast({
-							icon: 'none',
-							position: 'bottom',
-							title: res_data.msg
-						});
+						
 					}
 				}).catch(error => {
 					console.log("####error:", error)

@@ -410,7 +410,7 @@ export default {
 		return new Promise((resolve, reject) => {
 			uni.chooseImage({
 				count: 4, //默认9
-				sizeType: ["original", "compressed"], //可以指定是原图还是压缩图，默认二者都有
+				sizeType: ["original"], //可以指定是原图还是压缩图，默认二者都有
 				sourceType: ["album", "camera"], //从相册选择
 				success: (res) => {
 					commit("setChatMyLoadding", true);
