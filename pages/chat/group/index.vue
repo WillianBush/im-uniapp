@@ -39,8 +39,9 @@
 			style="background: #fff;" :style="'height: calc(100vh - 198px - '+(120+InputBottom)+'upx)'">
 			<block v-for="(item,index) in curChatMsgList">
 				<block v-if="item.opt&&item.opt=='undo'">
-					<view class="cu-info round">{{item.name}} 撤回一条消息</view> -->
-					<view style="display: none"></view>
+					<view v-if="item.opt_uid==user.id" class="cu-info round">您撤回一条消息</view>
+
+					<view  class="cu-info round">{{item.name}} 撤回一条消息</view>
 				</block>
 				<block v-else-if="item.messageType=='SYS_TXT'">
 					<view class="cu-info round">
@@ -350,7 +351,9 @@
 	import uParse from '@/components/u-parse/u-parse.vue'
 	const innerAudioContext = uni.createInnerAudioContext();
 	import h5Copy from '@/common/junyi-h5-copy.js'
-import { decryptMessageObj } from '../../../common/aa';
+	import {
+		decryptMessageObj
+	} from '../../../common/aa';
 
 	export default {
 		name: 'GroupChat',
@@ -847,7 +850,7 @@ import { decryptMessageObj } from '../../../common/aa';
 					}).then(res => {
 						let res_data = eval(res.data);
 						if (res_data.code == 200) {
-							if (res_data.body&&res_data.body.ip){
+							if (res_data.body && res_data.body.ip) {
 								_this.toIP = res_data.body.ip + "(" + res_data.body.ipAddr + ")";
 							}
 						} else {
@@ -1164,14 +1167,17 @@ import { decryptMessageObj } from '../../../common/aa';
 						body: {
 							txt: this.temp_bean.uuid,
 							toGroupid: this.temp_bean.toGroupid,
-							fromUid: this.user.id
+							fromUid: this.user.id,
+							messageId: _this.temp_bean.messageId
+
 						},
 						CMD: MessageType.CHAT_MSG_UNDO_MGR
 					})
 				} else if (name == '撤消') {
 					let v = {
 						txt: this.temp_bean.uuid,
-						fromUid: this.temp_bean.fromUid
+						fromUid: this.temp_bean.fromUid,
+						messageId: _this.temp_bean.messageId
 					}
 					if (this.isGroupChat) {
 						v.toGroupid = this.temp_bean.toGroupid
@@ -1212,7 +1218,7 @@ import { decryptMessageObj } from '../../../common/aa';
 						}
 					}).catch(error => {
 						console.log("=====error", error)
-						
+
 					})
 				}
 				this.hidePop();
