@@ -625,15 +625,13 @@ export default {
 		let str = uni.getStorageSync(
 			user.id + "#" + data.bean.chatId + "_CHAT_MESSAGE"
 		);
-		console.log("=======撤销str:",str)
-		console.log("=======撤销data:",data)
+	
 		
 		if (str && str != "") {
 			var arrs = JSON.parse(str);
 			let narrs = [];
 			for (let i = arrs.length - 1; i >= 0; i--) {
 				if (arrs[i].bean && arrs[i].bean.uuid == data.bean.txt) {
-					console.log("=======撤销",arrs)
 					arrs[i] = {
 						opt: "undo",
 						opt_uid: data.bean.fromUid,
