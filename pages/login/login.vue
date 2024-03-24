@@ -110,7 +110,7 @@
 					} else {
 						uni.showToast({
 							icon: "none",
-							title: error.msg,
+							title: res.msg,
 						});
 					}
 				}).catch(error => {

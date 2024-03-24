@@ -95,7 +95,7 @@
 			});
 		},
 		methods: {
-			...mapActions('user', ['registerAction']),
+			...mapActions('user', ['registerAction','loginAction']),
 			back() {
 				uni.navigateTo({
 					url: "login",
@@ -185,9 +185,11 @@
 						uni.showToast({
 							title:"注册成功,请完善资料！"
 						})
-						uni.navigateTo({
-							url: "/pages/mine/user_info/updateUserInfo",
-						});
+						setTimeout(()=>{
+							uni.navigateTo({
+								url: "/pages/mine/user_info/updateUserInfo",
+							});
+						},1000)
 					} else {
 						uni.showToast({
 							icon: "none",

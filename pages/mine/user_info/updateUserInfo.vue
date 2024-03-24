@@ -16,8 +16,8 @@
 			align-items: center;">
 				<text>+</text>
 			</view>
-			<view @tap="ChooseImage" v-else class="cu-avatar radius margin-left"
-				:style="'height:160upx;width:160upx;background-image:url('+userHeadPic+');'">
+			<view @tap="ChooseImage" v-else class="cu-avatar"
+				:style="'height:160upx;width:160upx;border-radius:50%;background-image:url('+userHeadPic+');'">
 			</view>
 			<text style="margin-top: 20upx;">上传真实照片</text>
 		</view>
@@ -103,7 +103,10 @@ import { updateUserInfo } from '../../../common/api';
 		},
 		methods: {
 			...mapMutations('user', [
-				'updateUserHeadpic'
+				'updateUserHeadpic',
+				'updateUsername',
+				'updateSex',
+				'updateUserInfo'
 			]),
 			startUpdate() {
 				if (!this.headPic.length) {
@@ -126,7 +129,20 @@ import { updateUserInfo } from '../../../common/api';
 					headpic:this.headPic,
 					sex:this.sex
 				}).then(res=>{
-					
+					console.log(res)
+					if (res.data.code == 200) {
+						_this.updateSex(this.sex)
+						_this.updateUsername(this.nickname)
+						_this.updateUserInfo();
+						uni.redirectTo({
+							url: "/pages/index/index",
+						});
+					} else {
+						uni.showToast({
+							icon: "none",
+							title: res.data.msg,
+						});
+					}
 				})
 			},
 			changeSex(val) {
@@ -166,7 +182,7 @@ import { updateUserInfo } from '../../../common/api';
 							},
 							success(res1) {
 								let json = eval("(" + res1.data + ")");
-								this.headPic = json.msg
+								_this.headPic = json.msg
 								_this.updateUserHeadpic(json.msg)
 								
 								// 显示上传信息

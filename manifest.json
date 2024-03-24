@@ -153,12 +153,12 @@
         },
         "domain" : "https://http.441635.pw",
         "devServer" : {
-            "https" : false,
+            "https" : true,
             "proxy" : {
                 "/user" : {
                     "target" : "https://http.441635.pw", //请求的目标域名
                     "changeOrigin" : true,
-                    "secure" : false,
+                    "secure" : true,
                     "pathRewrite" : {
                         "^/user" : "/"
                     }
