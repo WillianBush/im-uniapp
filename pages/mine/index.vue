@@ -30,7 +30,7 @@
 						:style="'float:left;background-image: url('+userHeadPic +');'">
 					</view>
 					<view style="float:left;margin-left: 10px;margin-top:6px;">
-						<text class="uni-ellipsis-2" style="font-size: 16px;font-weight: 800;">{{nickName}}</text>
+						<text class="uni-ellipsis-2" style="font-size: 16px;font-weight: 800;">{{this.user.nickName}}</text>
 						<view style="margin-top: 6px;">ID号：{{user.memberId}}</view>
 					</view>
 
@@ -181,6 +181,7 @@
 			} else {
 				this.nickName = _this.user.nickName;
 			}
+			console.log("==========nickName:",_this.user.nickName)
 		},
 		onLoad() {
 			this.selectedLang = uni.getStorageSync('system_info')

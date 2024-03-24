@@ -183,10 +183,10 @@
 					_this.isRotate = false;
 					if (res.code == 200) {
 						uni.showToast({
-							title:"注册成功,请登录！"
+							title:"注册成功,请完善资料！"
 						})
 						uni.navigateTo({
-							url: "/pages/login/login",
+							url: "/pages/mine/user_info/updateUserInfo",
 						});
 					} else {
 						uni.showToast({

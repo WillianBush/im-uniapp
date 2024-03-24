@@ -84,6 +84,9 @@
 		,{
 		    "path" : "pages/mine/user_info/upd_sex",
 		    "style" : {}
+		},{
+		    "path" : "pages/mine/user_info/updateUserInfo",
+		    "style" : {}
 		},
 		{
 		    "path" : "pages/chat/group/sss_list",

@@ -30,11 +30,11 @@
 	export default {
 		data() {
 			return {
-				txt: this.user.nickName
+				txt: ""
 			}
 		},
 		onLoad(e) {
-
+			this.txt = this.user.nickName;
 		},
 		computed: {
 			i18n() {

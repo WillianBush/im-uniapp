@@ -111,6 +111,9 @@ export const updateTel = (params) => http.post("/user/json/updateTel", params)
 
 export const updateSex = (params) => http.post("/user/json/updateSex", params)
 
+// nickName,headpic,sex
+export const updateUserInfo = (params) => http.post("/user/json/updateMemberInfo", params)
+
 // 黑名单操作
 export const userDoBlack = (actionName, params) => http.post("/user/json/" + actionName, params)
 
