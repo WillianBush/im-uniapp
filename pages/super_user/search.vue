@@ -123,7 +123,7 @@
 					}
 				}).catch(error => {
 					console.log("=====error",error)
-					
+					});
 			},
 			//获取文字信息
 			getCur(e) {

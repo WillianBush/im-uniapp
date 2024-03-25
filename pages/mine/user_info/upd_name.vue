@@ -36,7 +36,7 @@
 		},
 		methods: {
 			...mapMutations('user', ['updateUsername']),
-			...mapActions('user',['updateUserInfo'])
+			...mapActions('user',['updateUserInfo']),
 			tijiao() {
 				let _this = this;
 				let user = this.user;
