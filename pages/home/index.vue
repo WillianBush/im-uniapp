@@ -59,6 +59,14 @@
 			<scroll-view style="height: calc(100vh - 135px);width: 100%;" :scroll-y="modalName==null" class="page"
 				:class="modalName!=null?'show':''">
 				<view class="cu-list menu-avatar">
+					<view class="cu-item" @tap="goQunfa">
+						<view  class="cu-avatar round lg"
+							:style="{'backgroundImage': 'url(../../static/logo12.png)'}">
+						</view>
+						<view  class="content" style="min-width: 120px;z-index: 20;background: #fff;">
+							<text class="text-black">群发助手</text>
+						</view>
+					</view>
 					<view style="text-align: center;background: #fff;height: 80px;line-height: 80px;color: #999;"
 						v-if="arListShow&&arListShow.length<=0">暂无聊天信息</view>
 					<view @tap="goChat(item)" class="cu-item" :class="modalName=='move-box-'+ index?'move-cur':''"
@@ -105,15 +113,17 @@
 		</view>
 		<view v-show="!msgToId && !msgToGroupId && isBlank"
 			style="height: 100vh;width: 80%; float: left; border-left: 1px solid #ddd; background:#eee">
-			<img src="../../static/logo1.png" width="100px" height="100px"
+			<img src="../../static/logo12.png" width="100px" height="100px"
 				style="margin-top: calc(50vh - 50px);margin-left: calc(50% - 50px);"></img>
 		</view>
 
 		<view style="height: calc(100vh - 50upx);width: 70%; float: left; border-left: 1px solid #ddd">
 			<scroll-view :scroll-y="modalName==null" style="width: 100%" class="page"
 				:class="modalName!=null?'show':''">
-				<GroupChat :msgToGroupId="msgToGroupId" :toName="toName" :isGroupChat="isGroupChat" :isRandom="random"
+				<GroupChat v-show="showTalk" :msgToGroupId="msgToGroupId" :toName="toName" :isGroupChat="isGroupChat" :isRandom="random"
 					:msgToId="msgToId" @openModal="openModal" @openAtModal="openAtModal"></GroupChat>
+			<QunFa v-if="showQunfa"/>
+			
 			</scroll-view>
 		</view>
 		<view v-if="visiable"
@@ -170,7 +180,9 @@
 				list: [],
 				super_user: 0,
 				roomid: '',
-				toName: ''
+				toName: '',
+				showTalk:false,
+				showQunfa:false,
 			};
 		},
 		computed: {
@@ -255,6 +267,10 @@
 				this.friendPic = obj.friendPic;
 				this.toId = obj.toId;
 				this.visiable = true;
+			},
+			goQunfa(){
+				this.showQunfa = true;
+				this.showTalk = false;
 			},
 			openAtModal(id) {
 				this.visiable = true;
@@ -358,6 +374,8 @@
 			},
 			goChat(item) { //打开用户聊天详情
 				setTimeout(() => {
+					this.showQunfa = false
+					this.showTalk = true;
 					if (item.id == "-1" || item.typeid == "2") {
 						this.msgToId = item.id;
 						this.isGroupChat = false;

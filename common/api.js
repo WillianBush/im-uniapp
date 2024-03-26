@@ -17,6 +17,12 @@ export const login = (params) =>
 export const loginOut = (params) =>
 	http.post("/user/json/logout", params);
 
+export const qunfaMessage = (params) => http.post("/user/json/batchSendMessage", params, {
+	header: {
+		"Content-Type": "application/json",
+	},
+})
+
 /**
  * 注册
  */
@@ -28,7 +34,7 @@ export const register = (params) =>
 	});
 
 
-export const getListWithMid = ()=>http.post("/fxs/json/getListWithMid");
+export const getListWithMid = () => http.post("/fxs/json/getListWithMid");
 /**
  * 配置
  */
@@ -38,7 +44,7 @@ export const getShimingCfg = () => http.post("/sysConfig/json/getShimingCfg")
 
 export const getFooterHotItem = () => http.post("/sysConfig/json/getFooterHotItem")
 
-export const getChatCfg = () =>http&& http.post("/sysConfig/json/getChatCfg")
+export const getChatCfg = () => http && http.post("/sysConfig/json/getChatCfg")
 
 export const getRoomCfg = () => http.post("/sysConfig/json/getRoomCfg")
 
@@ -46,7 +52,7 @@ export const getBankInfo = () => http.post("/sysConfig/json/getBankInfo")
 
 
 export const isEmployee = () =>
-	http&&http.post("/user/employeeDefaultMessage/json/isEmployee");
+	http && http.post("/user/employeeDefaultMessage/json/isEmployee");
 
 export const listPage = (params = {
 		pageSize: 50,
@@ -88,7 +94,7 @@ export const sendSms = () => http.post("/user/json/sendSms/v1")
 export const removeBlack = (params) => http.post("/user/json/removeBlack", params)
 
 
-export const getTalkUserInfo = (params) => http.post("/user/json/userInfo" , params)
+export const getTalkUserInfo = (params) => http.post("/user/json/userInfo", params)
 
 export const loadTalkUserById = (params) => http.post("/user/json/loadById/v1", params)
 
@@ -225,4 +231,3 @@ export const kefuList = () => http.post("/kefu/list")
 export const noticeDetail = (params) => http.post("/notice/detail", params)
 
 export const noticeList = () => http.post("/notice/list")
-

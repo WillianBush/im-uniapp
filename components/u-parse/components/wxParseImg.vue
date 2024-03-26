@@ -43,6 +43,7 @@
 				}
 			},
 			imgPreview(src) {
+				if (!this.node.previewImg) return;
 				var newSrc = this.deal(src);
 				wx.previewImage({
 					urls: [newSrc],
@@ -52,7 +53,7 @@
 				uni.$emit("showPicDialog", "我是全局事件订阅的传值")
 			},
 			wxParseImgTap(e) {
-				if (!this.preview) return;
+				if (!this.node.previewImg) return;
 				const {
 					src
 				} = e.currentTarget.dataset;

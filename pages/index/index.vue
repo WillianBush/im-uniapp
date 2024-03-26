@@ -57,9 +57,9 @@
 			<view class="action">
 				<view class='cuIcon-cu-image'></view>
 			</view>
-			<view @click="switchNav" data-cur="hotItem" class="action text-gray">
+			<view data-cur="hotItem" class="action text-gray">
 				<view class='cuIcon-cu-image'>
-					<img src="../../static/logo.png" width="50px" height="50px"></img>
+					<img src="../../static/logo12.png" width="50px" height="50px"></img>
 				</view>
 			</view>
 			<view class="action">

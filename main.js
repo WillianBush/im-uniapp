@@ -9,7 +9,8 @@ import store from "./stores" //使用vuex对状态进行管理
 
 import addressBook from './pages/addressBook/index.vue'
 Vue.component('addressBook',addressBook)
-
+import QunFa from './pages/qunfa/index.vue'
+Vue.component("QunFa",QunFa);
 import newFriendList from './pages/addressBook/new_friend/new_friend_list.vue'
 Vue.component('newFriendList',newFriendList)
 

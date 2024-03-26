@@ -38,6 +38,10 @@ export default {
       type: String,
       default: '<div style="color: red;">数据不能为空</div>',
     },
+	previewImg:{
+		type:Boolean,
+		default:true
+	},
     startHandler: {
       type: Function,
       default() {
@@ -84,6 +88,7 @@ export default {
         startHandler,
         endHandler,
         charsHandler,
+		previewImg
       } = this;
       const parseData = content || noData;
       const customHandler = {
@@ -102,6 +107,7 @@ export default {
     },
     preview(src, $event) {
       if (!this.imageUrls.length) return;
+      if (!this.previewImg) return;
       wx.previewImage({
         current: src,
         urls: this.imageUrls,
