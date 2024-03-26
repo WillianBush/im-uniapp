@@ -10,7 +10,6 @@
 					<label v-for="item in memberList" :key="item.member_uuid"
 						style="width: 100%;font-size:12px;border-bottom: 1px solid #f1f1f1;background-color: white;display: flex;align-items: center;padding: 10px 0px;">
 						<checkbox :value="String(item.member_uuid)"
-							:disabled="checkDisable && !friendCheckedArr.includes(String(item.member_uuid))"
 							:checked="friendCheckedArr.includes(String(item.member_uuid))"
 							:class="{'checked':friendCheckedArr.includes(String(item.member_uuid))}"></checkbox>
 						<view class="cu-avatar round lg" style="margin-left: 20px;"
@@ -19,7 +18,7 @@
 						<text style="margin-left: 10px;">{{item.name}}</text>
 					</label>
 				</checkbox-group>
-				<view style="margin-bottom: 10px;margin-top: 20px;">群组</view>
+				<!-- <view style="margin-bottom: 10px;margin-top: 20px;">群组</view>
 				<checkbox-group @change="handleGroupChange">
 					<label v-for="item in groupList" :key="item.roomid"
 						style="width: 100%;font-size:12px;border-bottom: 1px solid #f1f1f1;background-color: white;display: flex;align-items: center;padding: 10px 0px;">
@@ -31,7 +30,7 @@
 						</view>
 						<text style="margin-left: 10px;">{{item.name}}</text>
 					</label>
-				</checkbox-group>
+				</checkbox-group> -->
 			</view>
 		</scroll-view>
 		<view class="cu-bar foot input" :style="[{bottom:InputBottom+'upx'}]"
@@ -182,12 +181,13 @@
 		onLaunch: function() {},
 		onLoad(e) {},
 		onShow: function(e) {
-			console.log("=======onShow")
+			// console.log("=======onShow")
 		},
 		mounted() {
-			console.log("=======mounted")
+			// console.log("=======mounted")
 			this.loadFriendList();
-			this.getGroupList();
+			// this.getGroupList();
+			
 		},
 		computed: {
 			...mapState('app', ['imgUrl', 'reqUrl']),
@@ -271,7 +271,7 @@
 			handleChange(e) {
 				this.clickChat();
 				this.friendCheckedArr = e.target.value;
-				this.checkDisable = this.limitCount <= this.friendCheckedArr.length + this.groupCheckedArr.length
+				// this.checkDisable = this.limitCount <= this.friendCheckedArr.length
 				console.log("=====checkedArr", this.friendCheckedArr.length)
 
 			},
@@ -305,7 +305,7 @@
 			send() {
 				if (this.isAltOrShiftEnter) return;
 				this.input_is_focus = false;
-				let len = this.friendCheckedArr.length + this.groupCheckedArr.length
+				let len = this.friendCheckedArr.length
 				if (!len) {
 					showToast("请选择群发对象!");
 					return false;
@@ -325,17 +325,18 @@
 						this.checkItems.push(item)
 					}
 				})
-				this.groupList.forEach(item => {
-					if (this.groupCheckedArr.includes(item.roomId)) {
-						this.checkItems.push(item)
-					}
-				})
+				// this.groupList.forEach(item => {
+				// 	if (this.groupCheckedArr.includes(item.roomId)) {
+				// 		this.checkItems.push(item)
+				// 	}
+				// })
 				this.showSendDialog = true;
 			},
 			sendQunfa() {
 				let temp = [];
 				let _this = this;
-				temp = temp.concat(this.friendCheckedArr).concat(this.groupCheckedArr);
+				// temp = temp.concat(this.friendCheckedArr).concat(this.groupCheckedArr);
+				temp = temp.concat(this.friendCheckedArr);
 				let params = {
 					toUids: temp
 				}
@@ -358,7 +359,8 @@
 				})
 			},
 			ChooseVideo() {
-				let len = this.friendCheckedArr.length + this.groupCheckedArr.length;
+				// let len = this.friendCheckedArr.length + this.groupCheckedArr.length;
+				let len = this.friendCheckedArr.length;
 				if (!len) {
 					showToast("请选择群发对象!");
 					return;
@@ -413,7 +415,7 @@
 				})
 			},
 			ChooseImage() {
-				let len = this.friendCheckedArr.length + this.groupCheckedArr.length
+				let len = this.friendCheckedArr.length
 				if (!len) {
 					showToast("请选择群发对象!");
 					return
