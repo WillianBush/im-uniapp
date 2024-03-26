@@ -22,13 +22,13 @@
 			<text style="margin-top: 20upx;">上传真实照片</text>
 		</view>
 		<view style="margin-top: 60upx;display: flex;justify-content: center;align-items: center;">
-			<div @tap="changeSex('男')" :style="'background-color:' +( sex == '男' ? '#32A9FE':'#ddd')"
+			<div @tap="changeSex('1')" :style="'background-color:' +( sex == '1' ? '#32A9FE':'#ddd')"
 				style="width: 80upx;height: 80upx;border-radius: 50%;display: flex;justify-content: center;align-items: center;">
 				<image style="width: 50upx;height: 50upx;"
-					:src="sex=='男'?'../../../static/man1.png':'../../../static/man2.png'" />
+					:src="sex=='1'?'../../../static/man1.png':'../../../static/man2.png'" />
 			</div>
 			<text style="margin-left: 10upx;">男生</text>
-			<div @tap="changeSex('女')" :style="'background-color:' + (sex == '女' ? '#FF6499':'#ddd')" style="width: 80upx;
+			<div @tap="changeSex('0')" :style="'background-color:' + (sex == '0' ? '#FF6499':'#ddd')" style="width: 80upx;
 			margin-left: 60upx;
 			height: 80upx;
 			border-radius: 50%;
@@ -36,7 +36,7 @@
 			justify-content: center;
 			align-items: center;">
 				<image style="width: 50upx;height: 50upx;"
-					:src="sex=='女'?'../../../static/woman1.png':'../../../static/woman2.png'" />
+					:src="sex=='0'?'../../../static/woman1.png':'../../../static/woman2.png'" />
 			</div>
 			<text style="margin-left: 10upx;">女生</text>
 

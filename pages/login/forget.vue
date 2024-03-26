@@ -1,13 +1,15 @@
 <template>
 	<view class="forget" style="background: #fff;height:100vh">
-
+		<cu-custom bgColor="bg-blue" :isBack="true">
+			<block slot="content">修改密码</block>
+		</cu-custom>
 		<view class="content">
-			<view @tap="back" style="position: relative;
+		<!-- 	<view @tap="back" style="position: relative;
 			top: 14px;
 			left: 14px;
 			color: #666; font-size: 32upx;   ">
 				<text style="font-size: 40upx;" class="lg text-gray cuIcon-back"></text>
-			</view>
+			</view> -->
 			<!-- 主体 -->
 			<view class="main" style="margin-top:40upx;">
 				<view class="tips">{{i18n.ifyouforgetyourpasswordyoucanresetnewpasswordhere}}</view>
@@ -125,8 +127,8 @@
 					}
 
 				}).catch(error => {
-					console.log("####error:",error)
-					
+					console.log("####error:", error)
+
 				})
 			}
 		}

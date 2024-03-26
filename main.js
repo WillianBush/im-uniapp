@@ -52,9 +52,9 @@ Vue.prototype.$onLaunched = new Promise(resolve => {
 // }
 // #ifdef APP-PLUS
 Vue.prototype.$clientType = "APP"
-const openinstall = uni.requireNativePlugin('openinstall-plugin');
-openinstall.init();
-Vue.prototype.$openinstall = openinstall;
+// const openinstall = uni.requireNativePlugin('openinstall-plugin');
+// openinstall.init();
+// Vue.prototype.$openinstall = openinstall;
 // #endif
 // #ifdef H5
 Vue.prototype.$clientType = "H5"

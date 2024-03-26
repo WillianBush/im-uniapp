@@ -118,29 +118,7 @@
                 "androidStyle" : "default"
             }
         },
-        "nativePlugins" : {
-            "openinstall-plugin" : {
-                "APP_KEY" : "vsh5yr",
-                "__plugin_info__" : {
-                    "name" : "openinstall-App全渠道统计",
-                    "description" : "方便集成使用 openinstall 功能，实现了携带参数安装，渠道统计，一键拉起全部功能。如有问题，请联系QQ：800853853",
-                    "platforms" : "Android,iOS",
-                    "url" : "https://ext.dcloud.net.cn/plugin?id=692",
-                    "android_package_name" : "uni.UNIDA3A084",
-                    "ios_bundle_id" : "io.bg69d.v5",
-                    "isCloud" : true,
-                    "bought" : 1,
-                    "pid" : "692",
-                    "parameters" : {
-                        "APP_KEY" : {
-                            "des" : "openinstall平台为应用分配的AppKey",
-                            "key" : "com.openinstall.APP_KEY",
-                            "value" : ""
-                        }
-                    }
-                }
-            }
-        }
+        "nativePlugins" : {}
     },
     /* 快应用特有相关 */
     "quickapp" : {},

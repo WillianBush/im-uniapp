@@ -12,12 +12,12 @@
 		<radio-group class="block" @change="RadioChange">
 			<view class="cu-form-group margin-top">
 				<view class="title">男</view>
-				<radio :class="radio=='男'?'checked':''" :checked="radio=='男'?true:false" value="男"></radio>
+				<radio :class="radio=='1'?'checked':''" :checked="radio=='1'?true:false" value="1"></radio>
 			</view>
 
 			<view class="cu-form-group ">
 				<view class="title">女</view>
-				<radio :class="radio=='女'?'checked':''" :checked="radio=='女'?true:false" value="女"></radio>
+				<radio :class="radio=='0'?'checked':''" :checked="radio=='0'?true:false" value="0"></radio>
 			</view>
 
 		</radio-group>
@@ -40,11 +40,11 @@
 	export default {
 		data() {
 			return {
-				radio: this.user.sex
+				radio: ''
 			}
 		},
 		onLoad(e) {
-
+		this.radio = this.user.sex
 		},
 		computed: {
 			i18n() {

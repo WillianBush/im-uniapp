@@ -186,7 +186,7 @@
 							title:"注册成功,请完善资料！"
 						})
 						// #ifdef APP-PLUS
-						_this.$openinstall.reportRegister();
+						// _this.$openinstall.reportRegister();
 						// #endif
 
 						setTimeout(()=>{

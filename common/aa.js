@@ -35,6 +35,8 @@ export const AES_Decrypt = (encryptedStr) => {
 const keyStr = "socket_crypt_key"
 const ivStr = "encryptionIntVec"
 export const messageDecrypt = (messageStr) => {
+	console.log("=======messageDecrypt:",messageStr)
+	if(!messageStr)return "";
 	if (messageStr.indexOf("resp:") == -1) return messageStr;
 	let message = messageStr.replace("resp:", '')
 	// console.log("加密字符串：", message)

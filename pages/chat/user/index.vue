@@ -756,8 +756,7 @@
 				}).then(res => {
 					let res_data = eval(res.data);
 					if (res_data.code == 200 && res_data.body && res_data.body.ip) {
-						this.toIP = res_data.body.ip + (res_data.body.ipAddr ? "(" + res_data.body.ipAddr + ")" :
-							"");
+						this.toIP = res_data.body.ip;
 					} else {
 						if (res_data.code == 500) {
 							this.isBlack = true
