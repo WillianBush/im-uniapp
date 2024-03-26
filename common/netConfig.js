@@ -42,7 +42,7 @@ const config = {
     return new Promise((resolve, reject) => {
       var i = Math.floor((Math.random() * state.rootUrl.length));
       uni.request({
-        url: state.rootUrl[i],
+        url: config.requestUrl,
 		sslVerify:false,
         success: (response) => {
           //todo 测试

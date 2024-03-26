@@ -48,13 +48,13 @@ const fangyuan= {
 
 
 const activeConfig = {
-	appName : "너의유야",
-	loginIcon : "/static/logo12.png",
-	registerIcon : "/static/logo12.png",
+	appName : "泰丰",
+	loginIcon : "/static/logo.jpg",
+	registerIcon : "/static/logo.jpg",
 	language: "zh-CN",
 	setupPicture : "/static/splash.jpg",
 	// requestUrl:"https://gitee.com/wonderful1212/system-config/raw/master/config.conf",
-	requestUrl:"https://gitee.com/fkdjsfkhjf/am-config/raw/master/config.conf",
+	requestUrl:"http://thi.c1usis.lat/config_sys/domains-prod.txt",
 	// cache:"QfCYntTcGJB9iiw3auHmmQEsajQ9jf/Nteug+1xhbqll7Uw/qnVHu/H3iQIxRA8sL+bUiKNuhencOPeIzYcomSKzusIp2/f0bewKYedN1wQK5dazb5AiftaZ7k+mTDQPuqUoYuQXEQmfI3dlHUCegw=="
 	cache:"QfCYntTcGJB9iiw3auHmmQEsajQ9jf/Nteug+1xhbqll7Uw/qnVHu/H3iQIxRA8sXr/wbfZkS3i54T9frQnueq/taFUzzH93VMbT+EUDcuHc1wt1RtIPdAoE2MxKCJi3Z00qGDYXhqoc4Ae6nnLDQw=="
 }

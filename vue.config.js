@@ -14,7 +14,7 @@ module.exports = {
 			"/user" : {
 				"target" : "https://http.441635.pw",
 				"changeOrigin" : true, //是否跨域
-				"secure" : true, // 是否支持 https 协议的代理
+				"secure" : false, // 是否支持 https 协议的代理
 				"pathRewrite" : {
 					"^/user" : "/"
 				}

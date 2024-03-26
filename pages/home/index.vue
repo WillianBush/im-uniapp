@@ -99,7 +99,7 @@
 			<view class="cu-list menu-avatar">
 
 				<view class="cu-item" @tap="goQunfa">
-					<view class="cu-avatar round lg" :style="{'backgroundImage': 'url(../../static/logo12.png)'}">
+					<view class="cu-avatar round lg" :style="{'backgroundImage': 'url(../../static/logo.jpg)'}">
 					</view>
 					<view class="content" style="min-width: 120px;z-index: 20;background: #fff;">
 						<text class="text-black">群发助手</text>

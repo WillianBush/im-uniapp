@@ -1,7 +1,7 @@
 {
-    "name" : "너의유야",
+    "name" : "泰丰",
     "appid" : "__UNI__DA3A084",
-    "description" : "너의유야",
+    "description" : "泰丰",
     "versionName" : "1.1.4",
     "versionCode" : 15,
     "transformPx" : false,
@@ -146,7 +146,7 @@
         "router" : {
             "base" : "/"
         },
-        "title" : "好物通",
+        "title" : "泰丰",
         "optimization" : {
             "treeShaking" : {
                 "enable" : true
@@ -154,7 +154,7 @@
         },
         "domain" : "https://http.441635.pw",
         "devServer" : {
-            "https" : true,
+            "https" : false,
             "proxy" : {
                 "/user" : {
                     "target" : "https://http.441635.pw", //请求的目标域名
