@@ -9,6 +9,11 @@
 			
 			this.$store.commit("app/setAppUuid")
 			this.$store.dispatch("app/setAppConfig")
+			// #ifdef APP-PLUS
+			this.$openinstall.registerWakeUp(function(result){
+			    console.log('getWakeup : channel=' + result.channelCode + ', data=' + result.bindData);
+			});
+			// #endif
 		},
 		onLoad(e) {},
 		onShow: function(e) {

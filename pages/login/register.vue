@@ -185,6 +185,10 @@
 						uni.showToast({
 							title:"注册成功,请完善资料！"
 						})
+						// #ifdef APP-PLUS
+						_this.$openinstall.reportRegister();
+						// #endif
+
 						setTimeout(()=>{
 							uni.navigateTo({
 								url: "/pages/mine/user_info/updateUserInfo",

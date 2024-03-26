@@ -16,7 +16,11 @@ export const login = (params) =>
 		},
 	});
 
-
+export const qunfaMessage = (params) => http.post("/user/json/batchSendMessage", params, {
+	header: {
+		"Content-Type": "application/json",
+	},
+})
 export const loginOut = (params) =>
 	http.post("/user/json/logout", params);
 

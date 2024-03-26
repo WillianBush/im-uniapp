@@ -95,8 +95,12 @@ export default {
 							}
 						});
 						commit("setArList", list);
+						commit("setArListShow", list);
 						commit("setUnReadMsgSum", unreadSum);
+						console.log("======res",res_data_1)
+						
 						resolve(res_data_1);
+						
 					} else if (res_data_1.code == 502) {
 						uni.navigateTo({
 							url: "/pages/empty/empty",

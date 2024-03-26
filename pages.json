@@ -321,6 +321,14 @@
                 "enablePullDownRefresh": false
             }
 
+        },
+        {
+        	"path" : "pages/qunfa/index",
+        	"style" : 
+        	{
+        		"navigationBarTitleText" : "",
+        		"enablePullDownRefresh" : false
+        	}
         }
     ],
 	"globalStyle": {

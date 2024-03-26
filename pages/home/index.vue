@@ -97,11 +97,19 @@
 			:refresher-triggered="refresherTriggered" @refresherrefresh="refresherrefresh"
 			@refresherrestore="refresherrestore" @refresherabort="refresherabort" @scrolltolower="scrollLower">
 			<view class="cu-list menu-avatar">
+
+				<view class="cu-item" @tap="goQunfa">
+					<view class="cu-avatar round lg" :style="{'backgroundImage': 'url(../../static/logo12.png)'}">
+					</view>
+					<view class="content" style="min-width: 120px;z-index: 20;background: #fff;">
+						<text class="text-black">群发助手</text>
+					</view>
+				</view>
 				<view style="    text-align: center;
-	background: #fff;
-    height: 80px;
-    line-height: 80px;
-    color: #999;" v-if="arListShow&&arListShow.length<=0">{{ i18n.nomore }}</view>
+					background: #fff;
+					height: 80px;
+					line-height: 80px;
+					color: #999;" v-if="arListShow&&arListShow.length<=0">{{ i18n.nomore }}</view>
 				<view @tap="goChat(item)" class="cu-item" :class="modalName=='move-box-'+ index?'move-cur':''"
 					v-for="(item,index) in arListShow" :key="index" @touchstart="ListTouchStart"
 					@touchmove="ListTouchMove" @touchend="ListTouchEnd" :data-target="'move-box-' + index">
@@ -227,6 +235,11 @@
 			...mapActions('user', [
 				'isSuperUserAction'
 			]),
+			goQunfa(){
+				uni.navigateTo({
+					url: "/pages/qunfa/index"
+				})
+			},
 			refresherrefresh() {
 				let _this = this;
 				if (_this._refresherTriggered) {
