@@ -1,8 +1,8 @@
 <template>
 	<view>
-		<view @tap="hideShowMenu()" style="padding-top:50upx;background-color: #fff;width: 30%;float: left">
+		<view @tap="hideShowMenu()" style="padding-top:25px;background-color: #fff;width: 400px;float: left">
 			<view class="cu-bar bg-white solid-bottom">
-				<view class="action" style="font-size: 36upx;font-weight: 600;">
+				<view class="action" style="font-size: 17px;font-weight: 600;">
 					<text class="cuIcon-title text-orange " style="color: green"></text>
 					<text style="min-width:73px;">
 						消息列表<text style="font-size: 12px;"> ({{delayTimeStr}})</text>
@@ -12,13 +12,13 @@
 					<switch v-if="isEmployee" @change="isOpenRefresh"></switch>
 				</div>
 				<text @tap.stop="showMenuFn()"
-					style="float:right;font-size:48upx;cursor: pointer;color:#333;margin-top:6upx;margin-right:40upx"
+					style="float:right;font-size:24px;cursor: pointer;color:#333;margin-top:3px;margin-right:20px"
 					class="iconfont icon-jia"></text>
 			</view>
 			<view class="cu-bar bg-white search">
 				<view class="search-form round">
 					<text class="cuIcon-search"></text>
-					<input v-model="kw" @input="search_list()" type="text" placeholder="输入搜索的关键词"
+					<input v-model="kw" @input="search_list()" style="font-size:13px" type="text" placeholder="输入搜索的关键词"
 						confirm-type="search"></input>
 				</view>
 				<button class="refresh-btn" @click="refresherrefresh">刷新</button>
@@ -64,7 +64,7 @@
 							:style="{'backgroundImage': 'url(../../static/logo12.png)'}">
 						</view>
 						<view  class="content" style="min-width: 120px;z-index: 20;background: #fff;">
-							<text class="text-black">群发助手</text>
+							<text class="text-black" style="font-size:16px">群发助手</text>
 						</view>
 					</view>
 					<view style="text-align: center;background: #fff;height: 80px;line-height: 80px;color: #999;"
@@ -111,11 +111,11 @@
 
 			</scroll-view>
 		</view>
-		<view v-show="!msgToId && !msgToGroupId && isBlank"
+		<!--<view v-show="!msgToId && !msgToGroupId && isBlank"
 			style="height: 100vh;width: 80%; float: left; border-left: 1px solid #ddd; background:#eee">
 			<img src="../../static/logo12.png" width="100px" height="100px"
 				style="margin-top: calc(50vh - 50px);margin-left: calc(50% - 50px);"></img>
-		</view>
+		</view> -->
 
 		<view style="height: calc(100vh - 50upx);width: 70%; float: left; border-left: 1px solid #ddd">
 			<scroll-view :scroll-y="modalName==null" style="width: 100%" class="page"
@@ -499,8 +499,8 @@
 
 	.refresh-btn {
 		background: #FFAA01;
-		margin-right: 20rpx;
-		font-size: 25rpx;
+		margin-right: 10px;
+		font-size: 12px;
 		font-weight: normal;
 		line-height: 25px;
 		color: white;

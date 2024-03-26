@@ -22,36 +22,36 @@
 			<view class="action" @click="switchNav" data-cur="home">
 				<view class='cuIcon-cu-image'>
 					<text class="iconfont icon-xiaoxi" :style="'color:'+(PageCur=='home'?'#3F92F8':'#888')"
-						style="font-size: 50upx;"><span></span></text>
+						style="font-size: 25px;"><span></span></text>
 					<view v-show="unReadMsgSum>0" style="top:0" class="cu-tag badge">
 						{{unReadMsgSum}}
 					</view>
 				</view>
-				<view style="margin-top: 2upx;" :style="'color:'+(PageCur=='home'?'#3F92F8':'#888')">消息</view>
+				<view style="margin-top: 1px;" :style="'color:'+(PageCur=='home'?'#3F92F8':'#888')">消息</view>
 			</view>
 			<view class="action" @click="switchNav" data-cur="addressBook">
 				<view class='cuIcon-cu-image'>
 					<text class="iconfont icon-tongxunlu1" :style="'color:'+(PageCur=='addressBook'?'#3F92F8':'#888')"
-						style="font-size: 52upx;"><span></span></text>
+						style="font-size: 25px;"><span></span></text>
 					<view v-show="(unDoFriendAddCount+unDoRoomAddCount)>0" style="top:0" class="cu-tag badge">
 						{{unDoFriendAddCount+unDoRoomAddCount}}
 					</view>
 				</view>
-				<view style="margin-top: 2upx;" :style="'color:'+(PageCur=='addressBook'?'#3F92F8':'#888')">通讯录</view>
+				<view style="margin-top: 1px;" :style="'color:'+(PageCur=='addressBook'?'#3F92F8':'#888')">通讯录</view>
 			</view>
 			<view class="action" @click="switchNav" data-cur="faxian">
 				<view class='cuIcon-cu-image'>
 					<text class="iconfont icon-faxian" :style="'color:'+(PageCur=='faxian'?'#3F92F8':'#888')"
-						style="font-size: 50upx;"><span></span></text>
+						style="font-size: 25px;"><span></span></text>
 				</view>
-				<view style="margin-top: 2upx;" :style="'color:'+(PageCur=='faxian'?'#3F92F8':'#888')">发现</view>
+				<view style="margin-top: 1px;" :style="'color:'+(PageCur=='faxian'?'#3F92F8':'#888')">发现</view>
 			</view>
 			<view class="action" @click="switchNav" data-cur="mine">
 				<view class='cuIcon-cu-image'>
 					<text class="iconfont icon-wode" :style="'color:'+(PageCur=='mine'?'#3F92F8':'#888')"
-						style="font-size: 46upx;"><span></span></text>
+						style="font-size: 25px;"><span></span></text>
 				</view>
-				<view style="margin-top: 2upx;    padding-top: 4upx;"
+				<view style="margin-top: 1px;    padding-top: 4upx;"
 					:style="'color:'+(PageCur=='mine'?'#3F92F8':'#888')">我的</view>
 			</view>
 			<view class="action">

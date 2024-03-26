@@ -1,6 +1,6 @@
 <template>
 	<view style="background-color: #fff;">
-		<el-dialog width="30%" :title="'我的二维码名片'" :visible.sync="qrShow">
+		<el-dialog width="400px" :title="'我的二维码名片'" :visible.sync="qrShow">
 			<view style="
 		margin: auto auto;
 		margin-top: 15px;width:90%;height:920upx;border-radius: 12px;background-color: #fff;padding-top: 40upx;;">

@@ -624,21 +624,22 @@ radio.white.checked .uni-radio-input {
 
 .cu-btn {
 	position: relative;
-	border: 0upx;
-	display: inline-flex;
-	align-items: center;
-	justify-content: center;
-	box-sizing: border-box;
-	padding: 0 30upx;
-	font-size: 28upx;
-	height: 64upx;
-	line-height: 1;
-	text-align: center;
-	text-decoration: none;
-	overflow: visible;
-	margin-left: initial;
-	transform: translate(0upx, 0upx);
-	margin-right: initial;
+    border: 0px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    box-sizing: border-box;
+    padding: 0 15px;
+    font-size: 14px;
+    height: 32px;
+    line-height: 1;
+    text-align: center;
+    text-decoration: none;
+    overflow: visible;
+    margin-left: initial;
+    -webkit-transform: translate(0px, 0px);
+    transform: translate(0px, 0px);
+    margin-right: initial;
 }
 
 .cu-btn::after {
@@ -841,13 +842,13 @@ button.cuIcon.lg {
 }
 
 .cu-tag.badge {
-	border-radius: 200upx;
+	border-radius: 100px;
 	position: absolute;
 	top: -10upx;
 	right: -10upx;
-	font-size: 20upx;
-	padding: 0upx 10upx;
-	height: 32upx;
+	font-size: 10px;
+	padding: 0px 5px;
+	height: 16px;
 	color: #ffffff;
 }
 
@@ -886,8 +887,8 @@ button.cuIcon.lg {
 	color: #ffffff;
 	white-space: nowrap;
 	position: relative;
-	width: 64upx;
-	height: 64upx;
+	width: 32px;
+	height:32px;
 	background-size: cover;
 	background-position: center;
 	vertical-align: middle;
@@ -901,8 +902,8 @@ button.cuIcon.lg {
 }
 
 .cu-avatar.lg {
-	width: 60upx;
-	height: 60upx;
+	width: 30px;
+	height: 30px;
 	font-size: 2em;
 }
 
@@ -1213,8 +1214,8 @@ button.cuIcon.lg {
 .cu-list.menu-avatar>.cu-item {
 	position: relative;
 	display: flex;
-	padding-right: 10upx;
-	height: 140upx;
+	padding-right: 5px;
+	height: 70px;
 	background-color: #ffffff;
 	justify-content: flex-end;
 	align-items: center
@@ -1222,7 +1223,7 @@ button.cuIcon.lg {
 
 .cu-list.menu-avatar>.cu-item>.cu-avatar {
 	position: absolute;
-	left: 30upx
+	left: 15px
 }
 
 .cu-list.menu-avatar>.cu-item .flex .text-cut {
@@ -1231,9 +1232,9 @@ button.cuIcon.lg {
 
 .cu-list.menu-avatar>.cu-item .content {
 	position: absolute;
-	left: 106upx;
+	left: 53px;
 	width: calc(100% - 96upx - 20upx - 120upx - 20upx);
-	line-height: 1.6em;
+	line-height: 23px;
 	overflow: hidden;
 	white-space:nowrap;
 }
@@ -1284,8 +1285,8 @@ button.cuIcon.lg {
 .cu-list.menu>.cu-item {
 	position: relative;
 	display: flex;
-	padding: 0 30upx;
-	min-height: 100upx;
+	padding: 0 15px;
+	min-height: 50px;
 	background-color: #ffffff;
 	justify-content: space-between;
 	align-items: center
@@ -1320,24 +1321,24 @@ button.cuIcon.lg {
 }
 
 .cu-list.menu>.cu-item.arrow {
-	padding-right: 90upx
+	padding-right: 45px
 }
 
 .cu-list.menu>.cu-item.arrow:before {
 	position: absolute;
 	top: 0;
-	right: 30upx;
+	right: 15px;
 	bottom: 0;
 	display: block;
 	margin: auto;
-	width: 30upx;
-	height: 30upx;
+	width: 15px;
+	height: 15px;
 	color: #8799a3;
 	content: "\e6a3";
 	text-align: center;
-	font-size: 34upx;
+	font-size: 17px;
 	font-family: cuIcon;
-	line-height: 30upx
+	line-height: 15px;
 }
 
 .cu-list.menu>.cu-item button.content {
@@ -1375,8 +1376,8 @@ button.cuIcon.lg {
 }
 
 .cu-list.menu>.cu-item .content {
-	font-size: 32upx;
-	line-height: 1.6em;
+	font-size: 16px;
+	line-height: 20px;
 	flex: 1
 }
 
@@ -1564,8 +1565,8 @@ button.cuIcon.lg {
 }
 
 .cu-bar .action:first-child {
-	margin-left: 30upx;
-	font-size: 32upx;
+	margin-left: 15px;
+	font-size: 16px;
 }
 
 .cu-bar .action text.text-cut {
@@ -1637,19 +1638,19 @@ button.cuIcon.lg {
 
 .cu-bar .search-form {
 	background-color: #f5f5f5;
-	line-height: 72upx;
-	height: 72upx;
-	font-size: 28upx;
+	line-height: 45px;
+	height: 45px;
+	font-size: 17px;
 	color: #333333;
 	flex: 1;
 	display: flex;
 	align-items: center;
-	margin: 0 20upx;
-	border-radius: 8upx;
+	margin: 0 12px;
+	border-radius: 5px;
 }
 
 .cu-bar .search-form+.action {
-	margin-right: 30upx;
+	margin-right: 15px;
 }
 
 .cu-bar .search-form input {
@@ -1705,7 +1706,7 @@ button.cuIcon.lg {
 }
 
 .cu-bar.tabbar .action {
-	font-size: 26upx;
+	font-size: 13px;
 	position: relative;
 	flex: 1;
 	text-align: center;
@@ -1787,7 +1788,7 @@ button.cuIcon.lg {
 }
 
 .cu-bar.tabbar .action [class*="cuIcon-"] {
-	width: 100upx;
+	width: 56px;
 	position: relative;
 	display: block;
 	height: auto;
@@ -3759,11 +3760,11 @@ scroll-view.cu-steps .cu-item {
  ==================== */
 
 .text-xs {
-	font-size: 24upx;
+	font-size: 12px;
 }
 
 .text-sm {
-	font-size: 24upx;
+	font-size: 12px;
 }
 
 .text-df {

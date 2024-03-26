@@ -3,7 +3,7 @@
 		<div class="top-bar">
 			<p>发现</p>
 		</div>
-		<el-dialog width="30%" :visible.sync="urlShow">
+		<el-dialog width="400px" :visible.sync="urlShow">
 			<iframe :src="url" width="100%" height="600px">
 			</iframe>
 		</el-dialog>

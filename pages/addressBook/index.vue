@@ -1,13 +1,13 @@
 <template>
 	<view>
-		<view style="width:30%; float: left">
+		<view style="width:400px; float: left">
 			<view v-show="PageCur=='tongxunlu'">
-				<view style="height: 45px;line-height: 45px;text-align: center;background: #eee;">
+				<view style="height: 45px;line-height: 45px;text-align: center;background: #eee; font-size:16px">
 					通讯录({{memberLength}})人</view>
 				<view class="cu-bar bg-white search">
 					<view class="search-form round">
 						<text class="cuIcon-search"></text>
-						<input v-model="kw1" type="text" placeholder="输入搜索的关键词" confirm-type="search"></input>
+						<input v-model="kw1" type="text" style="font-size:13px" placeholder="输入搜索的关键词" confirm-type="search"></input>
 					</view>
 					<view class="action">
 						<button @tap="search()" style="background: #FFAA01;margin-right:2px"
@@ -24,17 +24,17 @@
 						:class="[true?'sm-border':'',false?'card-menu margin-top':'']">
 						<view @tap="goNewFriends()" class="cu-item" :class="true?'arrow':''">
 							<view class="content">
-								<text style="float:left;color:#FCBF00;font-size:50upx"
+								<text style="float:left;color:#FCBF00;font-size:25px"
 									class="iconfont icon-tianjiahaoyou"></text>
 								<text class="text-grey" style="float:left;margin-left: 10px;">新的朋友</text>
-								<view v-if="unDoFriendAddCount>0" style="top: 38upx;right: 72upx" class="cu-tag badge">
+								<view v-if="unDoFriendAddCount>0" style="top: 19px;right: 36px" class="cu-tag badge">
 									{{unDoFriendAddCount}}
 								</view>
 							</view>
 						</view>
 						<view @tap="goMyGroup()" class="cu-item" :class="true?'arrow':''">
 							<view class="content">
-								<text style="color:#009FE8;font-size:50upx" class="iconfont icon-qunzhong"></text>
+								<text style="color:#009FE8;font-size:25px" class="iconfont icon-qunzhong"></text>
 								<text class="text-grey" style="margin-left: 10px;">群聊</text>
 								<view v-if="unDoRoomAddCount>0" style="top: 38upx;right: 72upx" class="cu-tag badge">
 									{{unDoRoomAddCount}}
@@ -43,7 +43,7 @@
 						</view>
 						<view @tap="goBlacklist()" class="cu-item" :class="true?'arrow':''">
 							<view class="content">
-								<text style="color:#999;font-size:50upx" class="iconfont icon-heimingdan"></text>
+								<text style="color:#999;font-size:25px" class="iconfont icon-heimingdan"></text>
 								<text class="text-grey" style="margin-left: 10px;">黑名单</text>
 							</view>
 						</view>
@@ -51,13 +51,13 @@
 
 					<block v-for="(item,index) in friend_list" :key="index">
 						<view :class="'indexItem-' + item.h" :id="'indexes-' + item.h" :data-index="item.h">
-							<view class="padding">{{item.h}}</view>
+							<view class="padding" style="font-size:13px;padding: 15px;">{{item.h}}</view>
 							<view class="cu-list menu-avatar no-padding">
 								<view @tap="goUserDetail(items)" class="cu-item" v-for="(items,index1) in item.list"
 									:key="index1">
 									<view class="cu-avatar round lg"
 										:style="{'backgroundImage': 'url('+getHeadPic(items.headpic)  +')' }"
-										style="width: 60upx;height: 60upx;background-size: 100% 100%;"></view>
+										style="width: 30px;height: 30px;background-size: 100% 100%;"></view>
 									<view class="content">
 										<view class="text-grey">{{items.name}}</view>
 									</view>
@@ -87,11 +87,11 @@
 			<blackList v-show="PageCur=='heimingdan'" :keyid="keyid" @goBack="showMain"></blackList>
 			<qunliao v-show="PageCur=='qunliao'" :keyid="keyid" @goBack="showMain" @goGroupChat="goGroupChat"></qunliao>
 		</view>
-		<view v-show="!msgToId && isBlank"
+		<!--<view v-show="!msgToId && isBlank"
 			style="height: 100vh;width: 80%; float: left; border-left: 1px solid #ddd; background:#eee">
 			<img src="../../static/logo1.png" width="100px" height="100px"
 				style="margin-top: calc(50vh - 50px);margin-left: calc(50% - 50px);"></img>
-		</view>
+		</view>-->
 		<!-- <view style="height: calc(100vh - 50upx);width: 80%; float: left; border-left: 1px solid #ddd">
 			<scroll-view :scroll-y="modalName==null" style="width: 100%" class="page"
 				:class="modalName!=null?'show':''">
@@ -420,25 +420,25 @@
 	}
 
 	.indexBar .indexBar-box {
-		width: 40upx;
-		height: auto;
-		background: #fff;
-		display: flex;
-		flex-direction: column;
-		box-shadow: 0 0 20upx rgba(0, 0, 0, 0.1);
-		border-radius: 10upx;
-		padding: 10upx 0;
+	    width: 20px;
+    height: auto;
+    background: #fff;
+    display: flex;
+    flex-direction: column;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    border-radius: 5px;
+    padding: 5px 0;
 	}
 
 	.indexBar-item {
 		flex: 1;
-		width: 40upx;
-		height: 40upx;
-		display: flex;
-		align-items: center;
-		justify-content: center;
-		font-size: 26upx;
-		color: #888;
+    width: 20px;
+    height: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 13px;
+    color: #888;
 	}
 
 	movable-view.indexBar-item {
