@@ -98,7 +98,7 @@
 			<view @tap="sexShow = true" class="cu-item" :class="true?'arrow':''">
 				<view class="content">
 					<text style="float:left;margin-left: 10px;color: #8799a3;">性别</text>
-					<text class="text-grey text-sm" style="float:right;color:#aaa;font-size: 26upx;">{{user.sex}}</text>
+					<text class="text-grey text-sm" style="float:right;color:#aaa;font-size: 26upx;">{{user.sex == '1'? '男':'女'}}</text>
 				</view>
 			</view>
 
