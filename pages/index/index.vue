@@ -59,7 +59,7 @@
 			</view>
 			<view data-cur="hotItem" class="action text-gray">
 				<view class='cuIcon-cu-image'>
-					<img src="../../static/logo12.png" width="50px" height="50px"></img>
+					<img src="../../static/logo.jpg" width="50px" height="50px"></img>
 				</view>
 			</view>
 			<view class="action">

@@ -41,7 +41,8 @@ const config = {
     return new Promise((resolve, reject) => {
       var i = Math.floor((Math.random() * state.rootUrl.length));
       uni.request({
-        url: state.rootUrl[i],
+        // url: state.rootUrl[i],
+        url: config.requestUrl,
         success: (response) => {
           //todo 测试
           // config.baseUrl.pro = response.data.data.path;

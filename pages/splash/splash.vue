@@ -20,7 +20,7 @@
 			};
 		},
 		onLoad(e) {
-			this.setupPicture = activeConfig.setupPicture
+			// this.setupPicture = activeConfig.setupPicture
 			if (!uni.getStorageSync('system_info')) {}
 		},
 		methods: {
