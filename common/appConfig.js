@@ -3,8 +3,8 @@
 const configJapan= {
 	appName : "香り",
 	requestUrl: ["https://media.qweac.link/config_sys/domains-prod.txt"],
-	loginIcon : "/static/logo.png",
-	registerIcon : "/static/logo.png",
+	loginIcon : "/static/logo12.png",
+	registerIcon : "/static/logo12.png",
 	setupPicture : "/static/splash.jpg"
 }
 
@@ -22,8 +22,8 @@ const configLive1= {
 const config9113= {
 	appName : "触感",
 	requestUrl: ["https://piao-01.oss-cn-hongkong.aliyuncs.com/config_sys/domains-prod.txt"],
-	loginIcon : "/static/logo.png",
-	registerIcon : "/static/logo.png",
+	loginIcon : "/static/logo12.png",
+	registerIcon : "/static/logo12.png",
 	setupPicture : "/static/splash.jpg"
 }
 const fangyuan= {
@@ -41,18 +41,21 @@ const fangyuan= {
 		"https://config.l8x754.xyz/config_sys/domains-prod.txt",
 		"https://config.jsrmz6.xyz/config_sys/domains-prod.txt",
 		"https://dasiifdfcc.oss-cn-hongkong.aliyuncs.com/config_sys/domains-prod.txt"], //约伴线上 域名映射 oss
-	loginIcon : "/static/logo.png",
-	registerIcon : "/static/logo.png",
+	loginIcon : "/static/logo12.png",
+	registerIcon : "/static/logo12.png",
 	setupPicture : "/static/splash.jpg"
 }
+
 
 const activeConfig = {
 	appName : "泰丰",
 	loginIcon : "/static/logo.jpg",
 	registerIcon : "/static/logo.jpg",
 	language: "zh-CN",
-	setupPicture : "/static/splash.png",
-	requestUrl:"http://thi.c1usis.lat/config_sys/domains-prod.txt",
+	setupPicture : "/static/splash.jpg",
+	// requestUrl:"https://gitee.com/wonderful1212/system-config/raw/master/config.conf",
+	requestUrl:"https://thi.c1usis.lat/config_sys/domains-prod.txt",
+	// cache:"QfCYntTcGJB9iiw3auHmmQEsajQ9jf/Nteug+1xhbqll7Uw/qnVHu/H3iQIxRA8sL+bUiKNuhencOPeIzYcomSKzusIp2/f0bewKYedN1wQK5dazb5AiftaZ7k+mTDQPuqUoYuQXEQmfI3dlHUCegw=="
 	cache:"QfCYntTcGJB9iiw3auHmmQEsajQ9jf/Nteug+1xhbqll7Uw/qnVHu/H3iQIxRA8sXr/wbfZkS3i54T9frQnueq/taFUzzH93VMbT+EUDcuHc1wt1RtIPdAoE2MxKCJi3Z00qGDYXhqoc4Ae6nnLDQw=="
 }
 export  {configJapan,configLive1,config9113,fangyuan,activeConfig}
