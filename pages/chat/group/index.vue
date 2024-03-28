@@ -239,21 +239,23 @@
 		</view>
 
 		<view class="cu-bar foot input" :style="[{bottom:InputBottom+'upx'}]"
-			style="flex-direction: row;height:180px; width: calc(70% - 50px);left: calc(30% + 50px);background-color: #fff;">
+			style="flex-direction: row;height:180px; width: 600px;    position: relative;
+    left: 0px;
+    top: 10px;background-color: #fff;">
 			<input @keydown.enter="send" style="background: #eee!important;" disabled="true" placeholder="禁言"
 				placeholder-style="text-align:center;background: #eee;" v-show="isGroupChat && stopSpeak==1"
 				class="solid-bottom" :adjust-position="true" :focus="false" maxlength="300" cursor-spacing="10"></input>
 			<input id="testInputg" v-on:paste="handlePaste" placeholder="请输入信息"
-				style="height:160px !important;line-height:30px;width: 100%;" confirm-type="send" @confirm="send"
+				style="height:160px !important; font-size:16px;line-height:30px;width: 100%;" confirm-type="send" @confirm="send"
 				@keydown.shift.enter="altOrShiftEnter" @keydown.alt.enter="altOrShiftEnter" @focus="InputFocus"
 				@blur="InputBlur" v-show="c_type==1&&stopSpeak==0" v-model="txt" @input="inputTxt" class="solid-bottom"
 				:adjust-position="true" :focus="input_is_focus" maxlength="-1" cursor-spacing="10"></input>
 			<view @tap="ChooseImage()" style="cursor: pointer;position: absolute;top: 5px; left: 10px;"><text
-					style="font-size: 60upx;color:#3F92F8" class="iconfont icon-zhaopian-cuxiantiao-fill"></text></view>
+					style="font-size: 25px;color:#3F92F8" class="iconfont icon-zhaopian-cuxiantiao-fill"></text></view>
 			<view @tap="ChooseVideo()" style="cursor: pointer;position: absolute;top: 5px; left: 50px;"><text
-					style="font-size: 60upx;color:#F39F90" class="iconfont icon-paishe"></text></view>
+					style="font-size: 25px;color:#F39F90" class="iconfont icon-paishe"></text></view>
 			<view v-if="false" @tap="sendCard()" style="cursor: pointer;position: absolute;top: 5px; left: 80px;"><text
-					style="font-size: 60upx;color:#FA9B4E" class="iconfont icon-mingpian2"></text></view>
+					style="font-size: 25px;color:#FA9B4E" class="iconfont icon-mingpian2"></text></view>
 			<view style="cursor: pointer;position: absolute;top: 5px; left: 80px;" class="action"
 				@tap="showItemIndex(1)">
 				<text class="cuIcon-emojifill text-grey" style="position: absolute;top: 0;left: 0px"></text>

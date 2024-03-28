@@ -117,7 +117,7 @@
 				style="margin-top: calc(50vh - 50px);margin-left: calc(50% - 50px);"></img>
 		</view> -->
 
-		<view style="height: calc(100vh - 50upx);width: 70%; float: left; border-left: 1px solid #ddd">
+		<view style="height: calc(100vh - 50upx);width: 600px; margin-left:220px; border-left: 1px solid #ddd">
 			<scroll-view :scroll-y="modalName==null" style="width: 100%" class="page"
 				:class="modalName!=null?'show':''">
 				<GroupChat v-show="showTalk" :msgToGroupId="msgToGroupId" :toName="toName" :isGroupChat="isGroupChat" :isRandom="random"

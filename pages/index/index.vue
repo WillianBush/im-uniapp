@@ -1,5 +1,5 @@
 <template>
-	<view style="height: 100vh; margin-left:66px">
+	<view style="height: 100vh; margin-left:66px;overflow: scroll;">
 		<view class="ws-disconnect" v-show="isCloseNet()">网络已断开，请检查网络稳定性</view>
 		
 		<home :isBlank="isBlank" v-if="PageCur=='home'" :member="member"></home>

@@ -1497,7 +1497,7 @@ button.cuIcon.lg {
 	display: block;
 	position: relative;
 	align-items: center;
-	min-height: 100upx;
+	min-height: 60px;
 	justify-content: space-between;
 }
 
@@ -1862,7 +1862,7 @@ button.cuIcon.lg {
 }
 
 .cu-bar.input .action [class*="cuIcon-"] {
-	font-size: 56upx;
+	font-size: 25px;
 }
 
 .cu-bar.input input+.action {
@@ -2060,21 +2060,23 @@ button.cuIcon.lg {
 	margin-left:0px!important;
 	width:80%;
 	line-height: 46px;
+	font-size: 15px;
 }
 .cu-chat {
 	display: flex;
 	flex-direction: column;
+	margin-top: 40px;
 }
 
 .cu-chat .cu-item {
 	display: flex;
-	padding: 30upx 30upx 70upx;
+    padding: 0px 34px 46px;
 	position: relative;
 }
 
 .cu-chat .cu-item>.cu-avatar {
-	width: 80upx;
-	height: 80upx;
+	width: 35px;
+	height: 35px;
 }
 
 .cu-chat .cu-item>.main {
@@ -2089,18 +2091,17 @@ button.cuIcon.lg {
 }
 
 .cu-chat .cu-item>.main .content {
-	padding: 20upx;
-	border-radius: 6upx;
-	display: inline-flex;
-
-	word-wrap: break-word;
-	word-break: normal;
-	align-items: center;
-	font-size: 30upx;
-	position: relative;
-	min-height: 80upx;
-	line-height: 40upx;
-	text-align: left;
+	padding: 8px;
+    border-radius: 3px;
+    display: inline-flex;
+    word-wrap: break-word;
+    word-break: normal;
+    align-items: center;
+    font-size: 14px;
+    position: relative;
+    min-height: 30px;
+    line-height: 10px;
+    text-align: left;
 }
 
 .cu-chat .cu-item>.main .content:not([class*="bg-"]) {
@@ -2110,7 +2111,7 @@ button.cuIcon.lg {
 
 .cu-chat .cu-item .date {
 	position: absolute;
-	font-size: 24upx;
+	font-size: 14px;
 	color: #8799a3;
 	width: calc(100% - 320upx);
 	bottom: 20upx;
@@ -2125,22 +2126,23 @@ button.cuIcon.lg {
 
 .cu-chat .cu-item>.main .content::after {
 	content: "";
-	top: 27upx;
-	transform: rotate(45deg);
-	position: absolute;
-	z-index: 1;
-	display: inline-block;
-	overflow: hidden;
-	width: 24upx;
-	height: 24upx;
-	left: -12upx;
-	right: initial;
-	background-color: inherit;
+    top: 9px;
+    -webkit-transform: rotate(45deg);
+    transform: rotate(45deg);
+    position: absolute;
+    z-index: 1;
+    display: inline-block;
+    overflow: hidden;
+    width: 11px;
+    height: 11px;
+    left: -13px;
+    right: initial;
+    background-color: inherit;
 }
 
 .cu-chat .cu-item.self>.main .content::after {
 	left: auto;
-	right: -12upx;
+	right: -5px;
 }
 
 .cu-chat .cu-item>.main .content::before {
