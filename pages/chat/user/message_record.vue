@@ -7,7 +7,7 @@
 			</block>
 		</cu-custom>
 		<view class="cu-chat">
-			<view v-if="list.length<=0" style="text-align: center;color:#aaa;margin-top:60upx;font-size: 28upx;">
+			<view v-if="list.length<=0" style="text-align: center;color:#aaa;margin-top:60upx;font-size: 16px;">
 				暂无聊天记录
 			</view>
 			<block v-for="(item,index) in curChatMsgList">

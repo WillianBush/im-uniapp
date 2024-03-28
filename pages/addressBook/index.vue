@@ -11,10 +11,12 @@
 					</view>
 					<view class="action">
 						<button @tap="search()" style="background: #FFAA01;margin-right:2px"
-							class="cu-btn bg-gradual-green shadow-blur round">搜索</button>
-						<button @tap="refresherrefresh()" style="background: #4FA2FE;"
-							class="cu-btn bg-gradual-green shadow-blur round">刷新</button>
+							class="cu-btn bg-gradual-green">搜索</button>
+						<!-- <button @tap="refresherrefresh()" style="background: #4FA2FE;"
+							class="cu-btn bg-gradual-green shadow-blur round">刷新</button> -->
 					</view>
+
+					
 				</view>
 				<scroll-view scroll-y class="indexes" :scroll-into-view="'indexes-'+ listCurID"
 					:style="[{height:'calc(100vh - 100upx - 150upx)'}]" :scroll-with-animation="true"
@@ -24,7 +26,7 @@
 						:class="[true?'sm-border':'',false?'card-menu margin-top':'']">
 						<view @tap="goNewFriends()" class="cu-item" :class="true?'arrow':''">
 							<view class="content">
-								<text style="float:left;color:#FCBF00;font-size:25px"
+								<text style="float:left;color:#FCBF00;font-size:15px"
 									class="iconfont icon-tianjiahaoyou"></text>
 								<text class="text-grey" style="float:left;margin-left: 10px;">新的朋友</text>
 								<view v-if="unDoFriendAddCount>0" style="top: 19px;right: 36px" class="cu-tag badge">
@@ -34,7 +36,7 @@
 						</view>
 						<view @tap="goMyGroup()" class="cu-item" :class="true?'arrow':''">
 							<view class="content">
-								<text style="color:#009FE8;font-size:25px" class="iconfont icon-qunzhong"></text>
+								<text style="color:#009FE8;font-size:15px" class="iconfont icon-qunzhong"></text>
 								<text class="text-grey" style="margin-left: 10px;">群聊</text>
 								<view v-if="unDoRoomAddCount>0" style="top: 38upx;right: 72upx" class="cu-tag badge">
 									{{unDoRoomAddCount}}
@@ -43,7 +45,7 @@
 						</view>
 						<view @tap="goBlacklist()" class="cu-item" :class="true?'arrow':''">
 							<view class="content">
-								<text style="color:#999;font-size:25px" class="iconfont icon-heimingdan"></text>
+								<text style="color:#999;font-size:15px" class="iconfont icon-heimingdan"></text>
 								<text class="text-grey" style="margin-left: 10px;">黑名单</text>
 							</view>
 						</view>

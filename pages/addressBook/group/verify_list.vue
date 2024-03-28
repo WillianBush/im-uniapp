@@ -1,6 +1,6 @@
 <template>
 	<view>
-		<view style="height: 45px;line-height: 45px;text-align: center;background: #eee;">
+		<view style="height: 45px;line-height: 45px;text-align: center;background: #eee; font-size:15px">
 			<text class="cuIcon-back" @click="goback" style="float:left; margin-left: 5px; cursor: pointer;"></text>
 			他人申请入群
 		</view>
@@ -41,6 +41,7 @@
 			<view v-else style="height: 100upx;text-align: center;background: #fff;
     margin-top: 20upx;
     line-height: 100upx;
+	font-size:16px;
     color: #999;">
 				暂无申请信息
 			</view>

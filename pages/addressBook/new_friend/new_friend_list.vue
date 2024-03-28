@@ -1,11 +1,11 @@
 <template>
 	<view>
 		<view v-show="PageCur=='main'">
-			<view style="height: 45px;line-height: 45px;background: #eee;padding-left: 5px">
+			<view style="height: 45px;line-height: 45px;background: #eee;font-size: 15px;padding-left: 5px">
 				<text class="cuIcon-back" @click="goback" style="float:left; margin:0 5px; cursor: pointer;"></text>
 				新的好友
 				<text @tap="goSearchFriend()"
-					style="float:right;font-size: 30upx;color: #000; margin-right: 5px;cursor: pointer;"
+					style="float:right;font-size: 15px;color: #000; margin-right: 5px;cursor: pointer;"
 					class="lg text-gray ">添加朋友</text>
 			</view>
 			<scroll-view scroll-y class="indexes" :style="[{height:'calc(100vh - 100upx)'}]"
@@ -56,7 +56,7 @@
 					</view>
 				</view>
 				<view v-else
-					style="height: 100upx;text-align: center;background: #fff;margin-top: 20upx;line-height: 100upx;color: #999;">
+					style="height: 100upx;text-align: center;background: #fff;margin-top: 20upx;     font-size: 16px;line-height: 100upx;color: #999;">
 					暂无好友
 				</view>
 			</scroll-view>

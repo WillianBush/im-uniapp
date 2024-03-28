@@ -1,11 +1,11 @@
 <template>
 	<view>
 		<view v-show="PageCur=='main'">
-			<view style="height: 45px;line-height: 45px;background: #eee;padding-left: 5px">
-				<text class="cuIcon-back" @click="goback()" style="float:left; margin:0 5px; cursor: pointer;"></text>
+			<view style="height: 45px;line-height: 45px;background: #eee; font-size: 15px;padding-left: 5px">
+				<text class="cuIcon-back" @click="goback()" style="float:left; margin:0 5px;  cursor: pointer;"></text>
 				群聊
 				<text @tap="goSearch()"
-					style="float:right;font-size: 30upx; cursor: pointer;color: #000; margin-right: 5px"
+					style="float:right;font-size: 30upx; cursor: pointer;color: #000; font-size: 15px; margin-right: 5px"
 					class="lg text-gray ">搜索</text>
 			</view>
 
@@ -22,7 +22,7 @@
 				</view>
 			</view>
 
-			<view style="height:80upx;line-height: 80upx;text-align: center;color:#888">
+			<view style="height:80upx;line-height: 80upx;text-align: center;font-size: 16px;color:#888">
 				{{groupList.length}}个群聊
 			</view>
 			<scroll-view scroll-y class="indexes" :style="'height:calc(100vh - '+'px - 100upx - 80upx)'"
@@ -33,7 +33,7 @@
 
 							<view class="cu-avatar round lg"
 								:style="{'backgroundImage': 'url('+getHeadPic(item.img)  +')' }"
-								style="width: 60upx;height: 60upx;background-size: 100% 100%;"></view>
+								style="width: 30px;height: 30px;background-size: 100% 100%;"></view>
 							<view class="content">
 								<view class="text-grey">{{item.name}}</view>
 							</view>

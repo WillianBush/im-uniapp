@@ -1,6 +1,6 @@
 <template>
 	<view>
-		<view style="height: 45px;line-height: 45px;text-align: center;background: #eee;">
+		<view style="height: 45px;line-height: 45px;font-size:15px;text-align: center;background: #eee;">
 			<text class="cuIcon-back" @click="goback" style="float:left; margin:0 5px; cursor: pointer;"></text>
 			黑名单列表
 		</view>
@@ -20,7 +20,7 @@
 						<button @tap="removeBlack(item.id)" style="margin-top:8upx"
 							class="cu-btn round bg-red shadow">移除</button>
 					</view>
-					<view v-if="list.length<=0" style="text-align: center;color:#aaa">
+					<view v-if="list.length<=0" style="text-align: center; font-size:16px;color:#aaa">
 						<uni-view class="padding">暂无可移除的黑名单</uni-view>
 					</view>
 				</view>

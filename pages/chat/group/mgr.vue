@@ -21,7 +21,7 @@
               text-align: center;
               color: #aaa;
               margin-top: 60upx;
-              font-size: 28upx;
+              font-size: 16px;
             ">
 						<p style="margin-top: 15%">暂无聊天记录</p>
 					</view>
