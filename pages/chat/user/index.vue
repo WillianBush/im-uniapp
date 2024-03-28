@@ -23,9 +23,9 @@
 				</view>
 			</block>
 		</cu-custom>
-		<scroll-view @scroll="scrollFn" :scroll-top="scrollTop" :refresher-enabled="hasMore"
-			@refresherrefresh="scrollToUpper" :refresher-triggered="isRefreshTrigger" @refresherpulling="refresh"
-			:scroll-y="true" ref="chatVew" @tap="clickChat()" class="cu-chat"
+		<scroll-view @scroll="scrollFn" :scroll-top="scrollTop" :scroll-into-view="scrollIntoView"
+			:refresher-enabled="hasMore" @refresherrefresh="scrollToUpper" :refresher-triggered="isRefreshTrigger"
+			@refresherpulling="refresh" :scroll-y="true" ref="chatVew" @tap="clickChat()" class="cu-chat"
 			:style="'height: calc(100vh - '+CustomBar+'px - '+(120+InputBottom)+'upx)'">
 			<block v-for="(item,index) in curChatMsgList">
 				<block v-if="item.opt&&item.opt=='undo'">
@@ -39,68 +39,120 @@
 				</block>
 
 				<block v-else-if="item.type=='USER_CARD'">
-					<view v-if="item.bean.fromUid==user.id" class="cu-item self">
+					<view v-if="item.bean.fromUid==user.id" class="cu-item self" :id="'ele'+item.bean.uuid">
 						<view class="main">
 							<view @longpress="onLongPress($event,item.bean)" @tap="clickCard(item.bean)"
 								style="border: 1px solid #eee;background-color: #fff;width:400upx;height:180upx;border-radius: 6px;">
-								<view style="    height: 130upx;
+								<view>
+									<view style="background-color: #F1F1F1;margin-bottom: 6px;"
+										@tap="gotoForward(JSON.parse(item.bean.forward))"
+										v-if="item.bean.forward&&item.bean.forward.length">
+										<image v-if="JSON.parse(item.bean.forward).psr=='picture'"
+											style="width: 50px;height: 50px;margin-left: 20px;"
+											:src="parseForwardImg(JSON.parse(item.bean.forward).txt)"></image>
+										<view style="margin-left: 10px;display: flex;flex-direction: column;">
+											<text
+												style="color:#3F92F8 ;">{{JSON.parse(item.bean.forward).fromName}}</text>
+											<rich-text style="max-width:440upx;font-size: 14px;"
+												v-if="JSON.parse(item.bean.forward).psr=='txt'||JSON.parse(item.bean.forward).psr=='deleted'"
+												:nodes="transMessage(JSON.parse(item.bean.forward).txt)"></rich-text>
+											<text v-if="JSON.parse(item.bean.forward).psr=='video'"
+												style="font-size: 14px;">视频</text>
+											<text v-if="JSON.parse(item.bean.forward).psr=='voice'"
+												style="font-size: 14px;">语音</text>
+											<text v-if="JSON.parse(item.bean.forward).psr=='picture'"
+												style="font-size: 14px;">图片</text>
+											<text v-if="JSON.parse(item.bean.forward).psr=='card'"
+												style="font-size: 14px;">名片</text>
+										</view>
+									</view>
+									<view style="    height: 130upx;
 													border-bottom: 1px solid #eee;
 													width: 90%;
 													margin: auto auto;display: flex;">
-									<view style="width:90upx;margin-top: 26upx;width: 80upx;height: 80upx;"
-										class="cu-avatar radius"
-										:style="'background-image:url('+getHeadPic(item.bean.mheadpic)+');'">
-									</view>
-									<view
-										style="width: 240upx;;margin-top: 30upx;margin-left: 12upx; text-align: left;">
-										<view style="overflow: hidden;word-break: keep-all;text-overflow: ellipsis;">
-											{{item.bean.mname}}
+										<view style="width:90upx;margin-top: 26upx;width: 80upx;height: 80upx;"
+											class="cu-avatar radius"
+											:style="'background-image:url('+getHeadPic(item.bean.mheadpic)+');'">
 										</view>
-										<view style="color: #bbb;font-size: 24upx; margin-top: 8upx;">
-											ID：{{item.bean.mid}}</view>
+										<view
+											style="width: 240upx;;margin-top: 30upx;margin-left: 12upx; text-align: left;">
+											<view
+												style="overflow: hidden;word-break: keep-all;text-overflow: ellipsis;">
+												{{item.bean.mname}}
+											</view>
+											<view style="color: #bbb;font-size: 24upx; margin-top: 8upx;">
+												ID：{{item.bean.mid}}</view>
+										</view>
 									</view>
-								</view>
-								<view style="    height: 50upx;
+									<view style="    height: 50upx;
 													line-height: 50upx;
 													text-align: left;
 													font-size: 23upx;
 													padding-left: 20upx;
 													color: #777;">{{i18n.personalcard}}</view>
+
+								</view>
 							</view>
 						</view>
 						<view class="cu-avatar radius"
 							:style="'background-image:url('+getHeadPic(item.bean.fromHeadpic)+');'"></view>
 						<view class="date">{{item.bean.date}}</view>
 					</view>
-					<view v-else class="cu-item">
+					<view v-else class="cu-item" :id="'ele'+item.bean.uuid">
 						<view @tap.stop="goUserDetail(item.bean.fromUid)" class="cu-avatar radius"
 							:style="'background-image:url('+getHeadPic(item.bean.fromHeadpic)+');'"></view>
 						<view class="main">
 							<view @longpress="onLongPress($event,item.bean)" @tap="clickCard(item.bean)"
 								style="border: 1px solid #eee;background-color: #fff;width:400upx;height:180upx;border-radius: 6px;">
-								<view style="    height: 130upx;
+
+								<view>
+									<view style="background-color: #F1F1F1;margin-bottom: 6px;"
+										@tap="gotoForward(JSON.parse(item.bean.forward))"
+										v-if="item.bean.forward&&item.bean.forward.length">
+										<image v-if="JSON.parse(item.bean.forward).psr=='picture'"
+											style="width: 50px;height: 50px;margin-left: 20px;"
+											:src="parseForwardImg(JSON.parse(item.bean.forward).txt)"></image>
+										<view style="margin-left: 10px;display: flex;flex-direction: column;">
+											<text
+												style="color:#3F92F8 ;">{{JSON.parse(item.bean.forward).fromName}}</text>
+											<rich-text style="max-width:440upx;font-size: 14px;"
+												v-if="JSON.parse(item.bean.forward).psr=='txt'||JSON.parse(item.bean.forward).psr=='deleted'"
+												:nodes="transMessage(JSON.parse(item.bean.forward).txt)"></rich-text>
+											<text v-if="JSON.parse(item.bean.forward).psr=='video'"
+												style="font-size: 14px;">视频</text>
+											<text v-if="JSON.parse(item.bean.forward).psr=='voice'"
+												style="font-size: 14px;">语音</text>
+											<text v-if="JSON.parse(item.bean.forward).psr=='picture'"
+												style="font-size: 14px;">图片</text>
+											<text v-if="JSON.parse(item.bean.forward).psr=='card'"
+												style="font-size: 14px;">名片</text>
+										</view>
+									</view>
+									<view style="    height: 130upx;
 													border-bottom: 1px solid #eee;
 													width: 90%;
 													margin: auto auto;display: flex;">
-									<view style="width:90upx;margin-top: 26upx;width: 80upx;height: 80upx;"
-										class="cu-avatar radius"
-										:style="'background-image:url('+getHeadPic(item.bean.mheadpic)+');'">
-									</view>
-									<view
-										style="width: 240upx;;margin-top: 30upx;margin-left: 12upx; text-align: left;">
-										<view style="overflow: hidden;word-break: keep-all;text-overflow: ellipsis;">
-											{{item.bean.mname}}
+										<view style="width:90upx;margin-top: 26upx;width: 80upx;height: 80upx;"
+											class="cu-avatar radius"
+											:style="'background-image:url('+getHeadPic(item.bean.mheadpic)+');'">
 										</view>
-										<view style="color: #bbb;font-size: 24upx; margin-top: 8upx;">
-											ID：{{item.bean.mid}}</view>
+										<view
+											style="width: 240upx;;margin-top: 30upx;margin-left: 12upx; text-align: left;">
+											<view
+												style="overflow: hidden;word-break: keep-all;text-overflow: ellipsis;">
+												{{item.bean.mname}}
+											</view>
+											<view style="color: #bbb;font-size: 24upx; margin-top: 8upx;">
+												ID：{{item.bean.mid}}</view>
+										</view>
 									</view>
-								</view>
-								<view style="    height: 50upx;
+									<view style="    height: 50upx;
 													line-height: 50upx;
 													text-align: left;
 													font-size: 23upx;
 													padding-left: 20upx;
 													color: #777;">{{i18n.personalcard}}</view>
+								</view>
 							</view>
 						</view>
 						<view class="date "> {{item.bean.date}}</view>
@@ -108,10 +160,8 @@
 
 				</block>
 				<block v-else>
-					<!--视频在移动端的底层窗口渲染层级在最上层，但是H5不是，这里做了两套处理-->
-					<!--#ifdef H5-->
 					<!--自己发出的-->
-					<view v-if="item.bean.fromUid==user.id" class="cu-item self">
+					<view v-if="item.bean.fromUid==user.id" class="cu-item self" :id="'ele'+item.bean.uuid">
 						<view class="main">
 
 							<block v-if="chatCfg.showUserMsgReadStatus==1">
@@ -133,26 +183,50 @@
 							<view @longtap="onLongPress($event,item.bean)"
 								:class="[item.bean.psr=='picture'?'':'content bg-green shadow']"
 								:style="{backgroundColor:item.bean.psr=='picture'? 'none':'#fff'}" style="color:#222;">
-								<image @tap="clickVideo(imgUrl+item.bean.oldTxt)" v-if="item.bean.psr=='video'"
-									style="width:418upx;height:335upx;border-radius: 5px"
-									src="../../../static/images/video.png"></image>
+								<view>
+									<view style="background-color: #F1F1F1;margin-bottom: 6px;"
+										@tap="gotoForward(JSON.parse(item.bean.forward))"
+										v-if="item.bean.forward&&item.bean.forward.length">
+										<image v-if="JSON.parse(item.bean.forward).psr=='picture'"
+											style="width: 50px;height: 50px;margin-left: 20px;"
+											:src="parseForwardImg(JSON.parse(item.bean.forward).txt)"></image>
+										<view style="margin-left: 10px;display: flex;flex-direction: column;">
+											<text
+												style="color:#3F92F8 ;">{{JSON.parse(item.bean.forward).fromName}}</text>
+											<rich-text style="max-width:440upx;font-size: 14px;"
+												v-if="JSON.parse(item.bean.forward).psr=='txt'||JSON.parse(item.bean.forward).psr=='deleted'"
+												:nodes="transMessage(JSON.parse(item.bean.forward).txt)"></rich-text>
+											<text v-if="JSON.parse(item.bean.forward).psr=='video'"
+												style="font-size: 14px;">视频</text>
+											<text v-if="JSON.parse(item.bean.forward).psr=='voice'"
+												style="font-size: 14px;">语音</text>
+											<text v-if="JSON.parse(item.bean.forward).psr=='picture'"
+												style="font-size: 14px;">图片</text>
+												<text v-if="JSON.parse(item.bean.forward).psr=='card'"
+													style="font-size: 14px;">名片</text>
+										</view>
+									</view>
+									<image @tap="clickVideo(imgUrl+item.bean.oldTxt)" v-if="item.bean.psr=='video'"
+										style="width:418upx;height:335upx;border-radius: 5px"
+										src="../../../static/images/video.png"></image>
 
-								<u-parse v-else-if="item.bean.psr=='picture'" :content="parseImage(item.bean.txt)"
-									@preview="preview" @navigate="navigate"></u-parse>
-								<view @tap="clickVoice(item.bean.txt,index)" v-else-if="item.bean.psr=='voice'">
-									<text v-show="selVoiceIndex != index"
-										style="text-align: right; float:right;width:100upx;font-size: 52upx;position: relative;top: 4upx;"
-										class="iconfont icon-yuyin1 text-xxl "></text>
-									<text v-show="selVoiceIndex != index"
-										style="float:right;font-size: 26upx;position: relative;top: 4upx;">{{item.bean.subTxt}}"</text>
-									<text v-show="selVoiceIndex == index"
-										style="text-align: right;float:right;width:100upx;font-size: 52upx;position: relative;top:0;line-height: 38upx;"
-										class="iconfont cu-load load-cuIcon loading text-xxl "></text>
-									<text v-show="selVoiceIndex == index"
-										style="float:right;font-size: 26upx;position: relative;top: 6upx;">{{item.bean.subTxt}}"</text>
+									<u-parse v-else-if="item.bean.psr=='picture'" :content="parseImage(item.bean.txt)"
+										@preview="preview" @navigate="navigate"></u-parse>
+									<view @tap="clickVoice(item.bean.txt,index)" v-else-if="item.bean.psr=='voice'">
+										<text v-show="selVoiceIndex != index"
+											style="text-align: right; float:right;width:100upx;font-size: 52upx;position: relative;top: 4upx;"
+											class="iconfont icon-yuyin1 text-xxl "></text>
+										<text v-show="selVoiceIndex != index"
+											style="float:right;font-size: 26upx;position: relative;top: 4upx;">{{item.bean.subTxt}}"</text>
+										<text v-show="selVoiceIndex == index"
+											style="text-align: right;float:right;width:100upx;font-size: 52upx;position: relative;top:0;line-height: 38upx;"
+											class="iconfont cu-load load-cuIcon loading text-xxl "></text>
+										<text v-show="selVoiceIndex == index"
+											style="float:right;font-size: 26upx;position: relative;top: 6upx;">{{item.bean.subTxt}}"</text>
+									</view>
+									<rich-text style="max-width:440upx" v-else
+										:nodes="transMessage(item.bean.txt)"></rich-text>
 								</view>
-								<rich-text style="max-width:440upx" v-else
-									:nodes="transMessage(item.bean.txt)"></rich-text>
 							</view>
 						</view>
 						<view class="cu-avatar radius"
@@ -161,258 +235,222 @@
 					</view>
 
 					<!--别人发来的-->
-					<view v-else class="cu-item">
+					<view v-else class="cu-item" :id="'ele'+item.bean.uuid">
 						<view @tap.stop="goUserDetail(item.bean.fromUid)" class="cu-avatar radius"
 							:style="'background-image:url('+getHeadPic(item.bean.fromHeadpic)+');'"></view>
 						<view class="main">
 							<view @longtap="onLongPress($event,item.bean)"
 								:class="[item.bean.psr=='picture'?'':'content shadow']" style="color:#222;">
-								<image @tap="clickVideo(imgUrl+item.bean.oldTxt)" v-if="item.bean.psr=='video'"
-									style="width:418upx;height:335upx;border-radius: 5px"
-									src="../../../static/images/video.png"></image>
-								<u-parse v-else-if="item.bean.psr=='picture'" :content="parseImage(item.bean.txt)"
-									@preview="preview" @navigate="navigate"></u-parse>
-								<view @tap="clickVoice(item.bean.txt,index)" v-else-if="item.bean.psr=='voice'">
-									<text v-show="selVoiceIndex != index"
-										style="text-align: right; float:right;width:100upx;font-size: 52upx;position: relative;top: 4upx;"
-										class="iconfont icon-yuyin1 text-xxl "></text>
-									<text v-show="selVoiceIndex != index"
-										style="float:right;font-size: 26upx;position: relative;top: 4upx;">{{item.bean.subTxt}}"</text>
-									<text v-show="selVoiceIndex == index"
-										style="text-align: right;float:right;width:100upx;font-size: 52upx;position: relative;top:0;line-height: 38upx;"
-										class="iconfont cu-load load-cuIcon loading text-xxl "></text>
-									<text v-show="selVoiceIndex == index"
-										style="float:right;font-size: 26upx;position: relative;top: 6upx;">{{item.bean.subTxt}}"</text>
+								<view>
+									<view style="background-color: #F1F1F1;margin-bottom: 6px;"
+										@tap="gotoForward(JSON.parse(item.bean.forward))"
+										v-if="item.bean.forward&&item.bean.forward.length">
+										<image v-if="JSON.parse(item.bean.forward).psr=='picture'"
+											style="width: 50px;height: 50px;margin-left: 20px;"
+											:src="parseForwardImg(JSON.parse(item.bean.forward).txt)"></image>
+										<view style="margin-left: 10px;display: flex;flex-direction: column;">
+											<text
+												style="color:#3F92F8 ;">{{JSON.parse(item.bean.forward).fromName}}</text>
+											<rich-text style="max-width:440upx;font-size: 14px;"
+												v-if="JSON.parse(item.bean.forward).psr=='txt'||JSON.parse(item.bean.forward).psr=='deleted'"
+												:nodes="transMessage(JSON.parse(item.bean.forward).txt)"></rich-text>
+											<text v-if="JSON.parse(item.bean.forward).psr=='video'"
+												style="font-size: 14px;">视频</text>
+											<text v-if="JSON.parse(item.bean.forward).psr=='voice'"
+												style="font-size: 14px;">语音</text>
+											<text v-if="JSON.parse(item.bean.forward).psr=='picture'"
+												style="font-size: 14px;">图片</text>
+												<text v-if="JSON.parse(item.bean.forward).psr=='card'"
+													style="font-size: 14px;">名片</text>
+										</view>
+									</view>
+
+									<image @tap="clickVideo(imgUrl+item.bean.oldTxt)" v-if="item.bean.psr=='video'"
+										style="width:418upx;height:335upx;border-radius: 5px"
+										src="../../../static/images/video.png"></image>
+									<u-parse v-else-if="item.bean.psr=='picture'" :content="parseImage(item.bean.txt)"
+										@preview="preview" @navigate="navigate"></u-parse>
+									<view @tap="clickVoice(item.bean.txt,index)" v-else-if="item.bean.psr=='voice'">
+										<text v-show="selVoiceIndex != index"
+											style="text-align: right; float:right;width:100upx;font-size: 52upx;position: relative;top: 4upx;"
+											class="iconfont icon-yuyin1 text-xxl "></text>
+										<text v-show="selVoiceIndex != index"
+											style="float:right;font-size: 26upx;position: relative;top: 4upx;">{{item.bean.subTxt}}"</text>
+										<text v-show="selVoiceIndex == index"
+											style="text-align: right;float:right;width:100upx;font-size: 52upx;position: relative;top:0;line-height: 38upx;"
+											class="iconfont cu-load load-cuIcon loading text-xxl "></text>
+										<text v-show="selVoiceIndex == index"
+											style="float:right;font-size: 26upx;position: relative;top: 6upx;">{{item.bean.subTxt}}"</text>
+									</view>
+									<rich-text style="max-width:440upx" v-else
+										:nodes="transMessage(item.bean.txt)"></rich-text>
 								</view>
-								<rich-text style="max-width:440upx" v-else
-									:nodes="transMessage(item.bean.txt)"></rich-text>
 							</view>
 						</view>
 						<view class="date "> {{item.bean.date}}</view>
 					</view>
-					<!--#endif-->
-					<!--#ifdef APP-PLUS-->
-					<!--自己发出的-->
-					<view v-if="item.bean.fromUid==user.id" class="cu-item self">
-						<view class="main">
+				</block>
+			</block>
+			<view class="cu-item self" v-show="chatMyLoadding">
+				<view class="main">
+					<view style="background-color: #F1F1F1;" class="cu-load load-cuIcon loading"></view>
+				</view>
+				<view class="cu-avatar radius" :style="'background-image:url('+getHeadPic(user.headpic)+');'"></view>
+			</view>
+		</scroll-view>
+		<!-- <view style="position:absolute;bottom:50px;right: 10px;">
+		<image @click="deduplication()" style="width:80rpx;height:80rpx;" src="/static/tabbar/bottom.png"></image>
+	</view> -->
+		<view v-if="forwardBean" @click="gotoForward" style="position:absolute;
+	bottom:50px;
+	width: 100%;
+	background-color: #f1f1f1;
+	z-index: 1000;
+	display: flex;
+	align-items: center;
+	position: relative;
+	">
+			<image v-if="forwardBean.psr=='picture'" style="width: 50px;height: 50px;margin-left: 20px;"
+				:src="parseForwardImg(forwardBean.txt)"></image>
+			<view style="margin-left: 10px;display: flex;flex-direction: column;">
+				<text style="color:#3F92F8 ;">回复：{{forwardBean.fromName}}</text>
+				<rich-text style="max-width:440upx;font-size: 14px;" v-if="forwardBean.psr=='txt'"
+					:nodes="transMessage(forwardBean.txt)"></rich-text>
+				<text v-if="forwardBean.psr=='video'" style="font-size: 14px;">视频</text>
+				<text v-if="forwardBean.psr=='voice'" style="font-size: 14px;">语音</text>
+				<text v-if="forwardBean.psr=='picture'" style="font-size: 14px;">图片</text>
+			</view>
+			<text class="cuIcon-close" @click="cancelForward"
+				style="font-size:34upx;position: absolute;right: 20px;top: 10px;"></text>
+		</view>
+		<view class="cu-bar foot input" :style="[{bottom:InputBottom+'upx'}]">
+			<!-- #ifndef H5 -->
+			<view @tap="selType(2)" v-show="c_type==1" class="action">
+				<text class="cuIcon-sound text-grey"></text>
+			</view>
+			<view @tap="selType(1)" v-show="c_type==2" class="action">
+				<text class="cuIcon-keyboard text-grey"></text>
+			</view>
+			<!-- #endif -->
 
-							<block v-if="chatCfg.showUserMsgReadStatus==1">
-								<view v-if="item.bean.read==1&&chatCfg.showUserMsgReadStatus==1"
-									style="margin-right:30upx;color: #999;font-size: 24upx;">已读</view>
-							</block>
-							<!-- 消息发送失败...-->
-							<view class="action text-grey" v-if="item.bean.sendFail">
-								<image style="width: 40upx;height: 40upx;" @tap="reSendMsg(item)"
-									src="../../../static/fail.png"></image>
-							</view>
+			<textarea style="height:72upx;line-height:72upx; line-height: 73upx;" :auto-height="true"
+				:show-confirm-bar="true" confirm-type="send" @confirm="send" :confirm-hold="true"
+				@keydown.shift.enter="altOrShiftEnter" @keydown.alt.enter="altOrShiftEnter"
+				@keyup.ctrl.enter="lineFeed()" @focus="InputFocus" @blur="InputBlur" v-show="c_type==1" v-model="txt"
+				@input="inputTxt()" class="solid-bottom" :adjust-position="true" :focus="input_is_focus" maxlength="-1"
+				cursor-spacing="10"></textarea>
 
-							<!-- 消息发送中...-->
-							<view v-if="item.bean.read == 0 && !item.uuid &&!item.bean.sendFail">
-								<text class="iconfont cu-load load-cuIcon loading text-xxxl"
-									style="color: #ddd;"></text>
-							</view>
-							<view@longpress="onLongPress($event,item.bean)"
-								:class="[item.bean.psr=='picture'?'':'content bg-green shadow']"
-								:style="{backgroundColor:item.bean.psr=='picture'? 'none':'#fff'}" style="color:#222;">
-								<!--因为视频在底层窗口的显示等级是最上层，所以无法嵌套在scroll里面滑动，这里用image 代替-->
-								<image @tap="clickVideo(imgUrl+item.bean.oldTxt)" v-if="item.bean.psr=='video'"
-									style="width:418upx;height:335upx;border-radius: 5px"
-									src="../../../static/images/video.png"></image>
+			<button @touchstart="voiceBegin" @touchend="voiceEnd" @touchcancel="voiceCancel" v-show="c_type==2"
+				style="color: #aaa;margin-left: 20upx;width:100%" class="cu-btn block line-orange lg">按住 说话</button>
 
-								<u-parse v-else-if="item.bean.psr=='picture'" :content="parseImage(item.bean.txt)"
-									@preview="preview" @navigate="navigate"></u-parse>
-								<view @tap="clickVoice(item.bean.txt,index)" v-else-if="item.bean.psr=='voice'">
-									<text v-show="selVoiceIndex != index"
-										style="text-align: right; float:right;width:100upx;font-size: 52upx;position: relative;top: 4upx;"
-										class="iconfont icon-yuyin1 text-xxl "></text>
-									<text v-show="selVoiceIndex != index"
-										style="float:right;font-size: 26upx;position: relative;top: 4upx;">{{item.bean.subTxt}}"</text>
-									<text v-show="selVoiceIndex == index"
-										style="text-align: right;float:right;width:100upx;font-size: 52upx;position: relative;top:0;line-height: 38upx;"
-										class="iconfont cu-load load-cuIcon loading text-xxl "></text>
-									<text v-show="selVoiceIndex == index"
-										style="float:right;font-size: 26upx;position: relative;top: 6upx;">{{item.bean.subTxt}}"</text>
-								</view>
-								<rich-text style="max-width:440upx" v-else
-									:nodes="transMessage(item.bean.txt)"></rich-text>
+
+			<view style="margin-right: 20upx;margin-top:6upx;" class="action" @tap="showItemIndex(1)">
+				<text class="cuIcon-emojifill text-grey"></text>
+			</view>
+
+			<text v-show="showjia" @tap="showItemIndex(2)"
+				style="font-size:52upx;color:#777;margin-left:6upx;margin-right:6upx" class="iconfont icon-jia"></text>
+			<button style="min-width: 50px;padding:0px!important" v-show="!showjia" @tap.stop="send()"
+				class="cu-btn bg-green shadow">发送</button>
+
+		</view>
+
+
+		<view v-show="showItem==1" class="cu-bar foot "
+			style="box-shadow: none;-webkit-box-shadow: none;display: block;background: #fff;height:330upx;margin-bottom:80upx;">
+			<scroll-view scroll-y class="indexes" style="height:330upx;padding-bottom:20upx;padding-top: 10upx;"
+				:scroll-with-animation="true" :enable-back-to-top="true">
+				<view v-if="emotion <1">
+					<view v-for="(ele,i) in 14" :key="i" style="display: flex;">
+						<view v-for="(ele1,item) in 8" :key="item" @tap="sendEmotion(0,i*8 +item)"
+							style="flex:1;text-align: center;">
+							<image v-if="(i*8 +item)<=104" lazy-load
+								:src="'../../../static/emotion/face0'+emotion+'/'+(i*8 +item)+ (emotion == 0?'.gif':'.png')"
+								style="width:50upx;height:50upx;margin-top: 10upx;;"></image>
 						</view>
 					</view>
-					<view class="cu-avatar radius"
-						:style="'background-image:url('+getHeadPic(item.bean.fromHeadpic)+');'"></view>
-					<view class="date">{{item.bean.date}}</view>
-	</view>
-
-	<!--别人发来的-->
-	<view v-else class="cu-item">
-		<view @tap.stop="goUserDetail(item.bean.fromUid)" class="cu-avatar radius"
-			:style="'background-image:url('+getHeadPic(item.bean.fromHeadpic)+');'"></view>
-		<view class="main">
-			<view @longpress="onLongPress($event,item.bean)" :class="[item.bean.psr=='picture'?'':'content shadow']"
-				style="color:#222;">
-				<!--因为视频在底层窗口的显示等级是最上层，所以无法嵌套在scroll里面滑动，这里用image 代替-->
-				<image @tap="clickVideo(imgUrl+item.bean.oldTxt)" v-if="item.bean.psr=='video'"
-					style="width:418upx;height:335upx;border-radius: 5px" src="../../../static/images/video.png">
-				</image>
-				<u-parse v-else-if="item.bean.psr=='picture'" :content="parseImage(item.bean.txt)" @preview="preview"
-					@navigate="navigate"></u-parse>
-				<view @tap="clickVoice(item.bean.txt,index)" v-else-if="item.bean.psr=='voice'">
-					<text v-show="selVoiceIndex != index"
-						style="text-align: right; float:right;width:100upx;font-size: 52upx;position: relative;top: 4upx;"
-						class="iconfont icon-yuyin1 text-xxl "></text>
-					<text v-show="selVoiceIndex != index"
-						style="float:right;font-size: 26upx;position: relative;top: 4upx;">{{item.bean.subTxt}}"</text>
-					<text v-show="selVoiceIndex == index"
-						style="text-align: right;float:right;width:100upx;font-size: 52upx;position: relative;top:0;line-height: 38upx;"
-						class="iconfont cu-load load-cuIcon loading text-xxl "></text>
-					<text v-show="selVoiceIndex == index"
-						style="float:right;font-size: 26upx;position: relative;top: 6upx;">{{item.bean.subTxt}}"</text>
 				</view>
-				<rich-text style="max-width:440upx" v-else :nodes="transMessage(item.bean.txt)"></rich-text>
-			</view>
-		</view>
-		<view class="date "> {{item.bean.date}}</view>
-	</view>
-	<!--#endif-->
-	</block>
-	</block>
-	<view class="cu-item self" v-show="chatMyLoadding">
-		<view class="main">
-			<view style="background-color: #F1F1F1;" class="cu-load load-cuIcon loading"></view>
-		</view>
-		<view class="cu-avatar radius" :style="'background-image:url('+getHeadPic(user.headpic)+');'"></view>
-	</view>
-	</scroll-view>
-	<view style="position:absolute;bottom:50px;width:100%;text-align:center">
-		<image @click="deduplication()" style="width:80rpx;height:80rpx;" src="/static/tabbar/bottom.png"></image>
-	</view>
-	<view class="cu-bar foot input" :style="[{bottom:InputBottom+'upx'}]">
-		<!-- #ifndef H5 -->
-		<view @tap="selType(2)" v-show="c_type==1" class="action">
-			<text class="cuIcon-sound text-grey"></text>
-		</view>
-		<view @tap="selType(1)" v-show="c_type==2" class="action">
-			<text class="cuIcon-keyboard text-grey"></text>
-		</view>
-		<!-- #endif -->
-
-		<textarea style="height:72upx;line-height:72upx; line-height: 73upx;" :auto-height="true"
-			:show-confirm-bar="true" confirm-type="send" @confirm="send" :confirm-hold="true"
-			@keydown.shift.enter="altOrShiftEnter" @keydown.alt.enter="altOrShiftEnter" @keyup.ctrl.enter="lineFeed()"
-			@focus="InputFocus" @blur="InputBlur" v-show="c_type==1" v-model="txt" @input="inputTxt()"
-			class="solid-bottom" :adjust-position="true" :focus="input_is_focus" maxlength="-1"
-			cursor-spacing="10"></textarea>
-
-		<button @touchstart="voiceBegin" @touchend="voiceEnd" @touchcancel="voiceCancel" v-show="c_type==2"
-			style="color: #aaa;margin-left: 20upx;width:100%" class="cu-btn block line-orange lg">按住 说话</button>
-
-
-		<view style="margin-right: 20upx;margin-top:6upx;" class="action" @tap="showItemIndex(1)">
-			<text class="cuIcon-emojifill text-grey"></text>
-		</view>
-
-		<text v-show="showjia" @tap="showItemIndex(2)"
-			style="font-size:52upx;color:#777;margin-left:6upx;margin-right:6upx" class="iconfont icon-jia"></text>
-		<button style="min-width: 50px;padding:0px!important" v-show="!showjia" @tap.stop="send()"
-			class="cu-btn bg-green shadow">发送</button>
-
-	</view>
-
-
-	<view v-show="showItem==1" class="cu-bar foot "
-		style="box-shadow: none;-webkit-box-shadow: none;display: block;background: #fff;height:330upx;margin-bottom:80upx;">
-		<scroll-view scroll-y class="indexes" style="height:330upx;padding-bottom:20upx;padding-top: 10upx;"
-			:scroll-with-animation="true" :enable-back-to-top="true">
-			<view v-if="emotion <1">
-				<view v-for="(ele,i) in 14" :key="i" style="display: flex;">
-					<view v-for="(ele1,item) in 8" :key="item" @tap="sendEmotion(0,i*8 +item)"
-						style="flex:1;text-align: center;">
-						<image v-if="(i*8 +item)<=104" lazy-load
-							:src="'../../../static/emotion/face0'+emotion+'/'+(i*8 +item)+ (emotion == 0?'.gif':'.png')"
-							style="width:50upx;height:50upx;margin-top: 10upx;;"></image>
+				<view v-else-if="emotion == 1">
+					<view v-for="(ele,i) in 5" :key="i" style="display: flex;">
+						<view v-for="(ele1,item) in 3" :key="item" @tap="sendEmotion(1,i*3 +item)"
+							style="flex:1;text-align: center;">
+							<image lazy-load v-if="(i*3) +item <=9"
+								:src="'../../../static/emotion/face0'+emotion+'/'+(i*3 +item)+ '.gif'"
+								style="width:200upx;height:200upx;margin-top: 10upx;"></image>
+						</view>
 					</view>
 				</view>
-			</view>
-			<view v-else-if="emotion == 1">
-				<view v-for="(ele,i) in 5" :key="i" style="display: flex;">
-					<view v-for="(ele1,item) in 3" :key="item" @tap="sendEmotion(1,i*3 +item)"
-						style="flex:1;text-align: center;">
-						<image lazy-load v-if="(i*3) +item <=9"
-							:src="'../../../static/emotion/face0'+emotion+'/'+(i*3 +item)+ '.gif'"
-							style="width:200upx;height:200upx;margin-top: 10upx;"></image>
+				<view v-else>
+					<view v-for="(ele,i) in 5" :key="i" style="display: flex;">
+						<view v-for="(ele1,item) in 6" :key="item" @tap="sendEmotion(emotion,i*5 +item)"
+							style="flex:1;text-align: center;">
+							<image v-show="(i*5 +item)<=15" lazy-load
+								:src="'../../../static/emotion/face0'+emotion+'/'+(i*5 +item)+'.gif'"
+								style="width:50upx;height:50upx;margin-top: 10upx;;"></image>
+						</view>
 					</view>
 				</view>
-			</view>
-			<view v-else>
-				<view v-for="(ele,i) in 5" :key="i" style="display: flex;">
-					<view v-for="(ele1,item) in 6" :key="item" @tap="sendEmotion(emotion,i*5 +item)"
-						style="flex:1;text-align: center;">
-						<image v-show="(i*5 +item)<=15" lazy-load
-							:src="'../../../static/emotion/face0'+emotion+'/'+(i*5 +item)+'.gif'"
-							style="width:50upx;height:50upx;margin-top: 10upx;;"></image>
-					</view>
+			</scroll-view>
+			<view
+				style="width:100%;height:80upx;background: #f6f6f6;border-top:1px solid #eee;bottom:0;position: fixed;display: flex;">
+				<view v-for="(item,index) in 7" :key="item" @tap="showEmotion(index)"
+					:style="emotion==index?'background: #fff;':''" style="flex:1;height:100%;text-align: center;">
+					<image lazy-load :src="'../../../static/emotion/face0'+index+'/face-lbl.gif'"
+						style="width:50upx;height:50upx;margin-top: 10upx;;"></image>
 				</view>
-			</view>
-		</scroll-view>
-		<view
-			style="width:100%;height:80upx;background: #f6f6f6;border-top:1px solid #eee;bottom:0;position: fixed;display: flex;">
-			<view v-for="(item,index) in 7" :key="item" @tap="showEmotion(index)"
-				:style="emotion==index?'background: #fff;':''" style="flex:1;height:100%;text-align: center;">
-				<image lazy-load :src="'../../../static/emotion/face0'+index+'/face-lbl.gif'"
-					style="width:50upx;height:50upx;margin-top: 10upx;;"></image>
 			</view>
 		</view>
-	</view>
 
+		<view v-show="showItem==2" class="cu-bar foot "
+			style="box-shadow: none;-webkit-box-shadow: none;display: block;background: #fff;height:410upx;">
+			<scroll-view scroll-y class="indexes" style="height:410upx;padding-bottom:20upx;padding-top: 10upx;"
+				:scroll-with-animation="true" :enable-back-to-top="true">
+				<view>
+					<view style="display: flex;">
+						<view @tap="ChooseImage()" style="flex:1;text-align: center;margin-top: 20upx;"><text
+								style="font-size: 60upx;color:#3F92F8"
+								class="iconfont icon-zhaopian-cuxiantiao-fill"></text>
+							<view style="font-size: 24upx;color: #8799a3;">照片</view>
+						</view>
+						<view @tap="ChooseVideo()" style="flex:1;text-align: center;margin-top: 20upx;"><text
+								style="font-size: 60upx;color:#F39F90" class="iconfont icon-paishe"></text>
+							<view style="font-size: 24upx;color: #8799a3;">拍摄</view>
+						</view>
 
-	<view v-show="showItem==2" class="cu-bar foot "
-		style="box-shadow: none;-webkit-box-shadow: none;display: block;background: #fff;height:410upx;">
-		<scroll-view scroll-y class="indexes" style="height:410upx;padding-bottom:20upx;padding-top: 10upx;"
-			:scroll-with-animation="true" :enable-back-to-top="true">
-			<view>
-				<view style="display: flex;">
-					<view @tap="ChooseImage()" style="flex:1;text-align: center;margin-top: 20upx;"><text
-							style="font-size: 60upx;color:#3F92F8"
-							class="iconfont icon-zhaopian-cuxiantiao-fill"></text>
-						<view style="font-size: 24upx;color: #8799a3;">照片</view>
-					</view>
-					<view @tap="ChooseVideo()" style="flex:1;text-align: center;margin-top: 20upx;"><text
-							style="font-size: 60upx;color:#F39F90" class="iconfont icon-paishe"></text>
-						<view style="font-size: 24upx;color: #8799a3;">拍摄</view>
+						<view @tap="sendCard()" style="flex:1;text-align: center;margin-top: 20upx;"><text
+								style="font-size: 60upx;color:#FA9B4E" class="iconfont icon-mingpian2"></text>
+							<view style="font-size: 24upx;color: #8799a3;">名片</view>
+						</view>
 					</view>
 
-					<view @tap="sendCard()" style="flex:1;text-align: center;margin-top: 20upx;"><text
-							style="font-size: 60upx;color:#FA9B4E" class="iconfont icon-mingpian2"></text>
-						<view style="font-size: 24upx;color: #8799a3;">名片</view>
-					</view>
 				</view>
+			</scroll-view>
+		</view>
 
-			</view>
-		</scroll-view>
-	</view>
-
-
-	<view @longpress="hidePop" class="shade" v-show="showShade" @tap="hidePop">
-		<view style="text-align: center;" class="pop" :style="popStyle" :class="{'show':showPop}">
-			<view v-for="(item,index) in popButton" :key="index" @tap="pickerMenu" :data-name="item"
-				:data-index="index">
-				<text style="font-size:34upx;margin-right:16upx;" class="iconfont" :class="getPopButton(item)"></text>
-				{{item}}
+		<view @longpress="hidePop" class="shade" v-show="showShade" @tap="hidePop">
+			<view style="text-align: center;" class="pop" :style="popStyle" :class="{'show':showPop}">
+				<view v-for="(item,index) in popButton" :key="index" @tap="pickerMenu" :data-name="item"
+					:data-index="index">
+					<text style="font-size:34upx;margin-right:16upx;" class="iconfont"
+						:class="getPopButton(item)"></text>
+					{{item}}
+				</view>
 			</view>
 		</view>
-	</view>
-	<video direction="0" @fullscreenchange="videoChangeFC" id="video_play" :loop="false" :show-center-play-btn="true"
-		:autoplay="true" :page-gesture="true" :controls="true" v-show="showVideo" style="position: absolute;z-index: 99999999999999999999;top: 50%;
+		<video direction="0" @fullscreenchange="videoChangeFC" id="video_play" :loop="false"
+			:show-center-play-btn="true" :autoplay="true" :page-gesture="true" :controls="true" v-show="showVideo"
+			style="position: absolute;z-index: 99999999999999999999;top: 50%;
 					left: 50%;
 					width: 100%;
 					transform: translate(-50%,-50%);
 					text-align: center;" :src="videoSrc"></video>
-	<view>
-		<!-- 提示窗示例 -->
-		<uni-popup ref="tipDialog" type="dialog">
-			<uni-popup-dialog type="center" cancelText="取消" confirmText="重新发送" title="提示" content="是否重新发送本条消息!"
-				@confirm="queryReSendMsg" @close="cancelSend"></uni-popup-dialog>
-		</uni-popup>
-	</view>
+		<view>
+			<!-- 提示窗示例 -->
+			<uni-popup ref="tipDialog" type="dialog">
+				<uni-popup-dialog type="center" cancelText="取消" confirmText="重新发送" title="提示" content="是否重新发送本条消息!"
+					@confirm="queryReSendMsg" @close="cancelSend"></uni-popup-dialog>
+			</uni-popup>
+		</view>
 	</view>
 </template>
 
@@ -477,6 +515,7 @@
 				emotion: 0,
 				showItem: 0,
 				scrollTop: 0,
+				forwardBean: null,
 				// #ifdef APP
 				RECORDER: uni.getRecorderManager(),
 				// #endif
@@ -497,8 +536,8 @@
 				/* 显示操作弹窗 */
 				showPop: false,
 				/* 弹窗按钮列表 */
-				popButton: ["复制", "转发", "收藏", "删除", "撤消"],
-				popButtonStore: ["复制", "转发", "收藏", "删除", "撤消"],
+				popButton: ["回复", "复制", "转发", "收藏", "删除", "撤消"],
+				popButtonStore: ["回复", "复制", "转发", "收藏", "删除", "撤消"],
 				popStyle: "",
 				/* 选择的用户下标 */
 				pickerUserIndex: -1,
@@ -514,6 +553,7 @@
 				hasMore: true,
 				reSendMsgObj: null,
 				isBlack: false, //是否被拉黑
+				scrollIntoView: null
 			};
 		},
 		onBackPress() {
@@ -539,7 +579,8 @@
 			]),
 			...mapState('app', [
 				'imgUrl',
-				'reqUrl'
+				'reqUrl',
+				"messageMaxSize"
 			]),
 			showNameStr() {
 				return this.showname.length > 9 ? this.showname.substring(0, 6) + "..." : this.showname
@@ -616,6 +657,21 @@
 				this.addSendQuene(this.reSendMsgObj)
 
 			},
+			cancelForward() {
+				this.forwardBean = null
+			},
+			gotoForward(forwardBean) {
+				let temp = forwardBean ? forwardBean : this.forwardBean
+				if (temp) {
+					setTimeout(() => {
+						this.scrollIntoView = `ele${temp.uuid}`
+					}, 100)
+					setTimeout(() => {
+						this.scrollIntoView = ''
+
+					}, 200)
+				}
+			},
 			cancelSend() {
 				this.reSendMsgObj = null
 			},
@@ -624,6 +680,9 @@
 			},
 			parseImage(src) {
 				return parseMedia(src, this.imgUrl)
+			},
+			parseForwardImg(src) {
+				return src.indexOf("http") > -1 ? src : this.imgUrl + src
 			},
 			getHeadPic(headpic) {
 				return getHeadPic(headpic, this.imgUrl)
@@ -785,12 +844,14 @@
 			},
 			scrollFn(e) {
 				this.scrollDetail = e.detail;
+				console.log("======scrollFn:", this.scrollDetail)
 			},
 			tongbuMsg(isRefresh) { //当前页面聊天记录&页码请求
 				let _this = this;
 				let params = {
 					chatId: _this.toid,
 					pageNumber: this.pageParams.pageNumber,
+					pageSize: _this.messageMaxSize
 				}
 				if (!isRefresh) {
 					// uni.removeStorageSync(_this.user.id + "#" + _this.toid + '_CHAT_MESSAGE');
@@ -851,8 +912,8 @@
 								//1：先清楚和刷新当前显示列表
 								_this.setCurChatMsgList(resList);
 								// 缓存30条数据到本地
-								if (resList.length > 30) {
-									resList = resList.splice(resList.length - 30, resList.length)
+								if (resList.length > _this.messageMaxSize) {
+									resList = resList.splice(resList.length - _this.messageMaxSize, resList.length)
 								}
 								//2：再清除和刷新大消息列表当前聊天对象数据
 								uni.setStorageSync(_this.user.id + "#" + _this.toid + '_CHAT_MESSAGE', JSON
@@ -879,7 +940,7 @@
 				else if (item == "收藏") return "icon-collection-b";
 				else if (item == "删除") return "icon-shanchu";
 				else if (item == "撤消") return "icon-shangjiachexiaoshenqingrenzhengliebiao";
-				return "";
+				return "icon-zhuanfa";
 			},
 			clickCard(bean) {
 				this.goUserDetail(bean.muuid);
@@ -1063,12 +1124,12 @@
 						}
 					}
 				} else if (name == '撤消') {
-					
+
 					this.sendChatMessageUndo({
 						txt: _this.temp_bean.uuid,
 						toUid: _this.temp_bean.toUid,
 						fromUid: _this.temp_bean.fromUid,
-						messageId:_this.temp_bean.messageId
+						messageId: _this.temp_bean.messageId
 					})
 				} else if (name == '收藏') {
 					if (_this.temp_content.indexOf("voice") >= 0) {
@@ -1080,6 +1141,9 @@
 						return;
 					}
 					_this.collectAction(JSON.stringify(_this.temp_bean))
+				} else if (name == '回复') {
+					_this.forwardBean = _this.temp_bean;
+					console.log("=========_this.forwardBean", _this.forwardBean)
 				}
 				this.hidePop();
 			},
@@ -1193,12 +1257,16 @@
 						chatType: '2',
 						psr: 'txt'
 					}
+					if (_this.forwardBean) {
+						v.forward = _this.forwardBean
+					}
 					v.simpleContent = v.txt
 					_this.sendChatMessage(v);
 					_this.txt = "";
 					_this.setChatMyLoadding(true)
 					_this.sendBaseDaoAction(v);
 					_this.showjia = true;
+					_this.forwardBean = null;
 					setTimeout(function() {
 						_this.scrollToBottom();
 						_this.input_is_focus = true;

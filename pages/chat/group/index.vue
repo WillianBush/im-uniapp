@@ -519,7 +519,7 @@
 				/* 显示操作弹窗 */
 				showPop: false,
 				/* 弹窗按钮列表 */
-				popButton: ["复制", "转发", "收藏", "删除", "撤消"],
+				popButton: ["","复制", "转发", "收藏", "删除", "撤消"],
 				popButtonStore: ["复制", "转发", "收藏", "删除", "撤消"],
 				/* 弹窗定位样式 */
 				popStyle: "",
@@ -610,7 +610,8 @@
 			]),
 			...mapState('app', [
 				'imgUrl',
-				'reqUrl'
+				'reqUrl',
+				'messageMaxSize'
 			]),
 			isOwner() {
 				return this.user.id == this.curChatEntity.owner_UUID
@@ -857,6 +858,8 @@
 				let params = {
 					chatId: _this.toid,
 					pageNumber: this.pageParams.pageNumber,
+					pageSize:_this.messageMaxSize
+					
 				}
 				if (!isRefresh) {
 					// uni.removeStorageSync(_this.user.id + "#" + _this.toid + '_CHAT_MESSAGE');
@@ -871,10 +874,7 @@
 					}
 				}
 				uni.showLoading()
-				syncMsgData({
-					chatId: _this.toid,
-					pageNumber: _this.pageParams.pageNumber,
-				}).then(res => {
+				syncMsgData(params).then(res => {
 					uni.hideLoading()
 					let res_data = eval(res.data);
 					if (res_data.code == 200) {
@@ -890,8 +890,8 @@
 								//1：先清楚和刷新当前显示列表
 								_this.setCurChatMsgList(cList);
 								// 缓存30条数据到本地
-								if (cList.length > 30) {
-									cList = cList.splice(cList.length - 30, cList.length)
+								if (cList.length > _this.messageMaxSize) {
+									cList = cList.splice(cList.length - _this.messageMaxSize, cList.length)
 								}
 								//2：再清除和刷新大消息列表当前聊天对象数据
 								uni.setStorageSync(_this.user.id + "#" + _this.toid + '_CHAT_MESSAGE', JSON

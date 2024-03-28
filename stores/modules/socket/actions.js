@@ -513,8 +513,8 @@ export default {
 			var jsonObj = JSON.parse(str);
 			if (user.id != messageBean[0].bean.fromUid) {
 				jsonObj = jsonObj.concat(messageBean);
-				if (jsonObj.length > 30) {
-					jsonObj = jsonObj.splice(jsonObj.length - 30, jsonObj.length);
+				if (jsonObj.length > rootState.app.messageMaxSize) {
+					jsonObj = jsonObj.splice(jsonObj.length - rootState.app.messageMaxSize, jsonObj.length);
 				}
 			} else {
 				// 如果是自己发的消息就改变消息发送成功的状态
@@ -534,8 +534,8 @@ export default {
 				// );
 				if (tempIndex == -1) {
 					jsonObj = jsonObj.concat(messageBean);
-					if (jsonObj.length > 30) {
-						jsonObj = jsonObj.splice(jsonObj.length - 30, jsonObj.length);
+					if (jsonObj.length > rootState.app.messageMaxSize) {
+						jsonObj = jsonObj.splice(jsonObj.length - rootState.app.messageMaxSize, jsonObj.length);
 					}
 				}else{
 					jsonObj.splice(tempIndex,1,messageBean[0])

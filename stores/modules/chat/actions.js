@@ -633,8 +633,8 @@ export default {
 		if (str && str != "") {
 			var jsonObj = JSON.parse(str);
 			list = jsonObj.concat(list);
-			if (list.length > 30) {
-				list = list.splice(list.length - 30, list.length);
+			if (list.length > rootState.app.messageMaxSize) {
+				list = list.splice(list.length - rootState.app.messageMaxSize, list.length);
 			}
 		}
 		uni.setStorageSync(
