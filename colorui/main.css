@@ -1215,7 +1215,7 @@ button.cuIcon.lg {
 	position: relative;
 	display: flex;
 	padding-right: 5px;
-	height: 70px;
+	height: 60px;
 	background-color: #ffffff;
 	justify-content: flex-end;
 	align-items: center
@@ -1489,7 +1489,7 @@ button.cuIcon.lg {
 	display: flex;
 	position: relative;
 	align-items: center;
-	min-height: 100upx;
+	min-height: 50px;
 	justify-content: space-between;
 }
 
@@ -1639,8 +1639,8 @@ button.cuIcon.lg {
 .cu-bar .search-form {
 	background-color: #f5f5f5;
 	line-height: 45px;
-	height: 45px;
-	font-size: 17px;
+	height: 30px;
+	font-size: 12px;
 	color: #333333;
 	flex: 1;
 	display: flex;

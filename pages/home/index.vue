@@ -1,8 +1,8 @@
 <template>
 	<view>
-		<view @tap="hideShowMenu()" style="padding-top:25px;background-color: #fff;width: 400px;float: left">
+		<view @tap="hideShowMenu()" style="padding-top:25px;background-color: #fff;width: 220px;float: left">
 			<view class="cu-bar bg-white solid-bottom">
-				<view class="action" style="font-size: 17px;font-weight: 600;">
+				<view class="action" style="font-size: 14px;font-weight: 600;">
 					<text class="cuIcon-title text-orange " style="color: green"></text>
 					<text style="min-width:73px;">
 						消息列表<text style="font-size: 12px;"> ({{delayTimeStr}})</text>
@@ -18,7 +18,7 @@
 			<view class="cu-bar bg-white search">
 				<view class="search-form round">
 					<text class="cuIcon-search"></text>
-					<input v-model="kw" @input="search_list()" style="font-size:13px" type="text" placeholder="输入搜索的关键词"
+					<input v-model="kw" @input="search_list()" style="font-size:12px" type="text" placeholder="输入关键词"
 						confirm-type="search"></input>
 				</view>
 				<button class="refresh-btn" @click="refresherrefresh">刷新</button>
@@ -64,7 +64,7 @@
 							:style="{'backgroundImage': 'url(../../static/logo12.png)'}">
 						</view>
 						<view  class="content" style="min-width: 120px;z-index: 20;background: #fff;">
-							<text class="text-black" style="font-size:16px">群发助手</text>
+							<text class="text-black" style="font-size:12px">群发助手</text>
 						</view>
 					</view>
 					<view style="text-align: center;background: #fff;height: 80px;line-height: 80px;color: #999;"

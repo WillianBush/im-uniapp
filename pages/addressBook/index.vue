@@ -1,13 +1,13 @@
 <template>
 	<view>
-		<view style="width:400px; float: left">
+		<view style="width:220px; float: left">
 			<view v-show="PageCur=='tongxunlu'">
-				<view style="height: 45px;line-height: 45px;text-align: center;background: #eee; font-size:16px">
+				<view style="height: 45px;line-height: 45px;text-align: center;background: #eee; font-size:14px">
 					通讯录({{memberLength}})人</view>
 				<view class="cu-bar bg-white search">
 					<view class="search-form round">
 						<text class="cuIcon-search"></text>
-						<input v-model="kw1" type="text" style="font-size:13px" placeholder="输入搜索的关键词" confirm-type="search"></input>
+						<input v-model="kw1" type="text" style="font-size:12px" placeholder="输入关键词" confirm-type="search"></input>
 					</view>
 					<view class="action">
 						<button @tap="search()" style="background: #FFAA01;margin-right:2px"
